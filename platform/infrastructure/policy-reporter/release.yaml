@@ -52,24 +52,35 @@ spec:
         - name: Dashboard
           namespaces:
             list:
-              - aide
-              - argocd
               - cert-manager
-              - default
-              - external-secrets
               - flux-system
-              - gatekeeper-system
-              - gitea
               - ingress
               - kube-system
-              - kyverno
-              - linkerd
               - longhorn-system
               - metallb-system
-              - observability
-              - platform-ui
-              - spire
+          sources:
+            list:
+              - kyverno
+          filter:
+            include:
+              severities:
+                - critical
+                - high
+              results:
+                - fail
+                - error
+          clusterScope:
+            enabled: true
+          display: dark
+        - name: Reports by Policy
+          namespaces:
+            list:
+              - kyverno
+              - gatekeeper-system
               - vault-secrets
+              - external-secrets
+              - linkerd
+              - spire
           sources:
             list:
               - kyverno
@@ -80,60 +91,24 @@ spec:
                 - critical
                 - high
                 - medium
-                - low
-          clusterScope:
-            enabled: true
-          display: dark
-        - name: Reports by Policy
-          namespaces:
-            list:
-              - aide
-              - argocd
-              - cert-manager
-              - default
-              - external-secrets
-              - flux-system
-              - gatekeeper-system
-              - gitea
-              - ingress
-              - kube-system
-              - kyverno
-              - linkerd
-              - longhorn-system
-              - metallb-system
-              - observability
-              - platform-ui
-              - spire
-              - vault-secrets
-          sources:
-            list:
-              - kyverno
-          filter:
-            include:
-              namespaceKinds:
-                - Deployment
-                - StatefulSet
-                - DaemonSet
-                - Job
-                - CronJob
-                - Pod
+              results:
+                - fail
+                - warn
+                - error
           clusterScope:
             enabled: true
           display: dark
         - name: Log Report
           namespaces:
             list:
-              - aide
-              - argocd
+              - kyverno
               - cert-manager
-              - default
               - external-secrets
               - flux-system
               - gatekeeper-system
               - gitea
               - ingress
               - kube-system
-              - kyverno
               - linkerd
               - longhorn-system
               - metallb-system
@@ -149,7 +124,7 @@ spec:
               results:
                 - fail
                 - error
-                - warn
+                - skip
               severities:
                 - critical
                 - high
@@ -160,11 +135,9 @@ spec:
         - name: Policy Campus Dictionary
           namespaces:
             list:
-              - aide
               - argocd
               - cert-manager
               - default
-              - external-secrets
               - flux-system
               - gatekeeper-system
               - gitea
@@ -176,20 +149,17 @@ spec:
               - metallb-system
               - observability
               - platform-ui
-              - spire
-              - vault-secrets
           sources:
             list:
               - kyverno
+              - KyvernoValidatingPolicy
           filter:
             include:
-              clusterKinds:
-                - Namespace
-                - Node
-              namespaceKinds:
-                - Deployment
-                - StatefulSet
-                - DaemonSet
+              severities:
+                - critical
+                - high
+                - medium
+                - low
           clusterScope:
             enabled: true
           display: dark
