@@ -21,6 +21,8 @@ spec:
         cryptophys.io/flux-managed: 'true'
         k8s-app: node-local-dns
     spec:
+      hostNetwork: true
+      dnsPolicy: Default
       containers:
       - args:
         - -localip
