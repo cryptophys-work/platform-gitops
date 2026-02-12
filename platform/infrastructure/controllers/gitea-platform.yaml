@@ -26,8 +26,7 @@ spec:
         name: gitea-charts
         namespace: flux-system
   values:
-    # Migration step: keep Gitea app pods stopped while Postgres/Valkey come up and DB import runs.
-    replicaCount: 0
+    replicaCount: 1
     strategy:
       type: Recreate
     image:
