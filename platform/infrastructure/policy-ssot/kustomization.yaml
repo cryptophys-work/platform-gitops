@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ssot-kyverno-policies.yaml
+  - ssot-kyverno-enforce-business.yaml
+  - ssot-kyverno-exception-governance.yaml
+  - ssot-gatekeeper-templates.yaml
+  - ssot-gatekeeper-constraints.yaml
+  - ssot-gatekeeper-enforce-business.yaml
+  - ssot-waiver-cleanup-ops.yaml
