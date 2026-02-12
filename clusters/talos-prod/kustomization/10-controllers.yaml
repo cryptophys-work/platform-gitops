@@ -5,8 +5,29 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h
+  wait: true
+  timeout: 30m
   path: ./platform/infrastructure/controllers
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: platform-repo
+  dependsOn:
+    - name: 05-sources
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
+      kind: HelmRelease
+      name: cilium
+      namespace: kube-system
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
+      kind: HelmRelease
+      name: cert-manager
+      namespace: cert-manager
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
+      kind: HelmRelease
+      name: external-secrets
+      namespace: external-secrets
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
+      kind: HelmRelease
+      name: ingress-gateway
+      namespace: ingress

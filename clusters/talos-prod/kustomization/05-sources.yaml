@@ -5,8 +5,53 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h
+  wait: true
+  timeout: 10m
   path: ./platform/infrastructure/sources
   prune: true
   sourceRef:
     kind: GitRepository
     name: platform-repo
+  dependsOn:
+    - name: 01-namespaces
+  healthChecks:
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
+      kind: HelmRepository
+      name: cilium
+      namespace: flux-system
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
+      kind: HelmRepository
+      name: longhorn
+      namespace: flux-system
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
+      kind: HelmRepository
+      name: hashicorp
+      namespace: flux-system
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
+      kind: HelmRepository
+      name: gitea-charts
+      namespace: flux-system
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
+      kind: HelmRepository
+      name: ingress-nginx
+      namespace: flux-system
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
+      kind: HelmRepository
+      name: kyverno
+      namespace: flux-system
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
+      kind: HelmRepository
+      name: gatekeeper
+      namespace: flux-system
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
+      kind: HelmRepository
+      name: linkerd
+      namespace: flux-system
+    - apiVersion: source.toolkit.fluxcd.io/v1
+      kind: GitRepository
+      name: platform-repo
+      namespace: flux-system
+    - apiVersion: source.toolkit.fluxcd.io/v1
+      kind: GitRepository
+      name: ssot-core-repo
+      namespace: flux-system

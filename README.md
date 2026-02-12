@@ -22,22 +22,32 @@ Status aktual saat dokumen ini ditulis:
 platform-gitops/
 ├── clusters/talos-prod/kustomization/
 │   ├── 00-crds.yaml
+│   ├── 01-namespaces.yaml
 │   ├── 05-sources.yaml
+│   ├── 08-networking.yaml
 │   ├── 10-controllers.yaml
 │   ├── 15-dns-core.yaml
 │   ├── 20-policy.yaml
 │   ├── 30-storage.yaml
-│   ├── 40-observability.yaml
-│   └── 90-aide-sensors.yaml
+│   ├── 31-vault.yaml
+│   ├── 32-spire.yaml
+│   ├── 33-linkerd.yaml
+│   ├── 35-secrets.yaml
+│   └── 36-gitea.yaml
 └── platform/infrastructure/
     ├── crds/
+    ├── namespaces/
     ├── sources/
     ├── controllers/
     ├── dns/
     ├── policy/
     ├── storage/
-    ├── observability/
-    └── aide/
+    ├── spire/
+    ├── linkerd/
+    ├── secrets/
+    ├── vault/
+    ├── gitea/
+    └── networking/
 ```
 
 ## Endpoint Git Internal (Cluster)

@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: spire
-  labels:
-    pod-security.kubernetes.io/enforce: privileged
-    app.kubernetes.io/managed-by: flux
-    environment: prod
-    owner: infrastructure

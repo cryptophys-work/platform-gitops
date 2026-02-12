@@ -55,7 +55,6 @@ spec:
           HOST: platform-code-forge-gitea-postgresql-ha-pgpool.gitea.svc.cluster.local:5432
           NAME: gitea
           USER: gitea
-          PASSWD: changeme
         session:
           PROVIDER: redis
           PROVIDER_CONFIG: redis+cluster://:@platform-code-forge-gitea-valkey-cluster-headless.gitea.svc.cluster.local:6379/0

@@ -1,12 +1,16 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 40-observability
+  name: 01-namespaces
   namespace: flux-system
 spec:
   interval: 1h
-  path: ./platform/infrastructure/observability
+  wait: true
+  timeout: 5m
+  path: ./platform/infrastructure/namespaces
   prune: true
   sourceRef:
     kind: GitRepository
     name: platform-repo
+  dependsOn:
+    - name: 00-crds
