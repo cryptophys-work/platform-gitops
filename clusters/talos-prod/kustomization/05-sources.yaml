@@ -4,8 +4,6 @@ metadata:
   name: 05-sources
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: 00-crds
   interval: 1h
   path: ./platform/infrastructure/sources
   prune: true
