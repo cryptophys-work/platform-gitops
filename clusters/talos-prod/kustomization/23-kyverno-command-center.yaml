@@ -13,5 +13,5 @@ spec:
     kind: GitRepository
     name: platform-repo
   dependsOn:
-    - name: 22-policy-reporter
+    - name: 10-controllers
     - name: secrets
