@@ -20,8 +20,62 @@ spec:
         name: policy-reporter
         namespace: flux-system
   values:
+    replicaCount: 2
+    logging:
+      server: true
+      encoding: json
+      logLevel: 1
+    rest:
+      enabled: true
+    metrics:
+      enabled: true
+      mode: detailed
+    worker: 10
     ui:
       enabled: true
+      replicaCount: 2
+      displayMode: dark
+      banner: "Cryptophys NOC Command Center · Policy, Compliance, Runtime Signals"
+      logging:
+        api: true
+        server: true
+        encoding: json
+        logLevel: 1
+      sources:
+        - name: kyverno
+          type: severity
+          exceptions: true
+      customBoards:
+        - name: Platform Control Plane
+          namespaces:
+            list:
+              - flux-system
+              - kyverno
+              - gatekeeper-system
+              - vault-secrets
+              - gitea
+              - linkerd
+              - ingress
+          clusterScope:
+            enabled: true
+          display: dark
+        - name: Platform Runtime
+          namespaces:
+            list:
+              - argocd
+              - external-secrets
+              - longhorn-system
+              - metallb-system
+              - kube-system
+          clusterScope:
+            enabled: true
+          display: dark
+      clusters:
+        - name: talos-prod
+          host: http://policy-reporter:8080
+          plugins:
+            - name: kyverno
+              host: http://policy-reporter-kyverno-plugin:8080
       ingress:
         enabled: true
         className: nginx
@@ -39,3 +93,30 @@ spec:
           - secretName: cryptophys-wildcard-tls
             hosts:
               - kyverno.cryptophys.work
+    plugin:
+      kyverno:
+        enabled: true
+        replicaCount: 2
+        logging:
+          api: true
+          server: true
+          encoding: json
+          logLevel: 1
+        blockReports:
+          enabled: true
+          eventNamespace: kyverno
+          source: Kyverno Event
+          results:
+            maxPerReport: 500
+            keepOnlyLatest: true
+    monitoring:
+      enabled: true
+      grafana:
+        dashboards:
+          enabled: true
+          multicluster:
+            enabled: false
+          enable:
+            overview: true
+            policyReportDetails: true
+            clusterPolicyReportDetails: true
