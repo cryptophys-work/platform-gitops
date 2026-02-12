@@ -40,7 +40,7 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       extraArgs:
-        enable-profiling: "false"
+        profiling: "false"
         profiler-port: "0"
       strategy:
         type: RollingUpdate
