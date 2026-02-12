@@ -8,7 +8,7 @@ spec:
   prune: true
   wait: true
   timeout: 2m
-  path: ./operations/waiver-cleanup
+  path: ./ops/waiver-cleanup
   sourceRef:
     kind: GitRepository
     name: ssot-core-repo

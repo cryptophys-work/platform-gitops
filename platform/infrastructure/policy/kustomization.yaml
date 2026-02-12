@@ -5,3 +5,10 @@ resources:
   - cilium-baseline.yaml
   - gatekeeper-release.yaml
   - kyverno-release.yaml
+  - ssot-kyverno-policies.yaml
+  - ssot-kyverno-enforce-business.yaml
+  - ssot-kyverno-exception-governance.yaml
+  - ssot-gatekeeper-templates.yaml
+  - ssot-gatekeeper-constraints.yaml
+  - ssot-gatekeeper-enforce-business.yaml
+  - ssot-waiver-cleanup-ops.yaml
