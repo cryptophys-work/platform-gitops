@@ -109,7 +109,9 @@ kind: Namespace
 metadata:
   name: linkerd
   labels:
-    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
     app.kubernetes.io/managed-by: flux
     environment: prod
     owner: infrastructure
