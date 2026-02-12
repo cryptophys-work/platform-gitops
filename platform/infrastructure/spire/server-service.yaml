@@ -4,8 +4,10 @@ metadata:
   name: spire-server
   namespace: spire
 spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
   selector:
-    app: spire-server
+    app.kubernetes.io/name: spire-server
   ports:
     - name: grpc
       port: 8081
