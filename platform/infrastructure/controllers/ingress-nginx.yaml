@@ -43,6 +43,10 @@ spec:
         healthz-port: "11054"
         profiling: "false"
         profiler-port: "0"
+      livenessProbe:
+        port: 11054
+      readinessProbe:
+        port: 11054
       metrics:
         port: 11054
       strategy:
