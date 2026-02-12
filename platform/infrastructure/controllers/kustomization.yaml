@@ -5,5 +5,4 @@ resources:
   - external-secrets.yaml
   - ingress-nginx.yaml
   - vault.yaml
-  - gitea.yaml
   - cilium/release.yaml
