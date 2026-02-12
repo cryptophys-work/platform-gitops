@@ -23,9 +23,10 @@ spec:
         namespace: flux-system
   values:
     image:
-      repository: ghcr.io/go-gitea/gitea
-      tag: 1.25.4-rootless
-      digest: sha256:1926e89ad28358ef2146bb8a1b9c3ba24bae681cb02b72d2df11125fdc675abe
+      registry: ghcr.io
+      repository: go-gitea/gitea
+      tag: "1.25.4"
+      rootless: true
       pullPolicy: IfNotPresent
     gitea:
       admin:
