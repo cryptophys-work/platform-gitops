@@ -1,0 +1,389 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kyverno-command-center
+  namespace: kyverno
+data:
+  default.conf: |
+    server {
+      listen 8080;
+      server_name _;
+      root /usr/share/nginx/html;
+
+      gzip on;
+      gzip_types text/plain text/css application/json application/javascript application/xml+rss;
+
+      location = /healthz {
+        return 200 'ok';
+        add_header Content-Type text/plain;
+      }
+
+      location / {
+        try_files $uri /index.html =404;
+      }
+
+      location /core/ {
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_pass http://security-policy-reporter.kyverno.svc.cluster.local:8080/;
+      }
+
+      location /kyverno/ {
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_pass http://security-policy-reporter-kyverno-plugin.kyverno.svc.cluster.local:8080/;
+      }
+    }
+  index.html: |
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Kyverno Command Center</title>
+        <style>
+          :root{
+            --bg:#0b0f14; --panel:#0f1621; --panel2:#0d131c; --border:#1f2a3a;
+            --text:#e6edf3; --muted:#9fb0c0; --accent:#4aa3ff; --good:#2bd576; --warn:#ffcf5a; --bad:#ff5a6a;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+          }
+          *{box-sizing:border-box}
+          body{margin:0; font-family:var(--sans); background:var(--bg); color:var(--text)}
+          a{color:inherit; text-decoration:none}
+          .app{display:grid; grid-template-columns: 280px 1fr; min-height:100vh}
+          .sidebar{border-right:1px solid var(--border); background:linear-gradient(180deg,var(--panel),var(--panel2)); padding:18px}
+          .brand{display:flex; gap:10px; align-items:center; padding:10px 10px 14px 10px; border-bottom:1px solid var(--border)}
+          .brand .logo{width:10px;height:10px;border-radius:2px;background:var(--accent); box-shadow:0 0 18px rgba(74,163,255,.45)}
+          .brand .t{font-weight:700; letter-spacing:.3px}
+          .brand .s{font-size:12px;color:var(--muted)}
+          .nav{padding:14px 6px; display:flex; flex-direction:column; gap:6px}
+          .nav a{padding:10px 10px; border:1px solid transparent; border-radius:10px; color:var(--muted); display:flex; justify-content:space-between; align-items:center}
+          .nav a.active{color:var(--text); background:rgba(74,163,255,.08); border-color:rgba(74,163,255,.22)}
+          .nav a:hover{border-color:rgba(159,176,192,.22); color:var(--text)}
+          .badge{font-family:var(--mono); font-size:11px; color:var(--muted)}
+          .main{display:flex; flex-direction:column}
+          .topbar{display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--border); background:rgba(15,22,33,.6); backdrop-filter: blur(10px); position:sticky; top:0; z-index:10}
+          .topbar .left{display:flex; gap:12px; align-items:center}
+          .topbar .title{font-weight:650}
+          .topbar .sub{font-size:12px; color:var(--muted)}
+          .topbar .right{display:flex; gap:10px; align-items:center}
+          .pill{border:1px solid var(--border); border-radius:999px; padding:8px 10px; color:var(--muted); font-size:12px; display:flex; gap:8px; align-items:center}
+          .btn{border:1px solid var(--border); background:rgba(255,255,255,.02); color:var(--text); border-radius:10px; padding:8px 10px; font-size:12px; cursor:pointer}
+          .btn:hover{border-color:rgba(159,176,192,.4)}
+          .content{padding:18px; display:flex; flex-direction:column; gap:14px}
+          .grid{display:grid; grid-template-columns: repeat(12, 1fr); gap:12px}
+          .card{border:1px solid var(--border); background:rgba(15,22,33,.55); border-radius:14px; padding:14px}
+          .card h3{margin:0 0 10px 0; font-size:13px; color:var(--muted); font-weight:600}
+          .kpi{display:flex; flex-direction:column; gap:6px}
+          .kpi .v{font-size:24px; font-weight:800; letter-spacing:.2px}
+          .kpi .m{font-size:12px; color:var(--muted)}
+          .kpi .delta{font-family:var(--mono); font-size:11px; color:var(--muted)}
+          .split{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+          .dot{width:10px;height:10px;border-radius:2px}
+          table{width:100%; border-collapse:collapse; font-size:12px}
+          th,td{padding:10px 8px; border-bottom:1px solid rgba(31,42,58,.7); text-align:left; vertical-align:top}
+          th{color:var(--muted); font-weight:600; position:sticky; top:0; background:rgba(15,22,33,.9)}
+          .mono{font-family:var(--mono)}
+          .sev{padding:2px 6px;border-radius:7px;border:1px solid rgba(159,176,192,.22); font-family:var(--mono); font-size:11px}
+          .sev.high{border-color:rgba(255,90,106,.35); color:#ff9aa5}
+          .sev.critical{border-color:rgba(255,90,106,.65); color:#ff5a6a}
+          .sev.medium{border-color:rgba(255,207,90,.35); color:#ffd88a}
+          .sev.low{border-color:rgba(74,163,255,.25); color:#93c7ff}
+          .status{padding:2px 6px;border-radius:7px;border:1px solid rgba(159,176,192,.22); font-family:var(--mono); font-size:11px}
+          .status.fail{border-color:rgba(255,90,106,.45); color:#ff9aa5}
+          .status.warn{border-color:rgba(255,207,90,.45); color:#ffd88a}
+          .status.error{border-color:rgba(255,90,106,.65); color:#ff5a6a}
+          .status.pass{border-color:rgba(43,213,118,.35); color:#86f2b8}
+          .toolbar{display:flex; gap:10px; flex-wrap:wrap}
+          .input{background:rgba(255,255,255,.02); border:1px solid var(--border); color:var(--text); padding:8px 10px; border-radius:10px; font-size:12px; min-width:320px}
+          .hint{font-size:12px; color:var(--muted)}
+          .footer{padding:14px 18px; color:var(--muted); font-size:12px; border-top:1px solid var(--border)}
+          @media (max-width: 980px){ .app{grid-template-columns: 1fr} .sidebar{display:none} .input{min-width:100%} }
+        </style>
+      </head>
+      <body>
+        <div class="app">
+          <aside class="sidebar">
+            <div class="brand">
+              <div class="logo"></div>
+              <div>
+                <div class="t">Kyverno Command Center</div>
+                <div class="s">NOC-grade policy operations</div>
+              </div>
+            </div>
+            <nav class="nav" id="nav">
+              <a href="#mission" data-view="mission" class="active"><span>Mission Control</span><span class="badge" id="b-mission">live</span></a>
+              <a href="#policies" data-view="policies"><span>Policies</span><span class="badge" id="b-policies">—</span></a>
+              <a href="#workloads" data-view="workloads"><span>Workloads</span><span class="badge" id="b-workloads">—</span></a>
+              <a href="#admissions" data-view="admissions"><span>Admissions</span><span class="badge" id="b-admissions">—</span></a>
+              <a href="#reports" data-view="reports"><span>Reports</span><span class="badge" id="b-reports">—</span></a>
+            </nav>
+            <div class="hint">Data: PolicyReporter API + Kyverno Plugin (proxied).</div>
+          </aside>
+          <main class="main">
+            <header class="topbar">
+              <div class="left">
+                <div>
+                  <div class="title" id="viewTitle">Mission Control</div>
+                  <div class="sub" id="viewSub">High-signal compliance posture</div>
+                </div>
+              </div>
+              <div class="right">
+                <div class="pill"><span class="dot" style="background:var(--good)"></span><span id="health">loading</span></div>
+                <button class="btn" id="refreshBtn">Refresh</button>
+              </div>
+            </header>
+            <section class="content" id="content"></section>
+            <div class="footer mono">Kyverno Command Center · proxied endpoints: <span class="mono">/core</span> and <span class="mono">/kyverno</span></div>
+          </main>
+        </div>
+        <script>
+          const $ = (id) => document.getElementById(id);
+          const state = { view: 'mission', last: null, findings: [], statusCounts: null, namespaces: [] };
+
+          function setActive(view){
+            state.view = view;
+            for (const a of document.querySelectorAll('#nav a')) a.classList.toggle('active', a.dataset.view === view);
+            const titles = {
+              mission: ['Mission Control','High-signal compliance posture'],
+              policies: ['Policy Portfolio','Inventory + coverage signals'],
+              workloads: ['Workload Drilldown','Findings across namespaces'],
+              admissions: ['Admissions','Enforce-mode blocked requests (Kyverno Event)'],
+              reports: ['Reports','Export evidence + operator views']
+            };
+            const [t,s] = titles[view] || titles.mission;
+            $('viewTitle').textContent = t; $('viewSub').textContent = s;
+            render();
+          }
+
+          async function fetchJson(url){
+            const r = await fetch(url, { headers: { 'Accept': 'application/json' }});
+            if (!r.ok) throw new Error(url + ' -> ' + r.status);
+            return r.json();
+          }
+
+          function sumStatus(statusCounts, status){
+            const entry = (statusCounts || []).find(x => x.status === status);
+            if (!entry || !entry.items) return 0;
+            return entry.items.reduce((a,b)=>a+(b.count||0),0);
+          }
+
+          function byKeyCount(items, key){
+            const m = new Map();
+            for (const it of items){
+              const k = it[key] || '—';
+              m.set(k, (m.get(k) || 0) + 1);
+            }
+            return [...m.entries()].sort((a,b)=>b[1]-a[1]);
+          }
+
+          function esc(s){ return String(s).replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c])); }
+
+          function kpiCard(title, value, meta){
+            return \`
+              <div class="card" style="grid-column: span 3;">
+                <h3>\${esc(title)}</h3>
+                <div class="kpi">
+                  <div class="v">\${esc(value)}</div>
+                  <div class="m">\${esc(meta || '')}</div>
+                </div>
+              </div>\`;
+          }
+
+          function tableCard(title, rowsHtml){
+            return \`
+              <div class="card" style="grid-column: span 6;">
+                <h3>\${esc(title)}</h3>
+                <div style="max-height: 420px; overflow:auto; border:1px solid rgba(31,42,58,.55); border-radius:12px;">
+                  <table>
+                    <thead><tr><th>Key</th><th class="mono">Count</th></tr></thead>
+                    <tbody>\${rowsHtml}</tbody>
+                  </table>
+                </div>
+              </div>\`;
+          }
+
+          function findingsTable(items){
+            const head = \`
+              <thead><tr>
+                <th>Namespace</th><th>Kind</th><th>Name</th><th>Policy</th><th>Rule</th><th>Category</th><th>Status</th><th>Severity</th><th>When</th>
+              </tr></thead>\`;
+            const body = items.map(it => {
+              const ts = it.timestamp ? new Date(it.timestamp*1000).toISOString() : '';
+              const sev = (it.severity || '').toLowerCase();
+              const st = (it.status || '').toLowerCase();
+              return \`<tr>
+                <td class="mono">\${esc(it.namespace||'')}</td>
+                <td>\${esc(it.kind||'')}</td>
+                <td class="mono">\${esc(it.name||'')}</td>
+                <td class="mono">\${esc(it.policy||'')}</td>
+                <td class="mono">\${esc(it.rule||'')}</td>
+                <td>\${esc(it.category||'')}</td>
+                <td><span class="status \${esc(st)}">\${esc(it.status||'')}</span></td>
+                <td><span class="sev \${esc(sev)}">\${esc(it.severity||'')}</span></td>
+                <td class="mono">\${esc(ts)}</td>
+              </tr>\`;
+            }).join('');
+            return \`
+              <div class="card" style="grid-column: span 12;">
+                <h3>Latest Findings (sample window)</h3>
+                <div style="max-height:520px; overflow:auto; border:1px solid rgba(31,42,58,.55); border-radius:12px;">
+                  <table>\${head}<tbody>\${body}</tbody></table>
+                </div>
+              </div>\`;
+          }
+
+          async function load(){
+            $('health').textContent = 'loading';
+            const [healthCore, statusCounts, namespaces, findings] = await Promise.all([
+              fetch('/core/healthz').then(r => r.ok).catch(()=>false),
+              fetchJson('/core/v1/namespaced-resources/status-counts'),
+              fetchJson('/core/v1/namespaces'),
+              fetchJson('/core/v1/namespaced-resources/results')
+            ]);
+            state.statusCounts = statusCounts;
+            state.namespaces = namespaces;
+            state.findings = (findings.items || []).slice(0, 2000);
+            $('health').textContent = healthCore ? 'core ok' : 'core down';
+            $('health').style.color = healthCore ? 'var(--good)' : 'var(--bad)';
+            $('b-workloads').textContent = String(state.findings.length);
+            state.last = new Date();
+            render();
+          }
+
+          function render(){
+            const c = $('content');
+            if (state.view === 'mission'){
+              const fail = sumStatus(state.statusCounts, 'fail');
+              const warn = sumStatus(state.statusCounts, 'warn');
+              const err  = sumStatus(state.statusCounts, 'error');
+              const pass = sumStatus(state.statusCounts, 'pass');
+              const total = fail+warn+err+pass;
+              const topPolicies = byKeyCount(state.findings.filter(x => x.status !== 'pass'), 'policy').slice(0, 12);
+              const topNamespaces = byKeyCount(state.findings.filter(x => x.status !== 'pass'), 'namespace').slice(0, 12);
+              const topCats = byKeyCount(state.findings.filter(x => x.status !== 'pass'), 'category').slice(0, 12);
+              c.innerHTML = \`
+                <div class="grid">
+                  \${kpiCard('Total Findings', String(fail+warn+err), 'fail + warn + error')}
+                  \${kpiCard('Fail', String(fail), 'highest priority')}
+                  \${kpiCard('Warn', String(warn), 'audit signals')}
+                  \${kpiCard('Pass', String(pass), 'compliant items')}
+
+                  \${tableCard('Top Policies', topPolicies.map(([k,v])=>\`<tr><td class="mono">\${esc(k)}</td><td class="mono">\${v}</td></tr>\`).join(''))}
+                  \${tableCard('Top Namespaces', topNamespaces.map(([k,v])=>\`<tr><td class="mono">\${esc(k)}</td><td class="mono">\${v}</td></tr>\`).join(''))}
+                  \${tableCard('Top Categories', topCats.map(([k,v])=>\`<tr><td>\${esc(k)}</td><td class="mono">\${v}</td></tr>\`).join(''))}
+
+                  \${findingsTable(state.findings.filter(x => x.status !== 'pass'))}
+                </div>\`;
+              return;
+            }
+
+            if (state.view === 'policies'){
+              c.innerHTML = \`
+                <div class="grid">
+                  <div class="card" style="grid-column: span 12;">
+                    <h3>Policy Inventory</h3>
+                    <div class="hint">This MVP uses PolicyReporter API endpoints. Next: coverage map, regression detector, lifecycle history.</div>
+                  </div>
+                </div>\`;
+              return;
+            }
+
+            if (state.view === 'workloads'){
+              c.innerHTML = \`
+                <div class="grid">
+                  <div class="card" style="grid-column: span 12;">
+                    <h3>Workload Compliance Drilldown</h3>
+                    <div class="toolbar">
+                      <input class="input" id="q" placeholder="Search (namespace:, kind:, policy:, rule:, category:, status:, severity:)" />
+                      <button class="btn" id="apply">Apply</button>
+                      <span class="hint">Example: <span class="mono">namespace:kyverno status:fail</span></span>
+                    </div>
+                  </div>
+                  <div class="card" style="grid-column: span 12;" id="results"></div>
+                </div>\`;
+              const q = $('q'); const btn = $('apply'); const res = $('results');
+              const apply = () => {
+                const tokens = (q.value || '').split(/\\s+/).filter(Boolean);
+                const f = {};
+                for (const t of tokens){
+                  const m = t.match(/^([a-zA-Z]+):(.*)$/);
+                  if (!m) continue;
+                  f[m[1].toLowerCase()] = m[2];
+                }
+                const filtered = state.findings.filter(it => {
+                  if (f.namespace && it.namespace !== f.namespace) return false;
+                  if (f.kind && String(it.kind).toLowerCase() !== String(f.kind).toLowerCase()) return false;
+                  if (f.policy && it.policy !== f.policy) return false;
+                  if (f.rule && it.rule !== f.rule) return false;
+                  if (f.category && it.category !== f.category) return false;
+                  if (f.status && String(it.status).toLowerCase() !== String(f.status).toLowerCase()) return false;
+                  if (f.severity && String(it.severity).toLowerCase() !== String(f.severity).toLowerCase()) return false;
+                  return true;
+                });
+                res.innerHTML = findingsTable(filtered).replace('Latest Findings (sample window)','Filtered Findings');
+              };
+              btn.addEventListener('click', apply);
+              apply();
+              return;
+            }
+
+            if (state.view === 'admissions'){
+              const ev = state.findings.filter(x => x.source === 'Kyverno Event' || x.policy === 'Kyverno Event');
+              c.innerHTML = \`
+                <div class="grid">
+                  <div class="card" style="grid-column: span 12;">
+                    <h3>Admissions Timeline</h3>
+                    <div class="hint">MVP uses results stream. Next: enforce-mode blocked request diff + actor identity + correlation IDs.</div>
+                  </div>
+                  \${findingsTable(ev).replace('Latest Findings (sample window)','Admission Events (Kyverno Event)')}
+                </div>\`;
+              return;
+            }
+
+            if (state.view === 'reports'){
+              c.innerHTML = \`
+                <div class="grid">
+                  <div class="card" style="grid-column: span 12;">
+                    <h3>Evidence Export</h3>
+                    <div class="hint">Download current findings snapshot (JSON). Next: tenant-scoped exports, signed evidence, shareable links.</div>
+                    <div style="margin-top:10px;">
+                      <button class="btn" id="dl">Download findings.json</button>
+                    </div>
+                  </div>
+                </div>\`;
+              $('dl').addEventListener('click', () => {
+                const blob = new Blob([JSON.stringify({generatedAt:new Date().toISOString(), findings: state.findings}, null, 2)], {type:'application/json'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a'); a.href = url; a.download = 'findings.json'; a.click();
+                setTimeout(()=>URL.revokeObjectURL(url), 1000);
+              });
+              return;
+            }
+          }
+
+          window.addEventListener('hashchange', () => {
+            const h = location.hash.replace('#','');
+            if (h) setActive(h === 'mission' ? 'mission' : h);
+          });
+          for (const a of document.querySelectorAll('#nav a')) a.addEventListener('click', (e) => {
+            e.preventDefault();
+            const v = e.currentTarget.dataset.view;
+            location.hash = v === 'mission' ? '#mission' : '#' + v;
+          });
+          $('refreshBtn').addEventListener('click', () => load().catch(err => { $('health').textContent='error'; console.error(err); }));
+          load().catch(err => { $('health').textContent='error'; console.error(err); });
+        </script>
+      </body>
+    </html>
