@@ -128,7 +128,7 @@ spec:
             - name: kyverno
               host: http://policy-reporter-kyverno-plugin:8080
       ingress:
-        enabled: false
+        enabled: true
         className: nginx
         annotations:
           nginx.ingress.kubernetes.io/ssl-redirect: "true"

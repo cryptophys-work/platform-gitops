@@ -5,11 +5,7 @@
 - Baseline stack is live via Flux: `policy-reporter` + `policy-reporter-ui` + `policy-reporter-kyverno-plugin`.
 - UI host: `https://kyverno.cryptophys.work` (basic-auth protected).
 - Policy data source is active (PolicyReports + Kyverno Event block reports).
-- Board model has been reshaped to operational menus:
-  - Dashboard
-  - Reports by Policy
-  - Log Report
-  - Policy Campus Dictionary
+- UX stays on upstream `policy-reporter-ui` for stability.
 
 ## Product Direction
 
@@ -19,6 +15,8 @@ Target product is a forked UI: **Kyverno Command Center**, with:
 - Top bar: global search, cluster selector, tenant selector, time range
 - High-density operational tables, cross-filter charts, evidence export
 - Multi-cluster rollup and tenant-scoped RBAC
+
+Alternative path: **Headlamp plugin integration** to reuse mature Kubernetes UX shell and avoid duplicating navigation/state management.
 
 ## Delivery Plan
 
@@ -37,6 +35,14 @@ Target product is a forked UI: **Kyverno Command Center**, with:
   - trend chart + policy/category breakdown
   - chart click-to-filter.
 - Add query-state share links and saved view model (local storage first).
+
+### Sprint 1b (Headlamp Plugin POC)
+
+- Build `headlamp-kyverno-command-center` plugin:
+  - pages: Overview, Policies, Findings, Admissions
+  - data source: Kubernetes API (`policyreports`, `clusterpolicyreports`, `clusterpolicies`)
+  - same filters/query grammar used by operations team.
+- Validate RBAC-scoped rendering per namespace/tenant profile.
 
 ### Sprint 2 (Operational Depth)
 
