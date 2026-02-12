@@ -7,13 +7,13 @@ Single source of truth untuk platform layer yang dikelola Flux.
 Model yang dipakai adalah 3 path repo:
 
 - `cryptophys.adm/platform-gitops` (platform layer, Flux)
-- `cryptophys.adm/apps` (application layer, ArgoCD/Flux apps layer)
+- `cryptophys.adm/apps-gitops` (application layer, ArgoCD/Flux apps layer)
 - `cryptophys.adm/ssot-core` (governance/contracts/policy)
 
 Status aktual saat dokumen ini ditulis:
 
 - `platform-gitops`: **sudah ada dan aktif**
-- `apps`: **sudah dibuat dan aktif**
+- `apps-gitops`: **sudah dibuat dan aktif**
 - `ssot-core`: **sudah dibuat dan aktif**
 
 ## Struktur Utama
@@ -42,9 +42,9 @@ platform-gitops/
 
 ## Endpoint Git Internal (Cluster)
 
-- `http://gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/platform-gitops.git`
-- `http://gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/apps.git`
-- `http://gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/ssot-core.git`
+- `http://platform-code-forge-gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/platform-gitops.git`
+- `http://platform-code-forge-gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/apps-gitops.git`
+- `http://platform-code-forge-gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/ssot-core.git`
 
 ## Catatan Operasional
 

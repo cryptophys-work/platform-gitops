@@ -9,4 +9,4 @@ spec:
     branch: main
   secretRef:
     name: platform-repo-auth
-  url: http://gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/ssot-core.git
+  url: http://platform-code-forge-gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/ssot-core.git
