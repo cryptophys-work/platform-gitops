@@ -1,7 +1,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: policy-reporter
+  name: security-policy-reporter
   namespace: kyverno
 spec:
   interval: 1h
@@ -50,10 +50,10 @@ spec:
           exceptions: false
       clusters:
         - name: talos-prod
-          host: http://policy-reporter:8080
+          host: http://security-policy-reporter:8080
           plugins:
             - name: kyverno
-              host: http://policy-reporter-kyverno-plugin:8080
+              host: http://security-policy-reporter-kyverno-plugin:8080
       ingress:
         enabled: true
         className: nginx
