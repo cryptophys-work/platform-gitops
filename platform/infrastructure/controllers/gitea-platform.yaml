@@ -6,6 +6,10 @@ metadata:
 spec:
   interval: 30m
   releaseName: platform-code-forge-gitea
+  valuesFrom:
+    - kind: Secret
+      name: platform-code-forge-gitea-values
+      valuesKey: values.yaml
   install:
     remediation:
       retries: 3
@@ -22,7 +26,8 @@ spec:
         name: gitea-charts
         namespace: flux-system
   values:
-    replicaCount: 1
+    # Migration step: keep Gitea app pods stopped while Postgres/Valkey come up and DB import runs.
+    replicaCount: 0
     strategy:
       type: Recreate
     image:
@@ -44,14 +49,20 @@ spec:
           SSH_DOMAIN: gitea.cryptophys.work
           SSH_PORT: 2222
         database:
-          DB_TYPE: sqlite3
-          PATH: /data/gitea/gitea.db
+          DB_TYPE: postgres
+          HOST: platform-code-forge-gitea-postgresql-ha-pgpool.gitea.svc.cluster.local:5432
+          NAME: gitea
+          USER: gitea
+          PASSWD: changeme
         session:
-          PROVIDER: memory
+          PROVIDER: redis
+          PROVIDER_CONFIG: redis+cluster://:@platform-code-forge-gitea-valkey-cluster-headless.gitea.svc.cluster.local:6379/0
         queue:
-          TYPE: level
+          TYPE: redis
+          CONN_STR: redis+cluster://:@platform-code-forge-gitea-valkey-cluster-headless.gitea.svc.cluster.local:6379/0
         cache:
-          ADAPTER: memory
+          ADAPTER: redis
+          HOST: redis+cluster://:@platform-code-forge-gitea-valkey-cluster-headless.gitea.svc.cluster.local:6379/0
         webhook:
           ALLOWED_HOST_LIST: "*"
         service:
@@ -83,9 +94,13 @@ spec:
     postgresql:
       enabled: false
     postgresql-ha:
-      enabled: false
+      enabled: true
     valkey-cluster:
-      enabled: false
+      enabled: true
+      usePassword: false
+      cluster:
+        nodes: 3
+        replicas: 0
     memcached:
       enabled: false
     metrics:
