@@ -15,9 +15,15 @@ spec:
         namespace: flux-system
   values:
     controller:
-      kind: DaemonSet
+      kind: Deployment
+      replicaCount: 3
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxSurge: 0
+          maxUnavailable: 1
       nodeSelector:
         node-role.kubernetes.io/control-plane: ""
       tolerations:
