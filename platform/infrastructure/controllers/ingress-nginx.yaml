@@ -25,4 +25,4 @@ spec:
           operator: Exists
           effect: NoSchedule
       service:
-        type: ClusterIP
+        type: LoadBalancer
