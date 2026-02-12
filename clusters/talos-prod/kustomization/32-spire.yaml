@@ -4,16 +4,16 @@ metadata:
   name: 32-spire
   namespace: flux-system
 spec:
-  interval: 1h
+  interval: 10m
   wait: true
   timeout: 30m
   path: ./platform/infrastructure/spire
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: platform-repo
   dependsOn:
-    - name: 30-storage
+    - name: 15-dns-core
   healthChecks:
     - apiVersion: apps/v1
       kind: StatefulSet

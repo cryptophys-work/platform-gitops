@@ -4,15 +4,16 @@ metadata:
   name: 33-linkerd
   namespace: flux-system
 spec:
-  interval: 1h
+  interval: 10m
   wait: true
   timeout: 30m
   path: ./platform/infrastructure/linkerd
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: platform-repo
   dependsOn:
+    - name: 15-dns-core
     - name: 32-spire
     - name: secrets
   healthChecks:
