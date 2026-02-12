@@ -1,0 +1,38 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: policy-reporter
+  namespace: kyverno
+spec:
+  interval: 1h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  chart:
+    spec:
+      chart: policy-reporter
+      version: 3.7.1
+      sourceRef:
+        kind: HelmRepository
+        name: policy-reporter
+        namespace: flux-system
+  values:
+    ui:
+      enabled: true
+      ingress:
+        enabled: true
+        className: nginx
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        hosts:
+          - host: kyverno.cryptophys.work
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: cryptophys-wildcard-tls
+            hosts:
+              - kyverno.cryptophys.work
