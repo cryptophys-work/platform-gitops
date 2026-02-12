@@ -5,3 +5,4 @@ resources:
   - cilium-baseline.yaml
   - gatekeeper-release.yaml
   - kyverno-release.yaml
+  - kyverno-sync-wildcard-tls.yaml
