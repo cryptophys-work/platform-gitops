@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+    cryptophys.io/flux-managed: 'true'
+    k8s-app: node-local-dns
+    kubernetes.io/cluster-service: 'true'
+  name: node-local-dns
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      k8s-app: node-local-dns
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: '9253'
+        prometheus.io/scrape: 'true'
+      labels:
+        cryptophys.io/flux-managed: 'true'
+        k8s-app: node-local-dns
+    spec:
+      containers:
+      - args:
+        - -localip
+        - 169.254.20.10
+        - -conf
+        - /etc/Corefile
+        image: registry.k8s.io/dns/k8s-dns-node-cache:1.22.28
+        livenessProbe:
+          httpGet:
+            host: 169.254.20.10
+            path: /health
+            port: 8080
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+        name: node-cache
+        ports:
+        - containerPort: 53
+          name: dns
+          protocol: UDP
+        - containerPort: 53
+          name: dns-tcp
+          protocol: TCP
+        - containerPort: 9253
+          name: metrics
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 25m
+            memory: 5Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+        volumeMounts:
+        - mountPath: /etc/Corefile
+          name: config-volume
+          readOnly: true
+          subPath: Corefile
+      nodeSelector:
+        kubernetes.io/os: linux
+      priorityClassName: system-node-critical
+      serviceAccountName: node-local-dns
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - effect: NoSchedule
+        operator: Exists
+      - effect: NoExecute
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+        operator: Exists
+      volumes:
+      - configMap:
+          items:
+          - key: Corefile
+            path: Corefile
+          name: node-local-dns
+        name: config-volume

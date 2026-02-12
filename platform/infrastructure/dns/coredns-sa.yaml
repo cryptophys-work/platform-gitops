@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    cryptophys.io/flux-managed: 'true'
+  name: coredns
+  namespace: kube-system

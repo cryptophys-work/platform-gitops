@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flux-crds-placeholder
+  namespace: flux-system
+data:
+  purpose: bootstrap-crds-stage-placeholder

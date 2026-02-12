@@ -1,0 +1,15 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: external-secrets-baseline
+  namespace: external-secrets
+spec:
+  endpointSelector: {}
+  egress:
+  - toEntities: [kube-apiserver, host, cluster]
+  - toEndpoints:
+    - matchLabels:
+        k8s-app: kube-dns
+        kubernetes.io/metadata.name: kube-system
+    toPorts:
+    - ports: [{port: "53", protocol: ANY}]

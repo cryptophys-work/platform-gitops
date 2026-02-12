@@ -1,0 +1,8 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: "default-deny-baseline"
+spec:
+  endpointSelector: {}
+  ingress: [{fromEntities: [host, cluster]}]
+  egress: [{toEntities: [host, cluster, kube-apiserver]}]

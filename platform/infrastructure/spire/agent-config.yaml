@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spire-agent-config
+  namespace: spire
+data:
+  agent.conf: |
+    Agent {
+      data_dir = "/run/spire/data"
+      log_level = "INFO"
+      server_address = "spire-server"
+      server_port = "8081"
+      socket_path = "/run/spire/sockets/agent.sock"
+      trust_bundle_path = "/run/spire/config/bundle.crt"
+      trust_domain = "cryptophys.work"
+    }
+    plugins {
+      NodeAttestor "k8s_psat" {
+        plugin_data {
+          cluster = "cryptophys-genesis"
+        }
+      }
+      KeyManager "memory" {
+        plugin_data {
+        }
+      }
+      WorkloadAttestor "k8s" {
+        plugin_data {
+          # Use the default configuration
+        }
+      }
+    }
+  bundle.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIDaTCCAlGgAwIBAgIQXFI2n/vAqZ6znCZdHZCFtTANBgkqhkiG9w0BAQsFADA8
+    MQswCQYDVQQGEwJJRDETMBEGA1UEChMKQ3J5cHRvcGh5czEYMBYGA1UEAxMPY3J5
+    cHRvcGh5cy53b3JrMB4XDTI2MDIxMjAxNTgxNloXDTI2MDIxMzAxNTgyNlowPDEL
+    MAkGA1UEBhMCSUQxEzARBgNVBAoTCkNyeXB0b3BoeXMxGDAWBgNVBAMTD2NyeXB0
+    b3BoeXMud29yazCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMPtxzZu
+    RlbpcAT708rhgXxIvpaTkX3/GkwrQ2lk8GTOz9QOJBT+XQm6Ss50XvfcayquISE5
+    qkXxcEvMdj+7orKqhH3hkXuYy/u51erkmcDxZHVTP+BfjiaxJHUVUrswxMVd5F3r
+    27gE5cXRFSrliBE/wD8vs3SFtZ3UQyl96CfCgO6NJwHk0nljh+FkLQ/boSBZerzQ
+    gB5rByUaBAaH9Ia1TM0vrTMHa6ieQnX5+Aw60UXuGn0pzlm/LlAHy7GiHxa40tiL
+    mKQOATU+sZgHh+ro/+Obae2MD2MSfzxHnZAnrg2l0wt9Hbgk/BLAYt6uXzQmWtK1
+    NnX+AqZofurj3dcCAwEAAaNnMGUwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQF
+    MAMBAf8wHQYDVR0OBBYEFP/raYZEwASOwM+YLLfayuUhcdwGMCMGA1UdEQQcMBqG
+    GHNwaWZmZTovL2NyeXB0b3BoeXMud29yazANBgkqhkiG9w0BAQsFAAOCAQEAf1Ve
+    Jwn+DS73bxZ/S/p6HrS7xDQDk8KImhg4sHYq6U2TywFyUSoZBMD9xcGi7BdtNc8g
+    3hR/EQ4KqpFvas0F+Lm9a2hl/T2lHPX1ttuoAtCfziRFWhxafD9f6VcX/dOlsRga
+    wDPPz0sCmUHvofO/tEsGuwQYkMyoM6m7AnBAdSW+NtU/UoJST7ai67z7KXHLIdT0
+    +OEqI527sKBrJfZ2O/wgWaf7oT3gaeqN/SHsVhURNtjxCcmyy8ZbEqaQ3BRuOWtg
+    0pdT7GpQM1ls8u3GVLAcWLgL0sLh8xyY1hSn6zuOJDG7O2FbXYItxqGX6LuAU3e+
+    ahVeLWuI6WeQ0oYExA==
+    -----END CERTIFICATE-----

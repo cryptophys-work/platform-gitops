@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: node-local-dns
+  namespace: kube-system
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+    cryptophys.io/flux-managed: 'true'
+    kubernetes.io/cluster-service: 'true'
+data:
+  Corefile: |
+    cluster.local:53 {
+        errors
+        cache {
+                success 9984 30
+                denial 9984 5
+        }
+        reload
+        loop
+        bind 169.254.20.10
+        forward . 10.96.0.10 {
+                force_tcp
+        }
+        prometheus :9253
+        health 169.254.20.10:8080
+    }
+    in-addr.arpa:53 {
+        errors
+        cache 30
+        reload
+        loop
+        bind 169.254.20.10
+        forward . 10.96.0.10 {
+                force_tcp
+        }
+        prometheus :9253
+    }
+    ip6.arpa:53 {
+        errors
+        cache 30
+        reload
+        loop
+        bind 169.254.20.10
+        forward . 10.96.0.10 {
+                force_tcp
+        }
+        prometheus :9253
+    }
+    .:53 {
+        errors
+        hosts {
+            10.103.251.183 registry.cryptophys.work
+            fallthrough
+        }
+        cache 30
+        reload
+        loop
+        bind 169.254.20.10
+        forward . 1.1.1.1 8.8.8.8
+        prometheus :9253
+    }

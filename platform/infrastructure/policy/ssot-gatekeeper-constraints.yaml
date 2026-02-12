@@ -1,0 +1,16 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ssot-gatekeeper-constraints
+  namespace: flux-system
+spec:
+  interval: 10m
+  prune: true
+  wait: true
+  timeout: 2m
+  path: ./policies/gatekeeper/constraints
+  sourceRef:
+    kind: GitRepository
+    name: ssot-core-repo
+  dependsOn:
+    - name: ssot-gatekeeper-templates

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flux-aide-placeholder
+  namespace: flux-system
+data:
+  purpose: bootstrap-aide-stage-placeholder

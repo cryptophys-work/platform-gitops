@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flux-observability-placeholder
+  namespace: flux-system
+data:
+  purpose: bootstrap-observability-stage-placeholder

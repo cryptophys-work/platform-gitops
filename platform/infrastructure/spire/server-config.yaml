@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spire-server-config
+  namespace: spire
+data:
+  server.conf: |
+    Server {
+      bind_address = "0.0.0.0"
+      bind_port = "8081"
+      trust_domain = "cryptophys.work"
+      data_dir = "/run/spire/data"
+      log_level = "INFO"
+      ca_key_type = "rsa-2048"
+      ca_subject = {
+        country = ["ID"],
+        organization = ["Cryptophys"],
+        common_name = "cryptophys.work",
+      }
+    }
+    plugins {
+      DataStore "sql" {
+        plugin_data {
+          database_type = "sqlite3"
+          connection_string = "/run/spire/data/datastore.sqlite3"
+        }
+      }
+      NodeAttestor "k8s_psat" {
+        plugin_data {
+          clusters = {
+            "cryptophys-genesis" = {
+              service_account_allow_list = ["spire:spire-agent"]
+            }
+          }
+        }
+      }
+      KeyManager "disk" {
+        plugin_data {
+          keys_path = "/run/spire/data/keys.json"
+        }
+      }
+    }

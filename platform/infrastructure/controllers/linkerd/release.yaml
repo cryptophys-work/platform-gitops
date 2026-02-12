@@ -1,0 +1,44 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: linkerd-control-plane
+  namespace: linkerd
+spec:
+  dependsOn:
+    - name: linkerd-crds
+  interval: 1h
+  chart:
+    spec:
+      chart: linkerd-control-plane
+      version: 2.14.0
+      sourceRef:
+        kind: HelmRepository
+        name: linkerd
+        namespace: flux-system
+  values:
+    identity:
+      externalCA: true
+      issuer:
+        scheme: linkerd.io/spire
+    identityTrustAnchorsPEM: |
+      -----BEGIN CERTIFICATE-----
+      MIIDajCCAlKgAwIBAgIRAPTTpC70SNznrHwXUtgJ8UYwDQYJKoZIhvcNAQELBQAw
+      PDELMAkGA1UEBhMCSUQxEzARBgNVBAoTCkNyeXB0b3BoeXMxGDAWBgNVBAMTD2Ny
+      eXB0b3BoeXMud29yazAeFw0yNjAyMTIwNTI0NDZaFw0yNjAyMTMwNTI0NTZaMDwx
+      CzAJBgNVBAYTAklEMRMwEQYDVQQKEwpDcnlwdG9waHlzMRgwFgYDVQQDEw9jcnlw
+      dG9waHlzLndvcmswggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDosUgp
+      2vhwg7zRfGSuTLU3XoPlJWJ16FOArYJ1tDRKlflZcB7oIunkVaSFGlyLBRXN/PXx
+      k+ai2So/Whd6WbzDEmQv+RMfQsadlgEP2JJZnYCgBmmfBTEBLsiq0NV35+KgiwuO
+      /hkQ6Dx46lRijOc3j2TcJU0fL5zlarcrXj7UAbvzXiKhcdT4+zI+VjgHisa30tva
+      jnedIJbTKfOPcZc7bvEvIsYyuAKmnY8nFiu9HIleng8OAS4R+j7fh1WA3+sdIXeH
+      d+IlENgeOYtvGry7Ki1fGcDkic+q8R+ohSy5euuxAX3tHVxEKLjKg0enUj3L1veP
+      jfeIQYsTeY7Mr5YvAgMBAAGjZzBlMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8E
+      BTADAQH/MB0GA1UdDgQWBBTimauRsGc/twyyyzY+nrXPfPVB1jAjBgNVHREEHDAa
+      hhhzcGlmZmU6Ly9jcnlwdG9waHlzLndvcmswDQYJKoZIhvcNAQELBQADggEBAHpc
+      MZvDm93YUsKycB1S/ZIz1Oyy9B2/gCaMADEDBkVNmvgxIaA6YkhpUbv8P5zp6B/n
+      TFi6sNMLAf7fpw4D3uFY3Zve5vXk1VSEHoU486IzqpvvX26uH/lH3qri0uONdCpt
+      qFUwGwcZhhJyQ6jUaeXOIZ7Y1QONARu6TvSkh0jzvlCT4JgExLOzNjCTQ4V2WsjS
+      y87teiW716MrI5/hyz6sQQ8vVYBVrGfFdqnd92JzBilDitKdq1I3iadM7j6Pi+lf
+      cpYoHhGvOPouNjSy8L6gYmF41y1uqC47DlWqvR2VQKztpDg0i7B8XFj6MZg5RRuJ
+      GVw8fJklSe6hzaB5/sc=
+      -----END CERTIFICATE-----

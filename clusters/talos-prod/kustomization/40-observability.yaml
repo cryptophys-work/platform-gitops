@@ -1,0 +1,14 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 40-observability
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: 30-storage
+  interval: 1h
+  path: ./platform/infrastructure/observability
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: platform-repo

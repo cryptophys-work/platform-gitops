@@ -1,0 +1,16 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ssot-waiver-cleanup-ops
+  namespace: flux-system
+spec:
+  interval: 10m
+  prune: true
+  wait: true
+  timeout: 2m
+  path: ./operations/waiver-cleanup
+  sourceRef:
+    kind: GitRepository
+    name: ssot-core-repo
+  dependsOn:
+    - name: ssot-kyverno-exception-governance

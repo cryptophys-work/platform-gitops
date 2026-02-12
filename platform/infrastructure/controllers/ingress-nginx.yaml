@@ -1,0 +1,28 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: ingress-gateway
+  namespace: ingress
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: ingress-nginx
+      version: 4.14.1
+      sourceRef:
+        kind: HelmRepository
+        name: ingress-nginx
+        namespace: flux-system
+  values:
+    controller:
+      kind: DaemonSet
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      service:
+        type: ClusterIP

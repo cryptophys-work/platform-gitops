@@ -1,0 +1,25 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: "platform-baseline-allow-dns"
+spec:
+  description: "Critical: Allow all traffic for node-local-dns to prevent crashloops"
+  endpointSelector:
+    matchLabels:
+      k8s-app: node-local-dns
+  ingress:
+  - fromEntities: [all]
+  egress:
+  - toEntities: [all]
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: "platform-baseline-allow-internal"
+spec:
+  description: "Institutional baseline: Allow all internal cluster traffic"
+  endpointSelector: {}
+  ingress:
+  - fromEntities: [cluster, host]
+  egress:
+  - toEntities: [cluster, host, world]

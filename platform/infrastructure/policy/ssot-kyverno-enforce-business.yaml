@@ -1,0 +1,16 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ssot-kyverno-enforce-business
+  namespace: flux-system
+spec:
+  interval: 10m
+  prune: true
+  wait: true
+  timeout: 2m
+  path: ./policies/kyverno/enforce-business
+  sourceRef:
+    kind: GitRepository
+    name: ssot-core-repo
+  dependsOn:
+    - name: 20-policy
