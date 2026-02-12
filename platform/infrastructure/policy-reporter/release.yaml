@@ -71,22 +71,24 @@ spec:
           - secretName: cryptophys-wildcard-tls
             hosts:
               - kyverno.cryptophys.work
-    plugin:
-      kyverno:
+    global:
+      plugins:
+        kyverno: true
+    kyvernoPlugin:
+      enabled: true
+      replicaCount: 2
+      logging:
+        api: true
+        server: true
+        encoding: json
+        logLevel: 1
+      blockReports:
         enabled: true
-        replicaCount: 2
-        logging:
-          api: true
-          server: true
-          encoding: json
-          logLevel: 1
-        blockReports:
-          enabled: true
-          eventNamespace: kyverno
-          source: Kyverno Event
-          results:
-            maxPerReport: 500
-            keepOnlyLatest: true
+        eventNamespace: kyverno
+        source: Kyverno Event
+        results:
+          maxPerReport: 500
+          keepOnlyLatest: true
     monitoring:
       enabled: true
       grafana:
