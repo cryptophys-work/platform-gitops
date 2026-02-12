@@ -22,6 +22,9 @@ spec:
         name: gitea-charts
         namespace: flux-system
   values:
+    replicaCount: 1
+    strategy:
+      type: Recreate
     image:
       registry: ghcr.io
       repository: go-gitea/gitea
@@ -42,6 +45,7 @@ spec:
           SSH_PORT: 2222
         database:
           DB_TYPE: sqlite3
+          PATH: /data/gitea/gitea.db
         session:
           PROVIDER: memory
         queue:
@@ -71,10 +75,11 @@ spec:
             - gitea.cryptophys.work
     persistence:
       enabled: true
-      storageClass: longhorn
-      size: 20Gi
+      create: false
+      claimName: gitea-shared-storage-rwx
       accessModes:
-        - ReadWriteOnce
+        - ReadWriteMany
+      mount: true
     postgresql:
       enabled: false
     postgresql-ha:
