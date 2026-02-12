@@ -14,7 +14,7 @@ spec:
   chart:
     spec:
       chart: policy-reporter
-      version: 3.7.1
+      version: 2.19.0
       sourceRef:
         kind: HelmRepository
         name: policy-reporter
@@ -33,9 +33,9 @@ spec:
     worker: 10
     ui:
       enabled: true
-      replicaCount: 2
+      replicaCount: 1
       displayMode: dark
-      banner: "Kyverno Command Center · NOC Mode"
+      banner: "Kyverno Policy Reporter"
       logging:
         api: true
         server: true
@@ -48,121 +48,6 @@ spec:
         - name: Kyverno Event
           type: result
           exceptions: false
-      customBoards:
-        - name: Dashboard
-          namespaces:
-            list:
-              - cert-manager
-              - flux-system
-              - ingress
-              - kube-system
-              - longhorn-system
-              - metallb-system
-          sources:
-            list:
-              - kyverno
-          filter:
-            include:
-              severities:
-                - critical
-                - high
-              results:
-                - fail
-                - error
-          clusterScope:
-            enabled: true
-          display: dark
-        - name: Reports by Policy
-          namespaces:
-            list:
-              - kyverno
-              - gatekeeper-system
-              - vault-secrets
-              - external-secrets
-              - linkerd
-              - spire
-          sources:
-            list:
-              - kyverno
-              - Kyverno Event
-          filter:
-            include:
-              severities:
-                - critical
-                - high
-                - medium
-              results:
-                - fail
-                - warn
-                - error
-          clusterScope:
-            enabled: true
-          display: dark
-        - name: Log Report
-          namespaces:
-            list:
-              - kyverno
-              - cert-manager
-              - external-secrets
-              - flux-system
-              - gatekeeper-system
-              - gitea
-              - ingress
-              - kube-system
-              - linkerd
-              - longhorn-system
-              - metallb-system
-              - observability
-              - platform-ui
-              - spire
-              - vault-secrets
-          sources:
-            list:
-              - Kyverno Event
-          filter:
-            include:
-              results:
-                - fail
-                - error
-                - skip
-              severities:
-                - critical
-                - high
-                - medium
-          clusterScope:
-            enabled: true
-          display: dark
-        - name: Policy Campus Dictionary
-          namespaces:
-            list:
-              - argocd
-              - cert-manager
-              - default
-              - flux-system
-              - gatekeeper-system
-              - gitea
-              - ingress
-              - kube-system
-              - kyverno
-              - linkerd
-              - longhorn-system
-              - metallb-system
-              - observability
-              - platform-ui
-          sources:
-            list:
-              - kyverno
-              - KyvernoValidatingPolicy
-          filter:
-            include:
-              severities:
-                - critical
-                - high
-                - medium
-                - low
-          clusterScope:
-            enabled: true
-          display: dark
       clusters:
         - name: talos-prod
           host: http://policy-reporter:8080
