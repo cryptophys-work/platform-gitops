@@ -10,6 +10,9 @@ Cloudflare harus bisa connect ke origin via **public node IP** pada port **80/44
   - `dnsPolicy: ClusterFirstWithHostNet`
   - `replicaCount: 3` (1 per control-plane)
   - `strategy.rollingUpdate.maxSurge=0` dan `maxUnavailable=1` untuk menghindari deadlock port 80/443 saat rollout.
+  - Disable profiling dan pindahkan healthz port (menghindari konflik port host):
+    - `--profiling=false`
+    - `--healthz-port=11054` (probe juga harus ke port ini)
 - Namespace `ingress` PSS di-set `privileged` (hostNetwork/host ports tidak ditolak).
 
 ## Verify
