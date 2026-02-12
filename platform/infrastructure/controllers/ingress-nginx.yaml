@@ -40,8 +40,11 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       extraArgs:
+        healthz-port: "11054"
         profiling: "false"
         profiler-port: "0"
+      metrics:
+        port: 11054
       strategy:
         type: RollingUpdate
         rollingUpdate:
