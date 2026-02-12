@@ -15,7 +15,6 @@ spec:
   dependsOn:
     - name: 15-dns-core
     - name: 32-spire
-    - name: secrets
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
