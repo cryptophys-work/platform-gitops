@@ -1,0 +1,119 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: platform-code-forge-gitea
+  namespace: gitea
+spec:
+  interval: 30m
+  releaseName: platform-code-forge-gitea
+  chart:
+    spec:
+      chart: gitea
+      version: 12.5.0
+      sourceRef:
+        kind: HelmRepository
+        name: gitea-charts
+        namespace: flux-system
+  values:
+    image:
+      repository: ghcr.io/go-gitea/gitea
+      tag: 1.25.4-rootless
+      digest: sha256:1926e89ad28358ef2146bb8a1b9c3ba24bae681cb02b72d2df11125fdc675abe
+      pullPolicy: IfNotPresent
+    gitea:
+      admin:
+        email: admin@cryptophys.work
+        existingSecret: gitea-admin-secret
+      config:
+        security:
+          INSTALL_LOCK: true
+        server:
+          DOMAIN: gitea.cryptophys.work
+          ROOT_URL: https://gitea.cryptophys.work/
+          SSH_DOMAIN: gitea.cryptophys.work
+          SSH_PORT: 2222
+        database:
+          DB_TYPE: sqlite3
+        session:
+          PROVIDER: memory
+        queue:
+          TYPE: level
+        cache:
+          ADAPTER: memory
+        webhook:
+          ALLOWED_HOST_LIST: "*"
+        service:
+          DISABLE_REGISTRATION: true
+          SHOW_REGISTRATION_BUTTON: false
+          ALLOW_ONLY_EXTERNAL_REGISTRATION: false
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        nginx.ingress.kubernetes.io/proxy-body-size: 512m
+      hosts:
+        - host: gitea.cryptophys.work
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: cryptophys-wildcard-tls
+          hosts:
+            - gitea.cryptophys.work
+    persistence:
+      enabled: true
+      storageClass: longhorn
+      size: 20Gi
+      accessModes:
+        - ReadWriteOnce
+    postgresql:
+      enabled: false
+    postgresql-ha:
+      enabled: false
+    valkey-cluster:
+      enabled: false
+    memcached:
+      enabled: false
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+    resources:
+      requests:
+        cpu: 50m
+        memory: 55Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+    podSecurityContext:
+      fsGroup: 1000
+      seccompProfile:
+        type: RuntimeDefault
+    containerSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      allowPrivilegeEscalation: false
+      privileged: false
+      capabilities:
+        drop:
+          - ALL
+      seccompProfile:
+        type: RuntimeDefault
+    initContainers:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 55Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+    commonLabels:
+      cryptophys.work/domain: gitea
+    commonAnnotations:
+      cryptophys.io/anti-regression: "true"
+      cryptophys.io/contract: contract.platform.code_forge.v1
+      cryptophys.io/ssot-ref: ssot/gitea/deployment.yaml
+    global:
+      security:
+        allowInsecureImages: true
