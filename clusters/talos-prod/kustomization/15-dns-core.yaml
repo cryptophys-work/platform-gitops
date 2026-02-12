@@ -4,8 +4,6 @@ metadata:
   name: 15-dns-core
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: 05-sources
   interval: 1h
   path: ./platform/infrastructure/dns
   prune: true

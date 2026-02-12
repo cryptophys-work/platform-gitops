@@ -4,8 +4,6 @@ metadata:
   name: 40-observability
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: 30-storage
   interval: 1h
   path: ./platform/infrastructure/observability
   prune: true

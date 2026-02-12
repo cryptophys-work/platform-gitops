@@ -4,8 +4,6 @@ metadata:
   name: 08-networking
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: 05-sources
   interval: 1h
   path: ./platform/infrastructure/networking
   prune: true

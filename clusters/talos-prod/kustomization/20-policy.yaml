@@ -4,8 +4,6 @@ metadata:
   name: 20-policy
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: 10-controllers
   interval: 1h
   path: ./platform/infrastructure/policy
   prune: true

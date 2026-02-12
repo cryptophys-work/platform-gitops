@@ -4,8 +4,6 @@ metadata:
   name: 90-aide-sensors
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: 40-observability
   interval: 1h
   path: ./platform/infrastructure/aide
   prune: true
