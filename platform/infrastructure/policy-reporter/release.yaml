@@ -35,7 +35,7 @@ spec:
       enabled: true
       replicaCount: 2
       displayMode: dark
-      banner: "Cryptophys NOC Command Center · Policy, Compliance, Runtime Signals"
+      banner: "Kyverno Command Center · NOC Mode"
       logging:
         api: true
         server: true
@@ -45,28 +45,79 @@ spec:
         - name: kyverno
           type: severity
           exceptions: true
+        - name: Kyverno Event
+          type: result
+          exceptions: false
       customBoards:
-        - name: Platform Control Plane
+        - name: Dashboard
           namespaces:
+            list: []
+          sources:
             list:
-              - flux-system
               - kyverno
-              - gatekeeper-system
-              - vault-secrets
-              - gitea
-              - linkerd
-              - ingress
+              - Kyverno Event
+          filter:
+            include:
+              severities:
+                - critical
+                - high
+                - medium
+                - low
           clusterScope:
             enabled: true
           display: dark
-        - name: Platform Runtime
+        - name: Reports by Policy
           namespaces:
+            list: []
+          sources:
             list:
-              - argocd
-              - external-secrets
-              - longhorn-system
-              - metallb-system
-              - kube-system
+              - kyverno
+          filter:
+            include:
+              namespaceKinds:
+                - Deployment
+                - StatefulSet
+                - DaemonSet
+                - Job
+                - CronJob
+                - Pod
+          clusterScope:
+            enabled: true
+          display: dark
+        - name: Log Report
+          namespaces:
+            list: []
+          sources:
+            list:
+              - Kyverno Event
+          filter:
+            include:
+              results:
+                - fail
+                - error
+                - warn
+              severities:
+                - critical
+                - high
+                - medium
+          clusterScope:
+            enabled: true
+          display: dark
+        - name: Policy Campus Dictionary
+          namespaces:
+            list: []
+          sources:
+            list:
+              - kyverno
+          filter:
+            include:
+              clusterKinds:
+                - Namespace
+                - Node
+              namespaceKinds:
+                - Deployment
+                - StatefulSet
+                - DaemonSet
           clusterScope:
             enabled: true
           display: dark
