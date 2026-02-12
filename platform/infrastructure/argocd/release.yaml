@@ -1,0 +1,28 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  releaseName: argocd
+  interval: 1h
+  timeout: 20m
+  chart:
+    spec:
+      chart: argo-cd
+      version: 9.4.1
+      sourceRef:
+        kind: HelmRepository
+        name: argoproj
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    configs:
+      params:
+        server.insecure: "true"

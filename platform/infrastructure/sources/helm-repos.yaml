@@ -96,3 +96,12 @@ metadata:
 spec:
   interval: 1h
   url: https://helm.linkerd.io/stable
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: argoproj
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://argoproj.github.io/argo-helm

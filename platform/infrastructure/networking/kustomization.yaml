@@ -4,3 +4,4 @@ resources:
   - ingress-vault.yaml
   - ingress-hubble-ui.yaml
   - ingress-longhorn-ui.yaml
+  - ingress-argocd.yaml
