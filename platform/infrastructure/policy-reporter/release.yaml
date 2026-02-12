@@ -51,7 +51,25 @@ spec:
       customBoards:
         - name: Dashboard
           namespaces:
-            list: []
+            list:
+              - aide
+              - argocd
+              - cert-manager
+              - default
+              - external-secrets
+              - flux-system
+              - gatekeeper-system
+              - gitea
+              - ingress
+              - kube-system
+              - kyverno
+              - linkerd
+              - longhorn-system
+              - metallb-system
+              - observability
+              - platform-ui
+              - spire
+              - vault-secrets
           sources:
             list:
               - kyverno
@@ -68,7 +86,25 @@ spec:
           display: dark
         - name: Reports by Policy
           namespaces:
-            list: []
+            list:
+              - aide
+              - argocd
+              - cert-manager
+              - default
+              - external-secrets
+              - flux-system
+              - gatekeeper-system
+              - gitea
+              - ingress
+              - kube-system
+              - kyverno
+              - linkerd
+              - longhorn-system
+              - metallb-system
+              - observability
+              - platform-ui
+              - spire
+              - vault-secrets
           sources:
             list:
               - kyverno
@@ -86,7 +122,25 @@ spec:
           display: dark
         - name: Log Report
           namespaces:
-            list: []
+            list:
+              - aide
+              - argocd
+              - cert-manager
+              - default
+              - external-secrets
+              - flux-system
+              - gatekeeper-system
+              - gitea
+              - ingress
+              - kube-system
+              - kyverno
+              - linkerd
+              - longhorn-system
+              - metallb-system
+              - observability
+              - platform-ui
+              - spire
+              - vault-secrets
           sources:
             list:
               - Kyverno Event
@@ -105,7 +159,25 @@ spec:
           display: dark
         - name: Policy Campus Dictionary
           namespaces:
-            list: []
+            list:
+              - aide
+              - argocd
+              - cert-manager
+              - default
+              - external-secrets
+              - flux-system
+              - gatekeeper-system
+              - gitea
+              - ingress
+              - kube-system
+              - kyverno
+              - linkerd
+              - longhorn-system
+              - metallb-system
+              - observability
+              - platform-ui
+              - spire
+              - vault-secrets
           sources:
             list:
               - kyverno
