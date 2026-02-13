@@ -151,6 +151,16 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: security
+  labels:
+    pod-security.kubernetes.io/enforce: baseline
+    app.kubernetes.io/managed-by: flux
+    environment: prod
+    owner: infrastructure
+---
+apiVersion: v1
+kind: Namespace
+metadata:
   name: trivy-system
   labels:
     pod-security.kubernetes.io/enforce: baseline
