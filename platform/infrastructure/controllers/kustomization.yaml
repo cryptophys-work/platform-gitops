@@ -5,4 +5,5 @@ resources:
   - external-secrets.yaml
   - ingress-nginx.yaml
   - ingress-nginx-network-policy.yaml
+  - metrics-server.yaml
   - cilium/release.yaml
