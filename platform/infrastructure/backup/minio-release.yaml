@@ -24,11 +24,12 @@ spec:
     replicas: 1
     rootUser: velero
     rootPassword: "N8q!m2Xz7P4vA9sK"
-    buckets: "velero"
+    buckets:
+      - name: velero
     persistence:
       enabled: true
-      storageClass: longhorn
-      size: 50Gi
+      storageClass: longhorn-single
+      size: 10Gi
     resources:
       requests:
         cpu: 100m
