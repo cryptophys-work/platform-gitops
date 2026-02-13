@@ -26,9 +26,7 @@ spec:
       image:
         repository: docker.io/grafana/loki
     promtail:
-      enabled: true
-      image:
-        repository: docker.io/grafana/promtail
+      enabled: false
     grafana:
       enabled: false
     prometheus:
