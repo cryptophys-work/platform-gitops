@@ -23,7 +23,7 @@ spec:
     kubectl:
       image:
         repository: docker.io/bitnami/kubectl
-        tag: "1.31.4"
+        tag: "latest"
     credentials:
       useSecret: true
       name: platform-backup-velero-credentials
