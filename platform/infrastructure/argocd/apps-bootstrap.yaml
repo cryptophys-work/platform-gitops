@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://cryptophys.adm:Lgtv%402020@gitea.cryptophys.work/cryptophys.adm/apps-gitops.git
     targetRevision: main
-    path: argocd/applicationsets
+    path: argocd
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
