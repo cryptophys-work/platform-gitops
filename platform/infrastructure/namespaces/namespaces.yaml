@@ -171,6 +171,26 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: minio
+  labels:
+    pod-security.kubernetes.io/enforce: baseline
+    app.kubernetes.io/managed-by: flux
+    environment: prod
+    owner: infrastructure
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: velero
+  labels:
+    pod-security.kubernetes.io/enforce: baseline
+    app.kubernetes.io/managed-by: flux
+    environment: prod
+    owner: infrastructure
+---
+apiVersion: v1
+kind: Namespace
+metadata:
   name: argocd
   labels:
     pod-security.kubernetes.io/enforce: baseline

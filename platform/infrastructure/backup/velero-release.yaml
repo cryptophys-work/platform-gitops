@@ -1,0 +1,57 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: platform-backup-velero
+  namespace: velero
+spec:
+  interval: 1h
+  timeout: 10m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  chart:
+    spec:
+      chart: velero
+      sourceRef:
+        kind: HelmRepository
+        name: vmware-tanzu
+        namespace: flux-system
+  values:
+    credentials:
+      useSecret: true
+      name: platform-backup-velero-credentials
+      secretContents:
+        cloud: |
+          [default]
+          aws_access_key_id=velero
+          aws_secret_access_key=N8q!m2Xz7P4vA9sK
+    initContainers:
+      - name: velero-plugin-for-aws
+        image: velero/velero-plugin-for-aws:v1.11.0
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: plugins
+            mountPath: /target
+    configuration:
+      backupStorageLocation:
+        - name: default
+          provider: aws
+          bucket: velero
+          default: true
+          accessMode: ReadWrite
+          config:
+            region: us-east-1
+            s3ForcePathStyle: "true"
+            s3Url: http://platform-backup-minio.minio.svc.cluster.local:9000
+    snapshotsEnabled: false
+    deployNodeAgent: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi

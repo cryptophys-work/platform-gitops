@@ -67,6 +67,14 @@ spec:
       kind: HelmRepository
       name: aquasecurity
       namespace: flux-system
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
+      kind: HelmRepository
+      name: bitnami
+      namespace: flux-system
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
+      kind: HelmRepository
+      name: vmware-tanzu
+      namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1
       kind: GitRepository
       name: platform-repo
