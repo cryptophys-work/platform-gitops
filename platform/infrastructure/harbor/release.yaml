@@ -37,7 +37,7 @@ spec:
           nginx.ingress.kubernetes.io/ssl-redirect: "true"
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
     externalURL: https://registry.cryptophys.work
-    harborAdminPassword: HarborAdmin!2026
+    harborAdminPassword: ChangeMe-From-Vault
     internalTLS:
       enabled: false
     persistence:
@@ -45,20 +45,20 @@ spec:
       resourcePolicy: keep
       persistentVolumeClaim:
         registry:
-          storageClass: longhorn
+          storageClass: longhorn-single
           size: 80Gi
         jobservice:
           jobLog:
-            storageClass: longhorn
+            storageClass: longhorn-single
             size: 10Gi
         database:
-          storageClass: longhorn
+          storageClass: longhorn-single
           size: 20Gi
         redis:
-          storageClass: longhorn
+          storageClass: longhorn-single
           size: 10Gi
         trivy:
-          storageClass: longhorn
+          storageClass: longhorn-single
           size: 20Gi
     trivy:
       enabled: true
