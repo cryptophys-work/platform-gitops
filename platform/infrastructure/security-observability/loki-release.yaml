@@ -5,6 +5,7 @@ metadata:
   namespace: observability
 spec:
   interval: 1h
+  timeout: 15m
   install:
     remediation:
       retries: 3
