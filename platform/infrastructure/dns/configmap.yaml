@@ -48,10 +48,6 @@ data:
     }
     .:53 {
         errors
-        hosts {
-            10.103.251.183 registry.cryptophys.work
-            fallthrough
-        }
         cache 30
         reload
         loop
