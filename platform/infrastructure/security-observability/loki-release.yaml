@@ -24,11 +24,11 @@ spec:
       persistence:
         enabled: false
       image:
-        repository: quay.io/grafana/loki
+        repository: docker.io/grafana/loki
     promtail:
       enabled: true
       image:
-        repository: quay.io/grafana/promtail
+        repository: docker.io/grafana/promtail
     grafana:
       enabled: false
     prometheus:
