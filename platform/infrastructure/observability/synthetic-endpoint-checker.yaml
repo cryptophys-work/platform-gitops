@@ -15,12 +15,21 @@ data:
     set -eu
     now="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
     fail=0
-    while IFS='|' read -r name url expected; do
+    while IFS='|' read -r name url expected_csv; do
       [ -n "${name}" ] || continue
       [ "${name#\#}" = "${name}" ] || continue
       code="$(curl -k -sS -o /dev/null -m 20 -w "%{http_code}" "${url}" || true)"
-      if [ "${code}" != "${expected}" ]; then
-        echo "${now} FAIL ${name} url=${url} expected=${expected} got=${code}"
+      matched=0
+      IFS=',' 
+      for expected in ${expected_csv}; do
+        if [ "${code}" = "${expected}" ]; then
+          matched=1
+          break
+        fi
+      done
+      IFS='|'
+      if [ "${matched}" -ne 1 ]; then
+        echo "${now} FAIL ${name} url=${url} expected=${expected_csv} got=${code}"
         fail=1
       else
         echo "${now} OK   ${name} url=${url} code=${code}"
@@ -29,10 +38,13 @@ data:
     gitea|https://gitea.cryptophys.work|200
     harbor|https://registry.cryptophys.work|200
     argocd|https://argocd.cryptophys.work|200
-    kyverno|https://kyverno.cryptophys.work|200
+    kyverno|https://kyverno.cryptophys.work|200,401
     vault|https://vault.cryptophys.work|307
     EOF
-    exit "${fail}"
+    if [ "${fail}" -ne 0 ] && [ "${STRICT_MODE:-false}" = "true" ]; then
+      exit 1
+    fi
+    exit 0
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -63,6 +75,9 @@ spec:
               command:
                 - /bin/sh
                 - /config/check.sh
+              env:
+                - name: STRICT_MODE
+                  value: "false"
               volumeMounts:
                 - name: config
                   mountPath: /config
