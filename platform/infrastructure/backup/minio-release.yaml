@@ -25,6 +25,8 @@ spec:
     existingSecret: platform-backup-minio-credentials
     buckets:
       - name: velero
+    deploymentUpdate:
+      type: Recreate
     persistence:
       enabled: true
       storageClass: longhorn-single
