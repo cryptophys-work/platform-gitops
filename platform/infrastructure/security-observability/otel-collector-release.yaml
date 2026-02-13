@@ -19,6 +19,9 @@ spec:
         name: open-telemetry
         namespace: flux-system
   values:
+    image:
+      repository: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s
+      tag: 0.145.0
     mode: deployment
     replicaCount: 1
     config:

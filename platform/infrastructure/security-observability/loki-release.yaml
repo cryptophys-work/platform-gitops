@@ -13,22 +13,25 @@ spec:
       retries: 3
   chart:
     spec:
-      chart: loki
+      chart: loki-stack
       sourceRef:
         kind: HelmRepository
         name: grafana
         namespace: flux-system
   values:
-    deploymentMode: SingleBinary
-    singleBinary:
-      replicas: 1
+    loki:
+      enabled: true
       persistence:
         enabled: false
-    read:
-      replicas: 0
-    write:
-      replicas: 0
-    backend:
-      replicas: 0
-    loki:
-      auth_enabled: false
+      image:
+        repository: quay.io/grafana/loki
+    promtail:
+      enabled: true
+      image:
+        repository: quay.io/grafana/promtail
+    grafana:
+      enabled: false
+    prometheus:
+      enabled: false
+    fluent-bit:
+      enabled: false
