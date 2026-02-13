@@ -21,18 +21,9 @@ spec:
         namespace: flux-system
   values:
     upgradeCRDs: false
-    kubectl:
-      image:
-        repository: docker.io/bitnami/kubectl
-        tag: "latest"
     credentials:
       useSecret: true
-      name: platform-backup-velero-credentials
-      secretContents:
-        cloud: |
-          [default]
-          aws_access_key_id=velero
-          aws_secret_access_key=N8q!m2Xz7P4vA9sK
+      existingSecret: platform-backup-velero-credentials
     initContainers:
       - name: velero-plugin-for-aws
         image: velero/velero-plugin-for-aws:v1.11.0

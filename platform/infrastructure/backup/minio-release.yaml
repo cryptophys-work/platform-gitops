@@ -22,8 +22,7 @@ spec:
   values:
     mode: standalone
     replicas: 1
-    rootUser: velero
-    rootPassword: "N8q!m2Xz7P4vA9sK"
+    existingSecret: platform-backup-minio-credentials
     buckets:
       - name: velero
     persistence:
