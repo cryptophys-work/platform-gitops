@@ -47,6 +47,10 @@ spec:
       kind: HelmRepository
       name: linkerd
       namespace: flux-system
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
+      kind: HelmRepository
+      name: goharbor
+      namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1
       kind: GitRepository
       name: platform-repo

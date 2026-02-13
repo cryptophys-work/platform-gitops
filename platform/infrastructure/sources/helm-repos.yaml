@@ -100,6 +100,15 @@ spec:
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
+  name: goharbor
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://helm.goharbor.io
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
   name: argoproj
   namespace: flux-system
 spec:

@@ -43,6 +43,16 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: registry
+  labels:
+    pod-security.kubernetes.io/enforce: baseline
+    app.kubernetes.io/managed-by: flux
+    environment: prod
+    owner: infrastructure
+---
+apiVersion: v1
+kind: Namespace
+metadata:
   name: gitea
   labels:
     pod-security.kubernetes.io/enforce: baseline
