@@ -17,14 +17,14 @@ spec:
       chart: minio
       sourceRef:
         kind: HelmRepository
-        name: bitnami
+        name: minio
         namespace: flux-system
   values:
     mode: standalone
-    auth:
-      rootUser: velero
-      rootPassword: "N8q!m2Xz7P4vA9sK"
-    defaultBuckets: velero
+    replicas: 1
+    rootUser: velero
+    rootPassword: "N8q!m2Xz7P4vA9sK"
+    buckets: "velero"
     persistence:
       enabled: true
       storageClass: longhorn

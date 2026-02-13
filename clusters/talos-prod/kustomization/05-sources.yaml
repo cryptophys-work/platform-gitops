@@ -69,7 +69,7 @@ spec:
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
-      name: bitnami
+      name: minio
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
