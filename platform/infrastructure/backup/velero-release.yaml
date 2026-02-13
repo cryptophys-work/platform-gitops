@@ -20,6 +20,7 @@ spec:
         name: vmware-tanzu
         namespace: flux-system
   values:
+    upgradeCRDs: false
     kubectl:
       image:
         repository: docker.io/bitnami/kubectl
@@ -52,8 +53,6 @@ spec:
             s3Url: http://platform-backup-minio.minio.svc.cluster.local:9000
     snapshotsEnabled: false
     deployNodeAgent: false
-    upgradeCRDsJob:
-      shellCmd: /bin/sh
     resources:
       requests:
         cpu: 100m
