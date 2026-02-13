@@ -1,0 +1,36 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: platform-observability-prometheus
+  namespace: observability
+spec:
+  interval: 1h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+  values:
+    alertmanager:
+      enabled: true
+      alertmanagerSpec:
+        replicas: 1
+    grafana:
+      enabled: true
+      replicas: 1
+    prometheus:
+      enabled: true
+      prometheusSpec:
+        replicas: 1
+        retention: 7d
+        retentionSize: 20GiB
+    kubeEtcd:
+      enabled: false
