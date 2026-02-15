@@ -8,17 +8,13 @@ spec:
   wait: true
   timeout: 10m
   path: ./platform/infrastructure/dns
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: platform-repo
   dependsOn:
     - name: 10-controllers
   healthChecks:
-    - apiVersion: apps/v1
-      kind: DaemonSet
-      name: node-local-dns
-      namespace: kube-system
     - apiVersion: apps/v1
       kind: Deployment
       name: coredns
