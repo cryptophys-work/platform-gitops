@@ -1,10 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: spire-system
 resources:
-  - rbac.yaml
-  - server-service.yaml
   - server-config.yaml
-  - server.yaml
   - agent-config.yaml
+  - server-service.yaml
+  - server.yaml
   - agent.yaml
-  - linkerd-registration.yaml
+  - rbac.yaml
