@@ -8,7 +8,7 @@ spec:
   wait: true
   timeout: 5m
   path: ./platform/infrastructure/namespaces
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: platform-repo
