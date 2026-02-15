@@ -18,8 +18,8 @@ spec:
     - apiVersion: apps/v1
       kind: StatefulSet
       name: spire-server
-      namespace: spire
+      namespace: spire-system
     - apiVersion: apps/v1
       kind: DaemonSet
       name: spire-agent
-      namespace: spire
+      namespace: spire-system

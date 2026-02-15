@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: spire-agent-config
-  namespace: spire
+  namespace: spire-system
 data:
   agent.conf: |
     Agent {

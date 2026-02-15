@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: spire-agent
-  namespace: spire
+  namespace: spire-system
   labels:
     app.kubernetes.io/name: spire-agent
     app.kubernetes.io/part-of: spire
