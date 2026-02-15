@@ -15,4 +15,4 @@ spec:
   dependsOn:
     - name: 10-controllers
     - name: 15-dns-core
-    - name: secrets
+    - name: 35-secrets

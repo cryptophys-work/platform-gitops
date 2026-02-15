@@ -15,7 +15,7 @@ spec:
   dependsOn:
     - name: 30-storage
     - name: 10-controllers
-    - name: secrets
+    - name: 35-secrets
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease

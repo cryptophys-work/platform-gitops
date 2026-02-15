@@ -13,7 +13,7 @@ spec:
     kind: GitRepository
     name: platform-repo
   dependsOn:
-    - name: secrets
+    - name: 35-secrets
     - name: 30-storage
     - name: 10-controllers
   healthChecks:

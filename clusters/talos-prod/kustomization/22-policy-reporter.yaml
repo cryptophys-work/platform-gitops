@@ -14,4 +14,4 @@ spec:
     name: platform-repo
   dependsOn:
     - name: 21-policy-ssot
-    - name: secrets
+    - name: 35-secrets
