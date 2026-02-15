@@ -13,7 +13,6 @@ spec:
     kind: GitRepository
     name: platform-repo
   dependsOn:
-    - name: 33-linkerd
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
