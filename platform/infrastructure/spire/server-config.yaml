@@ -17,7 +17,7 @@ data:
       DataStore "sql" {
         plugin_data {
           database_type = "postgres"
-          connection_string = "postgresql://spire@postgres-rw.postgresql-system:5432/spire"
+          connection_string = "postgresql://spire@postgres-security-ha-rw.postgresql-system.svc.cluster.local:5432/spire"
         }
       }
       NodeAttestor "k8s_psat" {
