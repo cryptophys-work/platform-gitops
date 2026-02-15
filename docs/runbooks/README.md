@@ -1,89 +1,44 @@
-# Talos Cluster Single Source of Truth (SSOT)
+# Cryptophys Single Source of Truth (SSOT) Core
 
-**Project:** Cryptophys Universe - Genesis Phase
-**Cluster Name:** `cryptophys-genesis`
-**Last Verified:** 2026-01-17
+This repository contains the immutable contracts, schemas, and governance rules for the Cryptophys Universe.
 
----
+## Architecture
 
-## 1. Directory Architecture
-Seluruh konfigurasi yang ada di sini adalah **Law**. Perubahan pada cluster HARUS dimulai dari modifikasi file di folder ini sebelum di-apply ke node.
+The GitOps strategy is split into three repositories:
 
-```text
-/opt/cryptophys/talos/
-├── README.md                   # Dokumen ini (Peta Navigasi)
-├── secrets/                    # Rahasia Cluster (Kunci CA, WG Keys)
-│   ├── secrets.yaml            # Talos Cluster Secrets (CA, Tokens)
-│   ├── *.wg                    # Kunci Privat Wireguard per node
-│   └── secrets.yaml.bak.*	      # Backup rahasia lama (History)
-├── manifests/                  # Definisi Infrastruktur
-│   └── nodes.yaml              # Daftar Node, IP, Gateway, dan Metadata
-└── configs/ssot/	               # Konfigurasi Mesin Final (Definitif)
-    ├── talosconfig 	            # Admin Client Config
-    ├── kube/config 	            # Kubernetes Admin Config
-    ├── cortex/talos__cortex_cp.yaml
-    ├── cerebrum/talos__cerebrum_cp.yaml
-    ├── corpus/talos__corpus_cp.yaml
-    ├── campus/talos__campus_worker.yaml
-    └── aether/talos__aether_worker.yaml
-```
+1.  **`cryptophys-ssot-core`** (This repo):
+    *   **Contracts:** API definitions, data models (`contracts/`).
+    *   **Schemas:** JSON schemas for validation (`schema/`).
+    *   **Ledger Rules:** Immutable rules for the trusted ledger (`ledger/`).
+    *   **AIDE Playbooks:** Remediation logic for the Autonomous Infrastructure Defense Engine (`aide-playbooks/`).
 
-Legacy (non-SSOT) configs dipindahkan ke:
-`/opt/cryptophys/talos/_legacy_backup/` (arsip saja, tidak dipakai cluster).
+2.  **`cryptophys-platform-gitops`** (Flux):
+    *   **Clusters:** Flux bootstrap configuration (`clusters/talos-prod/`).
+    *   **Infrastructure:** Base infrastructure components managed by Flux (`infrastructure/`).
+        *   Order: `00-crds` -> `10-controllers` -> `20-policy` -> `30-storage` -> `40-observability` -> `90-aide-sensors`.
 
----
+3.  **`cryptophys-apps-gitops`** (ArgoCD):
+    *   **Apps:** Domain-specific applications (`apps/`).
+    *   **ArgoCD:** Projects and ApplicationSets (`argocd/`).
 
-## 2. Infrastructure Inventory
-| Node | Role | Public IP | Wireguard IP | Netmask | Gateway |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Cortex** | LEADER | 178.18.250.39 | 10.8.0.2 | /20 | 178.18.240.1 |
-| **Cerebrum** | CP | 157.173.120.200 | 10.8.0.4 | /20 | 157.173.112.1 |
-| **Corpus** | CP | 207.180.206.69 | 10.8.0.3 | /18 | 207.180.192.1 |
-| **Campus** | Worker | 173.212.221.185 | 10.8.0.6 | /24 | 173.212.221.1 |
-| **Aether** | Worker | 212.47.66.101 | 10.8.0.5 | /21 | 212.47.64.1 |
+## Governance
 
----
+*   **Kyverno Policies:** Enforce security standards. Critical system namespaces (`kube-system`, `longhorn-system`, `cilium-system`) MUST be excluded from restrictive policies to prevent deadlocks.
+*   **Immutable Infrastructure:** Changes to `ssot-core` trigger validation pipelines.
 
-## 3. Operational Protocols
+## Policy Paths (Flux Consumers)
 
-### WireGuard Full Mesh (Invariant)
-Setiap node WAJIB memiliki peers untuk semua node lain + bastion (tidak termasuk dirinya sendiri).
-Port standar: UDP `51821`.
+These paths are consumed by Flux Kustomizations:
 
-### Sync Configuration (Idempotency)
-Untuk memastikan node sesuai dengan SSOT, jalankan:
-```bash
-talosctl apply-config --talosconfig configs/ssot/talosconfig \
-  -n <NODE_IP> -e <NODE_IP> \
-  --file configs/ssot/<NODE_NAME>/talos__<NODE_NAME>_<ROLE>.yaml
-```
+- `policies/kyverno/base`
+- `policies/kyverno/enforce-business`
+- `policies/kyverno/exception-governance`
+- `policies/gatekeeper/templates`
+- `policies/gatekeeper/constraints`
+- `policies/gatekeeper/enforce-business`
+- `ops/waiver-cleanup`
 
-### Emergency Recovery (Wipe & Join)
-1. Boot node ke Rescue Mode.
-2. Wipe disk: `dd if=/dev/zero of=/dev/sda bs=1M count=1000`.
-3. Install Kernel Maintenance.
-4. Apply file dari `configs/ssot/` dengan flag `--insecure`.
+## Network & DNS
 
-### Cluster Health
-```bash
-# Cek Mesin
-talosctl --talosconfig configs/ssot/talosconfig -n <IPs> get machinestatus
-# Cek Etcd
-talosctl --talosconfig configs/ssot/talosconfig -n <LEADER_IP> etcd members
-# Cek K8s
-KUBECONFIG=configs/ssot/kube/config kubectl get nodes
-```
-
----
-
-## 4. Security & Mesh
-- **Firewall:** Bastion (Hub) harus mengizinkan forwarding `wg0` <-> `wg0`.
-- **Wireguard:** Port UDP 51821 terbuka di Bastion. Port internal Etcd 2379/2380 berjalan di atas `wg0`.
-
-## 5. CNI Baseline (Cilium)
-- **Release:** `cilium` di `kube-system` via Helm.
-- **Mode:** kube-proxy replacement = true.
-- **Encryption:** WireGuard node-to-node enabled.
-- **Cluster identity:** `cryptophys-genesis` (id=1) untuk korelasi audit.
-
-```
+*   **Cilium:** Manages CNI and mesh (`wg0`). Egress to public DNS (`1.1.1.1`) requires correct routing table configuration on Talos nodes.
+*   **CoreDNS:** Configured with `autopath` and `pods verified` for stability.
