@@ -19,4 +19,4 @@ spec:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
       name: vault
-      namespace: vault-system-system-secrets
+      namespace: vault-secrets-system-secrets
