@@ -20,4 +20,4 @@ spec:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
       name: platform-code-forge-gitea
-      namespace: gitea
+      namespace: gitops-system
