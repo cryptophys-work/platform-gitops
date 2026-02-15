@@ -12,24 +12,19 @@ data:
       data_dir = "/run/spire/data"
       log_level = "INFO"
       ca_key_type = "rsa-2048"
-      ca_subject = {
-        country = ["ID"],
-        organization = ["Cryptophys"],
-        common_name = "cryptophys.work",
-      }
     }
     plugins {
       DataStore "sql" {
         plugin_data {
-          database_type = "sqlite3"
-          connection_string = "/run/spire/data/datastore.sqlite3"
+          database_type = "postgres"
+          connection_string = "postgresql://spire@postgres-rw.postgresql-system:5432/spire"
         }
       }
       NodeAttestor "k8s_psat" {
         plugin_data {
           clusters = {
             "cryptophys-genesis" = {
-              service_account_allow_list = ["spire:spire-agent"]
+              service_account_allow_list = ["spire-system:spire-agent"]
             }
           }
         }
