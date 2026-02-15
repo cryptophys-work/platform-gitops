@@ -1,0 +1,14 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 30-gitops
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: 20-storage
+  interval: 1h
+  path: ./platform/gitops
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: platform-repo
