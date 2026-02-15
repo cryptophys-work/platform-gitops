@@ -2,16 +2,9 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: vault
-  namespace: vault-system-system-secrets
+  namespace: vault-system
 spec:
   interval: 1h
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    force: true
-    remediation:
-      retries: 3
   chart:
     spec:
       chart: vault
@@ -21,24 +14,44 @@ spec:
         name: hashicorp
         namespace: flux-system
   values:
-    injector:
-      replicas: 2
+    global:
+      enabled: true
+      tlsDisable: false
     server:
-      dev:
-        enabled: false
-      standalone:
-        enabled: false
+      replicas: 3
+      affinity: ""
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      dataStorage:
+        enabled: true
+        size: 10Gi
+        storageClass: longhorn
+      auditStorage:
+        enabled: true
+        size: 10Gi
+        storageClass: longhorn
       ha:
         enabled: true
-        replicas: 3
         raft:
           enabled: true
           setNodeId: true
-      dataStorage:
-        enabled: true
-        size: 20Gi
-        storageClass: longhorn
-      nodeSelector:
-        node-role.kubernetes.io/control-plane: ""
-    ui:
+          config: |
+            ui = true
+            listener "tcp" {
+              tls_disable = 1
+              address = "[::]:8200"
+              cluster_address = "[::]:8201"
+            }
+            storage "raft" {
+              path = "/vault/data"
+            }
+            service_registration "kubernetes" {}
+    injector:
       enabled: true
+      replicas: 2
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
