@@ -14,9 +14,6 @@ spec:
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: GitRepository
-metadata:
   name: ssot-core-repo
   namespace: flux-system
 spec:

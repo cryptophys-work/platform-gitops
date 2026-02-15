@@ -52,18 +52,15 @@ spec:
           SSH_PORT: 2222
         database:
           DB_TYPE: postgres
-          HOST: platform-code-forge-gitea-postgresql-ha-pgpool.gitea.svc.cluster.local:5432
+          HOST: postgres-platform-ha-rw.postgresql-system.svc.cluster.local:5432
           NAME: gitea
-          USER: gitea
+          USER: postgres
         session:
-          PROVIDER: redis
-          PROVIDER_CONFIG: redis+cluster://:@platform-code-forge-gitea-valkey-cluster-headless.gitea.svc.cluster.local:6379/0
+          PROVIDER: memory
         queue:
-          TYPE: redis
-          CONN_STR: redis+cluster://:@platform-code-forge-gitea-valkey-cluster-headless.gitea.svc.cluster.local:6379/0
+          TYPE: level
         cache:
-          ADAPTER: redis
-          HOST: redis+cluster://:@platform-code-forge-gitea-valkey-cluster-headless.gitea.svc.cluster.local:6379/0
+          ADAPTER: memory
         webhook:
           ALLOWED_HOST_LIST: "*"
         service:
@@ -94,13 +91,11 @@ spec:
     postgresql:
       enabled: false
     postgresql-ha:
-      enabled: true
+      enabled: false
+    redis-cluster:
+      enabled: false
     valkey-cluster:
-      enabled: true
-      usePassword: false
-      cluster:
-        nodes: 3
-        replicas: 0
+      enabled: false
     memcached:
       enabled: false
     metrics:
