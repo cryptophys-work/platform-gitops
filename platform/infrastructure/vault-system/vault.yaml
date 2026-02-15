@@ -19,16 +19,13 @@ spec:
       tlsDisable: false
     server:
       replicas: 3
-      affinity: ""
+      nodeSelector:
+        cryptophys.io/tier: platform
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
       dataStorage:
-        enabled: true
-        size: 10Gi
-        storageClass: longhorn
-      auditStorage:
         enabled: true
         size: 10Gi
         storageClass: longhorn
@@ -51,6 +48,8 @@ spec:
     injector:
       enabled: true
       replicas: 2
+      nodeSelector:
+        cryptophys.io/tier: platform
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
