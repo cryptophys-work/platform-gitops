@@ -13,9 +13,10 @@ spec:
     kind: GitRepository
     name: platform-repo
   dependsOn:
-    - name: 35-secrets
-    - name: 30-storage
+    - name: 01-namespaces
+    - name: 10-database
     - name: 10-controllers
+    - name: 35-secrets
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
