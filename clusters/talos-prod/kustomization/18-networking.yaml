@@ -14,4 +14,4 @@ spec:
     name: platform-repo
   dependsOn:
     - name: 10-controllers
-    - name: 07-metallb
+    - name: 17-metallb
