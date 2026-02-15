@@ -14,16 +14,6 @@ spec:
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: apps-repo
-  namespace: flux-system
-spec:
-  interval: 1m
-  ref:
-    branch: main
-  secretRef:
-    name: platform-repo-auth
-  url: http://platform-code-forge-gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/apps-gitops.git
----
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
