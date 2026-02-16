@@ -1,0 +1,66 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: hyperledger-fabric
+  namespace: flux-system # Managed by Flux
+spec:
+  targetNamespace: fabric
+  interval: 1h
+  chart:
+    spec:
+      chart: hyperledger-fabric
+      version: 2.0.0 # Hypothetical version for standard chart
+      sourceRef:
+        kind: HelmRepository
+        name: cryptophys-charts
+        namespace: flux-system
+  values:
+    # --- ORDERER CONFIGURATION (Raft Consensus) ---
+    orderer:
+      enabled: true
+      type: etcdraft
+      replicas: 3 # High Availability
+      image:
+        repository: hyperledger/fabric-orderer
+        tag: 2.5.4
+      persistence:
+        enabled: true
+        size: 10Gi
+        storageClass: longhorn
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 1Gi
+
+    # --- PEER CONFIGURATION (Validation Nodes) ---
+    peers:
+      enabled: true
+      organizations:
+        - name: Org1
+          domain: org1.cryptophys.work
+          replicas: 2
+          anchorPeers: 1
+          database: CouchDB # For rich queries
+        - name: Org2
+          domain: org2.cryptophys.work
+          replicas: 2
+          anchorPeers: 1
+          database: CouchDB
+
+    # --- CA CONFIGURATION (Identity) ---
+    ca:
+      enabled: true
+      image:
+        repository: hyperledger/fabric-ca
+        tag: 1.5.7
+      ingress:
+        enabled: true
+        host: ca.fabric.cryptophys.work
+
+    # --- MONITORING ---
+    metrics:
+      enabled: true
+      serviceMonitor: true
