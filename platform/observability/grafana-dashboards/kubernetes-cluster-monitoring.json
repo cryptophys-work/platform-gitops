@@ -1,0 +1,322 @@
+{
+  "id": 29,
+  "panels": [
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "targets": [
+        {
+          "expr": "count(kube_node_info)",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Nodes",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "id": 2,
+      "targets": [
+        {
+          "expr": "count(kube_pod_info)",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Pods",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "id": 3,
+      "targets": [
+        {
+          "expr": "count(kube_pod_status_phase{phase=\"Running\"})",
+          "refId": "A"
+        }
+      ],
+      "title": "Running Pods",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "id": 4,
+      "targets": [
+        {
+          "expr": "count(kube_pod_status_phase{phase=~\"Pending|Failed\"})",
+          "refId": "A"
+        }
+      ],
+      "title": "Pending/Failed Pods",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 0
+      },
+      "id": 5,
+      "targets": [
+        {
+          "expr": "count(kube_namespace_status_phase{phase=\"Active\"})",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Namespaces",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "id": 6,
+      "targets": [
+        {
+          "expr": "sum(increase(kube_pod_container_status_restarts_total[1h]))",
+          "refId": "A"
+        }
+      ],
+      "title": "Container Restarts",
+      "type": "stat"
+    },
+    {
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
+      "id": 7,
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\"}[5m])) by (node)",
+          "legendFormat": "{{node}}",
+          "refId": "A"
+        }
+      ],
+      "title": "CPU Usage by Node",
+      "type": "timeseries"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "unit": "decgbytes"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
+      "id": 8,
+      "targets": [
+        {
+          "expr": "sum(container_memory_working_set_bytes{container!=\"\"}) by (node) / 1024 / 1024 / 1024",
+          "legendFormat": "{{node}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Memory Usage by Node",
+      "type": "timeseries"
+    },
+    {
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      },
+      "id": 9,
+      "targets": [
+        {
+          "expr": "sum(kube_pod_status_phase{phase=\"Running\"}) by (namespace)",
+          "legendFormat": "{{namespace}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Pods by Namespace",
+      "type": "timeseries"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      },
+      "id": 10,
+      "targets": [
+        {
+          "expr": "sum(rate(container_network_receive_bytes_total[5m])) by (node)",
+          "legendFormat": "{{node}} RX",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(rate(container_network_transmit_bytes_total[5m])) by (node)",
+          "legendFormat": "{{node}} TX",
+          "refId": "B"
+        }
+      ],
+      "title": "Network I/O by Node",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "tags": [
+    "kubernetes",
+    "cluster"
+  ],
+  "timezone": "browser",
+  "title": "Kubernetes Cluster Monitoring",
+  "uid": "71ee13b8-c65f-4905-a9e5-78e242813232",
+  "version": 1
+}
