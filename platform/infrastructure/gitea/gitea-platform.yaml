@@ -6,10 +6,6 @@ metadata:
 spec:
   interval: 30m
   releaseName: platform-code-forge-gitea
-  valuesFrom:
-    - kind: Secret
-      name: platform-code-forge-gitea-values
-      valuesKey: values.yaml
   install:
     remediation:
       retries: 3
