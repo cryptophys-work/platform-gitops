@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: 20-storage
+    - name: 30-storage
   interval: 1h
   path: ./platform/gitops
   prune: false
