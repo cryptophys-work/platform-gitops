@@ -50,7 +50,7 @@ spec:
       enabled: true
       replicas: 2
       nodeSelector:
-        cryptophys.io/tier: application
+        cryptophys.io/tier: platform
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
