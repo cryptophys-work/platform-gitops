@@ -25,6 +25,13 @@ spec:
   values:
     crds:
       enabled: true
+    controller:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      nodeSelector:
+        cryptophys.io/tier: platform
     speaker:
       excludeInterfaces:
         enabled: true
