@@ -12,12 +12,15 @@ data:
       data_dir = "/run/spire/data"
       log_level = "INFO"
       ca_key_type = "rsa-2048"
+      ca_ttl = "24h"
+      default_x509_svid_ttl = "1h"
+      default_jwt_svid_ttl = "5m"
     }
     plugins {
       DataStore "sql" {
         plugin_data {
           database_type = "postgres"
-          connection_string = "postgresql://spire@postgres-security-ha-rw.postgresql-system.svc.cluster.local:5432/spire"
+          connection_string = "dbname=spire user=spire password=SpireSecure2026 host=postgres-security-ha-rw.postgresql-system.svc.cluster.local port=5432 sslmode=disable"
         }
       }
       NodeAttestor "k8s_psat" {
