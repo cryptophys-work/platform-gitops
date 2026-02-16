@@ -8,7 +8,7 @@ spec:
   wait: true
   timeout: 30m
   path: ./platform/infrastructure/policy
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: platform-repo
@@ -18,7 +18,7 @@ spec:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
       name: kyverno
-      namespace: kyverno
+      namespace: kyverno-system
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
       name: gatekeeper

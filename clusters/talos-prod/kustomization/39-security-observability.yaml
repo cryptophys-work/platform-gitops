@@ -8,7 +8,7 @@ spec:
   wait: false
   timeout: 10m
   path: ./platform/infrastructure/security-observability
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: platform-repo
@@ -16,16 +16,16 @@ spec:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
       name: platform-observability-prometheus
-      namespace: observability
+      namespace: observability-system
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
       name: platform-observability-loki
-      namespace: observability
+      namespace: observability-system
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
       name: platform-observability-otel-collector
-      namespace: observability
+      namespace: observability-system
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
       name: security-trivy-operator
-      namespace: security
+      namespace: security-system

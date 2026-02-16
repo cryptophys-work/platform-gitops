@@ -8,7 +8,7 @@ spec:
   wait: true
   timeout: 30m
   path: ./platform/infrastructure/storage
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: platform-repo

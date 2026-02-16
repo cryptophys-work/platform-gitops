@@ -8,7 +8,7 @@ spec:
   wait: true
   timeout: 10m
   path: ./platform/infrastructure/sources
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: platform-repo
@@ -42,10 +42,6 @@ spec:
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
       name: gatekeeper
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: HelmRepository
-      name: linkerd
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository

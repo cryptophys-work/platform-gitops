@@ -8,7 +8,7 @@ spec:
   wait: true
   timeout: 15m
   path: ./platform/infrastructure/metallb
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: platform-repo

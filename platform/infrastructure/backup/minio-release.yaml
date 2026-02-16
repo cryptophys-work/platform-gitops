@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: platform-backup-minio
-  namespace: minio
+  namespace: minio-system
 spec:
   interval: 1h
   timeout: 10m

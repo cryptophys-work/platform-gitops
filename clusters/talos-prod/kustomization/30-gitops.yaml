@@ -8,7 +8,7 @@ spec:
     - name: 20-storage
   interval: 1h
   path: ./platform/gitops
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: platform-repo
