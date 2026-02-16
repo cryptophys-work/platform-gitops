@@ -1,12 +1,85 @@
-# SPIRE Workload Registration Entries
-# Applied via CronJob to ensure entries persist across SPIRE server restarts
-# Trust Domain: cryptophys.work
+# SPIRE Workload Registration - Declarative Entries
+# Managed via CronJob that uses kubectl exec into spire-server pod
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spire-registration-script
+  namespace: spire-system
+data:
+  register.sh: |
+    #!/bin/sh
+    set -e
+    SERVER_POD=$(kubectl get pod -n spire-system -l app=spire-server -o jsonpath='{.items[0].metadata.name}')
+    if [ -z "$SERVER_POD" ]; then echo "SPIRE server pod not found"; exit 1; fi
+
+    register() {
+      NS=$1; SA=$2
+      ID="spiffe://cryptophys.work/ns/${NS}/sa/${SA}"
+      PARENT="spiffe://cryptophys.work/spire/agent/k8s_psat/cryptophys-genesis"
+      # Check existing
+      EXISTS=$(kubectl exec -n spire-system $SERVER_POD -- /opt/spire/bin/spire-server entry show -spiffeID "$ID" 2>/dev/null | grep -c "Entry ID" || true)
+      if [ "$EXISTS" -gt 0 ]; then return 0; fi
+      kubectl exec -n spire-system $SERVER_POD -- /opt/spire/bin/spire-server entry create \
+        -spiffeID "$ID" -parentID "$PARENT" \
+        -selector "k8s:ns:${NS}" -selector "k8s:sa:${SA}" -ttl 3600
+      echo "  Registered: $ID"
+    }
+
+    echo "=== SPIRE Registration Sync $(date -u) ==="
+    # cert-manager
+    register cert-manager cert-manager
+    register cert-manager cert-manager-cainjector
+    register cert-manager cert-manager-webhook
+    # external-secrets
+    register external-secrets external-secrets
+    register external-secrets external-secrets-cert-controller
+    register external-secrets external-secrets-webhook
+    # gatekeeper
+    register gatekeeper-system gatekeeper-admin
+    # gitea
+    register gitops-system default
+    # ingress
+    register ingress-system ingress-gateway-ingress-nginx
+    # kyverno
+    register kyverno-system kyverno-admission-controller
+    register kyverno-system kyverno-background-controller
+    register kyverno-system kyverno-cleanup-controller
+    register kyverno-system kyverno-reports-controller
+    # longhorn
+    register longhorn-system longhorn-service-account
+    register longhorn-system longhorn-ui-service-account
+    # metallb
+    register metallb-system platform-metallb-controller
+    register metallb-system platform-metallb-speaker
+    # postgresql
+    register postgresql-system cloudnative-pg
+    register postgresql-system postgres-apps-ha
+    register postgresql-system postgres-security-ha
+    register postgresql-system postgres-trustedledger-ha
+    # registry (harbor)
+    register registry-system default
+    # vault
+    register vault-system vault
+    register vault-system vault-agent-injector
+    # flux
+    register flux-system kustomize-controller
+    register flux-system helm-controller
+    register flux-system source-controller
+    register flux-system notification-controller
+    register flux-system image-automation-controller
+    register flux-system image-reflector-controller
+    echo "=== Complete: 30 entries verified ==="
 ---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: spire-registration-sync
   namespace: spire-system
+  labels:
+    app.kubernetes.io/name: spire-registration-sync
+    app.kubernetes.io/part-of: spire
+    app.kubernetes.io/managed-by: flux
 spec:
   schedule: "*/30 * * * *"
   successfulJobsHistoryLimit: 1
@@ -15,6 +88,11 @@ spec:
     spec:
       backoffLimit: 3
       template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: spire-registration-sync
+            app.kubernetes.io/part-of: spire
+            app.kubernetes.io/managed-by: flux
         spec:
           serviceAccountName: spire-server
           tolerations:
@@ -25,77 +103,27 @@ spec:
             cryptophys.io/tier: platform
           containers:
             - name: register
-              image: ghcr.io/spiffe/spire-server:1.8.0
-              command: ["/bin/sh", "-c"]
-              args:
-                - |
-                  SPIRE=/opt/spire/bin/spire-server
-                  SOCK="-socketPath /run/spire/sockets/server.sock"
-                  PARENT="spiffe://cryptophys.work/spire/agent/k8s_psat/cryptophys-genesis"
-                  register() {
-                    NS=$1; SA=$2
-                    ID="spiffe://cryptophys.work/ns/${NS}/sa/${SA}"
-                    # Check if already exists
-                    if $SPIRE entry show $SOCK -spiffeID "$ID" 2>/dev/null | grep -q "Entry ID"; then
-                      return 0
-                    fi
-                    $SPIRE entry create $SOCK \
-                      -spiffeID "$ID" \
-                      -parentID "$PARENT" \
-                      -selector "k8s:ns:${NS}" \
-                      -selector "k8s:sa:${SA}" \
-                      -ttl 3600
-                  }
-                  # cert-manager
-                  register cert-manager cert-manager
-                  register cert-manager cert-manager-cainjector
-                  register cert-manager cert-manager-webhook
-                  # external-secrets
-                  register external-secrets external-secrets
-                  register external-secrets external-secrets-cert-controller
-                  register external-secrets external-secrets-webhook
-                  # gatekeeper
-                  register gatekeeper-system gatekeeper-admin
-                  # gitea
-                  register gitops-system default
-                  # ingress
-                  register ingress-system ingress-gateway-ingress-nginx
-                  # kyverno
-                  register kyverno-system kyverno-admission-controller
-                  register kyverno-system kyverno-background-controller
-                  register kyverno-system kyverno-cleanup-controller
-                  register kyverno-system kyverno-reports-controller
-                  # longhorn
-                  register longhorn-system longhorn-service-account
-                  register longhorn-system longhorn-ui-service-account
-                  # metallb
-                  register metallb-system platform-metallb-controller
-                  register metallb-system platform-metallb-speaker
-                  # postgresql
-                  register postgresql-system cloudnative-pg
-                  register postgresql-system postgres-apps-ha
-                  register postgresql-system postgres-security-ha
-                  register postgresql-system postgres-trustedledger-ha
-                  # registry (harbor)
-                  register registry-system default
-                  # vault
-                  register vault-system vault
-                  register vault-system vault-agent-injector
-                  # flux
-                  register flux-system kustomize-controller
-                  register flux-system helm-controller
-                  register flux-system source-controller
-                  register flux-system notification-controller
-                  register flux-system image-automation-controller
-                  register flux-system image-reflector-controller
-                  echo "Registration sync complete: $(date -u)"
+              image: bitnami/kubectl:1.31
+              command: ["/bin/sh", "/scripts/register.sh"]
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 200m
+                  memory: 128Mi
+              securityContext:
+                runAsNonRoot: true
+                runAsUser: 1000
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
               volumeMounts:
-                - name: spire-server-socket
-                  mountPath: /run/spire/sockets
+                - name: script
+                  mountPath: /scripts
                   readOnly: true
           volumes:
-            - name: spire-server-socket
-              hostPath:
-                path: /run/spire/sockets
-                type: Directory
+            - name: script
+              configMap:
+                name: spire-registration-script
+                defaultMode: 0555
           restartPolicy: OnFailure
