@@ -24,6 +24,19 @@ spec:
       tag: 0.145.0
     mode: deployment
     replicaCount: 1
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+    nodeSelector:
+      cryptophys.io/tier: platform
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 250m
+        memory: 512Mi
     config:
       receivers:
         otlp:

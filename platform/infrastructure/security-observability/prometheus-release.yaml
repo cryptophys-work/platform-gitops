@@ -26,14 +26,100 @@ spec:
       enabled: true
       alertmanagerSpec:
         replicas: 1
+        tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
+        nodeSelector:
+          cryptophys.io/tier: platform
+        resources:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 256Mi
     grafana:
       enabled: true
       replicas: 1
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      nodeSelector:
+        cryptophys.io/tier: platform
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          cpu: 250m
+          memory: 512Mi
+      persistence:
+        enabled: true
+        storageClassName: longhorn-single
+        size: 5Gi
+      adminPassword: CryptoGrafana2026
     prometheus:
       enabled: true
       prometheusSpec:
         replicas: 1
         retention: 7d
         retentionSize: 20GiB
+        tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
+        nodeSelector:
+          cryptophys.io/tier: platform
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 2Gi
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn-single
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 20Gi
+    prometheusOperator:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      nodeSelector:
+        cryptophys.io/tier: platform
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+    kube-state-metrics:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      nodeSelector:
+        cryptophys.io/tier: platform
+      resources:
+        requests:
+          cpu: 25m
+          memory: 64Mi
+        limits:
+          cpu: 100m
+          memory: 256Mi
     kubeEtcd:
       enabled: false
+    nodeExporter:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
