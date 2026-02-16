@@ -1,0 +1,91 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      cryptophys.io/gitops-source: unknown-user
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/component":"source-controller","app.kubernetes.io/instance":"flux-system","app.kubernetes.io/part-of":"flux","app.kubernetes.io/version":"v2.7.5","control-plane":"controller"},"name":"source-controller","namespace":"flux-system"},"spec":{"ports":[{"name":"http","port":80,"protocol":"TCP","targetPort":"http"}],"selector":{"app":"source-controller"},"type":"ClusterIP"}}
+    creationTimestamp: "2026-02-15T01:00:15Z"
+    labels:
+      app.kubernetes.io/component: source-controller
+      app.kubernetes.io/instance: flux-system
+      app.kubernetes.io/part-of: flux
+      app.kubernetes.io/version: v2.7.5
+      control-plane: controller
+      cryptophys.io/environment: production
+      cryptophys.work/managed-by: aide
+    name: source-controller
+    namespace: flux-system
+    resourceVersion: "1390901"
+    uid: 0476fd01-390a-4e3c-8bfe-69eddfb15d4d
+  spec:
+    clusterIP: 10.108.210.96
+    clusterIPs:
+    - 10.108.210.96
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: http
+    - name: http-prom
+      port: 8080
+      protocol: TCP
+      targetPort: http-prom
+    selector:
+      app: source-controller
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      cryptophys.io/gitops-source: unknown-user
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/component":"notification-controller","app.kubernetes.io/instance":"flux-system","app.kubernetes.io/part-of":"flux","app.kubernetes.io/version":"v2.7.5","control-plane":"controller"},"name":"notification-controller","namespace":"flux-system"},"spec":{"ports":[{"name":"http","port":80,"protocol":"TCP","targetPort":"http"}],"selector":{"app":"notification-controller"},"type":"ClusterIP"}}
+    creationTimestamp: "2026-02-15T01:00:16Z"
+    labels:
+      app.kubernetes.io/component: notification-controller
+      app.kubernetes.io/instance: flux-system
+      app.kubernetes.io/part-of: flux
+      app.kubernetes.io/version: v2.7.5
+      control-plane: controller
+      cryptophys.io/environment: production
+      cryptophys.work/managed-by: aide
+    name: notification-controller
+    namespace: flux-system
+    resourceVersion: "1390935"
+    uid: ca89faf1-572d-43aa-b63e-e6d4fbb886db
+  spec:
+    clusterIP: 10.107.198.15
+    clusterIPs:
+    - 10.107.198.15
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: http
+    - name: http-prom
+      port: 8080
+      protocol: TCP
+      targetPort: http-prom
+    selector:
+      app: notification-controller
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+kind: List
+metadata:
+  resourceVersion: ""

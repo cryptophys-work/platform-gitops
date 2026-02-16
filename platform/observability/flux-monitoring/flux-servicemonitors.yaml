@@ -1,0 +1,161 @@
+apiVersion: v1
+items:
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"monitoring.coreos.com/v1","kind":"ServiceMonitor","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"flux"},"name":"flux-helm-controller","namespace":"flux-system"},"spec":{"endpoints":[{"interval":"30s","path":"/metrics","port":"http-prom"}],"namespaceSelector":{"matchNames":["flux-system"]},"selector":{"matchLabels":{"app":"helm-controller"}}}}
+    creationTimestamp: "2026-02-16T15:06:03Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/part-of: flux
+      release: platform-observability-prometheus
+    name: flux-helm-controller
+    namespace: flux-system
+    resourceVersion: "1393830"
+    uid: df29df12-7a7c-4314-afbe-5e4b76fe3641
+  spec:
+    endpoints:
+    - interval: 30s
+      path: /metrics
+      port: http-prom
+    namespaceSelector:
+      matchNames:
+      - flux-system
+    selector:
+      matchLabels:
+        app: helm-controller
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"monitoring.coreos.com/v1","kind":"ServiceMonitor","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"flux"},"name":"flux-image-automation-controller","namespace":"flux-system"},"spec":{"endpoints":[{"interval":"30s","path":"/metrics","port":"http-prom"}],"namespaceSelector":{"matchNames":["flux-system"]},"selector":{"matchLabels":{"app":"image-automation-controller"}}}}
+    creationTimestamp: "2026-02-16T15:06:43Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/part-of: flux
+      release: platform-observability-prometheus
+    name: flux-image-automation-controller
+    namespace: flux-system
+    resourceVersion: "1393837"
+    uid: 82009ee8-06fe-435e-858c-0b0d31c2f833
+  spec:
+    endpoints:
+    - interval: 30s
+      path: /metrics
+      port: http-prom
+    namespaceSelector:
+      matchNames:
+      - flux-system
+    selector:
+      matchLabels:
+        app: image-automation-controller
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"monitoring.coreos.com/v1","kind":"ServiceMonitor","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"flux"},"name":"flux-image-reflector-controller","namespace":"flux-system"},"spec":{"endpoints":[{"interval":"30s","path":"/metrics","port":"http-prom"}],"namespaceSelector":{"matchNames":["flux-system"]},"selector":{"matchLabels":{"app":"image-reflector-controller"}}}}
+    creationTimestamp: "2026-02-16T15:06:43Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/part-of: flux
+      release: platform-observability-prometheus
+    name: flux-image-reflector-controller
+    namespace: flux-system
+    resourceVersion: "1393845"
+    uid: 959abc8b-bcca-414f-87d8-860a798109d6
+  spec:
+    endpoints:
+    - interval: 30s
+      path: /metrics
+      port: http-prom
+    namespaceSelector:
+      matchNames:
+      - flux-system
+    selector:
+      matchLabels:
+        app: image-reflector-controller
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"monitoring.coreos.com/v1","kind":"ServiceMonitor","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"flux"},"name":"flux-kustomize-controller","namespace":"flux-system"},"spec":{"endpoints":[{"interval":"30s","path":"/metrics","port":"http-prom"}],"namespaceSelector":{"matchNames":["flux-system"]},"selector":{"matchLabels":{"app":"kustomize-controller"}}}}
+    creationTimestamp: "2026-02-16T15:06:02Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/part-of: flux
+      release: platform-observability-prometheus
+    name: flux-kustomize-controller
+    namespace: flux-system
+    resourceVersion: "1393829"
+    uid: 1b0f9ca1-f9f4-42bc-9442-ee7dff3eb7c2
+  spec:
+    endpoints:
+    - interval: 30s
+      path: /metrics
+      port: http-prom
+    namespaceSelector:
+      matchNames:
+      - flux-system
+    selector:
+      matchLabels:
+        app: kustomize-controller
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"monitoring.coreos.com/v1","kind":"ServiceMonitor","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"flux"},"name":"flux-notification-controller","namespace":"flux-system"},"spec":{"endpoints":[{"interval":"30s","path":"/metrics","port":"http-prom"}],"namespaceSelector":{"matchNames":["flux-system"]},"selector":{"matchLabels":{"app":"notification-controller"}}}}
+    creationTimestamp: "2026-02-16T15:06:03Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/part-of: flux
+      release: platform-observability-prometheus
+    name: flux-notification-controller
+    namespace: flux-system
+    resourceVersion: "1393831"
+    uid: 09858b2c-eac3-4a45-852d-c9725b57754b
+  spec:
+    endpoints:
+    - interval: 30s
+      path: /metrics
+      port: http-prom
+    namespaceSelector:
+      matchNames:
+      - flux-system
+    selector:
+      matchLabels:
+        app: notification-controller
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"monitoring.coreos.com/v1","kind":"ServiceMonitor","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"flux"},"name":"flux-system","namespace":"flux-system"},"spec":{"endpoints":[{"interval":"30s","path":"/metrics","port":"http-prom"}],"namespaceSelector":{"matchNames":["flux-system"]},"selector":{"matchLabels":{"app":"source-controller"}}}}
+    creationTimestamp: "2026-02-16T15:06:02Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/part-of: flux
+      release: platform-observability-prometheus
+    name: flux-system
+    namespace: flux-system
+    resourceVersion: "1393828"
+    uid: 2787f724-19ac-4695-9c3c-7e5428018690
+  spec:
+    endpoints:
+    - interval: 30s
+      path: /metrics
+      port: http-prom
+    namespaceSelector:
+      matchNames:
+      - flux-system
+    selector:
+      matchLabels:
+        app: source-controller
+kind: List
+metadata:
+  resourceVersion: ""
