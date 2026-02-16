@@ -20,7 +20,7 @@ spec:
     server:
       replicas: 3
       nodeSelector:
-        cryptophys.io/tier: platform
+        cryptophys.io/tier: application
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
@@ -49,7 +49,7 @@ spec:
       enabled: true
       replicas: 2
       nodeSelector:
-        cryptophys.io/tier: platform
+        cryptophys.io/tier: application
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
