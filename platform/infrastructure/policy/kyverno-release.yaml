@@ -24,6 +24,9 @@ spec:
       retries: 3
     crds: CreateReplace
   values:
+    features:
+      policyExceptions:
+        enabled: true
     admissionController:
       createSelfSignedCert: true
       replicas: 3
