@@ -4,6 +4,7 @@ metadata:
   name: 40-backup-stack
   namespace: flux-system
 spec:
+  suspend: true
   interval: 1h
   wait: false
   timeout: 15m

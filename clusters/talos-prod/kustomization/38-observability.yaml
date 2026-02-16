@@ -4,6 +4,7 @@ metadata:
   name: 38-observability
   namespace: flux-system
 spec:
+  suspend: true
   interval: 1h
   wait: true
   timeout: 10m
