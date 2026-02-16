@@ -69,7 +69,56 @@ spec:
           - key: node-role.kubernetes.io/control-plane
             operator: Exists
             effect: NoSchedule
+    redis:
+      internal:
+        nodeSelector:
+          cryptophys.io/tier: platform
+        tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
     trivy:
       enabled: true
+      nodeSelector:
+        cryptophys.io/tier: platform
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+    portal:
+      nodeSelector:
+        cryptophys.io/tier: platform
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+    core:
+      nodeSelector:
+        cryptophys.io/tier: platform
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+    jobservice:
+      nodeSelector:
+        cryptophys.io/tier: platform
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+    registry:
+      nodeSelector:
+        cryptophys.io/tier: platform
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+    exporter:
+      nodeSelector:
+        cryptophys.io/tier: platform
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
     metrics:
       enabled: true
