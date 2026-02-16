@@ -66,3 +66,11 @@ spec:
           effect: NoSchedule
       service:
         type: LoadBalancer
+    admissionWebhooks:
+      patch:
+        tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
+        nodeSelector:
+          cryptophys.io/tier: platform
