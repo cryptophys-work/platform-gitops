@@ -22,9 +22,12 @@ spec:
         name: gitea-charts
         namespace: flux-system
   values:
-    replicaCount: 1
+    replicaCount: 2
     strategy:
-      type: Recreate
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 1
+        maxSurge: 1
     image:
       registry: ghcr.io
       repository: go-gitea/gitea
@@ -102,6 +105,14 @@ spec:
         effect: NoSchedule
     nodeSelector:
       cryptophys.io/tier: platform
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: platform-code-forge-gitea
+                app.kubernetes.io/name: gitea
+            topologyKey: kubernetes.io/hostname
     resources:
       requests:
         cpu: 50m

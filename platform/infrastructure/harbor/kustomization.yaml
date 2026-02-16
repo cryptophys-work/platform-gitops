@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - storageclass-longhorn-single.yaml
   - release.yaml
+  - pdb.yaml
