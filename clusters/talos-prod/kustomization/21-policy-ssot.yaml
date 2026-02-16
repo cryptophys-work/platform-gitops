@@ -8,7 +8,7 @@ spec:
   wait: false
   timeout: 5m
   path: ./platform/infrastructure/policy-ssot
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: platform-repo

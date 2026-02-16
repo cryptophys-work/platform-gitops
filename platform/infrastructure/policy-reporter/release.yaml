@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: security-policy-reporter
-  namespace: kyverno
+  namespace: kyverno-system
 spec:
   interval: 1h
   install:
@@ -84,7 +84,7 @@ spec:
         logLevel: 1
       blockReports:
         enabled: true
-        eventNamespace: kyverno
+        eventNamespace: kyverno-system
         source: Kyverno Event
         results:
           maxPerReport: 500

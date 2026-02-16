@@ -2,13 +2,13 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: observability.synthetic.checker
-  namespace: observability
+  namespace: observability-system
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: observability.synthetic.targets
-  namespace: observability
+  namespace: observability-system
 data:
   check.sh: |
     #!/bin/sh
@@ -50,7 +50,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: observability.synthetic.checker
-  namespace: observability
+  namespace: observability-system
 spec:
   schedule: "*/5 * * * *"
   successfulJobsHistoryLimit: 2

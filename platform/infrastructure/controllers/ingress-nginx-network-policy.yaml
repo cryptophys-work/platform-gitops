@@ -2,7 +2,7 @@ apiVersion: "cilium.io/v2"
 kind: CiliumNetworkPolicy
 metadata:
   name: ingress-nginx-baseline
-  namespace: ingress
+  namespace: ingress-system
 spec:
   endpointSelector:
     matchLabels:

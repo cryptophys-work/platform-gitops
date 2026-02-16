@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kyverno-command-center
-  namespace: kyverno
+  namespace: kyverno-system
   labels:
     app.kubernetes.io/name: kyverno-command-center
 spec:
