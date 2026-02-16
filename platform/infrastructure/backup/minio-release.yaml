@@ -25,6 +25,7 @@ spec:
     existingSecret: platform-backup-minio-credentials
     buckets:
       - name: velero
+      - name: ai-models
     makeBucketJob:
       tolerations:
         - key: node-role.kubernetes.io/control-plane
@@ -59,8 +60,8 @@ spec:
       type: Recreate
     persistence:
       enabled: true
-      storageClass: longhorn-single
-      size: 10Gi
+      storageClass: longhorn
+      size: 20Gi
     tolerations:
       - key: node-role.kubernetes.io/control-plane
         operator: Exists
