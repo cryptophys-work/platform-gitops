@@ -60,6 +60,10 @@ spec:
         storageClassName: longhorn-single
         size: 5Gi
       adminPassword: CryptoGrafana2026
+      sidecar:
+        datasources:
+          defaultDatasourceEnabled: true
+          isDefaultDatasource: true
     prometheus:
       enabled: true
       prometheusSpec:
@@ -95,6 +99,14 @@ spec:
           effect: NoSchedule
       nodeSelector:
         cryptophys.io/tier: platform
+      admissionWebhooks:
+        patch:
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
+          nodeSelector:
+            cryptophys.io/tier: platform
       resources:
         requests:
           cpu: 50m
