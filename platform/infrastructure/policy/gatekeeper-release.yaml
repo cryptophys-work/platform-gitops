@@ -36,3 +36,27 @@ spec:
           effect: NoSchedule
       nodeSelector:
         cryptophys.io/tier: platform
+    preInstall:
+      crdRepository:
+        tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
+        nodeSelector:
+          cryptophys.io/tier: platform
+    postUpgrade:
+      labelNamespace:
+        tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
+        nodeSelector:
+          cryptophys.io/tier: platform
+    postInstall:
+      labelNamespace:
+        tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
+        nodeSelector:
+          cryptophys.io/tier: platform
