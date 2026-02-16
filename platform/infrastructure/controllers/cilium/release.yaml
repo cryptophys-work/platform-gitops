@@ -28,6 +28,13 @@ spec:
       id: 1
     clustermesh:
       useAPIServer: true
+      apiserver:
+        tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
+        nodeSelector:
+          cryptophys.io/tier: platform
     kubeProxyReplacement: false
     k8sServiceHost: 10.8.0.2
     k8sServicePort: 6443
@@ -35,8 +42,20 @@ spec:
       enabled: true
       relay:
         enabled: true
+        tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
+        nodeSelector:
+          cryptophys.io/tier: platform
       ui:
         enabled: true
+        tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
+        nodeSelector:
+          cryptophys.io/tier: platform
     ipam:
       mode: kubernetes
     operator:
