@@ -21,21 +21,45 @@ spec:
   upgrade:
     remediation:
       retries: 3
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: any
+              spec:
+                template:
+                  spec:
+                    tolerations:
+                      - key: node-role.kubernetes.io/control-plane
+                        operator: Exists
+                        effect: NoSchedule
+                    nodeSelector:
+                      cryptophys.io/tier: platform
+                      kubernetes.io/os: linux
+          - target:
+              kind: Job
+            patch: |
+              apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: any
+              spec:
+                template:
+                  spec:
+                    tolerations:
+                      - key: node-role.kubernetes.io/control-plane
+                        operator: Exists
+                        effect: NoSchedule
+                    nodeSelector:
+                      cryptophys.io/tier: platform
+                      kubernetes.io/os: linux
   values:
     replicas: 3
-    tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
-    nodeSelector:
-      cryptophys.io/tier: platform
-    audit:
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-      nodeSelector:
-        cryptophys.io/tier: platform
     crds:
       tolerations:
         - key: node-role.kubernetes.io/control-plane
@@ -46,18 +70,3 @@ spec:
     pdb:
       controllerManager:
         minAvailable: 1
-    postInstall:
-      labelNamespace:
-        tolerations:
-          - key: node-role.kubernetes.io/control-plane
-            operator: Exists
-            effect: NoSchedule
-        nodeSelector:
-          cryptophys.io/tier: platform
-      probeWebhook:
-        tolerations:
-          - key: node-role.kubernetes.io/control-plane
-            operator: Exists
-            effect: NoSchedule
-        nodeSelector:
-          cryptophys.io/tier: platform
