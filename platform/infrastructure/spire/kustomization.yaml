@@ -9,3 +9,4 @@ resources:
   - agent.yaml
   - rbac.yaml
   - spiffe-csi-driver.yaml
+  - registration-entries.yaml
