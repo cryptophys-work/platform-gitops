@@ -7,7 +7,7 @@ spec:
   clusterIP: None
   publishNotReadyAddresses: true
   selector:
-    app.kubernetes.io/name: spire-server
+    app: spire-server
   ports:
     - name: grpc
       port: 8081

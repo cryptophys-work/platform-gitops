@@ -8,10 +8,10 @@ data:
     Agent {
       data_dir = "/run/spire/data"
       log_level = "INFO"
-      server_address = "spire-server"
+      server_address = "spire-server.spire-system.svc.cluster.local"
       server_port = "8081"
-      socket_path = "/run/spire/sockets/agent.sock"
-      trust_bundle_path = "/run/spire/config/bundle.crt"
+      socket_path = "/run/spire/sockets/agent/agent.sock"
+      trust_bundle_path = "/run/spire/bundle/bundle.crt"
       trust_domain = "cryptophys.work"
     }
     plugins {
@@ -26,29 +26,6 @@ data:
       }
       WorkloadAttestor "k8s" {
         plugin_data {
-          # Use the default configuration
         }
       }
     }
-  bundle.crt: |
-    -----BEGIN CERTIFICATE-----
-    MIIDaTCCAlGgAwIBAgIQZ8Ju5VuefjvO9TJnjL+txDANBgkqhkiG9w0BAQsFADA8
-    MQswCQYDVQQGEwJJRDETMBEGA1UEChMKQ3J5cHRvcGh5czEYMBYGA1UEAxMPY3J5
-    cHRvcGh5cy53b3JrMB4XDTI2MDIxNTE2NTAxMVoXDTI2MDIxNjE2NTAyMVowPDEL
-    MAkGA1UEBhMCSUQxEzARBgNVBAoTCkNyeXB0b3BoeXMxGDAWBgNVBAMTD2NyeXB0
-    b3BoeXMud29yazCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOZEW4VO
-    QivUIz5kx5j4yoffawd9fmSjJOaP2YVGO8kuaJbYmRF8CkQidAc7I1C8b8i6RWIt
-    Mk4Y/FAoYbJqLaVRYko3B1ZfhykNOFLT8FGhVSaIYGO8YDoSq3qW2jiNb9shwFiy
-    +UM3xlWdR2krwgpms8eoIGzmYKATb9PjXiIQ8NJK2o3SX0CMYZTMahsQsxLagLP7
-    a4fpXgXKG9bkNkL0SBkR7Yo+gpI8qNdRrz4fVYO5xih85Unx8Ed2kIoncMcCaYO8
-    a11117iAOXbAVfRnKMcbefny7B5U12d5dmfPFRBCt9gTNNEJr44zDIvzlosmqU+K
-    ZTGaNId3YG41XYcCAwEAAaNnMGUwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQF
-    MAMBAf8wHQYDVR0OBBYEFPqGY7/vfgkHgt/D+2lil8UI6hEQMCMGA1UdEQQcMBqG
-    GHNwaWZmZTovL2NyeXB0b3BoeXMud29yazANBgkqhkiG9w0BAQsFAAOCAQEAzeHJ
-    mYqi5eJVYCjsuDiq2ZWQjwea5zpaCst3m6HQmLTHNILKivJjeyvfjwuWfm75Muso
-    afJ/BVglHr2H6ySdaXIscF+9ffMHMsJsh7vMHWscIWoWSCGZAuKR0HJrzW1zpF2L
-    1BMfj2imfnzmRqx6BRwECB5YDRzAbH3PnzYa2ZXJKdCnpooQKme5TVJlEob+aGFW
-    VSA5IfETQvRLldW1VUZOe768+V8RH+Sk2sa76oalUBQqmsPX1JGK69JiAzswPn9/
-    yt830mGHcrSOCA3Le3VgsgVD6aMgW7EbsVtMtlGalrXLFAHmBWpCayAEXEIwNt+w
-    ERJ7QDIOzCVj2XuQlQ==
-    -----END CERTIFICATE-----

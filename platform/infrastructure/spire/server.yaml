@@ -4,7 +4,7 @@ metadata:
   name: spire-server
   namespace: spire-system
   labels:
-    app.kubernetes.io/name: spire-server
+    app: spire-server
     app.kubernetes.io/part-of: spire
     app.kubernetes.io/managed-by: flux
     environment: prod
@@ -13,18 +13,24 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: spire-server
+      app: spire-server
   serviceName: spire-server
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: spire-server
+        app: spire-server
         app.kubernetes.io/part-of: spire
         app.kubernetes.io/managed-by: flux
         environment: prod
         owner: infrastructure
     spec:
       serviceAccountName: spire-server
+      nodeSelector:
+        cryptophys.io/tier: platform
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
       containers:
         - name: spire-server
           image: ghcr.io/spiffe/spire-server:1.8.0
@@ -32,6 +38,16 @@ spec:
           ports:
             - containerPort: 8081
               protocol: TCP
+          livenessProbe:
+            exec:
+              command: ["/opt/spire/bin/spire-server", "healthcheck"]
+            initialDelaySeconds: 15
+            periodSeconds: 60
+          readinessProbe:
+            exec:
+              command: ["/opt/spire/bin/spire-server", "healthcheck"]
+            initialDelaySeconds: 5
+            periodSeconds: 10
           volumeMounts:
             - name: spire-config
               mountPath: /run/spire/config
@@ -54,7 +70,8 @@ spec:
     - metadata:
         name: spire-data
       spec:
-        accessModes: [ "ReadWriteOnce" ]
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: longhorn
         resources:
           requests:
             storage: 1Gi
