@@ -50,7 +50,8 @@ spec:
           DB_TYPE: postgres
           HOST: postgres-apps-ha-rw.postgresql-system.svc.cluster.local:5432
           NAME: gitea
-          USER: postgres
+          USER: gitea
+          PASSWD: GiteaSecure2026!
         session:
           PROVIDER: memory
         queue:
