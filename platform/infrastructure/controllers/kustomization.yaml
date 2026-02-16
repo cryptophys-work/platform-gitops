@@ -6,4 +6,5 @@ resources:
   - ingress-nginx.yaml
   - ingress-nginx-network-policy.yaml
   - metrics-server.yaml
+  - pdbs.yaml
   - cilium/release.yaml

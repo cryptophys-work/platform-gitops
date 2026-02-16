@@ -10,7 +10,7 @@ metadata:
     environment: prod
     owner: infrastructure
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: spire-server
@@ -31,6 +31,13 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: spire-server
+              topologyKey: kubernetes.io/hostname
       containers:
         - name: spire-server
           image: ghcr.io/spiffe/spire-server:1.8.0
