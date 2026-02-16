@@ -60,6 +60,15 @@ spec:
         trivy:
           storageClass: longhorn-single
           size: 20Gi
+    database:
+      type: internal
+      internal:
+        nodeSelector:
+          cryptophys.io/tier: platform
+        tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
     trivy:
       enabled: true
     metrics:
