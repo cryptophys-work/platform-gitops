@@ -103,7 +103,7 @@ spec:
             cryptophys.io/tier: platform
           containers:
             - name: register
-              image: bitnami/kubectl:1.31
+              image: dtzar/helm-kubectl:2.5.1
               command: ["/bin/sh", "/scripts/register.sh"]
               resources:
                 requests:
