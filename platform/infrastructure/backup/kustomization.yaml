@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - minio-release.yaml
   - velero-release.yaml
+  - ingress-minio-console.yaml
