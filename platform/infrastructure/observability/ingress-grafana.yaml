@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana
+  namespace: observability-system
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: monitor.cryptophys.work
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: platform-observability-prometheus-grafana
+                port:
+                  number: 80
+  tls:
+    - secretName: cryptophys-wildcard-tls
+      hosts:
+        - monitor.cryptophys.work

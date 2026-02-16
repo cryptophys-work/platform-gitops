@@ -20,7 +20,7 @@ spec:
         name: policy-reporter
         namespace: flux-system
   values:
-    replicaCount: 2
+    replicaCount: 1
     logging:
       server: true
       encoding: json
@@ -31,6 +31,19 @@ spec:
       enabled: true
       mode: detailed
     worker: 10
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+    nodeSelector:
+      cryptophys.io/tier: platform
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 128Mi
     ui:
       enabled: true
       replicaCount: 1
@@ -41,6 +54,19 @@ spec:
         server: true
         encoding: json
         logLevel: 1
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      nodeSelector:
+        cryptophys.io/tier: platform
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 128Mi
       sources:
         - name: kyverno
           type: severity
@@ -76,12 +102,25 @@ spec:
         kyverno: true
     kyvernoPlugin:
       enabled: true
-      replicaCount: 2
+      replicaCount: 1
       logging:
         api: true
         server: true
         encoding: json
         logLevel: 1
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      nodeSelector:
+        cryptophys.io/tier: platform
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 128Mi
       blockReports:
         enabled: true
         eventNamespace: kyverno-system
@@ -90,13 +129,4 @@ spec:
           maxPerReport: 500
           keepOnlyLatest: true
     monitoring:
-      enabled: true
-      grafana:
-        dashboards:
-          enabled: true
-          multicluster:
-            enabled: false
-          enable:
-            overview: true
-            policyReportDetails: true
-            clusterPolicyReportDetails: true
+      enabled: false
