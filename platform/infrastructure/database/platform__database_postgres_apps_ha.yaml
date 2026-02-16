@@ -1,7 +1,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: postgres-trustedledger-ha
+  name: postgres-apps-ha
   namespace: postgresql-system
 spec:
   instances: 3
@@ -10,15 +10,15 @@ spec:
   superuserSecret:
     name: postgres-superuser-secret
   storage:
-    size: 50Gi
+    size: 20Gi
     storageClass: longhorn
   nodeMaintenanceWindow:
     inProgress: false
     reusePVC: true
   bootstrap:
     initdb:
-      database: trustedledger
-      owner: trustedledger
+      database: app
+      owner: app
   # HA Architecture: Platform workloads on control plane
   affinity:
     nodeSelector:
@@ -31,5 +31,5 @@ spec:
       requiredDuringSchedulingIgnoredDuringExecution:
       - labelSelector:
           matchLabels:
-            cnpg.io/cluster: postgres-trustedledger-ha
+            cnpg.io/cluster: postgres-apps-ha
         topologyKey: kubernetes.io/hostname

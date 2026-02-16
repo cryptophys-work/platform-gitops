@@ -19,8 +19,9 @@ spec:
       tlsDisable: false
     server:
       replicas: 3
+      # HA Architecture: Platform workloads on control plane
       nodeSelector:
-        cryptophys.io/tier: application
+        cryptophys.io/tier: platform
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
