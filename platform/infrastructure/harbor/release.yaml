@@ -45,21 +45,21 @@ spec:
       resourcePolicy: keep
       persistentVolumeClaim:
         registry:
-          storageClass: longhorn-single
-          size: 80Gi
+          storageClass: longhorn
+          size: 5Gi
         jobservice:
           jobLog:
-            storageClass: longhorn-single
-            size: 10Gi
+            storageClass: longhorn
+            size: 5Gi
         database:
-          storageClass: longhorn-single
-          size: 20Gi
+          storageClass: longhorn
+          size: 5Gi
         redis:
-          storageClass: longhorn-single
-          size: 10Gi
+          storageClass: longhorn
+          size: 5Gi
         trivy:
-          storageClass: longhorn-single
-          size: 20Gi
+          storageClass: longhorn
+          size: 5Gi
     database:
       type: internal
       internal:
