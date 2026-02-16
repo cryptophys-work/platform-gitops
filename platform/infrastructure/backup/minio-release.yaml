@@ -48,6 +48,13 @@ spec:
             - ALL
         seccompProfile:
           type: RuntimeDefault
+    postJob:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      nodeSelector:
+        cryptophys.io/tier: platform
     deploymentUpdate:
       type: Recreate
     persistence:
