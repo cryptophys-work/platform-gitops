@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cryptophys-wildcard
+  namespace: cert-manager
+spec:
+  secretName: cryptophys-wildcard-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - "*.cryptophys.work"
+  - "cryptophys.work"
+  secretTemplate:
+    labels:
+      cryptophys.work/managed-by: cert-manager
+      cryptophys.io/environment: production
