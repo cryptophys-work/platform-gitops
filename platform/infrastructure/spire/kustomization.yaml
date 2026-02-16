@@ -8,3 +8,4 @@ resources:
   - server.yaml
   - agent.yaml
   - rbac.yaml
+  - spiffe-csi-driver.yaml
