@@ -27,9 +27,4 @@ spec:
     - key: node-role.kubernetes.io/control-plane
       operator: Exists
       effect: NoSchedule
-    podAntiAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            cnpg.io/cluster: postgres-apps-ha
-        topologyKey: kubernetes.io/hostname
+    podAntiAffinityType: required
