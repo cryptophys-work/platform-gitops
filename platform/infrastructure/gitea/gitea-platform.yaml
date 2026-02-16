@@ -22,9 +22,12 @@ spec:
         name: gitea-charts
         namespace: flux-system
   values:
-    replicaCount: 1
+    replicaCount: 2
     strategy:
-      type: Recreate
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 1
+        maxSurge: 1
     image:
       registry: ghcr.io
       repository: go-gitea/gitea
@@ -50,11 +53,14 @@ spec:
           USER: gitea
           PASSWD: GiteaSecure2026
         session:
-          PROVIDER: memory
+          PROVIDER: redis
+          PROVIDER_CONFIG: redis+cluster://:@platform-code-forge-gitea-valkey-cluster-headless.gitops-system.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s
         queue:
-          TYPE: level
+          TYPE: redis
+          CONN_STR: redis+cluster://:@platform-code-forge-gitea-valkey-cluster-headless.gitops-system.svc.cluster.local:6379/1?pool_size=100&idle_timeout=180s
         cache:
-          ADAPTER: memory
+          ADAPTER: redis
+          HOST: redis+cluster://:@platform-code-forge-gitea-valkey-cluster-headless.gitops-system.svc.cluster.local:6379/2?pool_size=100&idle_timeout=180s
         webhook:
           ALLOWED_HOST_LIST: "*"
         service:
@@ -89,7 +95,29 @@ spec:
     redis-cluster:
       enabled: false
     valkey-cluster:
-      enabled: false
+      enabled: true
+      usePassword: false
+      usePasswordFiles: false
+      cluster:
+        nodes: 3
+        replicas: 0
+      valkey:
+        tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
+        nodeSelector:
+          cryptophys.io/tier: platform
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+      service:
+        ports:
+          valkey: 6379
     memcached:
       enabled: false
     metrics:
@@ -102,6 +130,14 @@ spec:
         effect: NoSchedule
     nodeSelector:
       cryptophys.io/tier: platform
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: platform-code-forge-gitea
+                app.kubernetes.io/name: gitea
+            topologyKey: kubernetes.io/hostname
     resources:
       requests:
         cpu: 50m
