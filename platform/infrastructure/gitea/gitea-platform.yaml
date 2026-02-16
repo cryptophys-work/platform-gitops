@@ -48,7 +48,7 @@ spec:
           SSH_PORT: 2222
         database:
           DB_TYPE: postgres
-          HOST: postgres-platform-ha-rw.postgresql-system.svc.cluster.local:5432
+          HOST: postgres-apps-ha-rw.postgresql-system.svc.cluster.local:5432
           NAME: gitea
           USER: postgres
         session:

@@ -1,0 +1,42 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-trustedledger-ha
+  namespace: postgresql-system
+  labels:
+    cryptophys.work/domain: trustedledger
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.2
+  
+  bootstrap:
+    initdb:
+      database: trustedledger
+      owner: trustedledger
+  
+  storage:
+    size: 50Gi
+    storageClass: longhorn
+  
+  monitoring:
+    enablePodMonitor: false
+  
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "4Gi"
+      cpu: "2000m"
+  
+  affinity:
+    nodeSelector:
+      tier: application
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              cnpg.io/cluster: postgres-trustedledger-ha
+          topologyKey: kubernetes.io/hostname
