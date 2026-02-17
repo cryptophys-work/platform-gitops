@@ -1,0 +1,43 @@
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: ray-exception
+  namespace: cqls-compute
+  annotations:
+    cryptophys.work/exception-owner: "platform-team"
+    cryptophys.work/exception-reason: "KubeRay operator requires privileged containers for Ray worker management"
+    cryptophys.work/exception-ticket: "PLAT-RAY-001"
+    cryptophys.work/exception-expires-at: "2027-02-17"
+spec:
+  exceptions:
+    - policyName: cp-standard-naming-v1
+      ruleNames:
+        - validate-resource-name
+        - autogen-validate-resource-name
+    - policyName: cp-standard-naming-canonical-v1
+      ruleNames:
+        - validate-resource-name
+        - autogen-validate-resource-name
+    - policyName: cp-security-hardening-v1
+      ruleNames:
+        - restrict-pod-security-standard
+        - autogen-restrict-pod-security-standard
+    - policyName: cp-supplychain-registry-v1
+      ruleNames:
+        - restrict-image-registries
+        - autogen-restrict-image-registries
+    - policyName: cp-pss-restricted-v1
+      ruleNames:
+        - deny-privileged-containers
+        - autogen-deny-privileged-containers
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - Deployment
+            - StatefulSet
+            - DaemonSet
+            - ReplicaSet
+          namespaces:
+            - cqls-compute

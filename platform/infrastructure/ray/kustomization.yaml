@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - kuberay-operator.yaml
   - ray-cluster.yaml
+  - policy-exception.yaml
