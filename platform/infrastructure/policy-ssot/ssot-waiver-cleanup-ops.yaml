@@ -4,7 +4,7 @@ metadata:
   name: ssot-waiver-cleanup-ops
   namespace: flux-system
 spec:
-  suspend: true
+  suspend: false
   interval: 10m
   prune: true
   wait: true
