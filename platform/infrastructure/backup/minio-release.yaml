@@ -27,12 +27,9 @@ spec:
       - name: velero
       - name: ai-models
     makeBucketJob:
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
       nodeSelector:
-        cryptophys.io/tier: platform
+        cryptophys.io/node-role: storage-worker
+        kubernetes.io/hostname: campus-173-212-221-185
       resources:
         requests:
           cpu: 50m
@@ -50,24 +47,18 @@ spec:
         seccompProfile:
           type: RuntimeDefault
     postJob:
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
       nodeSelector:
-        cryptophys.io/tier: platform
+        cryptophys.io/node-role: storage-worker
+        kubernetes.io/hostname: campus-173-212-221-185
     deploymentUpdate:
       type: Recreate
     persistence:
       enabled: true
       storageClass: longhorn
       size: 20Gi
-    tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
     nodeSelector:
-      cryptophys.io/tier: platform
+      cryptophys.io/node-role: storage-worker
+      kubernetes.io/hostname: campus-173-212-221-185
     resources:
       requests:
         cpu: 100m
