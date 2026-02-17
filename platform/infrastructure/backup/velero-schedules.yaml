@@ -1,0 +1,109 @@
+---
+# Hourly backup for L0-L1 (Infrastructure + Security)
+# Critical: DNS, networking, identity, policy enforcement
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: l0-l1-hourly
+  namespace: velero-system
+  labels:
+    backup-tier: critical
+    backup-frequency: hourly
+spec:
+  schedule: "0 * * * *"  # Every hour at :00
+  template:
+    includedNamespaces:
+      - kube-system
+      - cilium-system
+      - cert-manager
+      - ingress-nginx
+      - longhorn-system
+      - spire-system
+      - vault-system
+      - kyverno
+    excludedResources:
+      - events
+      - events.events.k8s.io
+      - backups.velero.io
+      - restores.velero.io
+      - persistentvolumes
+      - persistentvolumeclaims
+    includeClusterResources: true
+    storageLocation: default
+    ttl: 48h0m0s  # Keep for 2 days
+    snapshotVolumes: false
+    defaultVolumesToFsBackup: false
+  paused: false
+
+---
+# Daily full backup for L0-L1-L2 (Infrastructure + Security + Platform)
+# Includes: PostgreSQL, Gitea, Harbor, ArgoCD, MinIO, Flux
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: l0-l1-l2-daily
+  namespace: velero-system
+  labels:
+    backup-tier: platform
+    backup-frequency: daily
+spec:
+  schedule: "0 2 * * *"  # Every day at 02:00 UTC
+  template:
+    includedNamespaces:
+      - kube-system
+      - cilium-system
+      - cert-manager
+      - ingress-nginx
+      - longhorn-system
+      - spire-system
+      - vault-system
+      - kyverno
+      - postgresql-system
+      - gitea
+      - registry
+      - argocd
+      - platform-gitops
+      - minio-system
+      - flux-system
+      - velero-system
+    excludedResources:
+      - events
+      - events.events.k8s.io
+      - backups.velero.io
+      - restores.velero.io
+    includeClusterResources: true
+    storageLocation: default
+    ttl: 720h0m0s  # Keep for 30 days
+    snapshotVolumes: false
+    defaultVolumesToFsBackup: false
+  paused: false
+
+---
+# Weekly PostgreSQL PVC backup (data volumes)
+# Backup actual database volumes for disaster recovery
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: postgresql-pvc-weekly
+  namespace: velero-system
+  labels:
+    backup-tier: data
+    backup-frequency: weekly
+spec:
+  schedule: "0 3 * * 0"  # Every Sunday at 03:00 UTC
+  template:
+    includedNamespaces:
+      - postgresql-system
+    includedResources:
+      - persistentvolumeclaims
+      - persistentvolumes
+    labelSelector:
+      matchExpressions:
+        - key: cnpg.io/cluster
+          operator: Exists
+    includeClusterResources: false
+    storageLocation: default
+    ttl: 2160h0m0s  # Keep for 90 days
+    snapshotVolumes: false
+    defaultVolumesToFsBackup: true  # Use Velero fs-backup for PVCs
+  paused: false
