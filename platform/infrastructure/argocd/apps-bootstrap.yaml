@@ -1,14 +1,22 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: apps-root
+  name: apps-super-root
   namespace: apps-system
+  labels:
+    app.kubernetes.io/name: apps-super-root
+    app.kubernetes.io/component: gitops-root
+    cryptophys.work/managed-by: platform-gitops
+  annotations:
+    cryptophys.work/description: "Super root managing all category roots (core, dash, user)"
 spec:
   project: default
   source:
-    repoURL: https://github.com/cryptophys-work/apps-gitops.git
+    repoURL: http://platform-code-forge-gitea-http.gitops-system.svc.cluster.local:3000/admin/apps-gitops.git
     targetRevision: main
-    path: argocd
+    path: argocd/roots
+    directory:
+      recurse: false
   destination:
     server: https://kubernetes.default.svc
     namespace: apps-system
