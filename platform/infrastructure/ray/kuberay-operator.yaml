@@ -9,17 +9,16 @@ spec:
   chart:
     spec:
       chart: kuberay-operator
-      version: 1.2.2
+      version: 1.5.1
       sourceRef:
         kind: HelmRepository
         name: kuberay-charts
         namespace: flux-system
       interval: 1h
   values:
-    # Correct image repository (rayproject not kuberay)
     image:
       repository: quay.io/rayproject/kuberay-operator
-      tag: v1.2.2
+      tag: v1.5.1
       pullPolicy: IfNotPresent
     # Tolerate control-plane taint
     tolerations:
