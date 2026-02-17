@@ -6,9 +6,11 @@ metadata:
 spec:
   targetNamespace: cqls-compute
   interval: 1h
+  dependsOn:
+    - name: kuberay-operator
   chart:
     spec:
-      chart: kuberay-operator
+      chart: ray-cluster
       version: 1.2.2
       sourceRef:
         kind: HelmRepository
@@ -17,5 +19,14 @@ spec:
       interval: 1h
   values:
     image:
-      repository: kuberay/operator
-      tag: v1.2.2
+      repository: rayproject/ray
+      tag: "2.9.0"
+    head:
+      rayStartParams:
+        dashboard-host: '0.0.0.0'
+    workerGroupSpecs:
+      - groupName: small-group
+        replicas: 2
+        minReplicas: 1
+        maxReplicas: 5
+        rayStartParams: {}
