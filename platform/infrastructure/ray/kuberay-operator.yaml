@@ -17,10 +17,9 @@ spec:
       interval: 1h
   values:
     image:
-      repository: quay.io/rayproject/kuberay-operator
+      repository: quay.io/kuberay/operator
       tag: v1.5.1
       pullPolicy: IfNotPresent
-    # Tolerate control-plane taint
     tolerations:
       - key: node-role.kubernetes.io/control-plane
         operator: Exists
