@@ -16,10 +16,11 @@ spec:
         namespace: flux-system
       interval: 1h
   values:
-    # Use nightly/latest image since versioned tags don't exist
+    # Correct image repository (rayproject not kuberay)
     image:
-      repository: kuberay/operator
-      tag: nightly
+      repository: quay.io/rayproject/kuberay-operator
+      tag: v1.2.2
+      pullPolicy: IfNotPresent
     # Tolerate control-plane taint
     tolerations:
       - key: node-role.kubernetes.io/control-plane
