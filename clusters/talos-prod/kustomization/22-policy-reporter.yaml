@@ -4,7 +4,6 @@ metadata:
   name: 22-policy-reporter
   namespace: flux-system
 spec:
-  suspend: true
   interval: 1h
   wait: true
   timeout: 10m
