@@ -44,12 +44,9 @@ spec:
             s3Url: http://platform-backup-minio.minio-system.svc.cluster.local:9000
     snapshotsEnabled: false
     deployNodeAgent: false
-    tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
     nodeSelector:
-      cryptophys.io/tier: platform
+      cryptophys.io/node-role: storage-worker
+      kubernetes.io/hostname: campus-173-212-221-185
     resources:
       requests:
         cpu: 100m
