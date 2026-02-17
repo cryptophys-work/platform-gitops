@@ -19,7 +19,7 @@ spec:
       interval: 1h
   values:
     image:
-      repository: quay.io/rayproject/ray
+      repository: rayproject/ray
       tag: "2.9.0"
       pullPolicy: IfNotPresent
     head:
