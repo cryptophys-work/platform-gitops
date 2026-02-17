@@ -11,9 +11,6 @@ spec:
     - policyName: cp-supplychain-registry-v1
       ruleNames:
         - autogen-restrict-image-registries
-    - policyName: cp-resource-limits-v1
-      ruleNames:
-        - autogen-require-resource-limits
     - policyName: cp-platform-baseline
       ruleNames:
         - require-standard-labels
