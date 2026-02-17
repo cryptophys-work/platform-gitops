@@ -9,7 +9,7 @@ spec:
   prune: true
   wait: true
   timeout: 2m
-  path: ./ops/waiver-cleanup
+  path: ./policies/kyverno/waiver-cleanup
   sourceRef:
     kind: GitRepository
     name: ssot-core-repo
