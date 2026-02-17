@@ -1,4 +1,4 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta2
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: kuberay-operator
@@ -19,3 +19,8 @@ spec:
     image:
       repository: kuberay/operator
       tag: v1.2.2
+    # Tolerate control-plane taint
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
