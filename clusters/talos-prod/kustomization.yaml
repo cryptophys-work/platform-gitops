@@ -1,1 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - kustomization/00-crds.yaml
+  - kustomization/01-namespaces.yaml
+  - kustomization/05-sources.yaml
+  - kustomization/10-controllers.yaml
+  - kustomization/10-database.yaml
+  - kustomization/15-dns-core.yaml
+  - kustomization/17-metallb.yaml
+  - kustomization/18-networking.yaml
+  - kustomization/20-policy.yaml
+  - kustomization/21-policy-ssot.yaml
+  - kustomization/22-policy-reporter.yaml
+  - kustomization/30-storage.yaml
+  - kustomization/31-vault.yaml
+  - kustomization/32-spire.yaml
+  - kustomization/34-harbor.yaml
+  - kustomization/35-secrets.yaml
+  - kustomization/36-gitea.yaml
+  - kustomization/37-argocd.yaml
+  - kustomization/38-observability.yaml
+  - kustomization/39-security-observability.yaml
+  - kustomization/40-backup.yaml
+  - kustomization/41-crossplane.yaml
   - kustomization/42-ray.yaml
