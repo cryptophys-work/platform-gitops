@@ -30,16 +30,27 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
-    workerGroupSpecs:
-      - groupName: small-group
-        replicas: 2
-        minReplicas: 1
-        maxReplicas: 5
-        rayStartParams:
-          num-cpus: '1'
-        template:
-          spec:
-            tolerations:
-              - key: node-role.kubernetes.io/control-plane
-                operator: Exists
-                effect: NoSchedule
+      resources:
+        limits:
+          cpu: "1"
+          memory: "2G"
+        requests:
+          cpu: "500m"
+          memory: "1G"
+    worker:
+      replicas: 2
+      minReplicas: 1
+      maxReplicas: 5
+      rayStartParams:
+        num-cpus: '1'
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      resources:
+        limits:
+          cpu: "1"
+          memory: "1G"
+        requests:
+          cpu: "500m"
+          memory: "512M"
