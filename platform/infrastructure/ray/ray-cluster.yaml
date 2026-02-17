@@ -25,6 +25,7 @@ spec:
     head:
       rayStartParams:
         dashboard-host: '0.0.0.0'
+        num-cpus: '0'
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
@@ -34,7 +35,8 @@ spec:
         replicas: 2
         minReplicas: 1
         maxReplicas: 5
-        rayStartParams: {}
+        rayStartParams:
+          num-cpus: '1'
         template:
           spec:
             tolerations:
