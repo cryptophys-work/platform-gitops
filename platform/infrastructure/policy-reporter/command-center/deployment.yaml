@@ -15,6 +15,12 @@ spec:
       labels:
         app.kubernetes.io/name: kyverno-command-center
     spec:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      nodeSelector:
+        cryptophys.io/tier: platform
       containers:
         - name: nginx
           image: nginxinc/nginx-unprivileged:stable-alpine
@@ -36,6 +42,15 @@ spec:
             limits:
               cpu: 200m
               memory: 256Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 101
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
           volumeMounts:
             - name: web
               mountPath: /usr/share/nginx/html/index.html
