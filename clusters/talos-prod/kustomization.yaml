@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - kustomization/00-crds.yaml
   - kustomization/01-namespaces.yaml
+  - kustomization/02-scheduling.yaml
   - kustomization/05-sources.yaml
   - kustomization/10-controllers.yaml
   - kustomization/10-database.yaml

@@ -1,0 +1,14 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 02-scheduling
+  namespace: flux-system
+spec:
+  interval: 10m
+  prune: true
+  path: ./platform/infrastructure/scheduling
+  sourceRef:
+    kind: GitRepository
+    name: platform-repo
+  dependsOn:
+    - name: 01-namespaces

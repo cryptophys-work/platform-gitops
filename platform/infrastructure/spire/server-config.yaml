@@ -20,7 +20,7 @@ data:
       DataStore "sql" {
         plugin_data {
           database_type = "postgres"
-          connection_string = "dbname=spire user=spire password=SpireSecure2026 host=postgres-security-ha-rw.postgresql-system.svc.cluster.local port=5432 sslmode=disable"
+          connection_string = "dbname=spire user=spire password=SpireSecure2026! host=postgres-security-ha-rw.postgresql-system.svc.cluster.local port=5432 sslmode=disable"
         }
       }
       NodeAttestor "k8s_psat" {

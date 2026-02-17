@@ -1,0 +1,40 @@
+# Campus node scheduling policy
+# campus has 2 vCPU / 4GB RAM / 300GB storage
+# Taint: cryptophys.io/storage-only=true:NoSchedule
+# Only workloads that explicitly tolerate this taint will schedule here.
+#
+# Intended workloads:
+#   - Longhorn replicas (automatic via Longhorn engine)
+#   - Backup agents
+#   - Low-CPU storage consumers
+#
+# To schedule a pod on campus, add:
+#   tolerations:
+#     - key: cryptophys.io/storage-only
+#       operator: Equal
+#       value: "true"
+#       effect: NoSchedule
+#   nodeSelector:
+#     cryptophys.io/node-role: storage-worker
+#
+# Resource guard: LimitRange caps any single container on campus
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: campus-resource-guard
+  namespace: longhorn-system
+  annotations:
+    cryptophys.io/purpose: "Prevent large workloads from consuming campus resources"
+spec:
+  limits:
+    - type: Container
+      defaultRequest:
+        cpu: "50m"
+        memory: "64Mi"
+      default:
+        cpu: "250m"
+        memory: "256Mi"
+      max:
+        cpu: "500m"
+        memory: "512Mi"
