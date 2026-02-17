@@ -1,0 +1,30 @@
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: platform-backup-minio
+  namespace: minio-system
+spec:
+  exceptions:
+    - policyName: cp-security-hardening-v1
+      ruleNames:
+        - restrict-pod-security-standard
+        - autogen-restrict-pod-security-standard
+    - policyName: cp-standard-naming-canonical-v1
+      ruleNames:
+        - validate-resource-name
+        - autogen-validate-resource-name
+    - policyName: cp-standard-naming-v1
+      ruleNames:
+        - validate-resource-name
+        - autogen-validate-resource-name
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - Deployment
+            - ReplicaSet
+          names:
+            - platform-backup-minio*
+          namespaces:
+            - minio-system
