@@ -4,12 +4,12 @@ metadata:
   name: ray-cluster
   namespace: flux-system
 spec:
-  targetNamespace: cqls-compute # Dedicated namespace for compute
+  targetNamespace: cqls-compute
   interval: 1h
   chart:
     spec:
-      chart: kuberay-cluster
-      version: 1.0.0
+      chart: kuberay-operator
+      version: 1.2.2
       sourceRef:
         kind: HelmRepository
         name: kuberay-charts
@@ -17,48 +17,5 @@ spec:
       interval: 1h
   values:
     image:
-      repository: rayproject/ray
-      tag: 2.9.0
-      pullPolicy: IfNotPresent
-    
-    # --- HEAD NODE (Coordinator) ---
-    head:
-      rayStartParams:
-        dashboard-host: '0.0.0.0'
-      resources:
-        limits:
-          cpu: 2
-          memory: 4Gi
-        requests:
-          cpu: 1
-          memory: 2Gi
-      service:
-        type: ClusterIP
-    
-    # --- WORKER GROUP (Compute Nodes) ---
-    worker:
-      groupName: worker-group
-      replicas: 3 # Start with 3 workers
-      minReplicas: 1
-      maxReplicas: 10 # Auto-scale up to 10
-      rayStartParams: {}
-      resources:
-        limits:
-          cpu: 4
-          memory: 8Gi
-        requests:
-          cpu: 2
-          memory: 4Gi
-      # Affinity to keep workers on compute-optimized nodes (Cortex)
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: node-role.kubernetes.io/worker
-                operator: Exists
-
-    # --- INGRESS (Dashboard) ---
-    ingress:
-      enabled: true
-      host: ray.cryptophys.work
+      repository: kuberay/operator
+      tag: v1.2.2
