@@ -19,8 +19,9 @@ spec:
       interval: 1h
   values:
     image:
-      repository: rayproject/ray
+      repository: quay.io/rayproject/ray
       tag: "2.9.0"
+      pullPolicy: IfNotPresent
     # Head node
     head:
       rayStartParams:
