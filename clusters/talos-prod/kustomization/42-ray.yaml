@@ -15,4 +15,3 @@ spec:
   dependsOn:
     - name: 01-namespaces
     - name: 05-sources
-    - name: 30-storage
