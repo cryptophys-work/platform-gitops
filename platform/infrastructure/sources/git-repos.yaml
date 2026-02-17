@@ -21,5 +21,5 @@ spec:
   ref:
     branch: main
   secretRef:
-    name: platform-repo-auth
-  url: http://platform-code-forge-gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/ssot-core.git
+    name: github-repo-auth
+  url: https://github.com/cryptophys-work/ssot-core.git

@@ -4,7 +4,7 @@ metadata:
   name: ssot-kyverno-enforce-business
   namespace: flux-system
 spec:
-  suspend: true
+  suspend: false
   interval: 10m
   prune: true
   wait: true
