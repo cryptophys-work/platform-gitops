@@ -32,6 +32,14 @@ spec:
         effect: NoSchedule
     nodeSelector:
       cryptophys.io/tier: platform
+    scanJob:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Exists
+          effect: NoSchedule
     resources:
       requests:
         cpu: 50m
