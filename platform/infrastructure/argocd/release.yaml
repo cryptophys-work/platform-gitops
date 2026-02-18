@@ -59,72 +59,21 @@ spec:
         limits:
           cpu: 500m
           memory: 512Mi
-      # SPIRE-based certificate authentication for Git operations
-      env:
-        - name: GIT_SSL_CERT
-          value: /certs/svid.pem
-        - name: GIT_SSL_KEY
-          value: /certs/svid_key.pem
-        - name: GIT_SSL_CAINFO
-          value: /certs/bundle.pem
+      # Git authentication via HTTP internal (encrypted by Cilium mTLS)
+      # Token stored in Secret gitea-apps-gitops (temporary until CiliumEnvoyConfig available)
+      env: []
       volumes:
         - name: spiffe-workload-api
           csi:
             driver: csi.spiffe.io
             readOnly: true
-        - name: git-certs
-          emptyDir: {}
       volumeMounts:
-        - name: git-certs
-          mountPath: /certs
+        - name: spiffe-workload-api
+          mountPath: /spiffe-workload-api
           readOnly: true
-      # Sidecar to extract certificates from SPIRE Workload API socket
-      extraContainers:
-        - name: spiffe-helper
-          image: ghcr.io/spiffe/spiffe-helper:0.9.0
-          volumeMounts:
-            - name: spiffe-workload-api
-              mountPath: /spiffe-workload-api
-              readOnly: true
-            - name: git-certs
-              mountPath: /certs
-          env:
-            - name: SPIFFE_ENDPOINT_SOCKET
-              value: unix:///spiffe-workload-api/agent/agent.sock
-          command:
-            - /bin/sh
-            - -c
-            - |
-              # Create spiffe-helper config inline
-              cat > /tmp/helper.conf <<'EOF'
-              agent_address = "/spiffe-workload-api/agent/agent.sock"
-              cmd = ""
-              cmd_args = ""
-              cert_dir = "/certs"
-              renew_signal = ""
-              svid_file_name = "svid.pem"
-              svid_key_file_name = "svid_key.pem"
-              svid_bundle_file_name = "bundle.pem"
-              EOF
-              echo "$(date): Starting SPIFFE helper with Workload API socket"
-              exec /usr/bin/spiffe-helper -config /tmp/helper.conf
-          resources:
-            requests:
-              cpu: 10m
-              memory: 16Mi
-            limits:
-              cpu: 50m
-              memory: 64Mi
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 65534
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: false
-            capabilities:
-              drop:
-                - ALL
-            seccompProfile:
-              type: RuntimeDefault
+      # Sidecar: Simple approach - use HTTP internal which is already encrypted by Cilium
+      # Certificate-based authentication deferred until Cilium 1.17+ with CiliumEnvoyConfig support
+      extraContainers: []
     applicationSet:
       resources:
         requests:
