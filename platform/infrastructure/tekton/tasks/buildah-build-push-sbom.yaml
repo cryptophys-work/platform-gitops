@@ -1,0 +1,101 @@
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: buildah-build-push-sbom
+  namespace: tekton-system
+  labels:
+    app.kubernetes.io/version: "1.0"
+    cryptophys.io/tier: ci-cd
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.56.0"
+    tekton.dev/categories: Image Build
+    tekton.dev/tags: image-build, buildah, sbom
+    chains.tekton.dev/signed: "true"
+spec:
+  description: |
+    Build container image with Buildah, push to Harbor, and generate SBOM with Trivy.
+    Automatically signed by Tekton Chains with Cosign.
+  params:
+    - name: IMAGE
+      description: Reference of the image to build
+      type: string
+    - name: DOCKERFILE
+      description: Path to the Dockerfile
+      type: string
+      default: ./Dockerfile
+    - name: CONTEXT
+      description: Build context path
+      type: string
+      default: .
+    - name: TLSVERIFY
+      description: Verify TLS for registry
+      type: string
+      default: "false"
+    - name: FORMAT
+      description: Build format (docker or oci)
+      type: string
+      default: docker
+  workspaces:
+    - name: source
+      description: Workspace with source code
+  results:
+    - name: IMAGE_URL
+      description: Image repository URL without tag
+    - name: IMAGE_DIGEST
+      description: SHA256 digest of the built image
+    - name: IMAGE_REF
+      description: Full image reference with digest
+  steps:
+    - name: build-and-push
+      image: quay.io/buildah/stable:latest
+      securityContext:
+        privileged: true
+      script: |
+        #!/bin/bash
+        set -euo pipefail
+        
+        cd $(workspaces.source.path)
+        
+        echo "🔨 Building: $(params.IMAGE)"
+        buildah --storage-driver=vfs bud \
+          --format=$(params.FORMAT) \
+          --tls-verify=$(params.TLSVERIFY) \
+          -f $(params.DOCKERFILE) \
+          -t $(params.IMAGE) \
+          $(params.CONTEXT)
+        
+        echo "📤 Pushing to registry..."
+        buildah --storage-driver=vfs push \
+          --tls-verify=$(params.TLSVERIFY) \
+          --digestfile /tmp/image-digest \
+          $(params.IMAGE)
+        
+        DIGEST=$(cat /tmp/image-digest)
+        IMAGE_URL=$(echo $(params.IMAGE) | cut -d: -f1)
+        
+        echo "✅ Image pushed"
+        echo "   URL: $IMAGE_URL"
+        echo "   Digest: $DIGEST"
+        
+        echo -n "$IMAGE_URL" > $(results.IMAGE_URL.path)
+        echo -n "$DIGEST" > $(results.IMAGE_DIGEST.path)
+        echo -n "$IMAGE_URL@$DIGEST" > $(results.IMAGE_REF.path)
+
+    - name: generate-sbom
+      image: aquasec/trivy:latest
+      script: |
+        #!/bin/sh
+        set -e
+        
+        IMAGE_REF=$(cat $(results.IMAGE_REF.path))
+        
+        echo "🔍 Generating SBOM: $IMAGE_REF"
+        trivy image --format cyclonedx \
+          --output /workspace/sbom.json \
+          --insecure \
+          "$IMAGE_REF" || true
+        
+        if [ -f /workspace/sbom.json ]; then
+          echo "✅ SBOM generated: $(wc -l < /workspace/sbom.json) lines"
+        fi

@@ -1,0 +1,40 @@
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: verify-image-signatures-institutional
+  labels:
+    cryptophys.io/tier: security
+    cryptophys.io/enforcement: audit
+spec:
+  validationFailureAction: Audit
+  background: false
+  webhookTimeoutSeconds: 30
+  failurePolicy: Ignore
+  rules:
+    - name: verify-cryptophys-registry-images
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - "prod-*"
+                - "apps-core"
+      verifyImages:
+        - imageReferences:
+            - "registry.cryptophys.work/*:*"
+          attestors:
+            - count: 1
+              entries:
+                - keys:
+                    publicKeys: |-
+                      -----BEGIN PUBLIC KEY-----
+                      MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEXSJ3dG1HvOOfUw0Spw2FnQApD4fE
+                      u4qmkfIoINiEuo9MZplvYoNMOpg6tWTxnpn843ypQW3lWqNmARhQoa+dGw==
+                      -----END PUBLIC KEY-----
+                    rekor:
+                      url: https://rekor.sigstore.dev
+          mutateDigest: false
+          verifyDigest: true
+          required: false
