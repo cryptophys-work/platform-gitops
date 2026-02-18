@@ -30,17 +30,45 @@ metadata:
   # NOTE: keep this versioned to avoid immutable-field conflicts on GitOps reconciles.
   name: spire-ca-bundle-extractor-v2
   namespace: ingress-system
+  labels:
+    app.kubernetes.io/name: spire-ca-bundle-extractor
+    app.kubernetes.io/part-of: spire
+    app.kubernetes.io/instance: spire-ca-bundle-extractor
+    app.kubernetes.io/managed-by: flux
 spec:
   template:
     metadata:
       labels:
+        app.kubernetes.io/name: spire-ca-bundle-extractor
+        app.kubernetes.io/part-of: spire
+        app.kubernetes.io/instance: spire-ca-bundle-extractor
+        app.kubernetes.io/managed-by: flux
         job: spire-ca-bundle-extractor-v2
     spec:
       serviceAccountName: spire-ca-bundle-extractor
       restartPolicy: OnFailure
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: extract-bundle
-        image: bitnami/kubectl:latest
+        image: quay.io/bitnami/kubectl:1.30.3
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 65532
+          capabilities:
+            drop:
+            - ALL
         command:
         - /bin/sh
         - -c
@@ -80,12 +108,22 @@ kind: ServiceAccount
 metadata:
   name: spire-ca-bundle-extractor
   namespace: ingress-system
+  labels:
+    app.kubernetes.io/name: spire-ca-bundle-extractor
+    app.kubernetes.io/part-of: spire
+    app.kubernetes.io/instance: spire-ca-bundle-extractor
+    app.kubernetes.io/managed-by: flux
 ---
 # ClusterRole to read SPIRE bundle and update secret
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: spire-ca-bundle-extractor
+  labels:
+    app.kubernetes.io/name: spire-ca-bundle-extractor
+    app.kubernetes.io/part-of: spire
+    app.kubernetes.io/instance: spire-ca-bundle-extractor
+    app.kubernetes.io/managed-by: flux
 rules:
 - apiGroups: [""]
   resources: ["configmaps"]
@@ -101,6 +139,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: spire-ca-bundle-extractor
+  labels:
+    app.kubernetes.io/name: spire-ca-bundle-extractor
+    app.kubernetes.io/part-of: spire
+    app.kubernetes.io/instance: spire-ca-bundle-extractor
+    app.kubernetes.io/managed-by: flux
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
