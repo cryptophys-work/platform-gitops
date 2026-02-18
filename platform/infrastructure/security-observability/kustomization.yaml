@@ -5,3 +5,4 @@ resources:
   - loki-release.yaml
   - otel-collector-release.yaml
   - trivy-operator-release.yaml
+  - trivy-policy-exception.yaml
