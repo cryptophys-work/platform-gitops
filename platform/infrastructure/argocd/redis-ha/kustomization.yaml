@@ -6,8 +6,3 @@ resources:
   - redis-ha-rbac.yaml
   - redis-ha-configmap.yaml
   - redis-ha-statefulset.yaml
-labels:
-  - pairs:
-      cryptophys.work/managed-by: aide
-      cryptophys.io/environment: production
-    includeSelectors: false
