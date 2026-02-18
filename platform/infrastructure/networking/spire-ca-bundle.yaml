@@ -28,7 +28,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   # NOTE: keep this versioned to avoid immutable-field conflicts on GitOps reconciles.
-  name: spire-ca-bundle-extractor-v3
+  name: spire-ca-bundle-extractor-v4
   namespace: ingress-system
   labels:
     app.kubernetes.io/name: spire-ca-bundle-extractor
@@ -43,7 +43,7 @@ spec:
         app.kubernetes.io/part-of: spire
         app.kubernetes.io/instance: spire-ca-bundle-extractor
         app.kubernetes.io/managed-by: flux
-        job: spire-ca-bundle-extractor-v3
+        job: spire-ca-bundle-extractor-v4
     spec:
       serviceAccountName: spire-ca-bundle-extractor
       restartPolicy: OnFailure
@@ -52,7 +52,7 @@ spec:
           type: RuntimeDefault
       containers:
       - name: extract-bundle
-        image: quay.io/bitnami/kubectl:1.30.3
+        image: ghcr.io/bitnami/kubectl:1.30.3
         imagePullPolicy: IfNotPresent
         resources:
           requests:
@@ -63,6 +63,7 @@ spec:
             memory: 128Mi
         securityContext:
           allowPrivilegeEscalation: false
+          privileged: false
           readOnlyRootFilesystem: true
           runAsNonRoot: true
           runAsUser: 65532
