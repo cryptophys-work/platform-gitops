@@ -1,0 +1,42 @@
+---
+# SPIRE Workload Registration for ArgoCD Repo Server
+# Enables certificate-based Git authentication
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: argocd-repo-server
+  labels:
+    app.kubernetes.io/name: spire
+    app.kubernetes.io/part-of: spire
+    cryptophys.work/domain: identity
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  # SPIFFE ID for ArgoCD repo-server
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  
+  # Target workload: ArgoCD repo-server in apps-system namespace
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: apps-system
+  
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-repo-server
+  
+  # X.509 certificate settings
+  workloadSelectorTemplates:
+    - "k8s:ns:apps-system"
+    - "k8s:sa:argocd-repo-server"
+  
+  # DNS SANs for certificate
+  dnsNameTemplates:
+    - "argocd-repo-server.apps-system.svc.cluster.local"
+    - "argocd-repo-server"
+  
+  # Auto-populate DNS names from service
+  autoPopulateDNSNames: true
+  
+  # Certificate TTL (1 hour, auto-rotated by SPIRE)
+  ttl: "1h"

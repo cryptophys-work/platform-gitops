@@ -11,3 +11,4 @@ resources:
   - pdb.yaml
   - spiffe-csi-driver.yaml
   - registration-entries.yaml
+  - clusterspiffeid-argocd.yaml

@@ -62,6 +62,10 @@ data:
     }
 
     echo "=== SPIRE Registration Sync $(date -u) ==="
+    # argocd
+    register apps-system argocd-repo-server
+    register apps-system argocd-server
+    register apps-system argocd-application-controller
     # cert-manager
     register cert-manager cert-manager
     register cert-manager cert-manager-cainjector
@@ -104,7 +108,7 @@ data:
     register flux-system notification-controller
     register flux-system image-automation-controller
     register flux-system image-reflector-controller
-    echo "=== Complete: 30 entries verified ==="
+    echo "=== Complete: 33 entries verified ==="
 ---
 apiVersion: batch/v1
 kind: CronJob
