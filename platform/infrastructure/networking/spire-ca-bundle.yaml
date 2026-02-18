@@ -28,7 +28,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   # NOTE: keep this versioned to avoid immutable-field conflicts on GitOps reconciles.
-  name: spire-ca-bundle-extractor-v2
+  name: spire-ca-bundle-extractor-v3
   namespace: ingress-system
   labels:
     app.kubernetes.io/name: spire-ca-bundle-extractor
@@ -43,7 +43,7 @@ spec:
         app.kubernetes.io/part-of: spire
         app.kubernetes.io/instance: spire-ca-bundle-extractor
         app.kubernetes.io/managed-by: flux
-        job: spire-ca-bundle-extractor-v2
+        job: spire-ca-bundle-extractor-v3
     spec:
       serviceAccountName: spire-ca-bundle-extractor
       restartPolicy: OnFailure
