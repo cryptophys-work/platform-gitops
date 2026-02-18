@@ -74,7 +74,7 @@ spec:
         nginx.ingress.kubernetes.io/proxy-body-size: 512m
         # SPIRE mTLS client certificate validation
         nginx.ingress.kubernetes.io/auth-tls-verify-client: "optional"
-        nginx.ingress.kubernetes.io/auth-tls-secret: "ingress-nginx/spire-ca-bundle"
+        nginx.ingress.kubernetes.io/auth-tls-secret: "ingress-system/spire-ca-bundle"
         nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
         nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
         # Pass client certificate info to Gitea
