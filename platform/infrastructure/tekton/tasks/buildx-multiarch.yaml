@@ -1,0 +1,72 @@
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: buildx-multiarch
+  namespace: tekton-system
+  labels:
+    app.kubernetes.io/version: "1.0"
+    cryptophys.io/tier: ci-cd
+  annotations:
+    tekton.dev/categories: Image Build
+    tekton.dev/tags: buildx, multi-arch, arm64, amd64
+spec:
+  description: Build multi-architecture images (ARM64 + AMD64) with buildx
+  params:
+    - name: IMAGE
+      description: Image reference
+      type: string
+    - name: DOCKERFILE
+      description: Path to Dockerfile
+      type: string
+      default: ./Dockerfile
+    - name: PLATFORMS
+      description: Target platforms
+      type: string
+      default: "linux/amd64,linux/arm64"
+  workspaces:
+    - name: source
+  results:
+    - name: IMAGE_DIGEST
+      description: Multi-arch manifest digest
+  steps:
+    - name: setup-buildx
+      image: docker:24-dind
+      securityContext:
+        privileged: true
+      script: |
+        #!/bin/sh
+        set -e
+        
+        echo "🔧 Setting up buildx..."
+        dockerd-entrypoint.sh &
+        sleep 10
+        
+        docker buildx create --name multiarch --use || true
+        docker buildx inspect --bootstrap
+
+    - name: build-push
+      image: docker:24-cli
+      securityContext:
+        privileged: true
+      script: |
+        #!/bin/sh
+        set -e
+        
+        cd $(workspaces.source.path)
+        
+        echo "🏗️ Building multi-arch: $(params.PLATFORMS)"
+        
+        docker buildx build \
+          --platform $(params.PLATFORMS) \
+          --tag $(params.IMAGE) \
+          --file $(params.DOCKERFILE) \
+          --push \
+          --output type=image,push=true \
+          .
+        
+        # Get manifest digest
+        docker buildx imagetools inspect $(params.IMAGE) \
+          --format '{{.Manifest.Digest}}' > $(results.IMAGE_DIGEST.path)
+        
+        echo "✅ Multi-arch build complete"

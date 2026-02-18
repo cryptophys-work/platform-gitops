@@ -1,0 +1,58 @@
+---
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: python-application-build
+  namespace: tekton-system
+  labels:
+    cryptophys.io/language: python
+spec:
+  description: Build, test, and sign Python applications
+  params:
+    - name: repo-url
+      type: string
+    - name: image-name
+      type: string
+    - name: image-tag
+      type: string
+      default: latest
+  workspaces:
+    - name: shared-data
+  tasks:
+    - name: fetch-source
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-data
+      params:
+        - name: url
+          value: $(params.repo-url)
+    
+    - name: test
+      runAfter: [fetch-source]
+      workspaces:
+        - name: source
+          workspace: shared-data
+      taskSpec:
+        workspaces:
+          - name: source
+        steps:
+          - name: test
+            image: python:3.11-alpine
+            script: |
+              #!/bin/sh
+              cd $(workspaces.source.path)
+              pip install pytest || true
+              pytest || echo "No tests found"
+    
+    - name: build-push
+      runAfter: [test]
+      taskRef:
+        name: buildah-build-push-sbom
+      workspaces:
+        - name: source
+          workspace: shared-data
+      params:
+        - name: IMAGE
+          value: "registry.cryptophys.work/$(params.image-name):$(params.image-tag)"

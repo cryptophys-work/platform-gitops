@@ -1,0 +1,34 @@
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: tekton-system-quota
+  namespace: tekton-system
+spec:
+  hard:
+    requests.cpu: "20"
+    requests.memory: 40Gi
+    limits.cpu: "40"
+    limits.memory: 80Gi
+    persistentvolumeclaims: "50"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: tekton-system-limits
+  namespace: tekton-system
+spec:
+  limits:
+    - max:
+        cpu: "4"
+        memory: 8Gi
+      min:
+        cpu: "100m"
+        memory: 128Mi
+      default:
+        cpu: "500m"
+        memory: 512Mi
+      defaultRequest:
+        cpu: "250m"
+        memory: 256Mi
+      type: Container
