@@ -73,6 +73,8 @@ spec:
             - name: spire-data
               mountPath: /run/spire/data
               readOnly: false
+            - name: server-socket
+              mountPath: /tmp/spire-server/private
           resources:
             limits:
               cpu: 500m
@@ -80,10 +82,65 @@ spec:
             requests:
               cpu: 250m
               memory: 256Mi
+        - name: spire-controller-manager
+          image: registry.cryptophys.work/library/spire-controller-manager:0.6.3
+          imagePullPolicy: IfNotPresent
+          args:
+            - --config=/run/spire/config/controller-manager.yaml
+          ports:
+            - name: metrics
+              containerPort: 8080
+              protocol: TCP
+            - name: healthz
+              containerPort: 8083
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: healthz
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: healthz
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: controller-manager-config
+              mountPath: /run/spire/config
+              readOnly: true
+            - name: server-socket
+              mountPath: /spire-server
+              readOnly: true
+            - name: controller-manager-tmp
+              mountPath: /tmp
       volumes:
         - name: spire-config
           configMap:
             name: spire-server-config
+        - name: controller-manager-config
+          configMap:
+            name: spire-controller-manager-config
+        - name: server-socket
+          emptyDir: {}
+        - name: controller-manager-tmp
+          emptyDir: {}
   volumeClaimTemplates:
     - metadata:
         name: spire-data
