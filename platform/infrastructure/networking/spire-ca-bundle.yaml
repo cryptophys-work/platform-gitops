@@ -1,0 +1,89 @@
+---
+# SPIRE CA Bundle Secret for NGINX Ingress mTLS validation
+# This secret contains the SPIRE root CA certificate used to validate client certificates
+apiVersion: v1
+kind: Secret
+metadata:
+  name: spire-ca-bundle
+  namespace: ingress-nginx
+type: Opaque
+data:
+  # This will be populated by a Job or manually
+  # Format: base64 encoded SPIRE bundle.crt
+  ca.crt: ""  # Placeholder - to be populated by automation
+---
+# Job to extract SPIRE CA bundle and populate the secret
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: spire-ca-bundle-extractor
+  namespace: ingress-nginx
+spec:
+  template:
+    metadata:
+      labels:
+        job: spire-ca-bundle-extractor
+    spec:
+      serviceAccountName: spire-ca-bundle-extractor
+      restartPolicy: OnFailure
+      containers:
+      - name: extract-bundle
+        image: bitnami/kubectl:1.28
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e
+          echo "Extracting SPIRE CA bundle..."
+          
+          # Get SPIRE bundle from ConfigMap
+          BUNDLE=$(kubectl get configmap -n spire-system spire-bundle -o jsonpath='{.data.bundle\.crt}' | base64 -w 0)
+          
+          # Update secret
+          kubectl patch secret spire-ca-bundle -n ingress-nginx \
+            --type='json' \
+            -p='[{"op": "replace", "path": "/data/ca.crt", "value":"'$BUNDLE'"}]'
+          
+          echo "SPIRE CA bundle extracted successfully"
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      nodeSelector:
+        cryptophys.io/tier: platform
+---
+# ServiceAccount for the job
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spire-ca-bundle-extractor
+  namespace: ingress-nginx
+---
+# ClusterRole to read SPIRE bundle and update secret
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: spire-ca-bundle-extractor
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get"]
+  resourceNames: ["spire-bundle"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "patch"]
+  resourceNames: ["spire-ca-bundle"]
+---
+# ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: spire-ca-bundle-extractor
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: spire-ca-bundle-extractor
+subjects:
+- kind: ServiceAccount
+  name: spire-ca-bundle-extractor
+  namespace: ingress-nginx

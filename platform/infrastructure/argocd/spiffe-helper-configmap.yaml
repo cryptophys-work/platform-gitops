@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-repo-server-spiffe-helper-config
+  namespace: apps-system
+data:
+  config.hcl: |
+    agent_address = "/spiffe-workload-api/spire-agent.sock"
+    
+    cert_dir = "/certs"
+    
+    # Extract SVID certificate
+    svid_file_name = "svid.pem"
+    svid_key_file_name = "svid_key.pem"
+    svid_bundle_file_name = "bundle.pem"
+    
+    # Renew certificates before expiry
+    renew_signal = "SIGUSR1"
+    
+    # Daemon mode - continuously watch for certificate rotation
+    cmd = "/bin/sleep"
+    cmd_args = "infinity"

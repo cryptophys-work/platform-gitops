@@ -5,3 +5,4 @@ resources:
   - ingress-hubble-ui.yaml
   - ingress-longhorn-ui.yaml
   - ingress-argocd.yaml
+  - spire-ca-bundle.yaml
