@@ -6,3 +6,4 @@ resources:
   - velero-schedules.yaml
   - ingress-minio-console.yaml
   - policy-exception.yaml
+  - velero-policy-exception.yaml
