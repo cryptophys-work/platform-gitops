@@ -12,6 +12,6 @@ resources:
   - pdb.yaml
   - spiffe-csi-driver.yaml
   - registration-entries.yaml
-  # controller-manager: disabled until SPIRE server admin socket configured
-  # - controller-manager.yaml
-  # - clusterspiffeid-argocd.yaml  # requires controller-manager
+  - controller-manager.yaml
+  - webhook.yaml
+  - clusterspiffeid-argocd.yaml
