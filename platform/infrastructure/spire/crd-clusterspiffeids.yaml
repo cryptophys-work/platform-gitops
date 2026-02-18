@@ -1,0 +1,69 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: clusterspiffeids.spire.spiffe.io
+  labels:
+    app.kubernetes.io/part-of: spire
+spec:
+  group: spire.spiffe.io
+  names:
+    kind: ClusterSPIFFEID
+    listKind: ClusterSPIFFEIDList
+    plural: clusterspiffeids
+    singular: clusterspiffeid
+    shortNames:
+      - cspiffeid
+  scope: Cluster
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required:
+                - spiffeIDTemplate
+              properties:
+                spiffeIDTemplate:
+                  type: string
+                podSelector:
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                namespaceSelector:
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                workloadSelectorTemplates:
+                  type: array
+                  items:
+                    type: string
+                dnsNameTemplates:
+                  type: array
+                  items:
+                    type: string
+                autoPopulateDNSNames:
+                  type: boolean
+                ttl:
+                  type: string
+                admin:
+                  type: boolean
+                downstream:
+                  type: boolean
+                federatesWith:
+                  type: array
+                  items:
+                    type: string
+                jwtTTL:
+                  type: string
+            status:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
