@@ -59,21 +59,75 @@ spec:
         limits:
           cpu: 500m
           memory: 512Mi
-      # Git authentication via HTTP internal (encrypted by Cilium mTLS)
-      # Token stored in Secret gitea-apps-gitops (temporary until CiliumEnvoyConfig available)
-      env: []
+      # Certificate-based Git authentication using SPIRE-issued certificates
+      env:
+        - name: GIT_SSL_CERT
+          value: /tmp/spiffe-certs/svid.pem
+        - name: GIT_SSL_KEY
+          value: /tmp/spiffe-certs/svid_key.pem
+        - name: GIT_SSL_CAINFO
+          value: /tmp/spiffe-certs/svid_bundle.pem
+        - name: GIT_SSL_NO_VERIFY
+          value: "false"
       volumes:
         - name: spiffe-workload-api
           csi:
             driver: csi.spiffe.io
             readOnly: true
+        - name: spiffe-certs
+          emptyDir:
+            medium: Memory
+            sizeLimit: 10Mi
       volumeMounts:
         - name: spiffe-workload-api
           mountPath: /spiffe-workload-api
           readOnly: true
-      # Sidecar: Simple approach - use HTTP internal which is already encrypted by Cilium
-      # Certificate-based authentication deferred until Cilium 1.17+ with CiliumEnvoyConfig support
-      extraContainers: []
+        - name: spiffe-certs
+          mountPath: /tmp/spiffe-certs
+      # Sidecar: spiffe-helper extracts certs from CSI volume to filesystem for Git client
+      extraContainers:
+        - name: spiffe-helper
+          image: ghcr.io/spiffe/spiffe-helper:0.14.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - -config
+            - /etc/spiffe-helper/helper.conf
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 999
+          volumeMounts:
+            - name: spiffe-workload-api
+              mountPath: /spiffe-workload-api
+              readOnly: true
+            - name: spiffe-certs
+              mountPath: /tmp/spiffe-certs
+            - name: spiffe-helper-config
+              mountPath: /etc/spiffe-helper
+              readOnly: true
+      volumes:
+        - name: spiffe-workload-api
+          csi:
+            driver: csi.spiffe.io
+            readOnly: true
+        - name: spiffe-certs
+          emptyDir:
+            medium: Memory
+            sizeLimit: 10Mi
+        - name: spiffe-helper-config
+          configMap:
+            name: argocd-spiffe-helper-config
     applicationSet:
       resources:
         requests:
@@ -83,13 +137,11 @@ spec:
           cpu: 250m
           memory: 256Mi
     redis:
-      resources:
-        requests:
-          cpu: 50m
-          memory: 64Mi
-        limits:
-          cpu: 250m
-          memory: 256Mi
+      # Disable built-in Redis - using external HA cluster
+      enabled: false
+    externalRedis:
+      host: argocd-redis-ha.apps-system.svc.cluster.local
+      port: 6379
     notifications:
       resources:
         requests:

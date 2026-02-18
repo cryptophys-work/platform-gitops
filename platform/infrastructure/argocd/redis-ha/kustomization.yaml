@@ -1,0 +1,11 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: apps-system
+resources:
+  - redis-ha-rbac.yaml
+  - redis-ha-configmap.yaml
+  - redis-ha-statefulset.yaml
+commonLabels:
+  cryptophys.work/managed-by: flux
+  cryptophys.io/environment: production

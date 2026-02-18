@@ -1,0 +1,37 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-redis-ha-configmap
+  namespace: apps-system
+  labels:
+    app.kubernetes.io/name: argocd-redis-ha
+    app.kubernetes.io/part-of: argocd
+    app.kubernetes.io/component: redis-ha
+    cryptophys.work/domain: argocd
+data:
+  redis.conf: |
+    dir /data
+    maxmemory 256mb
+    maxmemory-policy allkeys-lru
+    save ""
+    appendonly yes
+    appendfsync everysec
+    auto-aof-rewrite-percentage 100
+    auto-aof-rewrite-min-size 64mb
+  sentinel.conf: |
+    dir /data
+    sentinel monitor argocd-redis argocd-redis-ha-announce-0.argocd-redis-ha-announce.apps-system.svc.cluster.local 6379 2
+    sentinel down-after-milliseconds argocd-redis 10000
+    sentinel failover-timeout argocd-redis 180000
+    sentinel parallel-syncs argocd-redis 1
+  init.sh: |
+    #!/bin/bash
+    set -eo pipefail
+    HOSTNAME=$(hostname)
+    INDEX=${HOSTNAME##*-}
+    ANNOUNCE_HOST="${HOSTNAME}.argocd-redis-ha-announce.apps-system.svc.cluster.local"
+    sed -i "s/replica-announce-ip .*/replica-announce-ip ${ANNOUNCE_HOST}/" /readonly-config/redis.conf
+    sed -i "s/sentinel announce-ip .*/sentinel announce-ip ${ANNOUNCE_HOST}/" /readonly-config/sentinel.conf
+    cp /readonly-config/redis.conf /data/redis.conf
+    cp /readonly-config/sentinel.conf /data/sentinel.conf
