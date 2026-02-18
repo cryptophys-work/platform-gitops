@@ -23,18 +23,24 @@ data:
     dir /data
     # Monitor via announce service, not individual pod hostnames
     # Pods will update their own announce-ip via init script
-    sentinel monitor argocd-redis argocd-redis-ha-announce.apps-system.svc.cluster.local 6379 2
+    sentinel monitor argocd-redis 127.0.0.1 6379 2
     sentinel down-after-milliseconds argocd-redis 10000
     sentinel failover-timeout argocd-redis 180000
     sentinel parallel-syncs argocd-redis 1
   init.sh: |
-    #!/bin/bash
-    set -eo pipefail
+    #!/bin/sh
+    set -e
     HOSTNAME=$(hostname)
     INDEX=${HOSTNAME##*-}
-    ANNOUNCE_HOST="${HOSTNAME}.argocd-redis-ha-announce.apps-system.svc.cluster.local"
+    # Get own pod IP for announce
+    POD_IP=$(hostname -i)
     # Copy configs to writable /data first, then modify
     cp /readonly-config/redis.conf /data/redis.conf
     cp /readonly-config/sentinel.conf /data/sentinel.conf
-    sed -i "s/replica-announce-ip .*/replica-announce-ip ${ANNOUNCE_HOST}/" /data/redis.conf
-    sed -i "s/sentinel announce-ip .*/sentinel announce-ip ${ANNOUNCE_HOST}/" /data/sentinel.conf
+    # Set announce-ip to pod IP so peers can discover us
+    echo "replica-announce-ip ${POD_IP}" >> /data/redis.conf
+    echo "sentinel announce-ip ${POD_IP}" >> /data/sentinel.conf
+    # Non-zero pods replicate from pod-0 via headless service
+    if [ "$INDEX" != "0" ]; then
+      echo "replicaof argocd-redis-ha-0.argocd-redis-ha-announce.apps-system.svc.cluster.local 6379" >> /data/redis.conf
+    fi
