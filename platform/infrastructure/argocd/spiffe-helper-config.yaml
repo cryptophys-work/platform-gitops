@@ -11,7 +11,7 @@ metadata:
     cryptophys.work/domain: argocd
 data:
   helper.conf: |
-    agent_address = "/spiffe-workload-api/spire-agent.sock"
+    agent_address = "/spiffe-workload-api/agent/agent.sock"
     cmd = ""
     cmd_args = ""
     cert_dir = "/tmp/spiffe-certs"
