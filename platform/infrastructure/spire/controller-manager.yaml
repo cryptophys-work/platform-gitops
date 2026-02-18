@@ -76,7 +76,7 @@ data:
       healthProbeBindAddress: :8083
     clusterName: cryptophys-genesis
     trustDomain: cryptophys.work
-    spireServerSocketPath: /run/spire/sockets/server.sock
+    spireServerSocketPath: /spire-server/api.sock
     ignoreNamespaces:
       - kube-system
       - kube-public
@@ -95,7 +95,7 @@ metadata:
   annotations:
     cryptophys.io/contract: contract.platform.spire.v1
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app.kubernetes.io/name: spire-controller-manager

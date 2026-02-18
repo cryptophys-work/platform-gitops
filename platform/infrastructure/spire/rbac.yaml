@@ -65,3 +65,17 @@ subjects:
 - kind: ServiceAccount
   name: spire-agent
   namespace: spire-system
+---
+# Allow spire-server SA to also manage ClusterSPIFFEID resources (for sidecar controller-manager)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: spire-server-controller-manager-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: spire-controller-manager
+subjects:
+- kind: ServiceAccount
+  name: spire-server
+  namespace: spire-system
