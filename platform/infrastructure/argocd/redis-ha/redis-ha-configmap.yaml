@@ -31,7 +31,8 @@ data:
     HOSTNAME=$(hostname)
     INDEX=${HOSTNAME##*-}
     ANNOUNCE_HOST="${HOSTNAME}.argocd-redis-ha-announce.apps-system.svc.cluster.local"
-    sed -i "s/replica-announce-ip .*/replica-announce-ip ${ANNOUNCE_HOST}/" /readonly-config/redis.conf
-    sed -i "s/sentinel announce-ip .*/sentinel announce-ip ${ANNOUNCE_HOST}/" /readonly-config/sentinel.conf
+    # Copy configs to writable /data first, then modify
     cp /readonly-config/redis.conf /data/redis.conf
     cp /readonly-config/sentinel.conf /data/sentinel.conf
+    sed -i "s/replica-announce-ip .*/replica-announce-ip ${ANNOUNCE_HOST}/" /data/redis.conf
+    sed -i "s/sentinel announce-ip .*/sentinel announce-ip ${ANNOUNCE_HOST}/" /data/sentinel.conf
