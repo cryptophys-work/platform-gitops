@@ -28,7 +28,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: extract-bundle
-        image: bitnami/kubectl:1.28
+        image: bitnami/kubectl:latest
         command:
         - /bin/sh
         - -c
