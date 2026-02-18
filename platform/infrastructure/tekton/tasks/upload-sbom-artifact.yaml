@@ -1,0 +1,49 @@
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: upload-sbom-artifact
+  namespace: tekton-system
+  labels:
+    app.kubernetes.io/version: "1.0"
+    cryptophys.io/tier: security
+  annotations:
+    tekton.dev/categories: Security, SBOM
+    tekton.dev/tags: sbom, cosign, oras
+spec:
+  description: Upload SBOM as OCI artifact to Harbor registry
+  params:
+    - name: IMAGE_REF
+      description: Full image reference with digest
+      type: string
+    - name: SBOM_PATH
+      description: Path to SBOM file
+      type: string
+      default: /workspace/sbom.json
+  workspaces:
+    - name: source
+  steps:
+    - name: upload-sbom
+      image: ghcr.io/sigstore/cosign/cosign:v2.2.3
+      env:
+        - name: COSIGN_EXPERIMENTAL
+          value: "1"
+      script: |
+        #!/bin/sh
+        set -e
+        
+        IMAGE_REF="$(params.IMAGE_REF)"
+        SBOM_FILE="$(params.SBOM_PATH)"
+        
+        if [ ! -f "$SBOM_FILE" ]; then
+          echo "⚠️ SBOM not found at $SBOM_FILE"
+          exit 0
+        fi
+        
+        echo "📤 Uploading SBOM to: $IMAGE_REF"
+        
+        # Attach SBOM as attestation
+        cosign attach sbom --sbom "$SBOM_FILE" "$IMAGE_REF" || \
+          echo "⚠️ SBOM upload failed, continuing..."
+        
+        echo "✅ SBOM upload attempted"
