@@ -1,0 +1,39 @@
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: platform-backup-velero
+  namespace: velero-system
+spec:
+  exceptions:
+    - policyName: cp-security-hardening-v1
+      ruleNames:
+        - restrict-pod-security-standard
+        - autogen-restrict-pod-security-standard
+    - policyName: cp-standard-naming-canonical-v1
+      ruleNames:
+        - validate-resource-name
+        - autogen-validate-resource-name
+    - policyName: cp-standard-naming-v1
+      ruleNames:
+        - validate-resource-name
+        - autogen-validate-resource-name
+    - policyName: cp-standard-resources-limits-v1
+      ruleNames:
+        - require-limits-requests
+        - autogen-require-limits-requests
+    - policyName: cp-supplychain-registry-v1
+      ruleNames:
+        - restrict-image-registries
+        - autogen-restrict-image-registries
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - Deployment
+            - ReplicaSet
+          names:
+            - velero*
+            - platform-backup-velero*
+          namespaces:
+            - velero-system
