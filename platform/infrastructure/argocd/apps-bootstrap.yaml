@@ -12,7 +12,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: http://platform-code-forge-gitea-http.gitops-system.svc.cluster.local:3000/cryptophys-work/apps-gitops.git
+    repoURL: https://gitea-internal.cryptophys.work/cryptophys-work/apps-gitops.git
     targetRevision: main
     path: argocd/roots
     directory:
