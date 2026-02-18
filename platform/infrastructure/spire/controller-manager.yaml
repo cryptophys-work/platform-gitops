@@ -1,0 +1,163 @@
+---
+# SPIRE Controller Manager - Manages ClusterSPIFFEID and ClusterFederatedTrustDomain CRDs
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spire-controller-manager
+  namespace: spire-system
+  labels:
+    app.kubernetes.io/name: spire-controller-manager
+    app.kubernetes.io/part-of: spire
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: spire-controller-manager
+  labels:
+    app.kubernetes.io/name: spire-controller-manager
+    app.kubernetes.io/part-of: spire
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["authentication.k8s.io"]
+    resources: ["tokenreviews"]
+    verbs: ["create"]
+  - apiGroups: ["spire.spiffe.io"]
+    resources: ["clusterspiffeids", "clusterspiffeids/status", "clusterspiffeids/finalizers"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["spire.spiffe.io"]
+    resources: ["clusterfederatedtrustdomains", "clusterfederatedtrustdomains/status", "clusterfederatedtrustdomains/finalizers"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["spire.spiffe.io"]
+    resources: ["clusterstaticentries", "clusterstaticentries/status", "clusterstaticentries/finalizers"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: spire-controller-manager
+  labels:
+    app.kubernetes.io/name: spire-controller-manager
+    app.kubernetes.io/part-of: spire
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: spire-controller-manager
+subjects:
+  - kind: ServiceAccount
+    name: spire-controller-manager
+    namespace: spire-system
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spire-controller-manager-config
+  namespace: spire-system
+  labels:
+    app.kubernetes.io/name: spire-controller-manager
+    app.kubernetes.io/part-of: spire
+data:
+  controller-manager.conf: |
+    cluster_name = "cryptophys-genesis"
+    trust_domain = "cryptophys.work"
+    server_address = "spire-server.spire-system.svc.cluster.local"
+    server_port = "8081"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spire-controller-manager
+  namespace: spire-system
+  labels:
+    app.kubernetes.io/name: spire-controller-manager
+    app.kubernetes.io/part-of: spire
+    app.kubernetes.io/component: controller
+    cryptophys.work/domain: identity
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: spire-controller-manager
+      app.kubernetes.io/component: controller
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: spire-controller-manager
+        app.kubernetes.io/part-of: spire
+        app.kubernetes.io/component: controller
+        cryptophys.work/domain: identity
+    spec:
+      serviceAccountName: spire-controller-manager
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: spire-controller-manager
+          image: ghcr.io/spiffe/spire-controller-manager:0.7.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - --config=/run/spire/config/controller-manager.conf
+          ports:
+            - name: metrics
+              containerPort: 8080
+              protocol: TCP
+            - name: healthz
+              containerPort: 8083
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: healthz
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: healthz
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: config
+              mountPath: /run/spire/config
+              readOnly: true
+            - name: spire-server-socket
+              mountPath: /run/spire/sockets
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: spire-controller-manager-config
+        - name: spire-server-socket
+          csi:
+            driver: csi.spiffe.io
+            readOnly: true
