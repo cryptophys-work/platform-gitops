@@ -48,10 +48,25 @@ data:
     SERVER_POD=$(kubectl get pod -n spire-system -l app=spire-server -o jsonpath='{.items[0].metadata.name}')
     if [ -z "$SERVER_POD" ]; then echo "SPIRE server pod not found"; exit 1; fi
 
+    # Node alias SPIFFE ID - all workload entries use this as parent
+    NODE_ALIAS="spiffe://cryptophys.work/k8s/cluster/cryptophys-genesis"
+
+    ensure_node_alias() {
+      EXISTS=$(kubectl exec -n spire-system $SERVER_POD -- /opt/spire/bin/spire-server entry show -spiffeID "$NODE_ALIAS" 2>/dev/null | grep -c "Entry ID" || true)
+      if [ "$EXISTS" -gt 0 ]; then echo "  Node alias already exists"; return 0; fi
+      kubectl exec -n spire-system $SERVER_POD -- /opt/spire/bin/spire-server entry create \
+        -spiffeID "$NODE_ALIAS" \
+        -selector "k8s_psat:cluster:cryptophys-genesis" \
+        -selector "k8s_psat:agent_ns:spire-system" \
+        -selector "k8s_psat:agent_sa:spire-agent" \
+        -node
+      echo "  Node alias created: $NODE_ALIAS"
+    }
+
     register() {
       NS=$1; SA=$2
       ID="spiffe://cryptophys.work/ns/${NS}/sa/${SA}"
-      PARENT="spiffe://cryptophys.work/spire/agent/k8s_psat/cryptophys-genesis"
+      PARENT="$NODE_ALIAS"
       # Check existing
       EXISTS=$(kubectl exec -n spire-system $SERVER_POD -- /opt/spire/bin/spire-server entry show -spiffeID "$ID" 2>/dev/null | grep -c "Entry ID" || true)
       if [ "$EXISTS" -gt 0 ]; then return 0; fi
@@ -62,6 +77,7 @@ data:
     }
 
     echo "=== SPIRE Registration Sync $(date -u) ==="
+    ensure_node_alias
     # argocd
     register apps-system argocd-repo-server
     register apps-system argocd-server
