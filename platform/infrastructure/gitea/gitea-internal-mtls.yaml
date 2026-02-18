@@ -1,0 +1,48 @@
+---
+# ConfigMap injected by nginx for cert-verified connections only
+# When auth-tls-verify-client: required, only SPIFFE-cert connections reach Gitea
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitea-proxy-headers
+  namespace: gitops-system
+  labels:
+    cryptophys.io/flux-managed: "true"
+data:
+  X-Forwarded-User: "token"
+---
+# Internal mTLS ingress for ArgoCD → Gitea
+# Requires SPIFFE client cert; injects X-Forwarded-User for Gitea reverse proxy auth
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gitea-internal-mtls
+  namespace: gitops-system
+  labels:
+    cryptophys.io/flux-managed: "true"
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+    # Require SPIFFE client cert from SPIRE CA
+    nginx.ingress.kubernetes.io/auth-tls-secret: "gitops-system/spire-ca-bundle"
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "required"
+    nginx.ingress.kubernetes.io/auth-tls-verify-depth: "3"
+    nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
+    # Inject authenticated user header (safe: only cert-verified connections reach here)
+    nginx.ingress.kubernetes.io/proxy-set-headers: "gitops-system/gitea-proxy-headers"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: gitea-internal.cryptophys.work
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: platform-code-forge-gitea-http
+                port:
+                  number: 3000
+  tls:
+    - secretName: cryptophys-wildcard-tls
+      hosts:
+        - gitea-internal.cryptophys.work

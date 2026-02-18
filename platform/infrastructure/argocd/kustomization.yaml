@@ -6,3 +6,4 @@ resources:
   - spiffe-helper-config.yaml
   - release.yaml
   - apps-bootstrap.yaml
+  - argocd-repo-mtls-secret.yaml

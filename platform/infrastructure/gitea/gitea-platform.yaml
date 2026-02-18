@@ -41,6 +41,7 @@ spec:
       config:
         security:
           INSTALL_LOCK: true
+          REVERSE_PROXY_TRUSTED_PROXIES: "10.244.0.0/16,10.96.0.0/12"
         server:
           DOMAIN: gitea.cryptophys.work
           ROOT_URL: https://gitea.cryptophys.work/
@@ -67,6 +68,8 @@ spec:
           DISABLE_REGISTRATION: true
           SHOW_REGISTRATION_BUTTON: false
           ALLOW_ONLY_EXTERNAL_REGISTRATION: false
+          ENABLE_REVERSE_PROXY_AUTHENTICATION: "true"
+          REVERSE_PROXY_AUTHENTICATION_USER: "X-Forwarded-User"
     ingress:
       enabled: true
       className: nginx
@@ -74,7 +77,8 @@ spec:
         nginx.ingress.kubernetes.io/proxy-body-size: 512m
         # SPIRE mTLS client certificate validation
         nginx.ingress.kubernetes.io/auth-tls-verify-client: "optional"
-        nginx.ingress.kubernetes.io/auth-tls-secret: "ingress-system/spire-ca-bundle"
+        # ingress-nginx expects auth-tls-secret in `namespace/name` form; use the same namespace as this Ingress.
+        nginx.ingress.kubernetes.io/auth-tls-secret: "gitops-system/spire-ca-bundle"
         nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
         nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
       hosts:
