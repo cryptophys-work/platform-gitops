@@ -67,11 +67,20 @@ metadata:
     app.kubernetes.io/name: spire-controller-manager
     app.kubernetes.io/part-of: spire
 data:
-  controller-manager.conf: |
-    cluster_name = "cryptophys-genesis"
-    trust_domain = "cryptophys.work"
-    server_address = "spire-server.spire-system.svc.cluster.local"
-    server_port = "8081"
+  controller-manager.yaml: |
+    apiVersion: spire.spiffe.io/v1alpha1
+    kind: ControllerManagerConfig
+    metrics:
+      bindAddress: :8080
+    health:
+      healthProbeBindAddress: :8083
+    clusterName: cryptophys-genesis
+    trustDomain: cryptophys.work
+    spireServerSocketPath: /run/spire/sockets/server.sock
+    ignoreNamespaces:
+      - kube-system
+      - kube-public
+      - spire-system
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -111,7 +120,7 @@ spec:
           image: ghcr.io/spiffe/spire-controller-manager:0.6.3
           imagePullPolicy: IfNotPresent
           args:
-            - --config=/run/spire/config/controller-manager.conf
+            - --config=/run/spire/config/controller-manager.yaml
           ports:
             - name: metrics
               containerPort: 8080
