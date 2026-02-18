@@ -21,7 +21,9 @@ data:
     auto-aof-rewrite-min-size 64mb
   sentinel.conf: |
     dir /data
-    sentinel monitor argocd-redis argocd-redis-ha-announce-0.argocd-redis-ha-announce.apps-system.svc.cluster.local 6379 2
+    # Monitor via announce service, not individual pod hostnames
+    # Pods will update their own announce-ip via init script
+    sentinel monitor argocd-redis argocd-redis-ha-announce.apps-system.svc.cluster.local 6379 2
     sentinel down-after-milliseconds argocd-redis 10000
     sentinel failover-timeout argocd-redis 180000
     sentinel parallel-syncs argocd-redis 1
