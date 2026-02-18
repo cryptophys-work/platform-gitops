@@ -1,0 +1,27 @@
+---
+# CiliumNetworkPolicy: only argocd-repo-server may reach gitea-internal ingress
+# This is the security boundary — nginx auth-tls is optional but CNP enforces mTLS at network layer
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: gitea-internal-argocd-only
+  namespace: ingress-system
+  labels:
+    cryptophys.io/flux-managed: "true"
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: ingress-nginx
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: argocd-repo-server
+            io.kubernetes.pod.namespace: apps-system
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+          rules:
+            http:
+              - method: ".*"
+                path: ".*/cryptophys-work/apps-gitops\\.git.*"

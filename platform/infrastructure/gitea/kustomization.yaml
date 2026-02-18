@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - gitea-platform.yaml
   - gitea-internal-mtls.yaml
+  - gitea-internal-cnp.yaml
