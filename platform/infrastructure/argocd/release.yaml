@@ -59,6 +59,55 @@ spec:
         limits:
           cpu: 500m
           memory: 512Mi
+      # SPIRE-based certificate authentication for Git operations
+      env:
+        - name: GIT_SSL_CERT
+          value: /certs/svid.pem
+        - name: GIT_SSL_KEY
+          value: /certs/svid_key.pem
+        - name: GIT_SSL_CAINFO
+          value: /certs/bundle.pem
+      volumes:
+        - name: spiffe-workload-api
+          csi:
+            driver: csi.spiffe.io
+            readOnly: true
+        - name: git-certs
+          emptyDir: {}
+        - name: spiffe-helper-config
+          configMap:
+            name: argocd-repo-server-spiffe-helper-config
+      volumeMounts:
+        - name: git-certs
+          mountPath: /certs
+          readOnly: true
+      # Sidecar to extract certificates from SPIRE CSI volume to emptyDir
+      extraContainers:
+        - name: spiffe-helper
+          image: ghcr.io/spiffe/spiffe-helper:0.9.0
+          volumeMounts:
+            - name: spiffe-workload-api
+              mountPath: /spiffe-workload-api
+              readOnly: true
+            - name: git-certs
+              mountPath: /certs
+            - name: spiffe-helper-config
+              mountPath: /etc/spiffe-helper
+              readOnly: true
+          env:
+            - name: SPIFFE_ENDPOINT_SOCKET
+              value: unix:///spiffe-workload-api/spire-agent.sock
+          command:
+            - /usr/bin/spiffe-helper
+            - -config
+            - /etc/spiffe-helper/config.hcl
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 64Mi
     applicationSet:
       resources:
         requests:
