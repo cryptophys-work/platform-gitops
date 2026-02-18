@@ -3,4 +3,3 @@ kind: Kustomization
 resources:
   - release.yaml
   - apps-bootstrap.yaml
-  - spiffe-helper-configmap.yaml

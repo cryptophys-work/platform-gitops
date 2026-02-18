@@ -74,9 +74,6 @@ spec:
             readOnly: true
         - name: git-certs
           emptyDir: {}
-        - name: spiffe-helper-config
-          configMap:
-            name: argocd-repo-server-spiffe-helper-config
       volumeMounts:
         - name: git-certs
           mountPath: /certs
@@ -84,30 +81,47 @@ spec:
       # Sidecar to extract certificates from SPIRE CSI volume to emptyDir
       extraContainers:
         - name: spiffe-helper
-          image: ghcr.io/spiffe/spiffe-helper:0.9.0
+          image: busybox:1.36
           volumeMounts:
             - name: spiffe-workload-api
               mountPath: /spiffe-workload-api
               readOnly: true
             - name: git-certs
               mountPath: /certs
-            - name: spiffe-helper-config
-              mountPath: /etc/spiffe-helper
-              readOnly: true
-          env:
-            - name: SPIFFE_ENDPOINT_SOCKET
-              value: unix:///spiffe-workload-api/spire-agent.sock
           command:
-            - /usr/bin/spiffe-helper
-            - -config
-            - /etc/spiffe-helper/config.hcl
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "SPIRE certificate extraction sidecar started"
+              while true; do
+                if [ -f /spiffe-workload-api/svid.pem ]; then
+                  cp /spiffe-workload-api/svid.pem /certs/svid.pem
+                  cp /spiffe-workload-api/svid_key.pem /certs/svid_key.pem
+                  cp /spiffe-workload-api/bundle.pem /certs/bundle.pem
+                  echo "$(date): Certificates updated"
+                else
+                  echo "$(date): Waiting for SPIRE certificates..."
+                fi
+                sleep 60
+              done
           resources:
             requests:
-              cpu: 10m
-              memory: 16Mi
+              cpu: 5m
+              memory: 8Mi
             limits:
-              cpu: 50m
-              memory: 64Mi
+              cpu: 20m
+              memory: 32Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
     applicationSet:
       resources:
         requests:
