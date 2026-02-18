@@ -25,8 +25,7 @@ data:
 ---
 # CronJob to continuously refresh the SPIRE CA bundle in secrets.
 # Runs every 15 minutes; SPIRE rotates its CA ~hourly so 15-min cadence keeps it fresh.
-# Uses initContainer to copy kubectl binary from distroless image to an emptyDir,
-# then alpine runs the shell script using that kubectl.
+# Uses Alpine + curl to call Kubernetes API directly (no kubectl binary needed).
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -55,20 +54,6 @@ spec:
           securityContext:
             seccompProfile:
               type: RuntimeDefault
-          initContainers:
-          - name: copy-kubectl
-            image: registry.cryptophys.work/library/kubectl:v1.30.3
-            imagePullPolicy: IfNotPresent
-            command: ["cp", "/ko-app/kubectl", "/work/kubectl"]
-            securityContext:
-              allowPrivilegeEscalation: false
-              runAsNonRoot: true
-              runAsUser: 65532
-              capabilities:
-                drop: ["ALL"]
-            volumeMounts:
-            - name: work
-              mountPath: /work
           containers:
           - name: extract-bundle
             image: registry.cryptophys.work/library/alpine:latest
@@ -94,26 +79,29 @@ spec:
             - -c
             - |
               set -e
-              KUBECTL=/work/kubectl
-              echo "Extracting SPIRE CA bundle..."
-              BUNDLE="$($KUBECTL get configmap -n spire-system spire-bundle -o go-template='{{ index .data "bundle.crt" }}' | base64 -w 0)"
-              if [ -z "$BUNDLE" ]; then
-                echo "ERROR: SPIRE bundle empty; refusing to patch secrets."
+              TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+              API=https://kubernetes.default.svc
+              echo "Fetching SPIRE bundle ConfigMap..."
+              BUNDLE_CRT=$(wget -qO- --no-check-certificate \
+                --header "Authorization: Bearer $TOKEN" \
+                "$API/api/v1/namespaces/spire-system/configmaps/spire-bundle" | \
+                sed 's/.*"bundle\.crt":"\([^"]*\)".*/\1/' | \
+                sed 's/\\n/\n/g' | \
+                base64 | tr -d '\n')
+              if [ -z "$BUNDLE_CRT" ]; then
+                echo "ERROR: empty bundle"
                 exit 1
               fi
-              for ns in ingress-system gitops-system; do
-                echo "Patching $ns..."
-                $KUBECTL patch secret spire-ca-bundle -n "$ns" \
-                  --type='json' \
-                  -p='[{"op":"replace","path":"/data/ca.crt","value":"'"$BUNDLE"'"}]'
+              for NS in ingress-system gitops-system; do
+                echo "Patching $NS..."
+                wget -qO- --no-check-certificate \
+                  --header "Authorization: Bearer $TOKEN" \
+                  --header "Content-Type: application/json-patch+json" \
+                  --method PATCH \
+                  --body-data '[{"op":"replace","path":"/data/ca.crt","value":"'"$BUNDLE_CRT"'"}]' \
+                  "$API/api/v1/namespaces/$NS/secrets/spire-ca-bundle" || true
               done
               echo "Done."
-            volumeMounts:
-            - name: work
-              mountPath: /work
-          volumes:
-          - name: work
-            emptyDir: {}
           tolerations:
           - key: node-role.kubernetes.io/control-plane
             operator: Exists
