@@ -108,7 +108,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: spire-controller-manager
-          image: ghcr.io/spiffe/spire-controller-manager:0.7.0
+          image: ghcr.io/spiffe/spire-controller-manager:0.6.3
           imagePullPolicy: IfNotPresent
           args:
             - --config=/run/spire/config/controller-manager.conf
