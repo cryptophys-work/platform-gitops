@@ -12,17 +12,29 @@ data:
   # Format: base64 encoded SPIRE bundle.crt
   ca.crt: ""  # Placeholder - to be populated by automation
 ---
+# Same secret, but in `gitops-system` for Ingresses that live in that namespace.
+# ingress-nginx will return 403 if an Ingress references a Secret in another namespace.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: spire-ca-bundle
+  namespace: gitops-system
+type: Opaque
+data:
+  ca.crt: ""  # Placeholder - populated by the extractor Job
+---
 # Job to extract SPIRE CA bundle and populate the secret
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: spire-ca-bundle-extractor
+  # NOTE: keep this versioned to avoid immutable-field conflicts on GitOps reconciles.
+  name: spire-ca-bundle-extractor-v2
   namespace: ingress-system
 spec:
   template:
     metadata:
       labels:
-        job: spire-ca-bundle-extractor
+        job: spire-ca-bundle-extractor-v2
     spec:
       serviceAccountName: spire-ca-bundle-extractor
       restartPolicy: OnFailure
@@ -37,12 +49,22 @@ spec:
           echo "Extracting SPIRE CA bundle..."
           
           # Get SPIRE bundle from ConfigMap
-          BUNDLE=$(kubectl get configmap -n spire-system spire-bundle -o jsonpath='{.data.bundle\.crt}' | base64 -w 0)
+          # NOTE: The key is literally `bundle.crt` (contains a dot). kubectl jsonpath handling for
+          # dotted keys is brittle across versions; use go-template + index instead.
+          BUNDLE="$(kubectl get configmap -n spire-system spire-bundle -o go-template='{{ index .data \"bundle.crt\" }}' | base64 -w 0)"
           
-          # Update secret
-          kubectl patch secret spire-ca-bundle -n ingress-system \
-            --type='json' \
-            -p='[{"op": "replace", "path": "/data/ca.crt", "value":"'$BUNDLE'"}]'
+          if [ -z "$BUNDLE" ]; then
+            echo "ERROR: SPIRE bundle extracted empty; refusing to patch secrets."
+            exit 1
+          fi
+
+          # Update secrets (namespaced copies).
+          for ns in ingress-system gitops-system; do
+            echo "Patching secret spire-ca-bundle in namespace: $ns"
+            kubectl patch secret spire-ca-bundle -n "$ns" \
+              --type='json' \
+              -p='[{"op":"replace","path":"/data/ca.crt","value":"'"$BUNDLE"'"}]'
+          done
           
           echo "SPIRE CA bundle extracted successfully"
       tolerations:
