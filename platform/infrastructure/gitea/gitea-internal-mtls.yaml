@@ -24,7 +24,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "512m"
     # Require SPIFFE client cert from SPIRE CA — or allow with Cilium policy enforcement
     nginx.ingress.kubernetes.io/auth-tls-secret: "gitops-system/spire-ca-bundle"
-    nginx.ingress.kubernetes.io/auth-tls-verify-client: "optional"
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "optional_no_ca"
     nginx.ingress.kubernetes.io/auth-tls-verify-depth: "3"
     nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
     # Inject authenticated user header (safe: only cert-verified connections reach here)
