@@ -78,40 +78,43 @@ spec:
         - name: git-certs
           mountPath: /certs
           readOnly: true
-      # Sidecar to extract certificates from SPIRE CSI volume to emptyDir
+      # Sidecar to extract certificates from SPIRE Workload API socket
       extraContainers:
         - name: spiffe-helper
-          image: busybox:1.36
+          image: ghcr.io/spiffe/spiffe-helper:0.9.0
           volumeMounts:
             - name: spiffe-workload-api
               mountPath: /spiffe-workload-api
               readOnly: true
             - name: git-certs
               mountPath: /certs
+          env:
+            - name: SPIFFE_ENDPOINT_SOCKET
+              value: unix:///spiffe-workload-api/agent/agent.sock
           command:
             - /bin/sh
             - -c
             - |
-              set -e
-              echo "SPIRE certificate extraction sidecar started"
-              while true; do
-                if [ -f /spiffe-workload-api/svid.pem ]; then
-                  cp /spiffe-workload-api/svid.pem /certs/svid.pem
-                  cp /spiffe-workload-api/svid_key.pem /certs/svid_key.pem
-                  cp /spiffe-workload-api/bundle.pem /certs/bundle.pem
-                  echo "$(date): Certificates updated"
-                else
-                  echo "$(date): Waiting for SPIRE certificates..."
-                fi
-                sleep 60
-              done
+              # Create spiffe-helper config inline
+              cat > /tmp/helper.conf <<'EOF'
+              agent_address = "/spiffe-workload-api/agent/agent.sock"
+              cmd = ""
+              cmd_args = ""
+              cert_dir = "/certs"
+              renew_signal = ""
+              svid_file_name = "svid.pem"
+              svid_key_file_name = "svid_key.pem"
+              svid_bundle_file_name = "bundle.pem"
+              EOF
+              echo "$(date): Starting SPIFFE helper with Workload API socket"
+              exec /usr/bin/spiffe-helper -config /tmp/helper.conf
           resources:
             requests:
-              cpu: 5m
-              memory: 8Mi
+              cpu: 10m
+              memory: 16Mi
             limits:
-              cpu: 20m
-              memory: 32Mi
+              cpu: 50m
+              memory: 64Mi
           securityContext:
             runAsNonRoot: true
             runAsUser: 65534
