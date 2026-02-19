@@ -25,3 +25,4 @@ resources:
   - kustomization/40-backup.yaml
   - kustomization/41-crossplane.yaml
   - kustomization/42-ray.yaml
+  - kustomization/43-gateway.yaml
