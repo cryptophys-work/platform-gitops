@@ -34,12 +34,8 @@ spec:
               spec:
                 template:
                   spec:
-                    tolerations:
-                      - key: node-role.kubernetes.io/control-plane
-                        operator: Exists
-                        effect: NoSchedule
                     nodeSelector:
-                      cryptophys.io/tier: platform
+                      kubernetes.io/hostname: campus-173-212-221-185
                       kubernetes.io/os: linux
           - target:
               kind: Job
@@ -51,22 +47,14 @@ spec:
               spec:
                 template:
                   spec:
-                    tolerations:
-                      - key: node-role.kubernetes.io/control-plane
-                        operator: Exists
-                        effect: NoSchedule
                     nodeSelector:
-                      cryptophys.io/tier: platform
+                      kubernetes.io/hostname: campus-173-212-221-185
                       kubernetes.io/os: linux
   values:
-    replicas: 3
+    replicas: 1
     crds:
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
       nodeSelector:
-        cryptophys.io/tier: platform
+        kubernetes.io/hostname: campus-173-212-221-185
     pdb:
       controllerManager:
         minAvailable: 1

@@ -29,35 +29,19 @@ spec:
         enabled: true
     admissionController:
       createSelfSignedCert: true
-      replicas: 3
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
+      replicas: 1
       nodeSelector:
-        cryptophys.io/tier: platform
+        kubernetes.io/hostname: campus-173-212-221-185
     backgroundController:
-      replicas: 2
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
+      replicas: 1
       nodeSelector:
-        cryptophys.io/tier: platform
+        kubernetes.io/hostname: campus-173-212-221-185
     cleanupController:
       createSelfSignedCert: true
-      replicas: 2
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
+      replicas: 1
       nodeSelector:
-        cryptophys.io/tier: platform
+        kubernetes.io/hostname: campus-173-212-221-185
     reportsController:
-      replicas: 2
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
+      replicas: 1
       nodeSelector:
-        cryptophys.io/tier: platform
+        kubernetes.io/hostname: campus-173-212-221-185
