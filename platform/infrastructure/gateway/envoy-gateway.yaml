@@ -11,7 +11,7 @@ spec:
       version: v1.1.0
       sourceRef:
         kind: HelmRepository
-        name: envoy-gateway-oci
+        name: envoy-gateway
         namespace: flux-system
   install:
     createNamespace: true
