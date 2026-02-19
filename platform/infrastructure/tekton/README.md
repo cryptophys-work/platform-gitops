@@ -1,5 +1,8 @@
 # Tekton CI/CD Infrastructure
 
+Note: Tekton pipelines/tasks are now managed by ArgoCD from `apps-gitops`.
+This folder is retained for historical reference only.
+
 **Institutional-grade continuous integration and delivery platform with automatic image signing, SBOM generation, and supply chain security.**
 
 ## Architecture
