@@ -49,10 +49,54 @@ spec:
     - name: build-push
       runAfter: [test]
       taskRef:
-        name: buildah-build-push-sbom
+        name: buildkit-build-push
       workspaces:
         - name: source
           workspace: shared-data
       params:
-        - name: IMAGE
-          value: "registry.cryptophys.work/$(params.image-name):$(params.image-tag)"
+        - name: image
+          value: "registry.cryptophys.work/$(params.image-name)"
+        - name: tag
+          value: "$(params.image-tag)"
+        - name: context_dir
+          value: "."
+        - name: dockerfile
+          value: "./Dockerfile"
+
+    - name: generate-sbom
+      runAfter: [build-push]
+      workspaces:
+        - name: source
+          workspace: shared-data
+      taskSpec:
+        params:
+          - name: image_ref
+            type: string
+        workspaces:
+          - name: source
+        steps:
+          - name: trivy-sbom
+            image: aquasec/trivy:latest
+            script: |
+              #!/bin/sh
+              set -e
+              IMAGE_REF="$(params.image_ref)"
+              echo "Generating SBOM for ${IMAGE_REF}"
+              trivy image --format cyclonedx \
+                --output /workspace/sbom.json \
+                --insecure \
+                "${IMAGE_REF}" || true
+      params:
+        - name: image_ref
+          value: "$(tasks.build-push.results.image_url)@$(tasks.build-push.results.digest)"
+
+    - name: upload-sbom
+      runAfter: [generate-sbom]
+      taskRef:
+        name: upload-sbom-artifact
+      workspaces:
+        - name: source
+          workspace: shared-data
+      params:
+        - name: IMAGE_REF
+          value: "$(tasks.build-push.results.image_url)@$(tasks.build-push.results.digest)"
