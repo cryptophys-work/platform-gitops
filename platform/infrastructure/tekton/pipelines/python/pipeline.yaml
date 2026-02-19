@@ -16,6 +16,12 @@ spec:
     - name: image-tag
       type: string
       default: latest
+    - name: context-dir
+      type: string
+      default: "."
+    - name: dockerfile
+      type: string
+      default: "./Dockerfile"
   workspaces:
     - name: shared-data
   tasks:
@@ -59,9 +65,9 @@ spec:
         - name: tag
           value: "$(params.image-tag)"
         - name: context_dir
-          value: "."
+          value: "$(params.context-dir)"
         - name: dockerfile
-          value: "./Dockerfile"
+          value: "$(params.dockerfile)"
 
     - name: generate-sbom
       runAfter: [build-push]
