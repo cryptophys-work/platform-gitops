@@ -1,3 +1,16 @@
 resources:
   - sources
   - controllers
+  - certificates
+  - metallb
+  - storage
+  - backup
+  - harbor
+  - gitea
+  - policy
+  - fabric
+  - argocd
+  - vault-system
+  - ray
+  - security-observability
+  - policy-reporter
