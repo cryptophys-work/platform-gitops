@@ -195,7 +195,6 @@ metadata:
 spec:
   interval: 1h
   url: https://ray-project.github.io/kuberay-helm
-
 ---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
@@ -203,6 +202,5 @@ metadata:
   name: envoy-gateway
   namespace: flux-system
 spec:
-  type: oci
   interval: 1h
-  url: oci://docker.io/envoyproxy/gateway-helm
+  url: https://envoyproxy.github.io/gateway
