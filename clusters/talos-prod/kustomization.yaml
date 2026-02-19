@@ -6,6 +6,7 @@ resources:
   - kustomization/02-scheduling.yaml
   - kustomization/05-sources.yaml
   - kustomization/10-controllers.yaml
+  - kustomization/12-certificates.yaml
   - kustomization/10-database.yaml
   - kustomization/15-dns-core.yaml
   - kustomization/17-metallb.yaml
