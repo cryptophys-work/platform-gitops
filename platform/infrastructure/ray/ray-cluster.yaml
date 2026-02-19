@@ -26,10 +26,16 @@ spec:
       rayStartParams:
         dashboard-host: '0.0.0.0'
         num-cpus: '0'
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - synapse-161-97-136-251
       resources:
         limits:
           cpu: "1"
@@ -55,10 +61,16 @@ spec:
       maxReplicas: 5
       rayStartParams:
         num-cpus: '1'
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - synapse-161-97-136-251
       resources:
         limits:
           cpu: "1"
