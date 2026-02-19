@@ -13,6 +13,10 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - ray.cryptophys.work
+    secretName: cryptophys-wildcard-tls
   rules:
   - host: ray.cryptophys.work
     http:
