@@ -7,4 +7,5 @@ resources:
   - ingress-nginx-network-policy.yaml
   - metrics-server.yaml
   - pdbs.yaml
+  - envoy-gateway.yaml
   - cilium/release.yaml
