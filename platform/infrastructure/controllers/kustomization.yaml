@@ -8,3 +8,5 @@ resources:
   - metrics-server.yaml
   - pdbs.yaml
   - cilium/release.yaml
+  - envoy-gateway.yaml
+  - envoy-gateway-class.yaml
