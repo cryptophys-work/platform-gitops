@@ -31,3 +31,9 @@ spec:
       limits:
         cpu: 500m
         memory: 256Mi
+    batchScheduler:
+      enabled: false
+    extraArgs:
+      leader-election-lease-duration: 60s
+      leader-election-renew-deadline: 40s
+      leader-election-retry-period: 10s
