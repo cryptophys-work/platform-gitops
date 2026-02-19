@@ -28,6 +28,23 @@ spec:
     configs:
       params:
         server.insecure: "true"
+      cm:
+        resource.customizations.health.gateway.envoyproxy.io_SecurityPolicy: |
+          hs = {}
+          hs.status = "Healthy"
+          if obj.status ~= nil then
+            for _, c in ipairs(obj.status.ancestors or {}) do
+              for _, condition in ipairs(c.conditions or {}) do
+                if condition.type == "Accepted" and condition.status == "False" then
+                  hs.status = "Degraded"
+                  hs.message = condition.message
+                  return hs
+                end
+              end
+            end
+          end
+          hs.message = "Policy accepted"
+          return hs
     global:
       tolerations:
         - key: node-role.kubernetes.io/control-plane
