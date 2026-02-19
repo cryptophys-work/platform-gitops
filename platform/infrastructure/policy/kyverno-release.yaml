@@ -32,16 +32,36 @@ spec:
       replicas: 1
       nodeSelector:
         kubernetes.io/hostname: campus-173-212-221-185
+      tolerations:
+        - key: "cryptophys.io/storage-only"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
     backgroundController:
       replicas: 1
       nodeSelector:
         kubernetes.io/hostname: campus-173-212-221-185
+      tolerations:
+        - key: "cryptophys.io/storage-only"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
     cleanupController:
       createSelfSignedCert: true
       replicas: 1
       nodeSelector:
         kubernetes.io/hostname: campus-173-212-221-185
+      tolerations:
+        - key: "cryptophys.io/storage-only"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
     reportsController:
       replicas: 1
       nodeSelector:
         kubernetes.io/hostname: campus-173-212-221-185
+      tolerations:
+        - key: "cryptophys.io/storage-only"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
