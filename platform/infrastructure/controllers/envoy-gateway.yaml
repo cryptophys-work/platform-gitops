@@ -7,7 +7,7 @@ spec:
   interval: 1h
   chart:
     spec:
-      chart: gateway-helm
+      chart: envoy-gateway
       version: v1.1.0
       sourceRef:
         kind: HelmRepository
