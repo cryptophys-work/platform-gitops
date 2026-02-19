@@ -200,7 +200,7 @@ spec:
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
-  name: envoy-gateway-oci
+  name: envoy-gateway
   namespace: flux-system
 spec:
   type: oci
