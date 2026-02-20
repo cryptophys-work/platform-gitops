@@ -1,3 +1,4 @@
 resources:
   - release.yaml
   - network-policy.yaml
+  - solver-policy-exception.yaml
