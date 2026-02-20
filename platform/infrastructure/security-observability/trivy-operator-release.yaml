@@ -27,20 +27,13 @@ spec:
       ignoreUnfixed: true
     serviceMonitor:
       enabled: true
-    tolerations:
-      - key: cryptophys.io/storage-only
-        operator: Equal
-        value: "true"
-        effect: NoSchedule
+    tolerations: []
     nodeSelector:
-      kubernetes.io/hostname: synapse-161-97-136-251
+      kubernetes.io/os: linux
     scanJob:
       nodeSelector:
-        kubernetes.io/hostname: synapse-161-97-136-251
-      tolerations:
-        - key: cryptophys.io/storage-only
-          operator: Exists
-          effect: NoSchedule
+        kubernetes.io/os: linux
+      tolerations: []
     resources:
       requests:
         cpu: 50m
