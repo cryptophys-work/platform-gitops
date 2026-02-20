@@ -27,11 +27,13 @@ spec:
     features:
       policyExceptions:
         enabled: true
+    config:
+      exceptionNamespace: kyverno-system
     admissionController:
       createSelfSignedCert: true
       replicas: 1
       nodeSelector:
-        kubernetes.io/hostname: campus-173-212-221-185
+        kubernetes.io/hostname: synapse-161-97-136-251
       tolerations:
         - key: "cryptophys.io/storage-only"
           operator: "Equal"
@@ -40,7 +42,7 @@ spec:
     backgroundController:
       replicas: 1
       nodeSelector:
-        kubernetes.io/hostname: campus-173-212-221-185
+        kubernetes.io/hostname: synapse-161-97-136-251
       tolerations:
         - key: "cryptophys.io/storage-only"
           operator: "Equal"
@@ -50,7 +52,7 @@ spec:
       createSelfSignedCert: true
       replicas: 1
       nodeSelector:
-        kubernetes.io/hostname: campus-173-212-221-185
+        kubernetes.io/hostname: synapse-161-97-136-251
       tolerations:
         - key: "cryptophys.io/storage-only"
           operator: "Equal"
@@ -59,7 +61,7 @@ spec:
     reportsController:
       replicas: 1
       nodeSelector:
-        kubernetes.io/hostname: campus-173-212-221-185
+        kubernetes.io/hostname: synapse-161-97-136-251
       tolerations:
         - key: "cryptophys.io/storage-only"
           operator: "Equal"

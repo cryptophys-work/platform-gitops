@@ -33,11 +33,10 @@ spec:
         value: "true"
         effect: NoSchedule
     nodeSelector:
-      cryptophys.io/node-role: storage-worker
-      kubernetes.io/hostname: campus-173-212-221-185
+      kubernetes.io/hostname: synapse-161-97-136-251
     scanJob:
       nodeSelector:
-        kubernetes.io/hostname: campus-173-212-221-185
+        kubernetes.io/hostname: synapse-161-97-136-251
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Exists
