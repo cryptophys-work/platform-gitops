@@ -34,9 +34,10 @@ spec:
               spec:
                 template:
                   spec:
-                    nodeSelector:
-                      kubernetes.io/hostname: campus-173-212-221-185
-                      kubernetes.io/os: linux
+                    tolerations:
+                      - key: "node-role.kubernetes.io/control-plane"
+                        operator: "Exists"
+                        effect: "NoSchedule"
           - target:
               kind: Job
             patch: |
@@ -47,14 +48,14 @@ spec:
               spec:
                 template:
                   spec:
-                    nodeSelector:
-                      kubernetes.io/hostname: campus-173-212-221-185
-                      kubernetes.io/os: linux
+                    tolerations:
+                      - key: "node-role.kubernetes.io/control-plane"
+                        operator: "Exists"
+                        effect: "NoSchedule"
   values:
     replicas: 1
     crds:
-      nodeSelector:
-        kubernetes.io/hostname: campus-173-212-221-185
+      nodeSelector: {}
     pdb:
       controllerManager:
         minAvailable: 1
