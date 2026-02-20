@@ -4,3 +4,11 @@ defaultSettings:
 persistence:
   defaultClass: true
   defaultClassReplicaCount: 3
+# Allow CSI plugin to run on campus (cryptophys.io/storage-only taint)
+csi:
+  kubeletRootDir: /var/lib/kubelet
+longhornCSI:
+  tolerations:
+    - key: cryptophys.io/storage-only
+      operator: Exists
+      effect: NoSchedule
