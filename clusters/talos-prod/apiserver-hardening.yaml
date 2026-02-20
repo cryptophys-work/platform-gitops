@@ -1,0 +1,30 @@
+cluster:
+  apiServer:
+    extraArgs:
+      # API Priority and Fairness (APF) Enforced
+      enable-priority-and-fairness: "true"
+      max-requests-inflight: "800"
+      max-mutating-requests-inflight: "400"
+      # Audit Logging Configuration
+      audit-log-path: "/var/log/audit/audit.log"
+      audit-log-maxage: "30"
+      audit-log-maxbackup: "10"
+      audit-log-maxsize: "100"
+    auditPolicy:
+      apiVersion: audit.k8s.io/v1
+      kind: Policy
+      omitStages:
+        - "RequestReceived"
+      rules:
+        # Ignore noisy system components
+        - level: None
+          users: ["system:kube-proxy", "system:apiserver"]
+        # Deep audit for Autonomous Agents (ArgoCD, Tekton, AIDE, Orchestrator)
+        - level: RequestResponse
+          users: 
+            - "system:serviceaccount:apps-system:argocd-application-controller"
+            - "system:serviceaccount:flux-system:helm-controller"
+            - "system:serviceaccount:aide:aide-sa"
+            - "system:serviceaccount:orchestrator:orchestrator-sa"
+        # Catch-all for other actions
+        - level: Metadata
