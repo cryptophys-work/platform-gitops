@@ -60,6 +60,13 @@ spec:
         storageClassName: longhorn-single
         size: 5Gi
       adminPassword: CryptoGrafana2026
+      grafana.ini:
+        security:
+          allow_embedding: true
+        auth.anonymous:
+          enabled: true
+          org_name: Main Org.
+          org_role: Viewer
       sidecar:
         datasources:
           defaultDatasourceEnabled: true
