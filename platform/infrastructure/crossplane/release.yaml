@@ -24,12 +24,9 @@ spec:
         namespace: flux-system
   values:
     replicas: 1
-    tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
+    tolerations: []
     nodeSelector:
-      cryptophys.io/tier: platform
+      cryptophys.io/tier: application
     resources:
       requests:
         cpu: 50m
@@ -38,12 +35,9 @@ spec:
         cpu: 250m
         memory: 512Mi
     rbacManager:
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
+      tolerations: []
       nodeSelector:
-        cryptophys.io/tier: platform
+        cryptophys.io/tier: application
       resources:
         requests:
           cpu: 25m

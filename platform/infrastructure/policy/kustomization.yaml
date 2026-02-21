@@ -5,3 +5,4 @@ resources:
   - cilium-baseline.yaml
   - gatekeeper-release.yaml
   - kyverno-release.yaml
+  - cp-restriction-policy.yaml
