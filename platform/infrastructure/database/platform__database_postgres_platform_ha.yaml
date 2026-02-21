@@ -7,12 +7,9 @@ metadata:
 spec:
   affinity:
     nodeSelector:
-      node-role.kubernetes.io/control-plane: ''
+      cryptophys.io/tier: application
     podAntiAffinityType: required
-    tolerations:
-    - effect: NoSchedule
-      key: node-role.kubernetes.io/control-plane
-      operator: Exists
+    tolerations: []
     topologyKey: kubernetes.io/hostname
   backup:
     barmanObjectStore:

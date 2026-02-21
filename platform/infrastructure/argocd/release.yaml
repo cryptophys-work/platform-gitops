@@ -46,12 +46,8 @@ spec:
           hs.message = "Policy accepted"
           return hs
     global:
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
       nodeSelector:
-        cryptophys.io/tier: platform
+        workload.cryptophys.work/apps-core: "true"
     controller:
       resources:
         requests:

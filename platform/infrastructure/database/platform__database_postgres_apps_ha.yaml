@@ -19,12 +19,9 @@ spec:
     initdb:
       database: app
       owner: app
-  # HA Architecture: Platform workloads on control plane
+  # HA Architecture: App databases on application workers
   affinity:
     nodeSelector:
-      cryptophys.io/tier: platform
-    tolerations:
-    - key: node-role.kubernetes.io/control-plane
-      operator: Exists
-      effect: NoSchedule
+      cryptophys.io/tier: application
+    tolerations: []
     podAntiAffinityType: required
