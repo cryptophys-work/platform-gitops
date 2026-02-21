@@ -33,11 +33,10 @@ spec:
       createSelfSignedCert: true
       replicas: 1
       nodeSelector:
-        storage: storage
+        cryptophys.io/tier: platform
       tolerations:
-        - key: "cryptophys.io/storage-only"
-          operator: "Equal"
-          value: "true"
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
           effect: "NoSchedule"
       resources:
         requests:
@@ -49,11 +48,10 @@ spec:
     backgroundController:
       replicas: 1
       nodeSelector:
-        storage: storage
+        cryptophys.io/tier: platform
       tolerations:
-        - key: "cryptophys.io/storage-only"
-          operator: "Equal"
-          value: "true"
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
           effect: "NoSchedule"
       resources:
         requests:
@@ -66,11 +64,10 @@ spec:
       createSelfSignedCert: true
       replicas: 1
       nodeSelector:
-        storage: storage
+        cryptophys.io/tier: platform
       tolerations:
-        - key: "cryptophys.io/storage-only"
-          operator: "Equal"
-          value: "true"
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
           effect: "NoSchedule"
       resources:
         requests:
@@ -82,11 +79,10 @@ spec:
     reportsController:
       replicas: 1
       nodeSelector:
-        storage: storage
+        cryptophys.io/tier: platform
       tolerations:
-        - key: "cryptophys.io/storage-only"
-          operator: "Equal"
-          value: "true"
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
           effect: "NoSchedule"
       resources:
         requests:
