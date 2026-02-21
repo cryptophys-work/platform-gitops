@@ -14,3 +14,5 @@ resources:
   - ray
   - security-observability
   - policy-reporter
+  - kueue
+
