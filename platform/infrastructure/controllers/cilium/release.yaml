@@ -36,8 +36,10 @@ spec:
         nodeSelector:
           cryptophys.io/tier: platform
     kubeProxyReplacement: false
-    k8sServiceHost: 10.8.0.2
-    k8sServicePort: 6443
+    # KubePrism local LB (127.0.0.1:7445) — HA across all 3 CP nodes
+    # Avoids SPOF from hardcoding a single CP node IP (was 10.8.0.2/cortex only)
+    k8sServiceHost: 127.0.0.1
+    k8sServicePort: 7445
     hubble:
       enabled: true
       relay:
