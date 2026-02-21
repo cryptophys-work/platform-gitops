@@ -32,6 +32,8 @@ spec:
     admissionController:
       createSelfSignedCert: true
       replicas: 1
+      extraArgs:
+        forceFailurePolicyIgnore: "true"
       nodeSelector:
         cryptophys.io/tier: platform
       tolerations:
