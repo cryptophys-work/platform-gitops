@@ -47,7 +47,8 @@ spec:
           return hs
     global:
       nodeSelector:
-        workload.cryptophys.work/apps-core: "true"
+        cryptophys.io/tier: application
+      tolerations: []
     controller:
       resources:
         requests:
