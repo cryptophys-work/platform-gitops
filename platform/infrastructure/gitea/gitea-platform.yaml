@@ -22,7 +22,14 @@ spec:
         name: gitea-charts
         namespace: flux-system
   values:
-    replicaCount: 1
+    replicaCount: 2
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: gitea
+          topologyKey: "kubernetes.io/hostname"
     image:
       registry: ghcr.io
       repository: go-gitea/gitea
@@ -35,24 +42,27 @@ spec:
         database:
           DB_TYPE: postgres
           HOST: postgres-apps-ha-rw.postgresql-system.svc.cluster.local:5432
-          NAME: app
-          USER: app
-          PASSWD: uA8NrQUOb9no2hg9BGEDFulmlkRlHMK5dAhKwpkm3sozTH43p1UAc9zERIfljQIp
-    extraConfig: |
-      [server]
-      GIT_EXECUTABLE_PATH = /usr/bin/git
-      [cache]
-      ADAPTER = redis
-      HOST = gitea-redis.gitops-system.svc.cluster.local:6379
-      [session]
-      PROVIDER = redis
-      PROVIDER_CONFIG = redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
-      [queue]
-      TYPE = redis
-      CONN_STR = redis://gitea-redis.gitops-system.svc.cluster.local:6379/1
+          NAME: gitea
+          USER: gitea
+          PASSWD: GiteaSecure2026!
+        cache:
+          ADAPTER: redis
+          HOST: gitea-redis.gitops-system.svc.cluster.local:6379
+        session:
+          PROVIDER: redis
+          PROVIDER_CONFIG: redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
+        queue:
+          TYPE: redis
+          CONN_STR: redis://gitea-redis.gitops-system.svc.cluster.local:6379/1
+        server:
+          ROOT_URL: https://gitea.cryptophys.work
+          DOMAIN: gitea.cryptophys.work
+          GIT_EXECUTABLE_PATH: /usr/bin/git
     ingress:
       enabled: true
       className: nginx
+      annotations:
+        nginx.ingress.kubernetes.io/proxy-body-size: "512m"
       hosts:
         - host: gitea.cryptophys.work
           paths:
@@ -67,12 +77,10 @@ spec:
       claimName: gitea-shared-storage-rwx
       accessModes:
         - ReadWriteMany
-    valkey-cluster:
-      enabled: false
     resources:
       requests:
-        cpu: 100m
-        memory: 256Mi
+        cpu: 200m
+        memory: 512Mi
       limits:
-        cpu: 500m
-        memory: 1Gi
+        cpu: 1000m
+        memory: 2Gi
