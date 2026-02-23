@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 1m
   ref:
-    semver: '>=1.0.0'
+    branch: main
   secretRef:
     name: github-repo-auth
   url: https://github.com/cryptophys-work/platform-gitops.git
@@ -19,7 +19,7 @@ metadata:
 spec:
   interval: 1m
   ref:
-    semver: '>=1.0.0'
+    branch: main
   secretRef:
     name: github-repo-auth
   url: https://github.com/cryptophys-work/ssot-core.git
