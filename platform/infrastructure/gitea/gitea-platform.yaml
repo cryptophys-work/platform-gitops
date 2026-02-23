@@ -58,6 +58,19 @@ spec:
           ROOT_URL: https://gitea.cryptophys.work
           DOMAIN: gitea.cryptophys.work
           GIT_EXECUTABLE_PATH: /usr/bin/git
+    extraEnv:
+      - name: GITEA__cache__ADAPTER
+        value: redis
+      - name: GITEA__cache__HOST
+        value: gitea-redis.gitops-system.svc.cluster.local:6379
+      - name: GITEA__session__PROVIDER
+        value: redis
+      - name: GITEA__session__PROVIDER_CONFIG
+        value: redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
+      - name: GITEA__queue__TYPE
+        value: redis
+      - name: GITEA__queue__CONN_STR
+        value: redis://gitea-redis.gitops-system.svc.cluster.local:6379/1
     ingress:
       enabled: true
       className: nginx
