@@ -35,9 +35,9 @@ spec:
         database:
           DB_TYPE: postgres
           HOST: postgres-apps-ha-rw.postgresql-system.svc.cluster.local:5432
-          NAME: gitea
-          USER: gitea
-          PASSWD: GiteaSecure2026
+          NAME: app
+          USER: app
+          PASSWD: uA8NrQUOb9no2hg9BGEDFulmlkRlHMK5dAhKwpkm3sozTH43p1UAc9zERIfljQIp
     extraConfig: |
       [cache]
       ADAPTER = redis
