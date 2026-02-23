@@ -55,13 +55,13 @@ spec:
           PASSWD: GiteaSecure2026
         session:
           PROVIDER: redis
-          PROVIDER_CONFIG: redis+cluster://:@platform-code-forge-gitea-valkey-cluster-headless.gitops-system.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s
+          PROVIDER_CONFIG: redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
         queue:
           TYPE: redis
-          CONN_STR: redis+cluster://:@platform-code-forge-gitea-valkey-cluster-headless.gitops-system.svc.cluster.local:6379/1?pool_size=100&idle_timeout=180s
+          CONN_STR: redis://gitea-redis.gitops-system.svc.cluster.local:6379/1
         cache:
           ADAPTER: redis
-          HOST: redis+cluster://:@platform-code-forge-gitea-valkey-cluster-headless.gitops-system.svc.cluster.local:6379/2?pool_size=100&idle_timeout=180s
+          HOST: gitea-redis.gitops-system.svc.cluster.local:6379
         webhook:
           ALLOWED_HOST_LIST: "*"
         service:
@@ -104,7 +104,7 @@ spec:
     redis-cluster:
       enabled: false
     valkey-cluster:
-      enabled: true
+      enabled: false
       usePassword: false
       usePasswordFiles: false
       cluster:
