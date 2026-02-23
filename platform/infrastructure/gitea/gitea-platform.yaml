@@ -77,6 +77,10 @@ spec:
       claimName: gitea-shared-storage-rwx
       accessModes:
         - ReadWriteMany
+    postgresql:
+      enabled: false
+    postgresql-ha:
+      enabled: false
     resources:
       requests:
         cpu: 200m
