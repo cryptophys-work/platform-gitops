@@ -63,6 +63,8 @@ spec:
     persistence:
       enabled: true
       claimName: gitea-shared-storage-rwx
+      accessModes:
+        - ReadWriteMany
     valkey-cluster:
       enabled: false
     resources:
