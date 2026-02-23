@@ -23,64 +23,47 @@ spec:
         namespace: flux-system
   values:
     replicaCount: 2
-    strategy:
-      type: RollingUpdate
-      rollingUpdate:
-        maxUnavailable: 1
-        maxSurge: 1
     image:
       registry: ghcr.io
       repository: go-gitea/gitea
       tag: "1.25.4"
       rootless: true
-      pullPolicy: IfNotPresent
     gitea:
       admin:
-        email: admin@cryptophys.work
         existingSecret: gitea-admin-secret
       config:
-        security:
-          INSTALL_LOCK: true
-          REVERSE_PROXY_TRUSTED_PROXIES: "10.244.0.0/16,10.96.0.0/12"
-        server:
-          DOMAIN: gitea.cryptophys.work
-          ROOT_URL: https://gitea.cryptophys.work/
-          SSH_DOMAIN: gitea.cryptophys.work
-          SSH_PORT: 2222
         database:
           DB_TYPE: postgres
           HOST: postgres-apps-ha-rw.postgresql-system.svc.cluster.local:5432
           NAME: gitea
           USER: gitea
           PASSWD: GiteaSecure2026
+        cache:
+          ADAPTER: redis
+          HOST: gitea-redis.gitops-system.svc.cluster.local:6379
         session:
           PROVIDER: redis
           PROVIDER_CONFIG: redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
         queue:
           TYPE: redis
           CONN_STR: redis://gitea-redis.gitops-system.svc.cluster.local:6379/1
-        cache:
-          ADAPTER: redis
-          HOST: gitea-redis.gitops-system.svc.cluster.local:6379
-        webhook:
-          ALLOWED_HOST_LIST: "*"
-        service:
-          DISABLE_REGISTRATION: true
-          SHOW_REGISTRATION_BUTTON: false
-          ALLOW_ONLY_EXTERNAL_REGISTRATION: false
-          ENABLE_REVERSE_PROXY_AUTHENTICATION: "true"
-          REVERSE_PROXY_AUTHENTICATION_USER: "X-Forwarded-User"
+    # Global environment variables to ensure Redis is used regardless of app.ini
+    extraEnv:
+      - name: GITEA__cache__ADAPTER
+        value: "redis"
+      - name: GITEA__cache__HOST
+        value: "gitea-redis.gitops-system.svc.cluster.local:6379"
+      - name: GITEA__session__PROVIDER
+        value: "redis"
+      - name: GITEA__session__PROVIDER_CONFIG
+        value: "redis://gitea-redis.gitops-system.svc.cluster.local:6379/0"
+      - name: GITEA__queue__TYPE
+        value: "redis"
+      - name: GITEA__queue__CONN_STR
+        value: "redis://gitea-redis.gitops-system.svc.cluster.local:6379/1"
     ingress:
       enabled: true
       className: nginx
-      annotations:
-        nginx.ingress.kubernetes.io/proxy-body-size: 512m
-        # SPIRE mTLS client certificate validation
-        nginx.ingress.kubernetes.io/auth-tls-verify-client: "optional"
-        # ingress-nginx expects auth-tls-secret in `namespace/name` form; use the same namespace as this Ingress.
-        nginx.ingress.kubernetes.io/auth-tls-secret: "gitops-system/spire-ca-bundle"
-        nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
-        nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
       hosts:
         - host: gitea.cryptophys.work
           paths:
@@ -92,96 +75,13 @@ spec:
             - gitea.cryptophys.work
     persistence:
       enabled: true
-      create: false
       claimName: gitea-shared-storage-rwx
-      accessModes:
-        - ReadWriteMany
-      mount: true
-    postgresql:
-      enabled: false
-    postgresql-ha:
-      enabled: false
-    redis-cluster:
-      enabled: false
     valkey-cluster:
       enabled: false
-      usePassword: false
-      usePasswordFiles: false
-      cluster:
-        nodes: 3
-        replicas: 0
-      valkey:
-        tolerations:
-          - key: node-role.kubernetes.io/control-plane
-            operator: Exists
-            effect: NoSchedule
-        nodeSelector:
-          cryptophys.io/tier: platform
-        resources:
-          requests:
-            cpu: 50m
-            memory: 64Mi
-          limits:
-            cpu: 250m
-            memory: 256Mi
-      service:
-        ports:
-          valkey: 6379
-    memcached:
-      enabled: false
-    metrics:
-      enabled: true
-      serviceMonitor:
-        enabled: true
-    tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
-    nodeSelector:
-      cryptophys.io/tier: platform
-    affinity:
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchLabels:
-                app.kubernetes.io/instance: platform-code-forge-gitea
-                app.kubernetes.io/name: gitea
-            topologyKey: kubernetes.io/hostname
     resources:
       requests:
-        cpu: 50m
-        memory: 55Mi
+        cpu: 100m
+        memory: 256Mi
       limits:
         cpu: 500m
         memory: 1Gi
-    podSecurityContext:
-      fsGroup: 1000
-      seccompProfile:
-        type: RuntimeDefault
-    containerSecurityContext:
-      runAsNonRoot: true
-      runAsUser: 1000
-      allowPrivilegeEscalation: false
-      privileged: false
-      capabilities:
-        drop:
-          - ALL
-      seccompProfile:
-        type: RuntimeDefault
-    initContainers:
-      resources:
-        requests:
-          cpu: 50m
-          memory: 55Mi
-        limits:
-          cpu: 200m
-          memory: 256Mi
-    commonLabels:
-      cryptophys.work/domain: gitea
-    commonAnnotations:
-      cryptophys.io/anti-regression: "true"
-      cryptophys.io/contract: contract.platform.code_forge.v1
-      cryptophys.io/ssot-ref: ssot/gitea/deployment.yaml
-    global:
-      security:
-        allowInsecureImages: true
