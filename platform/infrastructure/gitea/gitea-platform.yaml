@@ -39,6 +39,8 @@ spec:
           USER: app
           PASSWD: uA8NrQUOb9no2hg9BGEDFulmlkRlHMK5dAhKwpkm3sozTH43p1UAc9zERIfljQIp
     extraConfig: |
+      [server]
+      GIT_EXECUTABLE_PATH = /usr/bin/git
       [cache]
       ADAPTER = redis
       HOST = gitea-redis.gitops-system.svc.cluster.local:6379
