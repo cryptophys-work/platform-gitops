@@ -94,6 +94,13 @@ spec:
       enabled: false
     postgresql-ha:
       enabled: false
+    valkey:
+      enabled: false
+    valkey-cluster:
+      enabled: false
+    externalValkey:
+      host: gitea-redis.gitops-system.svc.cluster.local
+      port: 6379
     resources:
       requests:
         cpu: 200m
