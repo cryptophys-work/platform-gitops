@@ -9,6 +9,7 @@ data:
         ready
         hosts {
            10.107.45.144 gitea-internal.cryptophys.work
+           10.8.0.240 registry.cryptophys.work
            fallthrough
         }
         kubernetes cluster.local in-addr.arpa ip6.arpa {
