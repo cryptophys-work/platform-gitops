@@ -38,8 +38,9 @@ spec:
     kubeProxyReplacement: "true"
     devices: "wg0"
     l7Proxy: true
-    routingMode: native
-    autoDirectNodeRoutes: true
+    routingMode: tunnel
+    tunnelProtocol: vxlan
+    autoDirectNodeRoutes: false
     ipv4NativeRoutingCIDR: 10.244.0.0/16
     enableIPv4Masquerade: true
     encryption:
