@@ -35,7 +35,18 @@ spec:
             effect: NoSchedule
         nodeSelector:
           cryptophys.io/tier: platform
-    kubeProxyReplacement: false
+    kubeProxyReplacement: strict
+    devices: "wg0"
+    l7Proxy: true
+    routingMode: native
+    autoDirectNodeRoutes: true
+    ipv4NativeRoutingCIDR: 10.244.0.0/16
+    enableIPv4Masquerade: true
+    encryption:
+      enabled: true
+      type: wireguard
+      nodeEncryption: true
+    mtu: 1370
     # KubePrism local LB (127.0.0.1:7445) — HA across all 3 CP nodes
     # Avoids SPOF from hardcoding a single CP node IP (was 10.8.0.2/cortex only)
     k8sServiceHost: 127.0.0.1
