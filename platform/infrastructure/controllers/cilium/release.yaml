@@ -36,6 +36,14 @@ spec:
         nodeSelector:
           cryptophys.io/tier: platform
     kubeProxyReplacement: "true"
+    hostServices:
+      enabled: true
+    externalIPs:
+      enabled: true
+    nodePort:
+      enabled: true
+    hostPort:
+      enabled: true
     devices: "wg0"
     l7Proxy: true
     routingMode: tunnel
