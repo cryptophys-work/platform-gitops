@@ -60,7 +60,7 @@ spec:
           GIT_EXECUTABLE_PATH: /usr/bin/git
     extraEnv:
       - name: GITEA__CACHE__ADAPTER
-        value: memory
+        value: redis
       - name: GITEA__CACHE__HOST
         value: gitea-redis.gitops-system.svc.cluster.local:6379
       - name: GITEA__SESSION__PROVIDER
