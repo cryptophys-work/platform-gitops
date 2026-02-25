@@ -38,3 +38,35 @@ spec:
   - protocol: TCP
     port: 6379
     targetPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platform-code-forge-gitea-valkey-cluster
+  namespace: gitops-system
+spec:
+  selector:
+    app: gitea-redis
+  ports:
+  - protocol: TCP
+    port: 6379
+    targetPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platform-code-forge-gitea-valkey-cluster-headless
+  namespace: gitops-system
+spec:
+  clusterIP: None
+  selector:
+    app: gitea-redis
+  ports:
+  - name: tcp-valkey
+    protocol: TCP
+    port: 6379
+    targetPort: 6379
+  - name: tcp-valkey-bus
+    protocol: TCP
+    port: 16379
+    targetPort: 16379
