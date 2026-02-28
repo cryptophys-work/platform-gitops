@@ -1,0 +1,26 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 32-spire
+  namespace: flux-system
+spec:
+  suspend: true
+  interval: 10m
+  wait: true
+  timeout: 30m
+  path: ./platform/infrastructure/spire
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: platform-repo
+  dependsOn:
+    - name: 15-dns-core
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: StatefulSet
+      name: spire-server
+      namespace: spire-system
+    - apiVersion: apps/v1
+      kind: DaemonSet
+      name: spire-agent
+      namespace: spire-system

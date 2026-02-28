@@ -44,7 +44,7 @@ spec:
       enabled: true
     hostPort:
       enabled: true
-    devices: "wg0"
+    # devices: "wg0"
     l7Proxy: true
     routingMode: tunnel
     tunnelProtocol: vxlan
