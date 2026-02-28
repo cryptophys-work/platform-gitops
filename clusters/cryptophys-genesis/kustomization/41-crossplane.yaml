@@ -1,0 +1,23 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 41-crossplane
+  namespace: flux-system
+spec:
+  suspend: true
+  interval: 1h
+  wait: true
+  timeout: 10m
+  path: ./platform/infrastructure/crossplane
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: platform-repo
+  dependsOn:
+    - name: 10-controllers
+    - name: 05-sources
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
+      kind: HelmRelease
+      name: crossplane
+      namespace: crossplane-system

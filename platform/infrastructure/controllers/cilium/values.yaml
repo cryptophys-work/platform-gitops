@@ -1,4 +1,3 @@
-USER-SUPPLIED VALUES:
 cluster:
   id: 1
   name: cryptophys-genesis
@@ -12,12 +11,25 @@ hubble:
     enabled: true
 ipam:
   mode: kubernetes
-k8sServiceHost: 10.8.0.2
-k8sServicePort: 6443
-kubeProxyReplacement: false
+k8sServiceHost: 127.0.0.1
+k8sServicePort: 7445
+kubeProxyReplacement: true
 operator:
-  replicas: 1
+  replicas: 2
+  priorityClassName: system-cluster-critical
+encryption:
+  enabled: true
+  type: wireguard
+  nodeEncryption: true
+priorityClassName: system-node-critical
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+  limits:
+    memory: 500Mi
 securityContext:
+  privileged: true
   capabilities:
     ciliumAgent:
     - CHOWN
