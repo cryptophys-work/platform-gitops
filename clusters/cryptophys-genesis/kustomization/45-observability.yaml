@@ -15,7 +15,7 @@ spec:
   path: ./platform/infrastructure/observability
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: platform-repo
   dependsOn:
     - name: 12-storage
     - name: 11-controllers

@@ -15,7 +15,7 @@ spec:
   path: ./platform/infrastructure/policy
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: platform-repo
   dependsOn:
     - name: 01-namespaces
     - name: 11-controllers

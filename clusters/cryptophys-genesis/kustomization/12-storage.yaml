@@ -15,7 +15,7 @@ spec:
   path: ./platform/infrastructure/storage
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: platform-repo
   dependsOn:
     - name: 02-scheduling
     - name: 11-controllers

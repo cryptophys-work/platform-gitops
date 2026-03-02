@@ -15,7 +15,7 @@ spec:
   path: ./platform/infrastructure/controllers
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: platform-repo
   dependsOn:
     - name: 05-sources
     - name: 10-metallb
