@@ -16,6 +16,6 @@ spec:
   path: ./platform/infrastructure/namespaces
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
   dependsOn:
     - name: 00-crds

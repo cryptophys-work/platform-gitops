@@ -16,6 +16,6 @@ spec:
   path: ./platform/infrastructure/scheduling
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
   dependsOn:
     - name: 01-namespaces

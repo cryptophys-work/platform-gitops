@@ -170,25 +170,4 @@ spec:
     limits.memory: 12Gi
     count/pods: "30"
 
----
-# Longhorn: campus LimitRange (prevents large pods on storage node)
-apiVersion: v1
-kind: LimitRange
-metadata:
-  name: longhorn-resource-guard
-  namespace: longhorn-system
-  annotations:
-    cryptophys.io/domain: platform
-    cryptophys.io/purpose: "Prevent large workloads from consuming campus storage node"
-spec:
-  limits:
-    - type: Container
-      defaultRequest:
-        cpu: 50m
-        memory: 64Mi
-      default:
-        cpu: 250m
-        memory: 256Mi
-      max:
-        cpu: 500m
-        memory: 512Mi
+# Note: LimitRange for longhorn-system is defined in campus-storage-worker.yaml (campus-resource-guard)
