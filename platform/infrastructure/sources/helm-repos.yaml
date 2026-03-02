@@ -204,7 +204,7 @@ metadata:
 spec:
   type: oci
   interval: 1h
-  url: oci://registry.cryptophys.work/charts
+  url: oci://docker.io/envoyproxy
 ---
 # n8n workflow automation - community helm chart (official helm.n8n.io was decommissioned)
 apiVersion: source.toolkit.fluxcd.io/v1beta2
