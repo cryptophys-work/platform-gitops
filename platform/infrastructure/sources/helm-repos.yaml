@@ -209,15 +209,6 @@ spec:
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
-  name: n8n-charts
-  namespace: flux-system
-spec:
-  interval: 1h
-  url: https://helm.n8n.io/
----
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: HelmRepository
-metadata:
   name: falcosecurity
   namespace: flux-system
 spec:
@@ -232,12 +223,3 @@ metadata:
 spec:
   interval: 1h
   url: https://helm.linkerd.io/stable
----
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: HelmRepository
-metadata:
-  name: qdrant-charts
-  namespace: flux-system
-spec:
-  interval: 1h
-  url: https://qdrant.github.io/helm-charts
