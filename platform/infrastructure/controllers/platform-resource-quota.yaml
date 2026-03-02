@@ -5,10 +5,10 @@ metadata:
   namespace: flux-system
 spec:
   hard:
-    requests.cpu: "1500m"
-    requests.memory: "2Gi"
-    limits.cpu: "3000m"
-    limits.memory: "4Gi"
+    requests.cpu: "2000m"
+    requests.memory: "3Gi"
+    limits.cpu: "4000m"
+    limits.memory: "6Gi"
 ---
 apiVersion: v1
 kind: ResourceQuota
@@ -17,10 +17,10 @@ metadata:
   namespace: apps-system
 spec:
   hard:
-    requests.cpu: "1500m"
-    requests.memory: "2Gi"
-    limits.cpu: "3000m"
-    limits.memory: "4Gi"
+    requests.cpu: "2000m"
+    requests.memory: "4Gi"
+    limits.cpu: "4000m"
+    limits.memory: "8Gi"
 ---
 apiVersion: v1
 kind: ResourceQuota
@@ -29,7 +29,7 @@ metadata:
   namespace: apps-core
 spec:
   hard:
-    requests.cpu: "1500m"
-    requests.memory: "2.5Gi"
-    limits.cpu: "3000m"
-    limits.memory: "5Gi"
+    requests.cpu: "4000m"
+    requests.memory: "6Gi"
+    limits.cpu: "8000m"
+    limits.memory: "12Gi"
