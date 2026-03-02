@@ -15,7 +15,7 @@ spec:
   path: ./platform/infrastructure/spire
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: platform-repo
   dependsOn:
     - name: 31-secrets
     - name: 11-controllers

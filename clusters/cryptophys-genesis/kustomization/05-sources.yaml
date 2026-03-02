@@ -15,6 +15,6 @@ spec:
   path: ./platform/infrastructure/sources
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: platform-repo
   dependsOn:
     - name: 01-namespaces

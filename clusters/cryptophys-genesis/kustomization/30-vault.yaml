@@ -15,7 +15,7 @@ spec:
   path: ./platform/infrastructure/vault-system
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: platform-repo
   dependsOn:
     - name: 12-storage
     - name: 11-controllers

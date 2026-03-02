@@ -15,6 +15,6 @@ spec:
   path: ./platform/infrastructure/argocd
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: platform-repo
   dependsOn:
     - name: 31-secrets

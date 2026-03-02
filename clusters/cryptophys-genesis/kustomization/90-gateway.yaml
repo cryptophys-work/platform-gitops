@@ -15,7 +15,7 @@ spec:
   path: ./platform/infrastructure/gateway
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: platform-repo
   dependsOn:
     - name: 13-networking
     - name: 42-argocd

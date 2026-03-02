@@ -15,7 +15,7 @@ spec:
   path: ./platform/infrastructure/ray
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: platform-repo
   dependsOn:
     - name: 11-controllers
     - name: 12-storage

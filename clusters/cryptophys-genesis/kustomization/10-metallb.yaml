@@ -15,6 +15,6 @@ spec:
   path: ./platform/infrastructure/metallb
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: platform-repo
   dependsOn:
     - name: 05-sources
