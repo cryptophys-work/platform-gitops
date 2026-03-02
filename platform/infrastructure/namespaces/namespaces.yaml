@@ -10,6 +10,20 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+  name: apps-core
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
+  name: apps-dash
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: cert-manager
 ---
 apiVersion: v1
