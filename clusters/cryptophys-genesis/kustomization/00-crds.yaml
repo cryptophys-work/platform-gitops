@@ -16,4 +16,4 @@ spec:
   path: ./platform/infrastructure/crds
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
