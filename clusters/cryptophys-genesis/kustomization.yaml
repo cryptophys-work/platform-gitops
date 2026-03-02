@@ -9,6 +9,7 @@ resources:
   - kustomization/10-metallb-config.yaml
   - kustomization/10-cni-cilium.yaml
   - kustomization/11-controllers.yaml
+  - kustomization/11-controllers-gateway.yaml
   - kustomization/12-storage.yaml
   - kustomization/13-networking.yaml
   - kustomization/14-linkerd.yaml
