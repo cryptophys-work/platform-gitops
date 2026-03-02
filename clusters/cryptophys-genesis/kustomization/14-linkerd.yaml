@@ -3,14 +3,19 @@ kind: Kustomization
 metadata:
   name: 14-linkerd
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
 spec:
   suspend: true
-  dependsOn:
-    - name: platform-repo
-    - name: platform-repo
   interval: 1h
+  prune: false
+  wait: true
+  timeout: 15m
   path: ./platform/infrastructure/linkerd
-  prune: true
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
+  dependsOn:
+    - name: 11-controllers
+    - name: 35-spire

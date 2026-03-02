@@ -3,33 +3,18 @@ kind: Kustomization
 metadata:
   name: 46-security-obs
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
 spec:
-  dependsOn:
-    - name: platform-repo
-    - name: platform-repo
   suspend: true
   interval: 1h
-  wait: false
+  prune: false
+  wait: true
   timeout: 10m
   path: ./platform/infrastructure/security-observability
-  prune: false
   sourceRef:
     kind: GitRepository
-    name: platform-repo
-  healthChecks:
-    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
-      kind: HelmRelease
-      name: platform-repo
-      namespace: observability-system
-    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
-      kind: HelmRelease
-      name: platform-repo
-      namespace: observability-system
-    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
-      kind: HelmRelease
-      name: platform-repo
-      namespace: observability-system
-    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
-      kind: HelmRelease
-      name: platform-repo
-      namespace: security-system
+    name: flux-system
+  dependsOn:
+    - name: 45-observability

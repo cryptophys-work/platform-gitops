@@ -3,13 +3,17 @@ kind: Kustomization
 metadata:
   name: 00-crds
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/layer: platform
+    cryptophys.io/managed-by: flux
 spec:
-  suspend: true
+  suspend: true   # First stage — unsuspend first, no dependsOn
   interval: 1h
+  prune: false    # Never prune CRDs (destructive)
   wait: true
-  timeout: 5m
+  timeout: 10m
   path: ./platform/infrastructure/crds
-  prune: false
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system

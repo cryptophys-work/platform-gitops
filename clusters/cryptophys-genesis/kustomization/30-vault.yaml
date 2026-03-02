@@ -3,21 +3,19 @@ kind: Kustomization
 metadata:
   name: 30-vault
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
 spec:
   suspend: true
   interval: 1h
-  wait: true
-  timeout: 30m
-  path: ./platform/infrastructure/vault-system
   prune: false
+  wait: true
+  timeout: 15m
+  path: ./platform/infrastructure/vault-system
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
   dependsOn:
-    - name: platform-repo
-    - name: platform-repo
-  healthChecks:
-    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
-      kind: HelmRelease
-      name: platform-repo
-      namespace: vault-system
+    - name: 12-storage
+    - name: 11-controllers

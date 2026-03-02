@@ -3,80 +3,18 @@ kind: Kustomization
 metadata:
   name: 05-sources
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
 spec:
   suspend: true
   interval: 1h
-  wait: true
-  timeout: 10m
-  path: ./platform/infrastructure/sources
   prune: false
+  wait: true
+  timeout: 5m
+  path: ./platform/infrastructure/sources
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
   dependsOn:
-    - name: platform-repo
-  healthChecks:
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: HelmRepository
-      name: platform-repo
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: HelmRepository
-      name: platform-repo
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: HelmRepository
-      name: platform-repo
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: HelmRepository
-      name: platform-repo
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: HelmRepository
-      name: platform-repo
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: HelmRepository
-      name: platform-repo
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: HelmRepository
-      name: platform-repo
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: HelmRepository
-      name: platform-repo
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: HelmRepository
-      name: platform-repo
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: HelmRepository
-      name: platform-repo
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: HelmRepository
-      name: platform-repo
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: HelmRepository
-      name: platform-repo
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: HelmRepository
-      name: platform-repo
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1beta2
-      kind: HelmRepository
-      name: platform-repo
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1
-      kind: GitRepository
-      name: platform-repo
-      namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1
-      kind: GitRepository
-      name: platform-repo
-      namespace: flux-system
+    - name: 01-namespaces

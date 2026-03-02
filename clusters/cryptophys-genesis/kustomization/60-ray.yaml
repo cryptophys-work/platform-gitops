@@ -3,16 +3,19 @@ kind: Kustomization
 metadata:
   name: 60-ray
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
 spec:
   suspend: true
-  interval: 10m
-  prune: true
+  interval: 1h
+  prune: false
   wait: true
-  timeout: 5m
+  timeout: 20m
   path: ./platform/infrastructure/ray
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
   dependsOn:
-    - name: platform-repo
-    - name: platform-repo
+    - name: 11-controllers
+    - name: 12-storage

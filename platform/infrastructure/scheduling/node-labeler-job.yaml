@@ -1,0 +1,133 @@
+# Bootstrap Job: applies node labels and taints for the cryptophys-genesis cluster
+# Runs once at 02-scheduling stage. Safe to re-run (idempotent kubectl label --overwrite).
+# Node role assignment:
+#   medulla   → llm-inference (8CPU/23.5GB, largest worker)
+#   synapse   → apps-core general compute (6CPU/11.5GB)
+#   thalamus  → apps-core general compute (6CPU/11.5GB)
+#   quanta    → apps-core lightweight (4CPU/7.4GB)
+#   campus    → storage-only (4CPU/7.4GB) + NoSchedule taint
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: node-labeler
+  namespace: kube-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/contract: contract.infrastructure.talos_topology.v1
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: node-labeler
+  annotations:
+    cryptophys.io/domain: platform
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "patch", "update"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: node-labeler
+  annotations:
+    cryptophys.io/domain: platform
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: node-labeler
+subjects:
+  - kind: ServiceAccount
+    name: node-labeler
+    namespace: kube-system
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: node-labeler
+  namespace: kube-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/contract: contract.infrastructure.talos_topology.v1
+    cryptophys.io/managed-by: flux
+    cryptophys.io/anti-regression: "true"
+spec:
+  ttlSecondsAfterFinished: 600
+  backoffLimit: 3
+  template:
+    spec:
+      serviceAccountName: node-labeler
+      restartPolicy: OnFailure
+      priorityClassName: cryptophys-platform-critical
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: labeler
+          image: bitnami/kubectl:1.29
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "=== cryptophys-genesis node labeler ==="
+
+              # medulla: LLM inference tier (largest worker - 8CPU/23.5GB)
+              kubectl label node medulla-82-208-20-242 \
+                cryptophys.io/role=llm-inference \
+                cryptophys.io/tier=compute \
+                workload.cryptophys.work/apps-core=true \
+                workload.cryptophys.work/llm=true \
+                --overwrite
+              kubectl taint node medulla-82-208-20-242 \
+                cryptophys.io/role=llm-inference:NoSchedule \
+                --overwrite 2>/dev/null || true
+              echo "medulla: labelled + tainted (llm-inference)"
+
+              # synapse: apps-core general compute (6CPU/11.5GB)
+              kubectl label node synapse-161-97-136-251 \
+                cryptophys.io/tier=compute \
+                workload.cryptophys.work/apps-core=true \
+                --overwrite
+              echo "synapse: labelled (apps-core)"
+
+              # thalamus: apps-core general compute (6CPU/11.5GB)
+              kubectl label node thalamus-217-76-59-241 \
+                cryptophys.io/tier=compute \
+                workload.cryptophys.work/apps-core=true \
+                --overwrite
+              echo "thalamus: labelled (apps-core)"
+
+              # quanta: apps-core lightweight (4CPU/7.4GB)
+              kubectl label node quanta-194-163-186-222 \
+                cryptophys.io/tier=compute \
+                workload.cryptophys.work/apps-core=true \
+                --overwrite
+              echo "quanta: labelled (apps-core lightweight)"
+
+              # campus: storage-only (4CPU/7.4GB) + NoSchedule taint
+              kubectl label node campus-212-47-66-101 \
+                cryptophys.io/tier=storage \
+                cryptophys.io/node-role=storage-worker \
+                workload.cryptophys.work/storage=true \
+                --overwrite
+              kubectl taint node campus-212-47-66-101 \
+                cryptophys.io/storage-only=true:NoSchedule \
+                --overwrite 2>/dev/null || true
+              echo "campus: labelled + tainted (storage-only)"
+
+              echo "=== Node labeling complete ==="
+              kubectl get nodes --show-labels | grep -E "NAME|medulla|synapse|thalamus|quanta|campus"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi

@@ -3,14 +3,18 @@ kind: Kustomization
 metadata:
   name: 25-database
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
 spec:
   suspend: true
-  dependsOn:
-    - name: platform-repo
-    - name: platform-repo
   interval: 1h
-  path: ./platform/infrastructure/database
   prune: false
+  wait: true
+  timeout: 10m
+  path: ./platform/infrastructure/database
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
+  dependsOn:
+    - name: 12-storage

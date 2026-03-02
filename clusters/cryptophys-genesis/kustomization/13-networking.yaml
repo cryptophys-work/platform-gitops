@@ -3,16 +3,18 @@ kind: Kustomization
 metadata:
   name: 13-networking
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
 spec:
   suspend: true
   interval: 1h
+  prune: false
   wait: true
   timeout: 10m
   path: ./platform/infrastructure/networking
-  prune: false
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
   dependsOn:
-    - name: platform-repo
-    - name: platform-repo
+    - name: 11-controllers
