@@ -4,7 +4,6 @@ resources:
   - gotk-components.yaml
   - gotk-sync.yaml
 patches:
-  # 1. Add NodeSelector and Tolerations
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
@@ -22,9 +21,3 @@ patches:
                 effect: NoSchedule
     target:
       kind: Deployment
-  # 2. Forcefully DELETE the restrictive affinity block using JSON Patch
-  - target:
-      kind: Deployment
-    patch: |-
-      - op: remove
-        path: /spec/template/spec/affinity
