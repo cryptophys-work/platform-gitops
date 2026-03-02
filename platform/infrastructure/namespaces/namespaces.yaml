@@ -1,31 +1,43 @@
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: apps-system
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: cert-manager
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: external-secrets
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: gatekeeper-system
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: gitops-system
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: ingress-system
   labels:
     pod-security.kubernetes.io/enforce: privileged
@@ -35,11 +47,15 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: kyverno-system
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: longhorn-system
   labels:
     pod-security.kubernetes.io/enforce: privileged
@@ -49,6 +65,8 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: metallb-system
   labels:
     pod-security.kubernetes.io/enforce: privileged
@@ -58,6 +76,8 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: observability-system
   labels:
     pod-security.kubernetes.io/enforce: privileged
@@ -67,16 +87,22 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: postgresql-system
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: registry-system
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: spire-system
   labels:
     pod-security.kubernetes.io/enforce: privileged
@@ -86,24 +112,34 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: vault-system
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: minio-system
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: velero-system
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: security-system
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: crossplane-system
