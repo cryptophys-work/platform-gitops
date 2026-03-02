@@ -20,6 +20,7 @@ patches:
                 operator: Exists
                 effect: NoSchedule
             affinity:
+              $patch: replace
               podAntiAffinity:
                 preferredDuringSchedulingIgnoredDuringExecution:
                   - weight: 100
