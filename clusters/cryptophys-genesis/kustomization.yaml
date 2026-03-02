@@ -14,6 +14,7 @@ resources:
   - kustomization/13-networking.yaml
   - kustomization/14-linkerd.yaml
   - kustomization/15-policy.yaml
+  - kustomization/15-policy-crs.yaml
   - kustomization/15-security-runtime.yaml
   - kustomization/16-policy-ssot.yaml
   - kustomization/17-policy-reporter.yaml

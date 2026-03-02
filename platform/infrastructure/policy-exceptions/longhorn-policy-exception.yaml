@@ -1,0 +1,32 @@
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: longhorn-system-exception
+  namespace: longhorn-system
+spec:
+  exceptions:
+    - policyName: cp-pss-restricted-v1
+      ruleNames:
+        - autogen-deny-privileged-containers
+    - policyName: cp-supplychain-registry-v1
+      ruleNames:
+        - autogen-restrict-image-registries
+    - policyName: cp-platform-baseline
+      ruleNames:
+        - require-standard-labels
+    - policyName: cp-enforce-business
+      ruleNames:
+        - autogen-require-resources
+    - policyName: cp-standard-resources-limits-v1
+      ruleNames:
+        - autogen-require-limits-requests
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - DaemonSet
+            - Deployment
+            - StatefulSet
+          namespaces:
+            - longhorn-system
