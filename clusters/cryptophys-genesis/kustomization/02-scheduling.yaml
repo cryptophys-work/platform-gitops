@@ -1,7 +1,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 02-scheduling
+  name: platform-repo
   namespace: flux-system
 spec:
   suspend: true
@@ -10,6 +10,6 @@ spec:
   path: ./platform/infrastructure/scheduling
   sourceRef:
     kind: GitRepository
-    name: 02-scheduling
+    name: platform-repo
   dependsOn:
-    - name: 02-scheduling
+    - name: platform-repo
