@@ -1,173 +1,49 @@
-# ResourceQuota and LimitRange per namespace tier
-# Applied via 02-scheduling stage
-# These protect critical workloads from resource starvation by batch/overflow jobs
-
+# Note: app-namespace quotas (cerebrum, apps-core, tekton-*) moved to apps-gitops overlays
 ---
-# AI tier: cerebrum namespace (LLM inference, Ray)
 apiVersion: v1
 kind: ResourceQuota
 metadata:
-  name: cerebrum-quota
-  namespace: cerebrum
   annotations:
     cryptophys.io/domain: cerebrum
     cryptophys.io/tier: ai-workload
-spec:
-  hard:
-    requests.cpu: "6"
-    requests.memory: 16Gi
-    limits.cpu: "8"
-    limits.memory: 22Gi
-    count/pods: "20"
-
----
-apiVersion: v1
-kind: LimitRange
-metadata:
-  name: cerebrum-limits
-  namespace: cerebrum
-  annotations:
-    cryptophys.io/domain: cerebrum
-spec:
-  limits:
-    - type: Container
-      defaultRequest:
-        cpu: 200m
-        memory: 256Mi
-      default:
-        cpu: "1"
-        memory: 2Gi
-      max:
-        cpu: "8"
-        memory: 22Gi
-
----
-# AI tier: cqls-compute namespace (Ray workers)
-apiVersion: v1
-kind: ResourceQuota
-metadata:
   name: cqls-compute-quota
   namespace: cqls-compute
-  annotations:
-    cryptophys.io/domain: cerebrum
-    cryptophys.io/tier: ai-workload
 spec:
   hard:
-    requests.cpu: "6"
-    requests.memory: 18Gi
-    limits.cpu: "8"
+    count/pods: '20'
+    limits.cpu: '8'
     limits.memory: 22Gi
-    count/pods: "20"
-
+    requests.cpu: '6'
+    requests.memory: 18Gi
 ---
-# Platform-critical tier: vault-system
 apiVersion: v1
 kind: ResourceQuota
 metadata:
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/tier: platform-critical
   name: vault-quota
   namespace: vault-system
-  annotations:
-    cryptophys.io/domain: platform
-    cryptophys.io/tier: platform-critical
 spec:
   hard:
-    requests.cpu: "1"
-    requests.memory: 1Gi
-    limits.cpu: "2"
+    count/pods: '10'
+    limits.cpu: '2'
     limits.memory: 3Gi
-    count/pods: "10"
-
+    requests.cpu: '1'
+    requests.memory: 1Gi
 ---
-# Platform-critical tier: gitops-system (Gitea)
 apiVersion: v1
 kind: ResourceQuota
 metadata:
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/tier: platform-critical
   name: gitops-quota
   namespace: gitops-system
-  annotations:
-    cryptophys.io/domain: platform
-    cryptophys.io/tier: platform-critical
 spec:
   hard:
-    requests.cpu: "500m"
-    requests.memory: 512Mi
-    limits.cpu: "2"
+    count/pods: '10'
+    limits.cpu: '2'
     limits.memory: 2Gi
-    count/pods: "10"
-
----
-# Core apps tier (bridge, aide, navigator, orchestrator, watcher)
-apiVersion: v1
-kind: ResourceQuota
-metadata:
-  name: apps-core-quota
-  namespace: apps-core
-  annotations:
-    cryptophys.io/domain: platform
-    cryptophys.io/tier: standard
-spec:
-  hard:
-    requests.cpu: "4"
-    requests.memory: 4Gi
-    limits.cpu: "8"
-    limits.memory: 8Gi
-    count/pods: "50"
-
----
-apiVersion: v1
-kind: LimitRange
-metadata:
-  name: apps-core-limits
-  namespace: apps-core
-  annotations:
-    cryptophys.io/domain: platform
-spec:
-  limits:
-    - type: Container
-      defaultRequest:
-        cpu: 50m
-        memory: 64Mi
-      default:
-        cpu: 200m
-        memory: 256Mi
-      max:
-        cpu: "2"
-        memory: 4Gi
-
----
-# Batch tier: tekton-system (Tekton Pipelines)
-apiVersion: v1
-kind: ResourceQuota
-metadata:
-  name: tekton-quota
-  namespace: tekton-system
-  annotations:
-    cryptophys.io/domain: platform
-    cryptophys.io/tier: batch
-spec:
-  hard:
-    requests.cpu: "4"
-    requests.memory: 4Gi
-    limits.cpu: "8"
-    limits.memory: 8Gi
-    count/pods: "30"
-
----
-# Batch tier: tekton-pipelines (PipelineRun pods)
-apiVersion: v1
-kind: ResourceQuota
-metadata:
-  name: tekton-pipelines-quota
-  namespace: tekton-pipelines
-  annotations:
-    cryptophys.io/domain: platform
-    cryptophys.io/tier: batch
-spec:
-  hard:
-    requests.cpu: "6"
-    requests.memory: 6Gi
-    limits.cpu: "12"
-    limits.memory: 12Gi
-    count/pods: "30"
-
-# Note: LimitRange for longhorn-system is defined in campus-storage-worker.yaml (campus-resource-guard)
+    requests.cpu: 500m
+    requests.memory: 512Mi
