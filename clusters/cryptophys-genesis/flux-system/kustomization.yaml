@@ -4,6 +4,7 @@ resources:
   - gotk-components.yaml
   - gotk-sync.yaml
 patches:
+  # 1. Add NodeSelector and Tolerations
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
@@ -19,23 +20,11 @@ patches:
               - key: node-role.kubernetes.io/control-plane
                 operator: Exists
                 effect: NoSchedule
-            affinity:
-              $patch: replace
-              podAntiAffinity:
-                preferredDuringSchedulingIgnoredDuringExecution:
-                  - weight: 100
-                    podAffinityTerm:
-                      labelSelector:
-                        matchExpressions:
-                          - key: app
-                            operator: In
-                            values:
-                              - helm-controller
-                              - source-controller
-                              - kustomize-controller
-                              - notification-controller
-                              - image-reflector-controller
-                              - image-automation-controller
-                      topologyKey: kubernetes.io/hostname
     target:
       kind: Deployment
+  # 2. Forcefully DELETE the restrictive affinity block using JSON Patch
+  - target:
+      kind: Deployment
+    patch: |-
+      - op: remove
+        path: /spec/template/spec/affinity
