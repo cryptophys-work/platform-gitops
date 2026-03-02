@@ -1,7 +1,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: platform-repo
+  name: 15-policy
   namespace: flux-system
 spec:
   suspend: true
