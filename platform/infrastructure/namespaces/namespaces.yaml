@@ -36,10 +36,9 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
   name: ingress-system
   labels:
+    app.kubernetes.io/created-by: aide
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
@@ -54,10 +53,9 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
   name: longhorn-system
   labels:
+    app.kubernetes.io/created-by: aide
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
@@ -65,10 +63,9 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
   name: metallb-system
   labels:
+    app.kubernetes.io/created-by: aide
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
