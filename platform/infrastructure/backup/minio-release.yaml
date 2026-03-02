@@ -33,7 +33,7 @@ spec:
           effect: NoSchedule
       nodeSelector:
         cryptophys.io/node-role: storage-worker
-        kubernetes.io/hostname: campus-173-212-221-185
+        kubernetes.io/hostname: campus-212-47-66-101
       resources:
         requests:
           cpu: 50m
@@ -57,7 +57,7 @@ spec:
           effect: NoSchedule
       nodeSelector:
         cryptophys.io/node-role: storage-worker
-        kubernetes.io/hostname: campus-173-212-221-185
+        kubernetes.io/hostname: campus-212-47-66-101
     deploymentUpdate:
       type: Recreate
     persistence:
@@ -70,7 +70,7 @@ spec:
         effect: NoSchedule
     nodeSelector:
       cryptophys.io/node-role: storage-worker
-      kubernetes.io/hostname: campus-173-212-221-185
+      kubernetes.io/hostname: campus-212-47-66-101
     resources:
       requests:
         cpu: 100m

@@ -1,0 +1,44 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: falco
+  namespace: security-observability
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: falco
+      version: "3.8.0" # Use a specific, stable version
+      sourceRef:
+        kind: HelmRepository
+        name: falcosecurity
+        namespace: flux-system
+  values:
+    driver:
+      kind: ebpf
+    falcosidekick:
+      enabled: true
+      webui:
+        enabled: false # Assuming UI is not needed for now
+      config:
+        loki:
+          hostport: "http://platform-observability-loki.security-observability.svc.cluster.local:3100"
+    # Start with a baseline of critical rules
+    customRules:
+      rules-critical-syscalls.yaml: |
+        - rule: Terminal shell in container
+          desc: A shell was spawned in a container with an attached terminal.
+          condition: >
+            spawned_process and container and shell_procs and proc.tty != 0
+            and container.id != host
+          output: "A shell was spawned in a container (user=%user.name container_id=%container.id container_name=%container.name shell=%proc.name parent=%proc.pname cmdline=%proc.cmdline)"
+          priority: WARNING
+        - rule: Unexpected outbound connection
+          desc: An outbound connection was made by a process that is not on the allowed list.
+          condition: >
+            (evt.type=connect or evt.type=sendto or evt.type=sendmsg) and
+            (fd.typechar='4' or fd.typechar='6') and
+            container.id != "host" and
+            not proc.name in (list_of_allowed_processes)
+          output: "Unexpected outbound connection (proc.name=%proc.name, container.id=%container.id, fd.name=%fd.name)"
+          priority: NOTICE

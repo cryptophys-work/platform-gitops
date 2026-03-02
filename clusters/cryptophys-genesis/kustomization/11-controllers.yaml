@@ -1,9 +1,10 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 10-controllers
+  name: 11-controllers
   namespace: flux-system
 spec:
+  suspend: true
   interval: 1h
   wait: true
   timeout: 30m
@@ -11,24 +12,24 @@ spec:
   prune: false
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: 11-controllers
   dependsOn:
-    - name: 05-sources
-    - name: 17-metallb
+    - name: 11-controllers
+    - name: 11-controllers
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
-      name: cilium
+      name: 11-controllers
       namespace: kube-system
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
-      name: cert-manager
+      name: 11-controllers
       namespace: cert-manager
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
-      name: external-secrets
+      name: 11-controllers
       namespace: external-secrets
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
-      name: ingress-gateway
+      name: 11-controllers
       namespace: ingress-system

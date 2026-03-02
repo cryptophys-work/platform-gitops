@@ -1,23 +1,26 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 17-metallb
+  name: 15-policy
   namespace: flux-system
 spec:
   suspend: true
   interval: 1h
   wait: true
-  timeout: 15m
-  path: ./platform/infrastructure/metallb
+  timeout: 30m
+  path: ./platform/infrastructure/policy
   prune: false
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: 15-policy
   dependsOn:
-    - name: 01-namespaces
-    - name: 05-sources
+    - name: 15-policy
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
-      name: platform-metallb
-      namespace: metallb-system
+      name: 15-policy
+      namespace: kyverno-system
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
+      kind: HelmRelease
+      name: 15-policy
+      namespace: gatekeeper-system

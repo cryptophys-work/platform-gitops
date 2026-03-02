@@ -1,0 +1,44 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: gatekeeper
+  namespace: gatekeeper-system
+spec:
+  interval: 1h
+  releaseName: gatekeeper
+  chart:
+    spec:
+      chart: gatekeeper
+      version: "3.21.1"
+      sourceRef:
+        kind: HelmRepository
+        name: gatekeeper
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    replicas: 1
+    # Enable external data / sync
+    controllerManager:
+      exemptNamespaces:
+        - kube-system
+        - flux-system
+        - gatekeeper-system
+---
+# Sync configuration for Gatekeeper Inventory
+apiVersion: config.gatekeeper.sh/v1alpha1
+kind: Config
+metadata:
+  name: config
+  namespace: gatekeeper-system
+spec:
+  sync:
+    syncOnly:
+      - group: ""
+        version: "v1"
+        kind: "Namespace"

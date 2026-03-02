@@ -1,0 +1,37 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: workload-placement.kubernetes.cryptophys.work
+spec:
+  compositeTypeRef:
+    apiVersion: cryptophys.work/v1alpha1
+    kind: XWorkloadPlacement
+  resources:
+  - name: patch-deployment-selector
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: apps/v1
+            kind: Deployment # Default, patched below
+            metadata:
+              name: any
+              namespace: any
+            spec:
+              template:
+                spec:
+                  nodeSelector:
+                    "cryptophys.io/tier": "worker" # Default
+        providerConfigRef:
+          name: local-kubernetes-provider
+    patches:
+    - fromFieldPath: "spec.targetWorkload.name"
+      toFieldPath: "spec.forProvider.manifest.metadata.name"
+    - fromFieldPath: "spec.targetWorkload.namespace"
+      toFieldPath: "spec.forProvider.manifest.metadata.namespace"
+    - fromFieldPath: "spec.targetWorkload.kind"
+      toFieldPath: "spec.forProvider.manifest.kind"
+    - fromFieldPath: "spec.placement.tier"
+      toFieldPath: "spec.forProvider.manifest.spec.template.spec.nodeSelector[cryptophys.io/tier]"

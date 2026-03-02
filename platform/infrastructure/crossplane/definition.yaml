@@ -1,0 +1,31 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xmanagednodes.cryptophys.work
+spec:
+  group: cryptophys.work
+  names:
+    kind: XManagedNode
+    plural: xmanagednodes
+  claimNames:
+    kind: ManagedNode
+    plural: managednodes
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              tier:
+                type: string
+                description: "The tier of the node (e.g., platform, worker, storage)."
+              resourceLimitMultiplier:
+                type: number
+                description: "Multiplier for resource limits (e.g., 0.65 for 65%)."
+            required:
+            - tier

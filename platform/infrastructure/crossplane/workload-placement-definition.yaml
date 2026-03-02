@@ -1,0 +1,50 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xworkloadplacements.cryptophys.work
+spec:
+  group: cryptophys.work
+  names:
+    kind: XWorkloadPlacement
+    plural: xworkloadplacements
+  claimNames:
+    kind: WorkloadPlacement
+    plural: workloadplacements
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              targetWorkload:
+                type: object
+                properties:
+                  kind:
+                    type: string
+                    default: "Deployment"
+                  name:
+                    type: string
+                  namespace:
+                    type: string
+                required:
+                - name
+                - namespace
+              placement:
+                type: object
+                properties:
+                  tier:
+                    type: string
+                    description: "The targeted node tier (platform, worker, ai, storage)"
+                  preferredNode:
+                    type: string
+                    description: "Specific hostname if mandatory"
+                required:
+                - tier
+            required:
+            - targetWorkload
+            - placement

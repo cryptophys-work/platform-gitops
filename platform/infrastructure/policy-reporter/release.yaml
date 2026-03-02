@@ -48,7 +48,7 @@ spec:
       enabled: true
       replicaCount: 1
       displayMode: dark
-      banner: "Kyverno Policy Reporter"
+      banner: "Cryptophys Policy Control Center"
       logging:
         api: true
         server: true
@@ -74,12 +74,17 @@ spec:
         - name: Kyverno Event
           type: result
           exceptions: false
+        - name: gatekeeper
+          type: severity
+          exceptions: true
       clusters:
         - name: talos-prod
           host: http://security-policy-reporter:8080
           plugins:
             - name: kyverno
               host: http://security-policy-reporter-kyverno-plugin:8080
+            - name: gatekeeper
+              host: http://security-policy-reporter-gatekeeper-plugin:8080
       ingress:
         enabled: true
         className: nginx
@@ -89,17 +94,18 @@ spec:
           nginx.ingress.kubernetes.io/auth-secret: policy-reporter-ui-basic-auth
           nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"
         hosts:
-          - host: kyverno.cryptophys.work
+          - host: policy.cryptophys.work
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - secretName: cryptophys-wildcard-tls
             hosts:
-              - kyverno.cryptophys.work
+              - policy.cryptophys.work
     global:
       plugins:
         kyverno: true
+        gatekeeper: true
     kyvernoPlugin:
       enabled: true
       replicaCount: 1
@@ -128,5 +134,27 @@ spec:
         results:
           maxPerReport: 500
           keepOnlyLatest: true
+    gatekeeperPlugin:
+      enabled: true
+      replicaCount: 1
+      logging:
+        api: true
+        server: true
+        encoding: json
+        logLevel: 1
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      nodeSelector:
+        cryptophys.io/tier: platform
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 128Mi
+
     monitoring:
       enabled: false

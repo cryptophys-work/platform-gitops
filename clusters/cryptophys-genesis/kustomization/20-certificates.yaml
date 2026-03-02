@@ -1,7 +1,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 12-certificates
+  name: 20-certificates
   namespace: flux-system
 spec:
   suspend: true
@@ -12,6 +12,6 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: 20-certificates
   dependsOn:
-    - name: 10-controllers
+    - name: 20-certificates
