@@ -206,6 +206,26 @@ spec:
   interval: 1h
   url: oci://registry.cryptophys.work/charts
 ---
+# n8n workflow automation - community helm chart (official helm.n8n.io was decommissioned)
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: n8n-charts
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://community-charts.github.io/helm-charts
+---
+# Qdrant vector database - correct repo (qdrant.github.io/helm-charts was 404, moved to qdrant-helm)
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: qdrant-charts
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://qdrant.github.io/qdrant-helm
+---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
