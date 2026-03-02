@@ -70,7 +70,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: labeler
-          image: registry.k8s.io/kubectl:v1.35.0
+          image: bitnami/kubectl:latest
           command:
             - /bin/sh
             - -c
