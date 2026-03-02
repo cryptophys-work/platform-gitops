@@ -8,7 +8,7 @@ metadata:
     cryptophys.io/layer: platform
     cryptophys.io/managed-by: flux
 spec:
-  suspend: true   # First stage — unsuspend first, no dependsOn
+  suspend: false   # First stage — unsuspend first, no dependsOn
   interval: 1h
   prune: false    # Never prune CRDs (destructive)
   wait: true
