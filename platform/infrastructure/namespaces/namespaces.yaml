@@ -73,10 +73,9 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
   name: observability-system
   labels:
+    app.kubernetes.io/created-by: aide
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
@@ -98,10 +97,9 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
   name: spire-system
   labels:
+    app.kubernetes.io/created-by: aide
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
@@ -140,3 +138,23 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
   name: crossplane-system
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: falco-system
+  labels:
+    app.kubernetes.io/created-by: aide
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tetragon-system
+  labels:
+    app.kubernetes.io/created-by: aide
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
