@@ -3,17 +3,18 @@ kind: Kustomization
 metadata:
   name: 42-argocd
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
 spec:
   suspend: true
   interval: 1h
-  wait: false
-  timeout: 30m
-  path: ./platform/infrastructure/argocd
   prune: false
+  wait: true
+  timeout: 15m
+  path: ./platform/infrastructure/argocd
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
   dependsOn:
-    - name: platform-repo
-    - name: platform-repo
-    - name: platform-repo
+    - name: 31-secrets

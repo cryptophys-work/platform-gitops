@@ -3,24 +3,19 @@ kind: Kustomization
 metadata:
   name: 35-spire
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
 spec:
   suspend: true
-  interval: 10m
-  wait: true
-  timeout: 30m
-  path: ./platform/infrastructure/spire
+  interval: 1h
   prune: false
+  wait: true
+  timeout: 10m
+  path: ./platform/infrastructure/spire
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
   dependsOn:
-    - name: platform-repo
-  healthChecks:
-    - apiVersion: apps/v1
-      kind: StatefulSet
-      name: platform-repo
-      namespace: spire-system
-    - apiVersion: apps/v1
-      kind: DaemonSet
-      name: platform-repo
-      namespace: spire-system
+    - name: 31-secrets
+    - name: 11-controllers

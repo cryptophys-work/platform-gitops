@@ -1,0 +1,54 @@
+# PriorityClass definitions for cryptophys-genesis
+# Prevents low-priority batch jobs from evicting critical services under resource pressure
+# Part of 02-scheduling stage
+
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: cryptophys-platform-critical
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/contract: contract.infrastructure.talos_topology.v1
+    cryptophys.io/anti-regression: "true"
+value: 1000000
+globalDefault: false
+preemptionPolicy: PreemptLowerPriority
+description: "Platform-critical services: Vault, cert-manager, Gitea, Harbor, ArgoCD"
+
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: cryptophys-ai-workload
+  annotations:
+    cryptophys.io/domain: cerebrum
+    cryptophys.io/contract: contract.infrastructure.talos_topology.v1
+value: 500000
+globalDefault: false
+preemptionPolicy: PreemptLowerPriority
+description: "AI workloads: Cerebrum, AIDE, Ray, cqls-compute"
+
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: cryptophys-standard
+  annotations:
+    cryptophys.io/domain: platform
+value: 100000
+globalDefault: true
+preemptionPolicy: PreemptLowerPriority
+description: "Standard application workloads (default for all pods)"
+
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: cryptophys-batch
+  annotations:
+    cryptophys.io/domain: platform
+value: 10000
+globalDefault: false
+preemptionPolicy: Never
+description: "Batch/background jobs: Tekton PipelineRun, backup, maintenance"

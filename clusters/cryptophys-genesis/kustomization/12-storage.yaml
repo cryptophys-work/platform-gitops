@@ -3,20 +3,19 @@ kind: Kustomization
 metadata:
   name: 12-storage
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
 spec:
-  suspend: true
+  suspend: true   # Wait for: iSCSI upgrade by Gemini, then 02-scheduling (campus taint)
   interval: 1h
-  wait: true
-  timeout: 30m
-  path: ./platform/infrastructure/storage
   prune: false
+  wait: true
+  timeout: 20m
+  path: ./platform/infrastructure/storage
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
   dependsOn:
-    - name: platform-repo
-  healthChecks:
-    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
-      kind: HelmRelease
-      name: platform-repo
-      namespace: longhorn-system
+    - name: 02-scheduling
+    - name: 11-controllers

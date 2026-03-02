@@ -3,22 +3,19 @@ kind: Kustomization
 metadata:
   name: 41-harbor
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
 spec:
   suspend: true
   interval: 1h
-  wait: true
-  timeout: 45m
-  path: ./platform/infrastructure/harbor
   prune: false
+  wait: true
+  timeout: 15m
+  path: ./platform/infrastructure/harbor
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
   dependsOn:
-    - name: platform-repo
-    - name: platform-repo
-    - name: platform-repo
-  healthChecks:
-    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
-      kind: HelmRelease
-      name: platform-repo
-      namespace: registry-system
+    - name: 31-secrets
+    - name: 12-storage

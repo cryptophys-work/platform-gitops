@@ -3,15 +3,19 @@ kind: Kustomization
 metadata:
   name: 90-gateway
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
 spec:
   suspend: true
   interval: 1h
-  path: ./platform/infrastructure/gateway
   prune: false
+  wait: true
+  timeout: 10m
+  path: ./platform/infrastructure/gateway
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
   dependsOn:
-    - name: platform-repo
-    - name: platform-repo
-    - name: platform-repo
+    - name: 13-networking
+    - name: 42-argocd

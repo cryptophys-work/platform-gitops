@@ -3,24 +3,19 @@ kind: Kustomization
 metadata:
   name: 15-policy
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
 spec:
   suspend: true
   interval: 1h
-  wait: true
-  timeout: 30m
-  path: ./platform/infrastructure/policy
   prune: false
+  wait: true
+  timeout: 10m
+  path: ./platform/infrastructure/policy
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
   dependsOn:
-    - name: platform-repo
-  healthChecks:
-    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
-      kind: HelmRelease
-      name: platform-repo
-      namespace: kyverno-system
-    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
-      kind: HelmRelease
-      name: platform-repo
-      namespace: gatekeeper-system
+    - name: 01-namespaces
+    - name: 11-controllers

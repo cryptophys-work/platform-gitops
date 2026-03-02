@@ -3,15 +3,18 @@ kind: Kustomization
 metadata:
   name: 16-policy-ssot
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
 spec:
   suspend: true
-  interval: 10m
-  wait: false
-  timeout: 5m
-  path: ./platform/infrastructure/policy-ssot
+  interval: 1h
   prune: false
+  wait: true
+  timeout: 10m
+  path: ./platform/infrastructure/policy-ssot
   sourceRef:
     kind: GitRepository
-    name: ssot-core-repo
+    name: flux-system
   dependsOn:
-    - name: ssot-core-repo
+    - name: 15-policy

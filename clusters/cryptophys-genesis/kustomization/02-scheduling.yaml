@@ -3,13 +3,19 @@ kind: Kustomization
 metadata:
   name: 02-scheduling
   namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/layer: platform
+    cryptophys.io/managed-by: flux
 spec:
-  suspend: true
+  suspend: true   # Unsuspend manually after: 01-namespaces applied, iSCSI/Longhorn ready
   interval: 10m
   prune: true
+  wait: true
+  timeout: 5m
   path: ./platform/infrastructure/scheduling
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: flux-system
   dependsOn:
-    - name: platform-repo
+    - name: 01-namespaces
