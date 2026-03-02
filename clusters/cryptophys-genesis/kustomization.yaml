@@ -28,4 +28,3 @@ resources:
   - kustomization/55-crossplane.yaml
   - kustomization/60-ray.yaml
   - kustomization/90-gateway.yaml
-  - ../../platform/security # Adding the new security layer
