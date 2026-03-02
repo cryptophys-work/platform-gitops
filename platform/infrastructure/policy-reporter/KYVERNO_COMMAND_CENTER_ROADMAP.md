@@ -63,6 +63,6 @@ Alternative path: **Headlamp plugin integration** to reuse mature Kubernetes UX 
 - Platform repo (`cryptophys-platform-gitops`) keeps runtime manifests only.
 - App code repo (`kyverno-command-center`) owns UI and image build.
 - Deployment migration:
-  1. Deploy `kyverno-command-center` with parallel host (e.g. `kyverno-cc.cryptophys.work`).
+  1. Deploy `kyverno-command-center` with parallel host (e.g. `kyvernocc.cryptophys.work`).
   2. Validate feature parity + performance.
   3. Cut over `kyverno.cryptophys.work`.

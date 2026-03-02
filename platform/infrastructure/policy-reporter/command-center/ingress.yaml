@@ -11,7 +11,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: kyverno-cc.cryptophys.work
+    - host: kyvernocc.cryptophys.work
       http:
         paths:
           - path: /
@@ -24,4 +24,4 @@ spec:
   tls:
     - secretName: platform-wildcard-tls
       hosts:
-        - kyverno-cc.cryptophys.work
+        - kyvernocc.cryptophys.work
