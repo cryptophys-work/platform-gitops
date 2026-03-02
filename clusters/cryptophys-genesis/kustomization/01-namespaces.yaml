@@ -8,7 +8,7 @@ metadata:
     cryptophys.io/layer: platform
     cryptophys.io/managed-by: flux
 spec:
-  suspend: true   # Unsuspend after 00-crds is Applied
+  suspend: false   # Unsuspend after 00-crds is Applied
   interval: 10m
   prune: false    # Never prune namespaces
   wait: true
