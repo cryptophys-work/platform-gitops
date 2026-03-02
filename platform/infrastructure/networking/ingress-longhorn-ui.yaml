@@ -11,7 +11,7 @@ spec:
   tls:
     - hosts:
         - longhorn.cryptophys.work
-      secretName: cryptophys-wildcard-tls
+      secretName: platform-wildcard-tls
   rules:
     - host: longhorn.cryptophys.work
       http:

@@ -4,7 +4,7 @@ metadata:
   name: cryptophys-wildcard
   namespace: cert-manager
 spec:
-  secretName: cryptophys-wildcard-tls
+  secretName: platform-wildcard-tls
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer

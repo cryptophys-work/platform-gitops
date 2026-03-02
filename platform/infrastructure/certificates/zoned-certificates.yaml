@@ -1,0 +1,28 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: platform-wildcard-cert
+  namespace: cert-manager
+spec:
+  secretName: platform-wildcard-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: "*.cryptophys.work"
+  dnsNames:
+    - "*.cryptophys.work"
+    - "cryptophys.work"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: apps-wildcard-cert
+  namespace: cert-manager
+spec:
+  secretName: apps-wildcard-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: "*.cryptophys.work"
+  dnsNames:
+    - "*.cryptophys.work"

@@ -12,7 +12,7 @@ spec:
   tls:
     - hosts:
         - vault.cryptophys.work
-      secretName: cryptophys-wildcard-tls
+      secretName: platform-wildcard-tls
   rules:
     - host: vault.cryptophys.work
       http:

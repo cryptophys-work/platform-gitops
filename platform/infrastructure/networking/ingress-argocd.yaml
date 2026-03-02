@@ -12,7 +12,7 @@ spec:
   tls:
     - hosts:
         - argocd.cryptophys.work
-      secretName: cryptophys-wildcard-tls
+      secretName: platform-wildcard-tls
   rules:
     - host: argocd.cryptophys.work
       http:

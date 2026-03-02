@@ -10,7 +10,7 @@ spec:
   tls:
     - hosts:
         - hubble.cryptophys.work
-      secretName: cryptophys-wildcard-tls
+      secretName: platform-wildcard-tls
   rules:
     - host: hubble.cryptophys.work
       http:

@@ -16,7 +16,7 @@ spec:
   tls:
   - hosts:
     - ray.cryptophys.work
-    secretName: cryptophys-wildcard-tls
+    secretName: platform-wildcard-tls
   rules:
   - host: ray.cryptophys.work
     http:

@@ -43,6 +43,6 @@ spec:
                 port:
                   number: 3000
   tls:
-    - secretName: cryptophys-wildcard-tls
+    - secretName: platform-wildcard-tls
       hosts:
         - gitea-internal.cryptophys.work
