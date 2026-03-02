@@ -1,17 +1,18 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 21-policy-ssot
+  name: 60-ray
   namespace: flux-system
 spec:
   suspend: true
   interval: 10m
-  wait: false
+  prune: true
+  wait: true
   timeout: 5m
-  path: ./platform/infrastructure/policy-ssot
-  prune: false
+  path: ./platform/infrastructure/ray
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: 60-ray
   dependsOn:
-    - name: 20-policy
+    - name: 60-ray
+    - name: 60-ray

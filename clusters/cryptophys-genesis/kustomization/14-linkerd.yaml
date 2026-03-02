@@ -1,18 +1,16 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 38-observability
+  name: 14-linkerd
   namespace: flux-system
 spec:
   suspend: true
+  dependsOn:
+    - name: 11-controllers
+    - name: 35-spire # Must wait for SPIRE to provide identity
   interval: 1h
-  wait: true
-  timeout: 10m
-  path: ./platform/infrastructure/observability
-  prune: false
+  path: ./platform/infrastructure/linkerd
+  prune: true
   sourceRef:
     kind: GitRepository
     name: platform-repo
-  dependsOn:
-    - name: 10-controllers
-    - name: 15-dns-core

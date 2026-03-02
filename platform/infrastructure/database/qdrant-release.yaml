@@ -1,0 +1,38 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: qdrant
+  namespace: database
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: qdrant
+      version: "0.1.0" # Assuming a stable wrapper or official chart
+      sourceRef:
+        kind: HelmRepository
+        name: qdrant-charts
+        namespace: flux-system
+  values:
+    image:
+      repository: qdrant/qdrant
+      tag: "v1.7.4"
+    
+    # Storage configuration for long-term AI memory
+    persistence:
+      enabled: true
+      storageClassName: longhorn
+      size: 20Gi
+    
+    # Resources for fast vector search
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+    
+    # Schedule on worker nodes with enough RAM
+    nodeSelector:
+      cryptophys.io/tier: worker

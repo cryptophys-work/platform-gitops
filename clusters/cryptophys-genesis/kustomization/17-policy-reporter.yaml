@@ -1,17 +1,18 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 01-namespaces
+  name: 17-policy-reporter
   namespace: flux-system
 spec:
   suspend: true
   interval: 1h
   wait: true
-  timeout: 5m
-  path: ./platform/infrastructure/namespaces
+  timeout: 10m
+  path: ./platform/infrastructure/policy-reporter
   prune: false
   sourceRef:
     kind: GitRepository
-    name: 01-namespaces
+    name: 17-policy-reporter
   dependsOn:
-    - name: 01-namespaces
+    - name: 17-policy-reporter
+    - name: 17-policy-reporter

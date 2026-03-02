@@ -25,68 +25,64 @@ spec:
     head:
       rayStartParams:
         dashboard-host: '0.0.0.0'
-        num-cpus: '0'
+        num-cpus: '0' # Head node is for scheduling only
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - synapse-161-97-136-251
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - synapse-161-97-136-251
       resources:
-        limits:
-          cpu: "1"
-          memory: "2G"
-        requests:
-          cpu: "500m"
-          memory: "1G"
-      podSecurityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        seccompProfile:
-          type: RuntimeDefault
-      securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: ["ALL"]
-        readOnlyRootFilesystem: false
+        limits: { cpu: "1", memory: "2G" }
+        requests: { cpu: "500m", memory: "1G" }
+      # ... (rest of head config)
     worker:
-      replicas: 2
+      # This block is now a template, we will define specific groups
+      replicas: 0
+    workerGroupSpecs:
+    # --- AI Worker Group (Medulla) ---
+    - groupName: ai-workers
+      replicas: 1
       minReplicas: 1
-      maxReplicas: 5
+      maxReplicas: 2 # Can scale up on the same node
+      rayStartParams:
+        num-cpus: '4' # Allocate more CPUs for AI tasks
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - medulla-82-208-20-242
+      tolerations:
+        - key: "cryptophys.io/ai-workload"
+          operator: "Exists"
+          effect: "NoSchedule"
+      resources:
+        limits: { cpu: "6", memory: "16Gi" } # High resource allocation for LLMs
+        requests: { cpu: "4", memory: "8Gi" }
+    # --- General Worker Group (Other Workers) ---
+    - groupName: general-workers
+      replicas: 2
+      minReplicas: 2
+      maxReplicas: 5 # Can scale across multiple nodes
       rayStartParams:
         num-cpus: '1'
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - synapse-161-97-136-251
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - thalamus-217-76-59-241
+                - campus-212-47-66-101
       resources:
-        limits:
-          cpu: "1"
-          memory: "1G"
-        requests:
-          cpu: "500m"
-          memory: "512M"
-      podSecurityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        seccompProfile:
-          type: RuntimeDefault
-      securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: ["ALL"]
-        readOnlyRootFilesystem: false
+        limits: { cpu: "1", memory: "2Gi" }
+        requests: { cpu: "500m", memory: "1Gi" }

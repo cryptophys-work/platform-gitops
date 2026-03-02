@@ -1,0 +1,30 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: managednode.kubernetes.cryptophys.work
+  labels:
+    tier: platform
+spec:
+  compositeTypeRef:
+    apiVersion: cryptophys.work/v1alpha1
+    kind: XManagedNode
+  resources:
+  - name: node-labeler
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: v1
+            kind: Node
+            metadata:
+              labels:
+                "cryptophys.io/tier": "platform" # Default, will be patched
+        providerConfigRef:
+          name: local-kubernetes-provider
+    patches:
+    - fromFieldPath: "metadata.name"
+      toFieldPath: "spec.forProvider.manifest.metadata.name"
+    - fromFieldPath: "spec.tier"
+      toFieldPath: "spec.forProvider.manifest.metadata.labels[cryptophys.io/tier]"

@@ -4,6 +4,7 @@ metadata:
   name: 05-sources
   namespace: flux-system
 spec:
+  suspend: true
   interval: 1h
   wait: true
   timeout: 10m
@@ -11,71 +12,71 @@ spec:
   prune: false
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: 05-sources
   dependsOn:
-    - name: 01-namespaces
+    - name: 05-sources
   healthChecks:
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
-      name: cilium
+      name: 05-sources
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
-      name: longhorn
+      name: 05-sources
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
-      name: hashicorp
+      name: 05-sources
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
-      name: gitea-charts
+      name: 05-sources
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
-      name: ingress-nginx
+      name: 05-sources
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
-      name: kyverno
+      name: 05-sources
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
-      name: gatekeeper
+      name: 05-sources
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
-      name: goharbor
+      name: 05-sources
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
-      name: prometheus-community
+      name: 05-sources
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
-      name: grafana
+      name: 05-sources
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
-      name: open-telemetry
+      name: 05-sources
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
-      name: aquasecurity
+      name: 05-sources
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
-      name: minio
+      name: 05-sources
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
-      name: vmware-tanzu
+      name: 05-sources
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1
       kind: GitRepository
-      name: platform-repo
+      name: 05-sources
       namespace: flux-system
     - apiVersion: source.toolkit.fluxcd.io/v1
       kind: GitRepository
-      name: ssot-core-repo
+      name: 05-sources
       namespace: flux-system

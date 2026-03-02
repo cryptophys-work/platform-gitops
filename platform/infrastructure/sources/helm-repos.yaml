@@ -205,3 +205,39 @@ spec:
   type: oci
   interval: 1h
   url: oci://registry.cryptophys.work/charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: n8n-charts
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://helm.n8n.io/
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: falcosecurity
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://falcosecurity.github.io/charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: linkerd
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://helm.linkerd.io/stable
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: qdrant-charts
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://qdrant.github.io/helm-charts

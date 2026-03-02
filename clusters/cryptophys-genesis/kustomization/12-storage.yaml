@@ -1,7 +1,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 30-storage
+  name: 12-storage
   namespace: flux-system
 spec:
   suspend: true
@@ -12,11 +12,11 @@ spec:
   prune: false
   sourceRef:
     kind: GitRepository
-    name: platform-repo
+    name: 12-storage
   dependsOn:
-    - name: 10-controllers
+    - name: 12-storage
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
-      name: longhorn
+      name: 12-storage
       namespace: longhorn-system

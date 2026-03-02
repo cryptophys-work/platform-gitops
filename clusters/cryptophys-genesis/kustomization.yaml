@@ -5,25 +5,27 @@ resources:
   - kustomization/01-namespaces.yaml
   - kustomization/02-scheduling.yaml
   - kustomization/05-sources.yaml
-  - kustomization/10-controllers.yaml
-  - kustomization/12-certificates.yaml
-  - kustomization/10-database.yaml
-  - kustomization/15-dns-core.yaml
-  - kustomization/17-metallb.yaml
-  - kustomization/18-networking.yaml
-  - kustomization/20-policy.yaml
-  - kustomization/21-policy-ssot.yaml
-  - kustomization/22-policy-reporter.yaml
-  - kustomization/30-storage.yaml
-  - kustomization/31-vault.yaml
-  - kustomization/32-spire.yaml
-  - kustomization/34-harbor.yaml
-  - kustomization/35-secrets.yaml
-  - kustomization/36-gitea.yaml
-  - kustomization/37-argocd.yaml
-  - kustomization/38-observability.yaml
-  - kustomization/39-security-observability.yaml
-  - kustomization/40-backup.yaml
-  - kustomization/41-crossplane.yaml
-  - kustomization/42-ray.yaml
-  - kustomization/43-gateway.yaml
+  - kustomization/10-metallb.yaml
+  - kustomization/11-controllers.yaml
+  - kustomization/12-storage.yaml
+  - kustomization/13-networking.yaml
+  - kustomization/14-linkerd.yaml
+  - kustomization/15-policy.yaml
+  - kustomization/16-policy-ssot.yaml
+  - kustomization/17-policy-reporter.yaml
+  - kustomization/20-certificates.yaml
+  - kustomization/21-dns-core.yaml
+  - kustomization/25-database.yaml
+  - kustomization/30-vault.yaml
+  - kustomization/31-secrets.yaml
+  - kustomization/35-spire.yaml
+  - kustomization/40-gitea.yaml
+  - kustomization/41-harbor.yaml
+  - kustomization/42-argocd.yaml
+  - kustomization/45-observability.yaml
+  - kustomization/46-security-obs.yaml
+  - kustomization/50-backup.yaml
+  - kustomization/55-crossplane.yaml
+  - kustomization/60-ray.yaml
+  - kustomization/90-gateway.yaml
+  - ../../platform/security # Adding the new security layer
