@@ -99,7 +99,7 @@ spec:
               - path: /
                 pathType: Prefix
         tls:
-          - secretName: cryptophys-wildcard-tls
+          - secretName: platform-wildcard-tls
             hosts:
               - policy.cryptophys.work
     global:

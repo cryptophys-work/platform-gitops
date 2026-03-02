@@ -28,7 +28,7 @@ spec:
         enabled: true
         certSource: secret
         secret:
-          secretName: cryptophys-wildcard-tls
+          secretName: platform-wildcard-tls
       ingress:
         className: nginx
         hosts:

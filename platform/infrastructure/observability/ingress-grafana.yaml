@@ -19,6 +19,6 @@ spec:
                 port:
                   number: 80
   tls:
-    - secretName: cryptophys-wildcard-tls
+    - secretName: platform-wildcard-tls
       hosts:
         - monitor.cryptophys.work
