@@ -7,7 +7,7 @@ metadata:
     cryptophys.io/domain: platform
     cryptophys.io/managed-by: flux
 spec:
-  suspend: true   # Wait for: iSCSI upgrade by Gemini, then 02-scheduling (campus taint)
+  suspend: false
   interval: 1h
   prune: false
   wait: true
