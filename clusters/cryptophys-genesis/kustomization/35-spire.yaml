@@ -1,7 +1,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 35-spire
+  name: platform-repo
   namespace: flux-system
 spec:
   suspend: true
@@ -12,15 +12,15 @@ spec:
   prune: false
   sourceRef:
     kind: GitRepository
-    name: 35-spire
+    name: platform-repo
   dependsOn:
-    - name: 35-spire
+    - name: platform-repo
   healthChecks:
     - apiVersion: apps/v1
       kind: StatefulSet
-      name: 35-spire
+      name: platform-repo
       namespace: spire-system
     - apiVersion: apps/v1
       kind: DaemonSet
-      name: 35-spire
+      name: platform-repo
       namespace: spire-system

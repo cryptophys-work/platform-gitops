@@ -1,7 +1,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 60-ray
+  name: platform-repo
   namespace: flux-system
 spec:
   suspend: true
@@ -12,7 +12,7 @@ spec:
   path: ./platform/infrastructure/ray
   sourceRef:
     kind: GitRepository
-    name: 60-ray
+    name: platform-repo
   dependsOn:
-    - name: 60-ray
-    - name: 60-ray
+    - name: platform-repo
+    - name: platform-repo

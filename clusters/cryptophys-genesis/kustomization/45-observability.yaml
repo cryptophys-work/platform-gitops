@@ -1,7 +1,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 45-observability
+  name: platform-repo
   namespace: flux-system
 spec:
   suspend: true
@@ -12,7 +12,7 @@ spec:
   prune: false
   sourceRef:
     kind: GitRepository
-    name: 45-observability
+    name: platform-repo
   dependsOn:
-    - name: 45-observability
-    - name: 45-observability
+    - name: platform-repo
+    - name: platform-repo
