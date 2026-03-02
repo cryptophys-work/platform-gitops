@@ -21,18 +21,20 @@ patches:
                 effect: NoSchedule
             affinity:
               podAntiAffinity:
-                requiredDuringSchedulingIgnoredDuringExecution:
-                  - labelSelector:
-                      matchExpressions:
-                        - key: app
-                          operator: In
-                          values:
-                            - helm-controller
-                            - source-controller
-                            - kustomize-controller
-                            - notification-controller
-                            - image-reflector-controller
-                            - image-automation-controller
-                    topologyKey: kubernetes.io/hostname
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    podAffinityTerm:
+                      labelSelector:
+                        matchExpressions:
+                          - key: app
+                            operator: In
+                            values:
+                              - helm-controller
+                              - source-controller
+                              - kustomize-controller
+                              - notification-controller
+                              - image-reflector-controller
+                              - image-automation-controller
+                      topologyKey: kubernetes.io/hostname
     target:
       kind: Deployment
