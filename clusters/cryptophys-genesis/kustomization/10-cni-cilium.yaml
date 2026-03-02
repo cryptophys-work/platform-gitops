@@ -10,7 +10,7 @@ spec:
   path: ./platform/infrastructure/cni
   prune: true
   wait: true
-  suspend: true
+  suspend: false
   sourceRef:
     kind: GitRepository
     name: platform-repo
