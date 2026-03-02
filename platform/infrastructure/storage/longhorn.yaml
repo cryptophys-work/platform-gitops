@@ -30,20 +30,48 @@ spec:
       storageReservedPercentageForDefaultDisk: 25
       replicaSoftAntiAffinity: true
       replicaAutoBalance: best-effort
+    longhornManager:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/role
+          operator: Exists
+          effect: NoSchedule
     longhornDriver:
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
-      nodeSelector:
-        cryptophys.io/tier: platform
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/role
+          operator: Exists
+          effect: NoSchedule
     longhornUI:
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
-      nodeSelector:
-        cryptophys.io/tier: platform
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/role
+          operator: Exists
+          effect: NoSchedule
     csi:
       attacherReplicaCount: 2
       provisionerReplicaCount: 2
