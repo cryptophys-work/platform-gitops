@@ -1,11 +1,11 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: platform-code-forge-gitea
+  name: gitops-gitea
   namespace: gitops-system
 spec:
   interval: 30m
-  releaseName: platform-code-forge-gitea
+  releaseName: gitops-gitea
   timeout: 30m
   install:
     timeout: 30m

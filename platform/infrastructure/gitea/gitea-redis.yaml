@@ -42,7 +42,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: platform-code-forge-gitea-valkey-cluster
+  name: gitops-gitea-valkey-cluster
   namespace: gitops-system
 spec:
   selector:
@@ -55,7 +55,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: platform-code-forge-gitea-valkey-cluster-headless
+  name: gitops-gitea-valkey-cluster-headless
   namespace: gitops-system
 spec:
   clusterIP: None

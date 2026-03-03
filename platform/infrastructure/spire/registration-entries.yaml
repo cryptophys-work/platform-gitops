@@ -94,7 +94,7 @@ data:
     register gatekeeper-system gatekeeper-admin
     # gitea
     register gitops-system default
-    register gitops-system platform-code-forge-gitea
+    register gitops-system gitops-gitea
     # ingress
     register ingress-system ingress-gateway-ingress-nginx
     # kyverno
