@@ -22,6 +22,7 @@ resources:
   - kustomization/20-certificates.yaml
   - kustomization/21-dns-core.yaml
   - kustomization/25-database.yaml
+  - kustomization/25-database-crs.yaml
   - kustomization/30-vault.yaml
   - kustomization/31-secrets.yaml
   - kustomization/35-spire.yaml
