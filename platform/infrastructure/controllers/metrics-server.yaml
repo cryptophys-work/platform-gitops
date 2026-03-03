@@ -17,7 +17,7 @@ spec:
     replicas: 2
     args:
       - --kubelet-insecure-tls
-      - --kubelet-preferred-address-types=InternalIP,Hostname,InternalDNS,ExternalDNS,ExternalIP
+      - --kubelet-preferred-address-types=InternalIP
     resources:
       requests:
         cpu: 50m
