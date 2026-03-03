@@ -3,6 +3,8 @@ kind: Kustomization
 namespace: spire-system
 resources:
   - crd-clusterspiffeids.yaml
+  - crd-clusterfederatedtrustdomains.yaml
+  - crd-clusterstaticentries.yaml
   - server-config.yaml
   - agent-config.yaml
   - server-service.yaml
