@@ -32,6 +32,7 @@ resources:
   - kustomization/45-observability.yaml
   - kustomization/46-security-obs.yaml
   - kustomization/50-backup.yaml
+  - kustomization/50-backup-crs.yaml
   - kustomization/55-crossplane.yaml
   - kustomization/60-ray.yaml
   - kustomization/90-gateway.yaml
