@@ -24,7 +24,8 @@ spec:
       retries: 3
   values:
     crds:
-      install: false
+      install: true
+      keep: true
     configs:
       params:
         server.insecure: "true"
