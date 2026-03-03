@@ -1,6 +1,8 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  labels:
+    aide.sync/reissue: "true"
   name: cryptophys-wildcard
   namespace: cert-manager
 spec:
