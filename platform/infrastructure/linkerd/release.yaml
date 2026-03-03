@@ -44,13 +44,56 @@ spec:
       runAsRoot: false
       ignoreOutboundPorts: "4567,4568"
     
-    # SPIRE/SPIFFE Integration (External Identity)
+    # Identity: self-managed CA (linkerd-identity-issuer Secret + trust-roots ConfigMap)
+    # linkerd-identity-issuer Secret created manually with issuer CA cert/key
+    # linkerd-identity-trust-roots ConfigMap created manually with trust anchor
+    identityTrustAnchorsPEM: |
+      -----BEGIN CERTIFICATE-----
+      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
+      -----END CERTIFICATE-----
     identity:
       externalCA: true
       issuer:
-        scheme: linkerd.io/spiffe
-    
+        scheme: kubernetes.io/tls
+        tls:
+          crtPEM: ""
+          keyPEM: ""
+
     # Scheduling on Platform Nodes
+    # deploymentStrategy: maxSurge=0 to avoid anti-affinity deadlock on 3 platform nodes
+    deploymentStrategy:
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
     nodeSelector:
       cryptophys.io/tier: platform
     tolerations:
