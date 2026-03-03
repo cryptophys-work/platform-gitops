@@ -11,7 +11,7 @@ spec:
       version: "0.1.0" # Assuming a stable wrapper or official chart
       sourceRef:
         kind: HelmRepository
-        name: qdrant
+        name: qdrant-charts
         namespace: flux-system
   values:
     image:
