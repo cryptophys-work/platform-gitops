@@ -6,7 +6,7 @@ metadata:
 spec:
   releaseName: argocd
   interval: 1h
-  timeout: 20m
+  timeout: 30m
   chart:
     spec:
       chart: argo-cd
@@ -16,9 +16,12 @@ spec:
         name: argoproj
         namespace: flux-system
   install:
+    timeout: 30m
     remediation:
       retries: 3
   upgrade:
+    timeout: 30m
+    force: true
     cleanupOnFail: true
     remediation:
       retries: 3
