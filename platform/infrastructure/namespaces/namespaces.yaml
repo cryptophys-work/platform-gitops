@@ -151,6 +151,8 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+  labels:
+    app.kubernetes.io/created-by: aide
   name: crossplane-system
 ---
 apiVersion: v1

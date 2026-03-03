@@ -1,0 +1,24 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: linkerd-cni
+  namespace: linkerd-system
+spec:
+  interval: 1h
+  timeout: 10m
+  chart:
+    spec:
+      chart: linkerd2-cni
+      version: "30.12.2"
+      sourceRef:
+        kind: HelmRepository
+        name: linkerd
+        namespace: flux-system
+  values:
+    # Talos Linux: use CNI plugin instead of init container (no iptables)
+    destCNINetDir: /etc/cni/net.d
+    destCNIBinDir: /opt/cni/bin
+    # Run on all nodes
+    nodeSelector: {}
+    tolerations:
+      - operator: Exists

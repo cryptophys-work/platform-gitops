@@ -1,0 +1,36 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: crossplane
+  namespace: crossplane-system
+spec:
+  interval: 1h
+  releaseName: crossplane
+  chart:
+    spec:
+      chart: crossplane
+      version: 1.18.2
+      sourceRef:
+        kind: HelmRepository
+        name: crossplane
+        namespace: flux-system
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  values:
+    replicas: 2
+    deploymentStrategy: RollingUpdate
+    nodeSelector:
+      cryptophys.io/tier: platform
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
