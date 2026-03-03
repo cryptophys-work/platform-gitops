@@ -43,10 +43,10 @@ spec:
       resources:
         requests:
           cpu: 50m
-          memory: 64Mi
+          memory: 128Mi
         limits:
           cpu: 200m
-          memory: 256Mi
+          memory: 512Mi
       config:
         loki:
           hostport: "http://platform-observability-loki.observability-system.svc.cluster.local:3100"
