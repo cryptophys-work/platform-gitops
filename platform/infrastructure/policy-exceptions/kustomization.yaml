@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - longhorn-policy-exception.yaml
   - cp-restriction-policy.yaml
+  - security-observability-exception.yaml
