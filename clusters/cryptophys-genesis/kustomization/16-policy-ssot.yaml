@@ -19,3 +19,25 @@ spec:
   dependsOn:
     - name: 15-policy
     - name: 41-harbor  # cp-mutate-supplychain-registry-v1 rewrites docker.io images to registry.cryptophys.work/docker-proxy
+  # Patch: move validate.exclude → rule-level exclude (Kyverno v1.15.3 schema compat)
+  patches:
+    - patch: |
+        - op: remove
+          path: /spec/rules/0/validate/exclude
+        - op: add
+          path: /spec/rules/0/exclude
+          value:
+            any:
+            - resources:
+                names:
+                - cilium*
+                - longhorn*
+                - vault*
+                - argocd*
+                - linkerd*
+                - metallb*
+                - cert-manager*
+                - flux-system
+      target:
+        kind: ClusterPolicy
+        name: cp-standard-naming-canonical-v1
