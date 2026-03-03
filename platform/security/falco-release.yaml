@@ -15,7 +15,7 @@ spec:
         namespace: flux-system
   values:
     driver:
-      kind: ebpf
+      kind: modern_ebpf  # Talos has no kernel headers; modern_ebpf uses CO-RE/BTF (kernel 5.8+)
     falcosidekick:
       enabled: true
       webui:

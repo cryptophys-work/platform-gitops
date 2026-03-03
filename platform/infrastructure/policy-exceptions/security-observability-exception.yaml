@@ -1,0 +1,25 @@
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: security-observability-exception
+  namespace: security-observability
+  annotations:
+    cryptophys.io/contract: contract.platform.policy.v1
+    cryptophys.io/reason: "Falco/Tetragon are security DaemonSets; legitimately run on all nodes including control-plane"
+spec:
+  exceptions:
+    - policyName: deny-cp-toleration-non-platform
+      ruleNames:
+        - check-cp-toleration
+    - policyName: deny-cp-nodeselector-non-platform
+      ruleNames:
+        - check-cp-nodeselector
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - DaemonSet
+          namespaces:
+            - security-observability
+            - gatekeeper-system
