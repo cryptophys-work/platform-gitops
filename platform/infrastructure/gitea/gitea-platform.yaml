@@ -26,14 +26,7 @@ spec:
         name: gitea-charts
         namespace: flux-system
   values:
-    replicaCount: 2
-    affinity:
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-        - labelSelector:
-            matchLabels:
-              app.kubernetes.io/name: gitea
-          topologyKey: "kubernetes.io/hostname"
+    replicaCount: 1
     image:
       registry: ghcr.io
       repository: go-gitea/gitea
@@ -91,10 +84,10 @@ spec:
             - gitea.cryptophys.work
     persistence:
       enabled: true
-      create: false
-      claimName: gitea-shared-storage-rwx
+      size: 10Gi
+      storageClass: longhorn
       accessModes:
-        - ReadWriteMany
+        - ReadWriteOnce
     postgresql:
       enabled: false
     postgresql-ha:
