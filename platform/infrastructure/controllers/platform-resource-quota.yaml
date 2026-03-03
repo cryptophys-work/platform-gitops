@@ -17,9 +17,9 @@ metadata:
   namespace: apps-system
 spec:
   hard:
-    requests.cpu: "2000m"
+    requests.cpu: "3000m"
     requests.memory: "4Gi"
-    limits.cpu: "4000m"
+    limits.cpu: "6000m"
     limits.memory: "8Gi"
 ---
 apiVersion: v1
