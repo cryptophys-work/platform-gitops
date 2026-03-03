@@ -211,3 +211,10 @@ metadata:
   name: database
   labels:
     app.kubernetes.io/created-by: aide
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cnpg-system
+  labels:
+    app.kubernetes.io/created-by: aide

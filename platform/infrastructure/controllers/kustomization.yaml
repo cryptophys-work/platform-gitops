@@ -9,3 +9,4 @@ resources:
   - metrics-server.yaml
   - pdbs.yaml
   - envoy-gateway.yaml
+  - cnpg.yaml

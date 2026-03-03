@@ -1,0 +1,21 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 25-database-crs
+  namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+spec:
+  suspend: true
+  interval: 1h
+  prune: false
+  wait: true
+  timeout: 10m
+  path: ./platform/infrastructure/database-crs
+  sourceRef:
+    kind: GitRepository
+    name: platform-repo
+  dependsOn:
+    - name: 25-database
+    - name: 11-controllers  # CNPG operator (postgresql.cnpg.io CRDs)
