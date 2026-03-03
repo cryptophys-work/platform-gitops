@@ -50,7 +50,7 @@ spec:
           PASSWD: GiteaSecure2026!
         cache:
           ADAPTER: redis
-          HOST: gitea-redis.gitops-system.svc.cluster.local:6379
+          HOST: redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
         session:
           PROVIDER: redis
           PROVIDER_CONFIG: redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
