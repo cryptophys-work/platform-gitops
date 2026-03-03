@@ -14,9 +14,17 @@ spec:
         name: cilium
         namespace: flux-system
   values:
+    extraVolumes:
+      - name: tracefs
+        hostPath:
+          path: /sys/kernel/tracing
+          type: Directory
     tetragon:
       image:
         repository: quay.io/cilium/tetragon
+      extraVolumeMounts:
+        - name: tracefs
+          mountPath: /sys/kernel/tracing
       export:
         # Export events to Loki for correlation
         stdout: false
