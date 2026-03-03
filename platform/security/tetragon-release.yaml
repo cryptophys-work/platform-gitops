@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: tetragon
-  namespace: kube-system # Tetragon is typically deployed in kube-system
+  namespace: tetragon-system
 spec:
   interval: 1h
   chart:
