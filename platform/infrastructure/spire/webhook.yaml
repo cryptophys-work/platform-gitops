@@ -16,7 +16,7 @@ webhooks:
         name: spire-controller-manager-webhook-service
         namespace: spire-system
         path: /validate-spire-spiffe-io-v1alpha1-clusterspiffeid
-    failurePolicy: Fail
+    failurePolicy: Ignore
     rules:
       - apiGroups: ["spire.spiffe.io"]
         apiVersions: ["v1alpha1"]
