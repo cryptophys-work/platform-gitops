@@ -25,6 +25,8 @@ spec:
       extraVolumeMounts:
         - name: tracefs
           mountPath: /sys/kernel/tracing
+      extraArgs:
+        tracing-path: /sys/kernel/tracing  # Talos mounts tracefs here (not /sys/kernel/debug/tracing)
       export:
         # Export events to Loki for correlation
         stdout: false
