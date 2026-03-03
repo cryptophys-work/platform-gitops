@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: falco
-  namespace: security-observability
+  namespace: falco-system
 spec:
   interval: 1h
   chart:
@@ -32,7 +32,7 @@ spec:
         enabled: false
       config:
         loki:
-          hostport: "http://platform-observability-loki.security-observability.svc.cluster.local:3100"
+          hostport: "http://platform-observability-loki.observability-system.svc.cluster.local:3100"
     customRules:
       rules-critical-syscalls.yaml: |
         - rule: Terminal shell in container
