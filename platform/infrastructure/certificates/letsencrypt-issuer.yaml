@@ -15,6 +15,7 @@ spec:
           apiTokenSecretRef:
             name: cloudflare-api-token
             key: api-token
+          zoneId: e0454fafc33b614d3a22023c8e2d6e22
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -33,3 +34,4 @@ spec:
           apiTokenSecretRef:
             name: cloudflare-api-token
             key: api-token
+          zoneId: e0454fafc33b614d3a22023c8e2d6e22
