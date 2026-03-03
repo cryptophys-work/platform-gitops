@@ -6,13 +6,14 @@ metadata:
 spec:
   interval: 30m
   releaseName: platform-code-forge-gitea
-  timeout: 20m
+  timeout: 30m
   install:
-    timeout: 20m
+    timeout: 30m
     remediation:
       retries: 3
   upgrade:
-    timeout: 20m
+    timeout: 30m
+    force: true
     cleanupOnFail: true
     remediation:
       retries: 3

@@ -5,11 +5,17 @@ metadata:
   namespace: linkerd-system
 spec:
   interval: 1h
-  timeout: 20m
+  timeout: 30m
   install:
-    timeout: 20m
+    timeout: 30m
+    remediation:
+      retries: 3
   upgrade:
-    timeout: 20m
+    timeout: 30m
+    force: true
+    cleanupOnFail: true
+    remediation:
+      retries: 3
   chart:
     spec:
       chart: linkerd-control-plane
