@@ -17,24 +17,6 @@
 #   nodeSelector:
 #     cryptophys.io/node-role: storage-worker
 #
-# Resource guard: LimitRange caps any single container on campus
----
-apiVersion: v1
-kind: LimitRange
-metadata:
-  name: campus-resource-guard
-  namespace: longhorn-system
-  annotations:
-    cryptophys.io/purpose: "Prevent large workloads from consuming campus resources"
-spec:
-  limits:
-    - type: Container
-      defaultRequest:
-        cpu: "50m"
-        memory: "64Mi"
-      default:
-        cpu: "250m"
-        memory: "256Mi"
-      max:
-        cpu: "500m"
-        memory: "512Mi"
+# Note: LimitRange removed — Longhorn instance managers compute their own
+# CPU/memory requests based on node capacity and must not be capped.
+# The longhorn-system namespace hosts system storage components, not user workloads.
