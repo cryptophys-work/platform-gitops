@@ -23,6 +23,9 @@ spec:
     replicas: 3
     enablePodAntiAffinity: true
     
+    # Talos Linux: use CNI plugin mode (no iptables init container)
+    cniEnabled: true
+    
     # SPIRE/SPIFFE Integration (External Identity)
     identity:
       externalCA: true
