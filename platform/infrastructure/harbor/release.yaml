@@ -67,61 +67,69 @@ spec:
       type: internal
       internal:
         nodeSelector:
-          kubernetes.io/hostname: campus-173-212-221-185
+          kubernetes.io/hostname: campus-212-47-66-101
         tolerations:
-          - key: node-role.kubernetes.io/control-plane
-            operator: Exists
+          - key: cryptophys.io/storage-only
+            operator: Equal
+            value: "true"
             effect: NoSchedule
     redis:
       internal:
         nodeSelector:
-          kubernetes.io/hostname: campus-173-212-221-185
+          kubernetes.io/hostname: campus-212-47-66-101
         tolerations:
-          - key: node-role.kubernetes.io/control-plane
-            operator: Exists
+          - key: cryptophys.io/storage-only
+            operator: Equal
+            value: "true"
             effect: NoSchedule
     trivy:
       enabled: true
       nodeSelector:
-        kubernetes.io/hostname: campus-173-212-221-185
+        kubernetes.io/hostname: campus-212-47-66-101
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
+        - key: cryptophys.io/storage-only
+          operator: Equal
+          value: "true"
           effect: NoSchedule
     portal:
       nodeSelector:
-        kubernetes.io/hostname: campus-173-212-221-185
+        kubernetes.io/hostname: campus-212-47-66-101
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
+        - key: cryptophys.io/storage-only
+          operator: Equal
+          value: "true"
           effect: NoSchedule
     core:
       nodeSelector:
-        kubernetes.io/hostname: campus-173-212-221-185
+        kubernetes.io/hostname: campus-212-47-66-101
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
+        - key: cryptophys.io/storage-only
+          operator: Equal
+          value: "true"
           effect: NoSchedule
     jobservice:
       nodeSelector:
-        kubernetes.io/hostname: campus-173-212-221-185
+        kubernetes.io/hostname: campus-212-47-66-101
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
+        - key: cryptophys.io/storage-only
+          operator: Equal
+          value: "true"
           effect: NoSchedule
     registry:
       nodeSelector:
-        kubernetes.io/hostname: campus-173-212-221-185
+        kubernetes.io/hostname: campus-212-47-66-101
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
+        - key: cryptophys.io/storage-only
+          operator: Equal
+          value: "true"
           effect: NoSchedule
     exporter:
       nodeSelector:
-        kubernetes.io/hostname: campus-173-212-221-185
+        kubernetes.io/hostname: campus-212-47-66-101
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
+        - key: cryptophys.io/storage-only
+          operator: Equal
+          value: "true"
           effect: NoSchedule
     metrics:
       enabled: true
