@@ -8,24 +8,31 @@ spec:
   chart:
     spec:
       chart: falco
-      version: "3.8.0" # Use a specific, stable version
+      version: "7.2.1"  # Updated from 3.8.0; chart 4+ has proper modern_ebpf support
       sourceRef:
         kind: HelmRepository
         name: falcosecurity
         namespace: flux-system
+  install:
+    timeout: 8m
+    remediation:
+      retries: 3
+  upgrade:
+    timeout: 8m
+    remediation:
+      retries: 3
   values:
     driver:
-      kind: modern_ebpf  # Talos has no kernel headers; modern_ebpf uses CO-RE/BTF (kernel 5.8+)
+      kind: modern_ebpf  # Talos: no kernel headers; CO-RE/BTF works on kernel 5.8+
       loader:
-        enabled: false  # No loader init container needed for modern_ebpf
+        enabled: false   # No init container needed for modern_ebpf
     falcosidekick:
       enabled: true
       webui:
-        enabled: false # Assuming UI is not needed for now
+        enabled: false
       config:
         loki:
           hostport: "http://platform-observability-loki.security-observability.svc.cluster.local:3100"
-    # Start with a baseline of critical rules
     customRules:
       rules-critical-syscalls.yaml: |
         - rule: Terminal shell in container
