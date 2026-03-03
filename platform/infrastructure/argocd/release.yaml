@@ -47,7 +47,7 @@ spec:
           return hs
     global:
       nodeSelector:
-        cryptophys.io/tier: application
+        cryptophys.io/tier: compute
       tolerations: []
     controller:
       replicas: 2
