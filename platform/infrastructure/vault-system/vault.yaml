@@ -13,12 +13,27 @@ spec:
         kind: HelmRepository
         name: hashicorp
         namespace: flux-system
+  install:
+    timeout: 15m
+    remediation:
+      retries: 2
+  upgrade:
+    timeout: 15m
+    remediation:
+      retries: 2
   values:
     global:
       enabled: true
-      tlsDisable: false
+      tlsDisable: true
     server:
       replicas: 3
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 250m
+          memory: 256Mi
       # HA Architecture: Platform workloads on control plane
       nodeSelector:
         cryptophys.io/tier: platform
@@ -49,6 +64,13 @@ spec:
     injector:
       enabled: true
       replicas: 2
+      resources:
+        requests:
+          cpu: 100m
+          memory: 64Mi
+        limits:
+          cpu: 250m
+          memory: 128Mi
       nodeSelector:
         cryptophys.io/tier: platform
       tolerations:
