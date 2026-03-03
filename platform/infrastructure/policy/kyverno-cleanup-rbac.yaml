@@ -1,0 +1,29 @@
+# RBAC: Grant kyverno cleanup-controller permission to delete PolicyReport resources
+# Required for ClusterCleanupPolicy/cp-cleanup-reports-v1 in ssot-core
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kyverno:cleanup-controller:policyreports
+  labels:
+    app.kubernetes.io/component: cleanup-controller
+    app.kubernetes.io/part-of: kyverno
+rules:
+- apiGroups: ["wgpolicyk8s.io"]
+  resources: ["policyreports", "clusterpolicyreports"]
+  verbs: ["get", "list", "watch", "delete", "deletecollection"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kyverno:cleanup-controller:policyreports
+  labels:
+    app.kubernetes.io/component: cleanup-controller
+    app.kubernetes.io/part-of: kyverno
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kyverno:cleanup-controller:policyreports
+subjects:
+- kind: ServiceAccount
+  name: kyverno-cleanup-controller
+  namespace: kyverno-system
