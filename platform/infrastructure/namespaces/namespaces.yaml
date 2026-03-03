@@ -220,3 +220,10 @@ metadata:
   name: cnpg-system
   labels:
     app.kubernetes.io/created-by: aide
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
+  name: apps-gateway
