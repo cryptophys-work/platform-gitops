@@ -43,6 +43,6 @@ spec:
         cpu: 2000m
         memory: 4Gi
     
-    # Schedule on worker nodes with enough RAM
+    # Schedule on compute worker nodes (quanta/synapse/thalamus)
     nodeSelector:
-      cryptophys.io/tier: worker
+      cryptophys.io/tier: compute
