@@ -40,7 +40,8 @@ spec:
           nginx.ingress.kubernetes.io/ssl-redirect: "true"
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
     externalURL: https://registry.cryptophys.work
-    harborAdminPassword: ChangeMe-From-Vault
+    existingSecretAdminPassword: harbor-admin-credentials
+    existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
     internalTLS:
       enabled: false
     persistence:
