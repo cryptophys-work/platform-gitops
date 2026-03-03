@@ -1,13 +1,13 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 14-linkerd
+  name: 36-linkerd
   namespace: flux-system
   annotations:
     cryptophys.io/domain: platform
     cryptophys.io/managed-by: flux
 spec:
-  suspend: true  # Wave order fixed: Linkerd moved to 36-linkerd (after SPIRE wave 35)
+  suspend: true
   interval: 1h
   prune: false
   wait: true
@@ -17,5 +17,5 @@ spec:
     kind: GitRepository
     name: platform-repo
   dependsOn:
-    - name: 11-controllers
     - name: 35-spire
+    - name: 11-controllers
