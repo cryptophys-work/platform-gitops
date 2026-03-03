@@ -34,7 +34,8 @@ spec:
       rootless: true
     gitea:
       admin:
-        existingSecret: gitea-admin-secret
+        username: gitea-admin
+        email: gitea-admin@cryptophys.work
       config:
         database:
           DB_TYPE: postgres
