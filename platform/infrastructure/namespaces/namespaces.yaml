@@ -156,6 +156,16 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: security-observability
+  labels:
+    app.kubernetes.io/created-by: aide
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
+---
+apiVersion: v1
+kind: Namespace
+metadata:
   name: falco-system
   labels:
     app.kubernetes.io/created-by: aide
