@@ -42,8 +42,8 @@ metadata:
   namespace: gitops-system
 spec:
   hard:
-    count/pods: '10'
-    limits.cpu: '2'
-    limits.memory: 2Gi
-    requests.cpu: 500m
-    requests.memory: 512Mi
+    count/pods: '20'
+    limits.cpu: '6'
+    limits.memory: 10Gi
+    requests.cpu: '3'
+    requests.memory: 4Gi
