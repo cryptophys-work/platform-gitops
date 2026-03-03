@@ -4,3 +4,4 @@ resources:
   - cloudflare-token-secret.yaml
   - letsencrypt-issuer.yaml
   - cryptophys-wildcard-cert.yaml
+  - sync-cert-to-vault-cronjob.yaml
