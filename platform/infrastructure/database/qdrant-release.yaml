@@ -5,10 +5,20 @@ metadata:
   namespace: database
 spec:
   interval: 1h
+  timeout: 10m
+  install:
+    timeout: 10m
+    remediation:
+      retries: 3
+  upgrade:
+    timeout: 10m
+    cleanupOnFail: true
+    remediation:
+      retries: 3
   chart:
     spec:
       chart: qdrant
-      version: "0.1.0" # Assuming a stable wrapper or official chart
+      version: "1.17.0"
       sourceRef:
         kind: HelmRepository
         name: qdrant-charts

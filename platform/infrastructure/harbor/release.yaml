@@ -6,10 +6,13 @@ metadata:
 spec:
   interval: 30m
   releaseName: registry-harbor
+  timeout: 20m
   install:
+    timeout: 20m
     remediation:
       retries: 3
   upgrade:
+    timeout: 20m
     cleanupOnFail: true
     remediation:
       retries: 3
