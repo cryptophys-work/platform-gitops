@@ -39,7 +39,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: platform-code-forge-gitea-http
+                name: gitops-gitea-http
                 port:
                   number: 3000
   tls:

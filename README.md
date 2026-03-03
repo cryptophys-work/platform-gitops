@@ -52,9 +52,9 @@ platform-gitops/
 
 ## Endpoint Git Internal (Cluster)
 
-- `http://platform-code-forge-gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/platform-gitops.git`
-- `http://platform-code-forge-gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/apps-gitops.git`
-- `http://platform-code-forge-gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/ssot-core.git`
+- `http://gitops-gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/platform-gitops.git`
+- `http://gitops-gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/apps-gitops.git`
+- `http://gitops-gitea-http.gitea.svc.cluster.local:3000/cryptophys.adm/ssot-core.git`
 
 ## Catatan Operasional
 
