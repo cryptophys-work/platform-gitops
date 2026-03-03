@@ -23,6 +23,8 @@ spec:
     remediation:
       retries: 3
   values:
+    cni:
+      exclusive: false
     cluster:
       name: cryptophys-genesis
       id: 1

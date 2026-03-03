@@ -29,19 +29,13 @@ spec:
     replicas: 3
     enablePodAntiAffinity: true
     
-    # Talos Linux: use CNI plugin mode (no iptables init container)
-    cniEnabled: true
+    # Talos Linux: use proxy-init container mode (not CNI chaining)
+    # Talos host does NOT have nsenter, so CNI plugin mode cannot work
+    cniEnabled: false
     
-    # Talos/Cilium: network validator init container is injected when cniEnabled=true
-    # It tests iptables interception by connecting to 1.1.1.1:20001
-    # Cilium uses eBPF not iptables, so we point connectAddr to itself (loopback)
-    networkValidator:
-      enabled: true
-      connectAddr: "127.0.0.1:4140"
-      listenAddr: "0.0.0.0:4140"
-      timeout: "10s"
     proxyInit:
-      runAsRoot: false
+      runAsRoot: true
+      iptablesMode: nft
       ignoreOutboundPorts: "4567,4568"
     
     # Identity: self-managed CA (linkerd-identity-issuer Secret + trust-roots ConfigMap)
