@@ -32,12 +32,14 @@ spec:
     # Talos Linux: use CNI plugin mode (no iptables init container)
     cniEnabled: true
     
-    # Talos/Cilium: disable network validator (iptables check not applicable with CNI mode)
+    # Talos/Cilium: network validator init container is injected when cniEnabled=true
+    # It tests iptables interception by connecting to 1.1.1.1:20001
+    # Cilium uses eBPF not iptables, so we point connectAddr to itself (loopback)
     networkValidator:
-      enabled: false
-    
-    # Talos: network validator can't use iptables; CNI handles traffic routing
-    # Disable the network-validator connectAddr external probe (CNI mode workaround)
+      enabled: true
+      connectAddr: "127.0.0.1:4140"
+      listenAddr: "0.0.0.0:4140"
+      timeout: "10s"
     proxyInit:
       runAsRoot: false
       ignoreOutboundPorts: "4567,4568"
