@@ -1,0 +1,11 @@
+apiVersion: kubernetes.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: local-kubernetes-provider
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+spec:
+  credentials:
+    source: InjectedIdentity
