@@ -10,7 +10,7 @@ spec:
   path: ./platform/security/
   prune: true
   wait: true
-  suspend: true # Safety first
+  suspend: false
   sourceRef:
     kind: GitRepository
     name: platform-repo
