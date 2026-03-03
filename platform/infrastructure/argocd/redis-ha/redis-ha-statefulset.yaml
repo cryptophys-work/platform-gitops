@@ -87,7 +87,11 @@ spec:
         cryptophys.io/contract: contract.platform.argocd.v1
     spec:
       serviceAccountName: argocd-redis-ha
-      tolerations: []
+      tolerations:
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
+          effect: NoSchedule
       nodeSelector:
         cryptophys.io/tier: compute
       affinity:
