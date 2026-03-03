@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: tetragon
-      version: "0.11.0" # Use a specific, stable version
+      version: "1.6.0" # Upgraded from 0.11.0 — v1.x works without tracefs/debugfs on Talos
       sourceRef:
         kind: HelmRepository
         name: cilium

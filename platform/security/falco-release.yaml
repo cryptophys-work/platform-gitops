@@ -16,6 +16,8 @@ spec:
   values:
     driver:
       kind: modern_ebpf  # Talos has no kernel headers; modern_ebpf uses CO-RE/BTF (kernel 5.8+)
+      loader:
+        enabled: false  # No loader init container needed for modern_ebpf
     falcosidekick:
       enabled: true
       webui:

@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 1h
   retryInterval: 2m
-  timeout: 5m
+  timeout: 10m  # DaemonSets on 8 nodes need more time
   path: ./platform/security/
   prune: true
   wait: true
