@@ -23,8 +23,13 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/role
+          operator: Exists
+          effect: NoSchedule
       containers:
-        - name: spire-agent
           image: ghcr.io/spiffe/spire-agent:1.8.0
           args: ["-config", "/run/spire/config/agent.conf"]
           resources:

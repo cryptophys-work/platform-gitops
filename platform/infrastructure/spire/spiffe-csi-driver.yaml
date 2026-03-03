@@ -58,6 +58,12 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/role
+          operator: Exists
+          effect: NoSchedule
       containers:
         - name: spiffe-csi-driver
           image: ghcr.io/spiffe/spiffe-csi-driver:0.2.6
