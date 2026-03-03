@@ -7,11 +7,11 @@ metadata:
     cryptophys.io/domain: platform
     cryptophys.io/managed-by: flux
 spec:
-  suspend: true
+  suspend: false
   interval: 1h
   prune: false
   wait: true
-  timeout: 15m
+  timeout: 30m
   path: ./platform/infrastructure/linkerd
   sourceRef:
     kind: GitRepository

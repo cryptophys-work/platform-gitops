@@ -11,7 +11,7 @@ spec:
   interval: 1h
   prune: false
   wait: true
-  timeout: 15m
+  timeout: 30m
   path: ./platform/infrastructure/vault-system
   sourceRef:
     kind: GitRepository

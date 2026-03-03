@@ -7,11 +7,11 @@ metadata:
     cryptophys.io/domain: platform
     cryptophys.io/managed-by: flux
 spec:
-  suspend: true  # Wave order fixed: Linkerd moved to 36-linkerd (after SPIRE wave 35)
+  suspend: false  # Wave order fixed: Linkerd moved to 36-linkerd (after SPIRE wave 35)
   interval: 1h
   prune: false
   wait: true
-  timeout: 15m
+  timeout: 30m
   path: ./platform/infrastructure/linkerd
   sourceRef:
     kind: GitRepository
