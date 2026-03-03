@@ -26,6 +26,16 @@ spec:
       kind: modern_ebpf  # Talos: no kernel headers; CO-RE/BTF works on kernel 5.8+
       loader:
         enabled: false   # No init container needed for modern_ebpf
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      - key: cryptophys.io/storage-only
+        operator: Exists
+        effect: NoSchedule
+      - key: cryptophys.io/role
+        operator: Exists
+        effect: NoSchedule
     falcosidekick:
       enabled: true
       webui:
