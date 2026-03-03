@@ -59,7 +59,10 @@ spec:
         enabled: true
         storageClassName: longhorn-single
         size: 5Gi
-      adminPassword: CryptoGrafana2026
+      adminPassword: ""
+      admin:
+        existingSecret: grafana-admin-credentials
+        passwordKey: admin-password
       grafana.ini:
         security:
           allow_embedding: true
