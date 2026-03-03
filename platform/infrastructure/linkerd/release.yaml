@@ -26,6 +26,10 @@ spec:
     # Talos Linux: use CNI plugin mode (no iptables init container)
     cniEnabled: true
     
+    # Talos/Cilium: disable network validator (iptables check not applicable with CNI mode)
+    networkValidator:
+      enabled: false
+    
     # Talos: network validator can't use iptables; CNI handles traffic routing
     # Disable the network-validator connectAddr external probe (CNI mode workaround)
     proxyInit:
