@@ -10,21 +10,21 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+  name: apps-core
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
+  name: apps-dash
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: cert-manager
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
-  name: cqls-compute
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
-  name: crossplane-system
 ---
 apiVersion: v1
 kind: Namespace
@@ -50,9 +50,12 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: ingress-system
   labels:
     app.kubernetes.io/created-by: aide
-  name: ingress-system
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
 ---
 apiVersion: v1
 kind: Namespace
@@ -64,30 +67,32 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
   name: longhorn-system
+  labels:
+    app.kubernetes.io/created-by: aide
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
   name: metallb-system
+  labels:
+    app.kubernetes.io/created-by: aide
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
-  name: minio-system
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
   name: observability-system
+  labels:
+    app.kubernetes.io/created-by: aide
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
 ---
 apiVersion: v1
 kind: Namespace
@@ -106,16 +111,12 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
-  name: security-system
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
   name: spire-system
+  labels:
+    app.kubernetes.io/created-by: aide
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
 ---
 apiVersion: v1
 kind: Namespace
@@ -129,6 +130,13 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+  name: minio-system
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
   name: velero-system
 ---
 apiVersion: v1
@@ -136,17 +144,79 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
-    pod-security.kubernetes.io/enforce: privileged
-    pod-security.kubernetes.io/audit: privileged
-    pod-security.kubernetes.io/warn: privileged
-  name: falco-system
+  name: security-system
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+  name: crossplane-system
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: security-observability
+  labels:
+    app.kubernetes.io/created-by: aide
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: falco-system
+  labels:
+    app.kubernetes.io/created-by: aide
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
+---
+apiVersion: v1
+kind: Namespace
+metadata:
   name: tetragon-system
+  labels:
+    app.kubernetes.io/created-by: aide
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: aide
+  name: envoy-gateway-system
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cerebrum
+  labels:
+    app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: cerebrum
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: linkerd-system
+  labels:
+    app.kubernetes.io/created-by: aide
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/warn: privileged
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: database
+  labels:
+    app.kubernetes.io/created-by: aide
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cnpg-system
+  labels:
+    app.kubernetes.io/created-by: aide
