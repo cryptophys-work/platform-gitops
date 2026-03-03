@@ -5,6 +5,11 @@ metadata:
   namespace: linkerd-system
 spec:
   interval: 1h
+  timeout: 20m
+  install:
+    timeout: 20m
+  upgrade:
+    timeout: 20m
   chart:
     spec:
       chart: linkerd-control-plane

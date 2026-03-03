@@ -5,11 +5,13 @@ metadata:
   namespace: minio-system
 spec:
   interval: 1h
-  timeout: 10m
+  timeout: 20m
   install:
+    timeout: 20m
     remediation:
       retries: 3
   upgrade:
+    timeout: 20m
     remediation:
       retries: 3
   chart:
