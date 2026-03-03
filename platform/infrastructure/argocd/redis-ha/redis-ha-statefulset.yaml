@@ -89,7 +89,7 @@ spec:
       serviceAccountName: argocd-redis-ha
       tolerations: []
       nodeSelector:
-        cryptophys.io/tier: application
+        cryptophys.io/tier: compute
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

@@ -22,6 +22,6 @@ spec:
   # HA Architecture: Platform workloads on control plane
   affinity:
     nodeSelector:
-      cryptophys.io/tier: application
+      cryptophys.io/tier: compute
     tolerations: []
     podAntiAffinityType: required

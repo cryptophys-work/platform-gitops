@@ -26,6 +26,12 @@ spec:
     # Talos Linux: use CNI plugin mode (no iptables init container)
     cniEnabled: true
     
+    # Talos: network validator can't use iptables; CNI handles traffic routing
+    # Disable the network-validator connectAddr external probe (CNI mode workaround)
+    proxyInit:
+      runAsRoot: false
+      ignoreOutboundPorts: "4567,4568"
+    
     # SPIRE/SPIFFE Integration (External Identity)
     identity:
       externalCA: true
