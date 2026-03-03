@@ -12,7 +12,7 @@ spec:
   prune: false
   wait: true
   timeout: 10m
-  path: ./platform/infrastructure/policy-ssot
+  path: ./policies/kyverno/full
   sourceRef:
     kind: GitRepository
     name: ssot-core-repo

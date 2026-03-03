@@ -4,4 +4,4 @@ resources:
   - baseline.yaml
   - cilium-baseline.yaml
   - kyverno-release.yaml
-  - cp-restriction-policy.yaml
+  # cp-restriction-policy.yaml moved to 15-policy-crs (Kyverno CRDs not ready at dry-run time)
