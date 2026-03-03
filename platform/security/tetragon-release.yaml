@@ -30,9 +30,7 @@ spec:
         repository: quay.io/cilium/tetragon
       extraVolumeMounts:
         - name: tracefs
-          mountPath: /sys/kernel/tracing
-      extraArgs:
-        tracing-path: /sys/kernel/tracing  # Talos mounts tracefs here (not /sys/kernel/debug/tracing)
+          mountPath: /sys/kernel/debug/tracing  # Talos has tracefs at /sys/kernel/tracing; map to default expected path
       export:
         # Export events to Loki for correlation
         stdout: false
