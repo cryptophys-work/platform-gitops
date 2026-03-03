@@ -1,0 +1,20 @@
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: "trace-cerebrum-llm-access"
+  namespace: cqls-compute
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: cerebrum-llm
+  tracepoints:
+  - subsystem: "syscall"
+    event: "connect"
+    args:
+    - index: 0
+      type: "sock"
+  - subsystem: "syscall"
+    event: "write"
+    args:
+    - index: 0
+      type: "fd"

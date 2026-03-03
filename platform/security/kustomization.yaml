@@ -3,5 +3,5 @@ kind: Kustomization
 resources:
   - falco-release.yaml
   - tetragon-release.yaml
-  - tetragon-tracing-policy.yaml
   - gatekeeper-release.yaml
+  # tetragon-tracing-policy.yaml deferred to 15-security-runtime-crs (TracingPolicy CRD not ready at dry-run)

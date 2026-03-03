@@ -16,6 +16,7 @@ resources:
   - kustomization/15-policy.yaml
   - kustomization/15-policy-crs.yaml
   - kustomization/15-security-runtime.yaml
+  - kustomization/15-security-runtime-crs.yaml
   - kustomization/16-policy-ssot.yaml
   - kustomization/17-policy-reporter.yaml
   - kustomization/20-certificates.yaml
