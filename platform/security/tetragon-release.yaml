@@ -5,6 +5,12 @@ metadata:
   namespace: tetragon-system
 spec:
   interval: 1h
+  install:
+    timeout: 10m
+  upgrade:
+    timeout: 10m
+    remediation:
+      retries: 2
   chart:
     spec:
       chart: tetragon
