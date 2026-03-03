@@ -10,7 +10,7 @@ metadata:
     environment: prod
     owner: infrastructure
 spec:
-  replicas: 3
+  replicas: 1  # SQLite datastore requires single replica; scale up after migrating to postgres
   selector:
     matchLabels:
       app: spire-server
