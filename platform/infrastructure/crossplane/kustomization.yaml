@@ -6,4 +6,3 @@ resources:
   - provider-kubernetes.yaml
   - definition.yaml
   - composition.yaml
-  - claims-platform-nodes.yaml

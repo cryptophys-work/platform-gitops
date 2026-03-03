@@ -24,6 +24,8 @@ spec:
     - patch: |
         - op: remove
           path: /spec/rules/0/validate/exclude
+        - op: remove
+          path: /spec/rules/0/validate/preconditions
         - op: add
           path: /spec/rules/0/exclude
           value:
@@ -38,6 +40,13 @@ spec:
                 - metallb*
                 - cert-manager*
                 - flux-system
+        - op: add
+          path: /spec/rules/0/preconditions
+          value:
+            all:
+            - key: "{{ request.object.metadata.labels.\"cryptophys.work/managed-by\" || '' }}"
+              operator: Equals
+              value: "argocd"
       target:
         kind: ClusterPolicy
         name: cp-standard-naming-canonical-v1
