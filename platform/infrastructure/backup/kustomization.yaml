@@ -6,4 +6,5 @@ resources:
   - ingress-minio-console.yaml
   - policy-exception.yaml
   - velero-policy-exception.yaml
-  # backup-secrets and velero-schedules are in 50-backup-crs (need vault-backend ClusterSecretStore + Velero CRDs)
+  - backup-secrets.yaml
+  # velero-schedules.yaml is in 50-backup-crs (needs Velero CRDs)

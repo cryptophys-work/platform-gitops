@@ -30,6 +30,7 @@ spec:
           operator: Exists
           effect: NoSchedule
       containers:
+        - name: spire-agent
           image: ghcr.io/spiffe/spire-agent:1.8.0
           args: ["-config", "/run/spire/config/agent.conf"]
           resources:

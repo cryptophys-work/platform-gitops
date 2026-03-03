@@ -1,0 +1,23 @@
+apiVersion: cryptophys.work/v1alpha1
+kind: ManagedNode
+metadata:
+  name: cortex-178-18-250-39
+  namespace: crossplane-system
+spec:
+  tier: platform
+---
+apiVersion: cryptophys.work/v1alpha1
+kind: ManagedNode
+metadata:
+  name: cerebrum-157-173-120-200
+  namespace: crossplane-system
+spec:
+  tier: platform
+---
+apiVersion: cryptophys.work/v1alpha1
+kind: ManagedNode
+metadata:
+  name: corpus-207-180-206-69
+  namespace: crossplane-system
+spec:
+  tier: platform
