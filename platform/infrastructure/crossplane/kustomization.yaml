@@ -6,3 +6,5 @@ resources:
   - provider-kubernetes.yaml
   - definition.yaml
   - composition.yaml
+  - longhorn-release-definition.yaml
+  - longhorn-release-composition.yaml

@@ -1,0 +1,15 @@
+apiVersion: cryptophys.work/v1alpha1
+kind: LonghornRelease
+metadata:
+  name: longhorn
+  namespace: crossplane-system
+spec:
+  defaultReplicaCount: 2
+  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule"
+  managerResources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
