@@ -34,9 +34,9 @@ spec:
         server.insecure: "true"
       cm:
         resource.customizations.ignoreDifferences.all: |
-          jqPathExpressions:
-            - '.metadata.annotations."argocd.argoproj.io/tracking-id"'
-            - '.metadata.annotations."cryptophys.io/gitops-source"'
+          jsonPointers:
+            - /metadata/annotations/argocd.argoproj.io~1tracking-id
+            - /metadata/annotations/cryptophys.io~1gitops-source
         resource.customizations.health.gateway.envoyproxy.io_SecurityPolicy: |
           hs = {}
           hs.status = "Healthy"
