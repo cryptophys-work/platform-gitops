@@ -227,3 +227,19 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
   name: apps-gateway
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aide
+  labels:
+    app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: aide
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: navigator
+  labels:
+    app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: navigator
