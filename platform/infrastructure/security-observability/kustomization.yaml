@@ -6,3 +6,5 @@ resources:
   - otel-collector-release.yaml
   - trivy-operator-release.yaml
   - trivy-policy-exception.yaml
+  - grafana-dashboard-cluster-insights.yaml
+  - grafana-dashboard-falco-runtime-live.yaml
