@@ -5,10 +5,10 @@ metadata:
   namespace: flux-system
 spec:
   hard:
-    requests.cpu: "2000m"
-    requests.memory: "3Gi"
-    limits.cpu: "4000m"
-    limits.memory: "6Gi"
+    requests.cpu: "4000m"
+    requests.memory: "6Gi"
+    limits.cpu: "12000m"
+    limits.memory: "12Gi"
 ---
 apiVersion: v1
 kind: ResourceQuota
