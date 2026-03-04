@@ -63,12 +63,12 @@ data:
           },
           "targets": [
             {
-              "expr": "count by(priority) (rate({namespace=\"falco-system\"} | json | priority!\"\" [5m]))",
+              "expr": "sum by(node) (count_over_time({namespace=\"falco-system\",job=\"fluent-bit\"}[5m]))",
               "queryType": "range",
               "refId": "A"
             }
           ],
-          "title": "Falco Events by Priority (5m)",
+          "title": "Falco Events by Node (5m)",
           "type": "piechart"
         },
         {
@@ -104,13 +104,13 @@ data:
           },
           "targets": [
             {
-              "expr": "count by(rule) (rate({namespace=\"falco-system\"} | json | rule!\"\" [5m]))",
-              "legendFormat": "{{rule}}",
+              "expr": "sum by(container) (count_over_time({namespace=\"falco-system\",job=\"fluent-bit\"}[5m]))",
+              "legendFormat": "{{container}}",
               "queryType": "range",
               "refId": "A"
             }
           ],
-          "title": "Top Falco Rules Triggered (5m)",
+          "title": "Falco Events by Container (5m)",
           "type": "timeseries"
         },
         {
@@ -137,7 +137,7 @@ data:
           },
           "targets": [
             {
-              "expr": "{namespace=\"falco-system\",job=\"fluent-bit\"}",
+              "expr": "{namespace=\"falco-system\"}",
               "queryType": "range",
               "refId": "A"
             }
