@@ -33,7 +33,7 @@ spec:
       params:
         server.insecure: "true"
       cm:
-        resource.customizations.ignoreDifferences.argoproj.io_Application: |
+        resource.customizations.ignoreDifferences.all: |
           jqPathExpressions:
             - '.metadata.annotations."argocd.argoproj.io/tracking-id"'
             - '.metadata.annotations."cryptophys.io/gitops-source"'
