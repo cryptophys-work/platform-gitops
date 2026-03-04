@@ -33,6 +33,10 @@ spec:
       params:
         server.insecure: "true"
       cm:
+        resource.customizations.ignoreDifferences.argoproj.io_Application: |
+          jqPathExpressions:
+            - '.metadata.annotations."argocd.argoproj.io/tracking-id"'
+            - '.metadata.annotations."cryptophys.io/gitops-source"'
         resource.customizations.health.gateway.envoyproxy.io_SecurityPolicy: |
           hs = {}
           hs.status = "Healthy"
