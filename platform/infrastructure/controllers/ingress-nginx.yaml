@@ -40,7 +40,7 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       extraArgs:
-        default-ssl-certificate: ingress/platform-wildcard-tls
+        default-ssl-certificate: ingress-system/platform-wildcard-tls
         healthz-port: "11054"
         profiling: "false"
         profiler-port: "0"
