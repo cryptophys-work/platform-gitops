@@ -31,9 +31,10 @@ spec:
       exceptionNamespace: kyverno-system
     admissionController:
       createSelfSignedCert: true
-      replicas: 1
-      extraArgs:
-        forceFailurePolicyIgnore: "true"
+      replicas: 2
+      container:
+        extraArgs:
+          forceFailurePolicyIgnore: "true"
       serviceWebhook:
         failurePolicy: Ignore
       nodeSelector:
