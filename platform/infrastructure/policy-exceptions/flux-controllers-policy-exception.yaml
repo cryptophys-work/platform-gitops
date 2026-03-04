@@ -26,4 +26,4 @@ spec:
           namespaces:
             - flux-system
           names:
-            - "*-controller"
+            - "*-controller*"
