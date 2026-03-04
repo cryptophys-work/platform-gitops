@@ -1,0 +1,119 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: longhorn-release.helm.cryptophys.work
+spec:
+  compositeTypeRef:
+    apiVersion: cryptophys.work/v1alpha1
+    kind: XLonghornRelease
+  resources:
+  - name: longhorn-helmrelease
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: helm.toolkit.fluxcd.io/v2beta2
+            kind: HelmRelease
+            metadata:
+              name: longhorn
+              namespace: longhorn-system
+            spec:
+              interval: 1h
+              timeout: 15m
+              chart:
+                spec:
+                  chart: longhorn
+                  version: v1.11.0
+                  sourceRef:
+                    kind: HelmRepository
+                    name: longhorn
+                    namespace: flux-system
+              install:
+                remediation:
+                  retries: 3
+              upgrade:
+                remediation:
+                  retries: 3
+              values:
+                persistence:
+                  defaultClass: true
+                  defaultClassReplicaCount: 2
+                defaultSettings:
+                  defaultReplicaCount: 2
+                  taintToleration: node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule
+                  storageReservedPercentageForDefaultDisk: 25
+                  replicaSoftAntiAffinity: true
+                  replicaAutoBalance: best-effort
+                longhornManager:
+                  resources:
+                    requests:
+                      cpu: 200m
+                      memory: 512Mi
+                    limits:
+                      cpu: 1000m
+                      memory: 1Gi
+                  tolerations:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: node-role.kubernetes.io/master
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: cryptophys.io/storage-only
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: cryptophys.io/role
+                    operator: Exists
+                    effect: NoSchedule
+                longhornDriver:
+                  tolerations:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: node-role.kubernetes.io/master
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: cryptophys.io/storage-only
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: cryptophys.io/role
+                    operator: Exists
+                    effect: NoSchedule
+                longhornUI:
+                  tolerations:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: node-role.kubernetes.io/master
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: cryptophys.io/storage-only
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: cryptophys.io/role
+                    operator: Exists
+                    effect: NoSchedule
+                csi:
+                  attacherReplicaCount: 2
+                  provisionerReplicaCount: 2
+                  resizerReplicaCount: 2
+                  snapshotterReplicaCount: 2
+        providerConfigRef:
+          name: local-kubernetes-provider
+    patches:
+    - fromFieldPath: spec.defaultReplicaCount
+      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.defaultReplicaCount
+    - fromFieldPath: spec.defaultReplicaCount
+      toFieldPath: spec.forProvider.manifest.spec.values.persistence.defaultClassReplicaCount
+    - fromFieldPath: spec.taintToleration
+      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.taintToleration
+    - fromFieldPath: spec.managerResources.requests.cpu
+      toFieldPath: spec.forProvider.manifest.spec.values.longhornManager.resources.requests.cpu
+    - fromFieldPath: spec.managerResources.requests.memory
+      toFieldPath: spec.forProvider.manifest.spec.values.longhornManager.resources.requests.memory
+    - fromFieldPath: spec.managerResources.limits.cpu
+      toFieldPath: spec.forProvider.manifest.spec.values.longhornManager.resources.limits.cpu
+    - fromFieldPath: spec.managerResources.limits.memory
+      toFieldPath: spec.forProvider.manifest.spec.values.longhornManager.resources.limits.memory
