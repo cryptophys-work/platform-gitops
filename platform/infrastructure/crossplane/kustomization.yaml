@@ -4,6 +4,7 @@ resources:
   - workload-placement-definition.yaml
   - workload-placement-composition.yaml
   - provider-kubernetes.yaml
+  - provider-kubernetes-rbac.yaml
   - definition.yaml
   - composition.yaml
   - longhorn-release-definition.yaml

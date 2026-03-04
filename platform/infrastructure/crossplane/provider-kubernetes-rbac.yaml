@@ -1,0 +1,77 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: crossplane-provider-kubernetes-helmrelease-editor
+  namespace: longhorn-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+rules:
+  - apiGroups:
+      - helm.toolkit.fluxcd.io
+    resources:
+      - helmreleases
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: crossplane-provider-kubernetes-helmrelease-editor
+  namespace: longhorn-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: crossplane-provider-kubernetes-helmrelease-editor
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: system:serviceaccounts:crossplane-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: crossplane-provider-kubernetes-node-editor
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: crossplane-provider-kubernetes-node-editor
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: crossplane-provider-kubernetes-node-editor
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: system:serviceaccounts:crossplane-system
