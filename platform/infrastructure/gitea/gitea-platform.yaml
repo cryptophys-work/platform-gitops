@@ -87,6 +87,11 @@ spec:
         - secretName: platform-wildcard-tls
           hosts:
             - gitea.cryptophys.work
+    service:
+      http:
+        type: ClusterIP
+        port: 3000
+        clusterIP: ""
     persistence:
       enabled: true
       create: false
