@@ -57,6 +57,8 @@ spec:
           DOMAIN: gitea.cryptophys.work
           GIT_EXECUTABLE_PATH: /usr/bin/git
     extraEnv:
+      - name: GITEA__webhook__ALLOWED_HOST_LIST
+        value: "*"
       - name: GITEA__CACHE__ADAPTER
         value: redis
       - name: GITEA__CACHE__HOST
