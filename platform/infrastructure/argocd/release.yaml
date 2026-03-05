@@ -37,6 +37,11 @@ spec:
           jsonPointers:
             - /metadata/annotations/argocd.argoproj.io~1tracking-id
             - /metadata/annotations/cryptophys.io~1gitops-source
+        resource.customizations.ignoreDifferences.apps_Deployment: |
+          jsonPointers:
+            - /metadata/annotations/argocd.argoproj.io~1tracking-id
+            - /metadata/annotations/cryptophys.io~1gitops-source
+            - /metadata/annotations/kyverno.io~1verify-images
         resource.customizations.health.gateway.envoyproxy.io_SecurityPolicy: |
           hs = {}
           hs.status = "Healthy"
