@@ -76,3 +76,6 @@ spec:
       - key: node-role.kubernetes.io/control-plane
         operator: Exists
         effect: NoSchedule
+
+    # Disable heartbeat CronJob: cluster uses Cerebrum reflex for cluster-health
+    heartbeatSchedule: ""
