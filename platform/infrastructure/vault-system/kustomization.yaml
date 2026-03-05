@@ -4,3 +4,4 @@ namespace: vault-system
 resources:
   - namespace.yaml
   - vault.yaml
+  - vault-injector-cert.yaml

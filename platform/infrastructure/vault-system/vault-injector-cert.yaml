@@ -1,0 +1,111 @@
+# =============================================================================
+# Vault Agent Injector — Persistent Cert-Manager TLS Management
+# -----------------------------------------------------------------------------
+# Architecture:
+#   selfsigned-bootstrap ClusterIssuer
+#     → vault-injector-root-ca (CA, 10yr) in vault-system
+#       → vault-injector-ca-issuer (Issuer)
+#         → vault-injector-cert (1yr, renewBefore 30d)
+#           → Secret vault-injector-certs (tls.crt / tls.key / ca.crt)
+#
+# cert-manager cainjector auto-updates vault-agent-injector-cfg webhook caBundle
+# on every cert renewal — zero manual intervention required.
+# =============================================================================
+
+# 1. Bootstrap ClusterIssuer (self-signed root)
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-bootstrap
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: cert-bootstrap
+    cryptophys.io/managed-by: cert-manager
+    cryptophys.io/anti-regression: "true"
+    cryptophys.io/layer: platform
+spec:
+  selfSigned: {}
+
+---
+# 2. Root CA for Vault injector (10yr — institutional CA lifecycle)
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vault-injector-root-ca
+  namespace: vault-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: vault-agent-injector
+    cryptophys.io/managed-by: cert-manager
+    cryptophys.io/anti-regression: "true"
+    cryptophys.io/layer: platform
+spec:
+  isCA: true
+  commonName: vault-injector-ca.vault-system
+  secretName: vault-injector-root-ca
+  duration: 87600h      # 10 years
+  renewBefore: 8760h    # renew 1 year before expiry
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  subject:
+    organizations:
+      - cryptophys-genesis
+  issuerRef:
+    name: selfsigned-bootstrap
+    kind: ClusterIssuer
+    group: cert-manager.io
+
+---
+# 3. Issuer backed by the Root CA above
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: vault-injector-ca-issuer
+  namespace: vault-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: vault-agent-injector
+    cryptophys.io/managed-by: cert-manager
+    cryptophys.io/anti-regression: "true"
+    cryptophys.io/layer: platform
+spec:
+  ca:
+    secretName: vault-injector-root-ca
+
+---
+# 4. Serving certificate for vault-agent-injector-svc
+#    - 1 year validity, auto-renewed 30 days before expiry
+#    - cert-manager cainjector annotation on webhook keeps caBundle in sync
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vault-injector-cert
+  namespace: vault-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: vault-agent-injector
+    cryptophys.io/managed-by: cert-manager
+    cryptophys.io/anti-regression: "true"
+    cryptophys.io/layer: platform
+spec:
+  secretName: vault-injector-certs
+  duration: 8760h      # 1 year
+  renewBefore: 720h    # renew 30 days before expiry
+  commonName: vault-agent-injector-svc.vault-system.svc
+  dnsNames:
+    - vault-agent-injector-svc
+    - vault-agent-injector-svc.vault-system
+    - vault-agent-injector-svc.vault-system.svc
+    - vault-agent-injector-svc.vault-system.svc.cluster.local
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  subject:
+    organizations:
+      - cryptophys-genesis
+  issuerRef:
+    name: vault-injector-ca-issuer
+    kind: Issuer
+    group: cert-manager.io

@@ -77,3 +77,24 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
+      # cert-manager manages TLS cert — persistent, auto-renewing, institutional grade
+      certs:
+        secretName: vault-injector-certs
+        certName: tls.crt
+        keyName: tls.key
+        caBundle: ""   # managed by cert-manager cainjector via webhook annotation
+  # Flux postRenderer: annotates vault-agent-injector-cfg so cert-manager cainjector
+  # automatically updates caBundle on every cert renewal — zero manual intervention
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: MutatingWebhookConfiguration
+              name: vault-agent-injector-cfg
+            patch: |
+              apiVersion: admissionregistration.k8s.io/v1
+              kind: MutatingWebhookConfiguration
+              metadata:
+                name: vault-agent-injector-cfg
+                annotations:
+                  cert-manager.io/inject-ca-from: vault-system/vault-injector-cert
