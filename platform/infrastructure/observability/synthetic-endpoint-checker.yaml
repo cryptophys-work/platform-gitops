@@ -53,6 +53,7 @@ metadata:
   namespace: observability-system
 spec:
   schedule: "*/5 * * * *"
+  suspend: true
   successfulJobsHistoryLimit: 2
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid

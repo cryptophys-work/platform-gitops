@@ -49,6 +49,7 @@ metadata:
     cryptophys.io/anti-regression: "true"
 spec:
   schedule: "0 6 * * *"
+  suspend: true
   successfulJobsHistoryLimit: 2
   failedJobsHistoryLimit: 2
   jobTemplate:
