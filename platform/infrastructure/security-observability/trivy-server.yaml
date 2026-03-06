@@ -1,0 +1,123 @@
+---
+# Trivy Server — shared vulnerability scan server
+# Dikelola Flux (platform-gitops), independen dari ArgoCD/Tekton
+# - trivy-operator pakai mode ClientServer (tidak spawn scan job per pod)
+# - Tekton security-inspector task pakai --server client mode
+# - DB persisted di Longhorn PVC (survive pod restart, warmup sekali)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trivy-server
+  namespace: security-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: trivy-server
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+    cryptophys.io/anti-regression: "true"
+    cryptophys.io/contract: contract.platform.security.v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: trivy-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: trivy-server
+        app.kubernetes.io/component: trivy-server
+        app.kubernetes.io/part-of: security-observability
+    spec:
+      nodeSelector:
+        workload.cryptophys.work/apps-core: "true"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        fsGroup: 65534
+      containers:
+        - name: trivy
+          image: aquasec/trivy:0.61.0
+          args:
+            - server
+            - --listen
+            - "0.0.0.0:4954"
+            - --cache-dir
+            - /trivy-db
+            - --db-repository
+            - mirror.gcr.io/aquasec/trivy-db
+          ports:
+            - name: trivy
+              containerPort: 4954
+          env:
+            - name: TRIVY_CACHE_DIR
+              value: /trivy-db
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+            runAsNonRoot: true
+            runAsUser: 65534
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: trivy-db
+              mountPath: /trivy-db
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 4954
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 4954
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            failureThreshold: 3
+      volumes:
+        - name: trivy-db
+          persistentVolumeClaim:
+            claimName: trivy-server-db
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: trivy-server-db
+  namespace: security-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: trivy-server
+    cryptophys.io/managed-by: flux
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-single
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trivy-server
+  namespace: security-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: trivy-server
+    cryptophys.io/managed-by: flux
+spec:
+  selector:
+    app.kubernetes.io/name: trivy-server
+  ports:
+    - name: trivy
+      port: 4954
+      targetPort: 4954

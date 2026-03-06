@@ -14,6 +14,9 @@ spec:
     - policyName: cp-supplychain-registry-v1
       ruleNames:
         - restrict-image-registries
+    - policyName: cp-security-hardening-v1
+      ruleNames:
+        - restrict-pod-security-standard
   match:
     any:
       - resources:
@@ -23,3 +26,4 @@ spec:
             - security-system
           names:
             - "security-trivy-operator-*"
+            - "trivy-server-*"

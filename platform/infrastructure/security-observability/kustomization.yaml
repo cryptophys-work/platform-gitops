@@ -4,6 +4,7 @@ resources:
   - prometheus-release.yaml
   - loki-release.yaml
   - otel-collector-release.yaml
+  - trivy-server.yaml
   - trivy-operator-release.yaml
   - trivy-policy-exception.yaml
   - grafana-dashboard-cluster-insights.yaml

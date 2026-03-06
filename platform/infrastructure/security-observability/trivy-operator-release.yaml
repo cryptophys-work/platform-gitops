@@ -24,7 +24,19 @@ spec:
   values:
     replicaCount: 1
     trivy:
+      # ClientServer mode — operator tidak spawn pod untuk download DB
+      # Semua scan di-forward ke trivy-server di security-system
+      mode: ClientServer
+      serverURL: "http://trivy-server.security-system:4954"
       ignoreUnfixed: true
+      dbRepository: mirror.gcr.io/aquasec/trivy-db
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100M
+        limits:
+          cpu: 500m
+          memory: 500M
     serviceMonitor:
       enabled: true
     tolerations: []
