@@ -65,7 +65,7 @@ spec:
     persistence:
       enabled: true
       storageClass: longhorn
-      size: 20Gi
+      size: 50Gi
     tolerations:
       - key: cryptophys.io/storage-only
         operator: Exists

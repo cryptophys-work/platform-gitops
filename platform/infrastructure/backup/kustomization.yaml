@@ -4,6 +4,7 @@ resources:
   - minio-release.yaml
   - velero-release.yaml
   - ingress-minio-console.yaml
+  - ingress-minio-s3.yaml
   - policy-exception.yaml
   - velero-policy-exception.yaml
   - backup-secrets.yaml
