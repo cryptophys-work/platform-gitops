@@ -1,6 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# Tekton resources moved to apps-gitops (ArgoCD-managed).
-# This kustomization is intentionally empty to avoid drift.
-resources: []
+# Tekton infrastructure policies managed here (platform-level Kyverno rules).
+# Application-layer Tekton resources are in apps-gitops (ArgoCD-managed).
+resources:
+  - policies/tekton-controller-harbor-images.yaml
