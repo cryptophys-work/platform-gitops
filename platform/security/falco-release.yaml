@@ -8,24 +8,24 @@ spec:
   chart:
     spec:
       chart: falco
-      version: "7.2.1"  # Updated from 3.8.0; chart 4+ has proper modern_ebpf support
+      version: "7.2.1"
       sourceRef:
         kind: HelmRepository
         name: falcosecurity
         namespace: flux-system
-  install:
-    timeout: 8m
-    remediation:
-      retries: 3
-  upgrade:
-    timeout: 8m
-    remediation:
-      retries: 3
   values:
     driver:
-      kind: modern_ebpf  # Talos: no kernel headers; CO-RE/BTF works on kernel 5.8+
+      kind: modern_ebpf
       loader:
-        enabled: false   # No init container needed for modern_ebpf
+        enabled: false
+    # FALCO CORE RESOURCES (DaemonSet)
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
     tolerations:
       - key: node-role.kubernetes.io/control-plane
         operator: Exists
@@ -42,11 +42,11 @@ spec:
         enabled: false
       resources:
         requests:
-          cpu: 50m
-          memory: 256Mi
+          cpu: 25m
+          memory: 64Mi
         limits:
-          cpu: 200m
-          memory: 1Gi
+          cpu: 100m
+          memory: 256Mi
       config:
         loki:
           hostport: "http://platform-observability-loki.observability-system.svc.cluster.local:3100"
