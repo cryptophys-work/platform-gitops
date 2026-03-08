@@ -26,9 +26,15 @@ spec:
       enabled: true
       alertmanagerSpec:
         replicas: 1
+        nodeSelector:
+          workload.cryptophys.work/apps-core: "true"
         tolerations:
           - key: node-role.kubernetes.io/control-plane
             operator: Exists
+            effect: NoSchedule
+          - key: cryptophys.io/role
+            operator: Equal
+            value: llm-inference
             effect: NoSchedule
         resources:
           requests:
@@ -40,9 +46,15 @@ spec:
     grafana:
       enabled: true
       replicas: 1
+      nodeSelector:
+        workload.cryptophys.work/apps-core: "true"
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
           effect: NoSchedule
       resources:
         requests:
@@ -74,11 +86,17 @@ spec:
       enabled: true
       prometheusSpec:
         replicas: 1
+        nodeSelector:
+          workload.cryptophys.work/apps-core: "true"
         retention: 7d
         retentionSize: 20GiB
         tolerations:
           - key: node-role.kubernetes.io/control-plane
             operator: Exists
+            effect: NoSchedule
+          - key: cryptophys.io/role
+            operator: Equal
+            value: llm-inference
             effect: NoSchedule
         resources:
           requests:
@@ -97,15 +115,27 @@ spec:
                 requests:
                   storage: 20Gi
     prometheusOperator:
+      nodeSelector:
+        workload.cryptophys.work/apps-core: "true"
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
+          effect: NoSchedule
       admissionWebhooks:
         patch:
+          nodeSelector:
+            workload.cryptophys.work/apps-core: "true"
           tolerations:
             - key: node-role.kubernetes.io/control-plane
               operator: Exists
+              effect: NoSchedule
+            - key: cryptophys.io/role
+              operator: Equal
+              value: llm-inference
               effect: NoSchedule
       resources:
         requests:
@@ -115,9 +145,15 @@ spec:
           cpu: 200m
           memory: 256Mi
     kube-state-metrics:
+      nodeSelector:
+        workload.cryptophys.work/apps-core: "true"
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
           effect: NoSchedule
       resources:
         requests:

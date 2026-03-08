@@ -66,10 +66,20 @@ spec:
         enabled: true
         nodeSelector:
           workload.cryptophys.work/apps-core: "true"
+        tolerations:
+          - key: cryptophys.io/role
+            operator: Equal
+            value: llm-inference
+            effect: NoSchedule
       ui:
         enabled: true
         nodeSelector:
           workload.cryptophys.work/apps-core: "true"
+        tolerations:
+          - key: cryptophys.io/role
+            operator: Equal
+            value: llm-inference
+            effect: NoSchedule
     ipam:
       mode: kubernetes
     operator:

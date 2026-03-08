@@ -15,8 +15,14 @@ spec:
         namespace: flux-system
   values:
     installCRDs: true
+    nodeSelector:
+      kubernetes.io/os: linux
       workload.cryptophys.work/apps-core: "true"
     webhook:
+      nodeSelector:
+        kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
     certController:
+      nodeSelector:
+        kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
