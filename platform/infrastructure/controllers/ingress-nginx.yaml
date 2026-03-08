@@ -19,6 +19,11 @@ spec:
       replicaCount: 3
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      affinity: {}
+      nodeSelector:
+        kubernetes.io/os: linux
+        workload.cryptophys.work/apps-core: "true"
+      tolerations: []
       extraArgs:
         default-ssl-certificate: ingress-system/platform-wildcard-tls
         healthz-port: "11054"
@@ -48,3 +53,8 @@ spec:
         type: LoadBalancer
     admissionWebhooks:
       enabled: false
+      patch:
+        nodeSelector:
+          kubernetes.io/os: linux
+          workload.cryptophys.work/apps-core: "true"
+        tolerations: []
