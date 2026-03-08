@@ -13,30 +13,21 @@ spec:
         kind: HelmRepository
         name: hashicorp
         namespace: flux-system
-  install:
-    timeout: 15m
-    remediation:
-      retries: 2
-  upgrade:
-    timeout: 15m
-    remediation:
-      retries: 2
   values:
     global:
       enabled: true
       tlsDisable: true
     server:
       replicas: 3
-      nodeSelector:
-        kubernetes.io/os: linux
-        workload.cryptophys.work/apps-core: "true"
       resources:
-        requests:
-          cpu: 100m
-          memory: 128Mi
-        limits:
-          cpu: 250m
-          memory: 256Mi
+        requests: { cpu: 100m, memory: 128Mi }
+        limits: { cpu: 250m, memory: 256Mi }
+      nodeSelector:
+        cryptophys.io/tier: platform
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
       dataStorage:
         enabled: true
         size: 10Gi
@@ -60,34 +51,12 @@ spec:
     injector:
       enabled: true
       replicas: 2
-      nodeSelector:
-        kubernetes.io/os: linux
-        workload.cryptophys.work/apps-core: "true"
       resources:
-        requests:
-          cpu: 100m
-          memory: 64Mi
-        limits:
-          cpu: 250m
-          memory: 128Mi
-      # cert-manager manages TLS cert — persistent, auto-renewing, institutional grade
-      certs:
-        secretName: vault-injector-certs
-        certName: tls.crt
-        keyName: tls.key
-        caBundle: ""   # managed by cert-manager cainjector via webhook annotation
-  # Flux postRenderer: annotates vault-agent-injector-cfg so cert-manager cainjector
-  # automatically updates caBundle on every cert renewal — zero manual intervention
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: MutatingWebhookConfiguration
-              name: vault-agent-injector-cfg
-            patch: |
-              apiVersion: admissionregistration.k8s.io/v1
-              kind: MutatingWebhookConfiguration
-              metadata:
-                name: vault-agent-injector-cfg
-                annotations:
-                  cert-manager.io/inject-ca-from: vault-system/vault-injector-cert
+        requests: { cpu: 100m, memory: 64Mi }
+        limits: { cpu: 250m, memory: 128Mi }
+      nodeSelector:
+        cryptophys.io/tier: platform
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
