@@ -31,6 +31,9 @@ spec:
                       - key: node-role.kubernetes.io/control-plane
                         operator: Exists
                         effect: NoSchedule
+                      - key: node.kubernetes.io/memory-pressure
+                        operator: Exists
+                        effect: NoSchedule
                     containers:
                       - name: controller
                         resources:
@@ -92,6 +95,9 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
+        - key: node.kubernetes.io/memory-pressure
+          operator: Exists
+          effect: NoSchedule
       service:
         type: LoadBalancer
     admissionWebhooks:
@@ -102,5 +108,8 @@ spec:
           node-role.kubernetes.io/control-plane: ""
         tolerations:
           - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
+          - key: node.kubernetes.io/memory-pressure
             operator: Exists
             effect: NoSchedule
