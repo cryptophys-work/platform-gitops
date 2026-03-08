@@ -14,10 +14,8 @@ patches:
         template:
           spec:
             nodeSelector:
-              cryptophys.io/tier: platform
-            tolerations:
-              - key: node-role.kubernetes.io/control-plane
-                operator: Exists
-                effect: NoSchedule
+              kubernetes.io/os: linux
+              workload.cryptophys.work/apps-core: "true"
+            tolerations: []
     target:
       kind: Deployment
