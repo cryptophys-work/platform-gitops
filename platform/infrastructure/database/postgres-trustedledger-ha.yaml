@@ -4,7 +4,7 @@ metadata:
   name: postgres-trustedledger-ha
   namespace: postgresql-system
 spec:
-  instances: 3
+  instances: 2
   imageName: ghcr.io/cloudnative-pg/postgresql:16.2
   enableSuperuserAccess: true
   superuserSecret:

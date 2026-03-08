@@ -15,7 +15,7 @@ metadata:
 spec:
   ipAddressPools:
     - platform-metallb-pool
-  nodeSelector:
+  nodeSelectors:
     - matchLabels:
         kubernetes.io/hostname: synapse-161-97-136-251
     - matchLabels:
