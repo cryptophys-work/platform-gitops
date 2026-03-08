@@ -19,6 +19,4 @@ spec:
     destCNINetDir: /etc/cni/net.d
     destCNIBinDir: /opt/cni/bin
     # Run on all nodes
-    nodeSelector: {}
-    tolerations:
       - operator: Exists

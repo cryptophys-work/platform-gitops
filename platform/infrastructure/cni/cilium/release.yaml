@@ -35,8 +35,6 @@ spec:
           - key: node-role.kubernetes.io/control-plane
             operator: Exists
             effect: NoSchedule
-        nodeSelector:
-          cryptophys.io/tier: platform
     kubeProxyReplacement: "true"
     hostServices:
       enabled: true
@@ -66,20 +64,10 @@ spec:
       enabled: true
       relay:
         enabled: true
-        tolerations:
-          - key: node-role.kubernetes.io/control-plane
-            operator: Exists
-            effect: NoSchedule
-        nodeSelector:
-          cryptophys.io/tier: platform
+          workload.cryptophys.work/apps-core: "true"
       ui:
         enabled: true
-        tolerations:
-          - key: node-role.kubernetes.io/control-plane
-            operator: Exists
-            effect: NoSchedule
-        nodeSelector:
-          cryptophys.io/tier: platform
+          workload.cryptophys.work/apps-core: "true"
     ipam:
       mode: kubernetes
     operator:
@@ -88,8 +76,6 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
-      nodeSelector:
-        cryptophys.io/tier: platform
     securityContext:
       capabilities:
         ciliumAgent:

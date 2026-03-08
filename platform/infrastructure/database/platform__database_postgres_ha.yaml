@@ -6,8 +6,6 @@ metadata:
   namespace: postgresql-system
 spec:
   affinity:
-    nodeSelector:
-      cryptophys.io/tier: compute
     podAntiAffinityType: required
     tolerations: []
     topologyKey: kubernetes.io/hostname

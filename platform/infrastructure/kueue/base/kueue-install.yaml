@@ -7795,8 +7795,6 @@ spec:
                                 This field should not be used to express a desire for the pod to be scheduled on a specific node.
                                 https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodename
                               type: string
-                            nodeSelector:
-                              additionalProperties:
                                 type: string
                               description: |-
                                 NodeSelector is a selector which must be true for the pod to fit on a node.
@@ -10621,8 +10619,6 @@ spec:
                             description: Name of the PodSet to modify. Should match
                               to one of the Workload's PodSets.
                             type: string
-                          nodeSelector:
-                            additionalProperties:
                               type: string
                             type: object
                           tolerations:
@@ -12475,7 +12471,7 @@ webhooks:
       name: kueue-webhook-service
       namespace: kueue-system
       path: /mutate--v1-pod
-  failurePolicy: Fail
+  failurePolicy: Ignore
   name: mpod.kb.io
   namespaceSelector:
     matchExpressions:
@@ -12680,7 +12676,7 @@ webhooks:
       name: kueue-webhook-service
       namespace: kueue-system
       path: /mutate-ray-io-v1-raycluster
-  failurePolicy: Fail
+  failurePolicy: Ignore
   name: mraycluster.kb.io
   rules:
   - apiGroups:
@@ -12805,7 +12801,7 @@ webhooks:
       name: kueue-webhook-service
       namespace: kueue-system
       path: /validate--v1-pod
-  failurePolicy: Fail
+  failurePolicy: Ignore
   name: vpod.kb.io
   namespaceSelector:
     matchExpressions:
@@ -13019,7 +13015,7 @@ webhooks:
       name: kueue-webhook-service
       namespace: kueue-system
       path: /validate-ray-io-v1-raycluster
-  failurePolicy: Fail
+  failurePolicy: Ignore
   name: vraycluster.kb.io
   rules:
   - apiGroups:

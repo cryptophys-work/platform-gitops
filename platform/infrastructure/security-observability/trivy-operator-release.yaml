@@ -40,11 +40,7 @@ spec:
     serviceMonitor:
       enabled: true
     tolerations: []
-    nodeSelector:
-      kubernetes.io/os: linux
     scanJob:
-      nodeSelector:
-        kubernetes.io/os: linux
       tolerations: []
     resources:
       requests:

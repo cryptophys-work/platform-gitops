@@ -19,8 +19,6 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
-      nodeSelector:
-        cryptophys.io/tier: platform
       containers:
         - name: nginx
           image: nginxinc/nginx-unprivileged:stable-alpine

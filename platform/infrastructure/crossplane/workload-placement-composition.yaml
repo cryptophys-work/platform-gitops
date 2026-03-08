@@ -22,8 +22,6 @@ spec:
             spec:
               template:
                 spec:
-                  nodeSelector:
-                    "cryptophys.io/tier": "worker" # Default
         providerConfigRef:
           name: local-kubernetes-provider
     patches:

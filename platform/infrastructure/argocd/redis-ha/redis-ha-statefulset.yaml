@@ -92,8 +92,6 @@ spec:
           operator: Equal
           value: llm-inference
           effect: NoSchedule
-      nodeSelector:
-        cryptophys.io/tier: compute
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

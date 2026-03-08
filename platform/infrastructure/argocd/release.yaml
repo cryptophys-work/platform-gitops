@@ -59,8 +59,6 @@ spec:
           hs.message = "Policy accepted"
           return hs
     global:
-      nodeSelector:
-        cryptophys.io/tier: compute
       tolerations: []
     controller:
       replicas: 2

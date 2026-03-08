@@ -44,5 +44,3 @@ spec:
         memory: 4Gi
     
     # Schedule on compute worker nodes (quanta/synapse/thalamus)
-    nodeSelector:
-      cryptophys.io/tier: compute

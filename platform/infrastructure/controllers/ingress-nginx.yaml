@@ -23,8 +23,6 @@ spec:
                     maxUnavailable: 1
                 template:
                   spec:
-                    nodeSelector:
-                      cryptophys.io/tier: platform
                       kubernetes.io/os: linux
                       node-role.kubernetes.io/control-plane: ""
                     affinity:
@@ -96,8 +94,6 @@ spec:
         limits:
           cpu: 250m
           memory: 192Mi
-      nodeSelector:
-        cryptophys.io/tier: platform
         kubernetes.io/os: linux
         node-role.kubernetes.io/control-plane: ""
       affinity:
@@ -120,8 +116,6 @@ spec:
         type: LoadBalancer
     admissionWebhooks:
       patch:
-        nodeSelector:
-          cryptophys.io/tier: platform
           kubernetes.io/os: linux
           node-role.kubernetes.io/control-plane: ""
         tolerations:
