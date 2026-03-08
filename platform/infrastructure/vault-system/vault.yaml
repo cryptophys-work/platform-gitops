@@ -53,6 +53,8 @@ spec:
     injector:
       enabled: true
       replicas: 2
+      certs:
+        secretName: vault-injector-certs
       resources:
         requests: { cpu: 100m, memory: 64Mi }
         limits: { cpu: 250m, memory: 128Mi }
