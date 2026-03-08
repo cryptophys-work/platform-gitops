@@ -17,6 +17,8 @@ metadata:
     cryptophys.io/anti-regression: "true"
     cryptophys.io/contract: contract.platform.security.v1
 spec:
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:

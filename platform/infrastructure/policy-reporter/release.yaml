@@ -34,6 +34,7 @@ spec:
     nodeSelector:
       kubernetes.io/os: linux
       workload.cryptophys.work/apps-core: "true"
+    tolerations: []
     resources:
       requests:
         cpu: 50m
@@ -49,6 +50,7 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
+      tolerations: []
       logging:
         api: true
         server: true
@@ -106,6 +108,7 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
+      tolerations: []
       logging:
         api: true
         server: true
@@ -131,6 +134,7 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
+      tolerations: []
       logging:
         api: true
         server: true
