@@ -22,14 +22,14 @@ spec:
     resources:
       requests:
         cpu: 100m
-        memory: 256Mi
+        memory: 128Mi
       limits:
         cpu: 500m
-        memory: 1Gi
+        memory: 512Mi
+    nodeSelector:
+      kubernetes.io/os: linux
+      workload.cryptophys.work/apps-core: "true"
     tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
       - key: cryptophys.io/storage-only
         operator: Exists
         effect: NoSchedule
