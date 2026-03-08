@@ -16,7 +16,7 @@ spec:
   values:
     controller:
       kind: Deployment
-      replicaCount: 3
+      replicaCount: 5
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       extraArgs:
