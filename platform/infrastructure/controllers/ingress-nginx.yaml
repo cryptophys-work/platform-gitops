@@ -39,11 +39,11 @@ spec:
           maxUnavailable: 1
       resources:
         requests:
-          cpu: 100m
-          memory: 128Mi
+          cpu: 5m
+          memory: 64Mi
         limits:
-          cpu: 500m
-          memory: 512Mi
+          cpu: 250m
+          memory: 192Mi
       nodeSelector:
         workload.cryptophys.work/apps-core: "true"
       affinity:
@@ -66,6 +66,10 @@ spec:
         - effect: NoSchedule
           key: node-role.kubernetes.io/control-plane
           operator: Exists
+        - effect: NoSchedule
+          key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
         - effect: NoSchedule
           key: node.kubernetes.io/memory-pressure
           operator: Exists
