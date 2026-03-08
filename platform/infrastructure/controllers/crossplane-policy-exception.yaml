@@ -1,0 +1,31 @@
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: crossplane-controller-exception
+  namespace: crossplane-system
+  annotations:
+    cryptophys.work/exception-owner: "platform-sre"
+    cryptophys.work/exception-reason: "Allow Crossplane controller rollout while platform policies are aligned with the upstream image and security model."
+    cryptophys.work/exception-ticket: "OPS-231"
+    cryptophys.work/exception-expires-at: "2026-06-30T00:00:00Z"
+spec:
+  exceptions:
+    - policyName: cp-security-hardening-v1
+      ruleNames:
+        - restrict-pod-security-standard
+        - autogen-restrict-pod-security-standard
+    - policyName: cp-supplychain-registry-v1
+      ruleNames:
+        - restrict-image-registries
+        - autogen-restrict-image-registries
+  match:
+    any:
+      - resources:
+          kinds:
+            - Deployment
+            - Pod
+          namespaces:
+            - crossplane-system
+          names:
+            - crossplane
+            - crossplane-*
