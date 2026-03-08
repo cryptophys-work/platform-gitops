@@ -37,8 +37,6 @@ spec:
           forceFailurePolicyIgnore: "true"
       serviceWebhook:
         failurePolicy: Ignore
-      nodeSelector:
-        cryptophys.io/tier: platform
       tolerations:
         - key: "node-role.kubernetes.io/control-plane"
           operator: "Exists"
@@ -54,8 +52,6 @@ spec:
       replicas: 1
       serviceWebhook:
         failurePolicy: Ignore
-      nodeSelector:
-        cryptophys.io/tier: platform
       tolerations:
         - key: "node-role.kubernetes.io/control-plane"
           operator: "Exists"
@@ -72,8 +68,6 @@ spec:
       replicas: 1
       serviceWebhook:
         failurePolicy: Ignore
-      nodeSelector:
-        cryptophys.io/tier: platform
       tolerations:
         - key: "node-role.kubernetes.io/control-plane"
           operator: "Exists"
@@ -87,8 +81,6 @@ spec:
           memory: "1Gi"
     reportsController:
       replicas: 1
-      nodeSelector:
-        cryptophys.io/tier: platform
       tolerations:
         - key: "node-role.kubernetes.io/control-plane"
           operator: "Exists"

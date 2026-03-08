@@ -61,8 +61,6 @@ spec:
           name: config-volume
           readOnly: true
           subPath: Corefile
-      nodeSelector:
-        kubernetes.io/os: linux
       priorityClassName: system-node-critical
       serviceAccountName: node-local-dns
       tolerations:

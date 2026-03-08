@@ -4537,8 +4537,6 @@ spec:
           name: data
         - mountPath: /tmp
           name: tmp
-      nodeSelector:
-        kubernetes.io/os: linux
       priorityClassName: system-cluster-critical
       securityContext:
         fsGroup: 1337
@@ -6015,8 +6013,6 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: temp
-      nodeSelector:
-        kubernetes.io/os: linux
       priorityClassName: system-cluster-critical
       securityContext:
         fsGroup: 1337
@@ -8752,8 +8748,6 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: temp
-      nodeSelector:
-        kubernetes.io/os: linux
       priorityClassName: system-cluster-critical
       securityContext:
         fsGroup: 1337
@@ -10184,8 +10178,6 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: temp
-      nodeSelector:
-        kubernetes.io/os: linux
       securityContext:
         fsGroup: 1337
       serviceAccountName: notification-controller
@@ -11493,8 +11485,6 @@ spec:
           name: temp
         - mountPath: /data
           name: data
-      nodeSelector:
-        kubernetes.io/os: linux
       securityContext:
         fsGroup: 1337
       serviceAccountName: image-reflector-controller
@@ -12429,8 +12419,6 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: temp
-      nodeSelector:
-        kubernetes.io/os: linux
       securityContext:
         fsGroup: 1337
       serviceAccountName: image-automation-controller

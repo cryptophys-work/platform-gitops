@@ -21,8 +21,6 @@ spec:
   values:
     replicas: 2
     deploymentStrategy: RollingUpdate
-    nodeSelector:
-      cryptophys.io/tier: platform
     tolerations:
       - key: node-role.kubernetes.io/control-plane
         operator: Exists

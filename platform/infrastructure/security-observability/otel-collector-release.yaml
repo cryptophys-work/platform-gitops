@@ -28,8 +28,6 @@ spec:
       - key: node-role.kubernetes.io/control-plane
         operator: Exists
         effect: NoSchedule
-    nodeSelector:
-      cryptophys.io/tier: platform
     resources:
       requests:
         cpu: 50m

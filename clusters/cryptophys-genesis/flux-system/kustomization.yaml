@@ -13,8 +13,6 @@ patches:
         replicas: 1
         template:
           spec:
-            nodeSelector:
-              kubernetes.io/os: linux
               workload.cryptophys.work/apps-core: "true"
             tolerations: []
     target:

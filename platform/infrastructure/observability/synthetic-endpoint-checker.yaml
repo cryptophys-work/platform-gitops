@@ -70,8 +70,6 @@ spec:
             - key: node-role.kubernetes.io/control-plane
               operator: Exists
               effect: NoSchedule
-          nodeSelector:
-            cryptophys.io/tier: platform
           securityContext:
             seccompProfile:
               type: RuntimeDefault

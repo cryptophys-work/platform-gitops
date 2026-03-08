@@ -30,8 +30,6 @@ spec:
           - key: node-role.kubernetes.io/control-plane
             operator: Exists
             effect: NoSchedule
-        nodeSelector:
-          cryptophys.io/tier: platform
         resources:
           requests:
             cpu: 25m
@@ -46,8 +44,6 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
-      nodeSelector:
-        cryptophys.io/tier: platform
       resources:
         requests:
           cpu: 50m
@@ -84,8 +80,6 @@ spec:
           - key: node-role.kubernetes.io/control-plane
             operator: Exists
             effect: NoSchedule
-        nodeSelector:
-          cryptophys.io/tier: platform
         resources:
           requests:
             cpu: 100m
@@ -107,16 +101,12 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
-      nodeSelector:
-        cryptophys.io/tier: platform
       admissionWebhooks:
         patch:
           tolerations:
             - key: node-role.kubernetes.io/control-plane
               operator: Exists
               effect: NoSchedule
-          nodeSelector:
-            cryptophys.io/tier: platform
       resources:
         requests:
           cpu: 50m
@@ -129,8 +119,6 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
-      nodeSelector:
-        cryptophys.io/tier: platform
       resources:
         requests:
           cpu: 25m

@@ -26,8 +26,6 @@ spec:
       limits:
         cpu: 500m
         memory: 512Mi
-    nodeSelector:
-      kubernetes.io/os: linux
       workload.cryptophys.work/apps-core: "true"
     tolerations:
       - key: cryptophys.io/storage-only

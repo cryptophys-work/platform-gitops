@@ -28,8 +28,6 @@ spec:
         app.kubernetes.io/component: trivy-server
         app.kubernetes.io/part-of: security-observability
     spec:
-      nodeSelector:
-        workload.cryptophys.work/apps-core: "true"
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534

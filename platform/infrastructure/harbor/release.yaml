@@ -67,8 +67,6 @@ spec:
     database:
       type: internal
       internal:
-        nodeSelector:
-          kubernetes.io/hostname: campus-212-47-66-101
         tolerations:
           - key: cryptophys.io/storage-only
             operator: Equal
@@ -76,8 +74,6 @@ spec:
             effect: NoSchedule
     redis:
       internal:
-        nodeSelector:
-          kubernetes.io/hostname: campus-212-47-66-101
         tolerations:
           - key: cryptophys.io/storage-only
             operator: Equal
@@ -85,48 +81,36 @@ spec:
             effect: NoSchedule
     trivy:
       enabled: true
-      nodeSelector:
-        kubernetes.io/hostname: campus-212-47-66-101
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Equal
           value: "true"
           effect: NoSchedule
     portal:
-      nodeSelector:
-        kubernetes.io/hostname: campus-212-47-66-101
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Equal
           value: "true"
           effect: NoSchedule
     core:
-      nodeSelector:
-        kubernetes.io/hostname: campus-212-47-66-101
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Equal
           value: "true"
           effect: NoSchedule
     jobservice:
-      nodeSelector:
-        kubernetes.io/hostname: campus-212-47-66-101
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Equal
           value: "true"
           effect: NoSchedule
     registry:
-      nodeSelector:
-        kubernetes.io/hostname: campus-212-47-66-101
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Equal
           value: "true"
           effect: NoSchedule
     exporter:
-      nodeSelector:
-        kubernetes.io/hostname: campus-212-47-66-101
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Equal
