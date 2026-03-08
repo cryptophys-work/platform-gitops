@@ -1,0 +1,28 @@
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: ingress-gateway-exceptions
+  namespace: ingress-system
+spec:
+  exceptions:
+  - policyName: cp-supplychain-registry-v1
+    ruleNames:
+    - restrict-image-registries
+  - policyName: cp-security-hardening-v1
+    ruleNames:
+    - restrict-pod-security-standard
+  - policyName: cp-pss-restricted-v1
+    ruleNames:
+    - deny-host-namespaces
+    - deny-capabilities-added
+  match:
+    any:
+    - resources:
+        kinds:
+        - Deployment
+        - Pod
+        - ReplicaSet
+        names:
+        - ingress-gateway-ingress-nginx-controller*
+        namespaces:
+        - ingress-system
