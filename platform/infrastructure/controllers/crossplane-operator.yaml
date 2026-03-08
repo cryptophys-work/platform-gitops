@@ -21,10 +21,9 @@ spec:
   values:
     replicas: 2
     deploymentStrategy: RollingUpdate
-    tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
+    nodeSelector:
+      kubernetes.io/os: linux
+      workload.cryptophys.work/apps-core: "true"
     resources:
       requests:
         cpu: 100m
