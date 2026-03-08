@@ -25,7 +25,11 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
-      tolerations: []
+      tolerations:
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
+          effect: NoSchedule
       dataStorage:
         enabled: true
         size: 10Gi
