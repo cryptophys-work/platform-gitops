@@ -72,6 +72,7 @@ spec:
         rollingUpdate:
           maxSurge: 0
           maxUnavailable: 1
+      affinity: {}
       resources:
         requests:
           cpu: 50m
@@ -82,11 +83,13 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
+      tolerations: []
       service:
         type: LoadBalancer
     admissionWebhooks:
-        enabled: false
+      enabled: false
       patch:
         nodeSelector:
           kubernetes.io/os: linux
           workload.cryptophys.work/apps-core: "true"
+        tolerations: []
