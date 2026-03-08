@@ -16,7 +16,7 @@ spec:
   values:
     controller:
       kind: Deployment
-      replicaCount: 5
+      replicaCount: 3
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       extraArgs:
@@ -44,8 +44,24 @@ spec:
         limits:
           cpu: 500m
           memory: 512Mi
-      nodeSelector: {}
-      affinity: {}
+      nodeSelector:
+        workload.cryptophys.work/apps-core: "true"
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values:
+                        - controller
+                    - key: app.kubernetes.io/instance
+                      operator: In
+                      values:
+                        - ingress-gateway
+                topologyKey: kubernetes.io/hostname
       tolerations:
         - effect: NoSchedule
           key: node-role.kubernetes.io/control-plane
