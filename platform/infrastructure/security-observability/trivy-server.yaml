@@ -18,8 +18,10 @@ metadata:
     cryptophys.io/contract: contract.platform.security.v1
 spec:
   strategy:
-    type: Recreate
-    rollingUpdate: null
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
   replicas: 1
   selector:
     matchLabels:
