@@ -27,6 +27,9 @@ spec:
       tlsDisable: true
     server:
       replicas: 3
+      nodeSelector:
+        kubernetes.io/os: linux
+        workload.cryptophys.work/apps-core: "true"
       resources:
         requests:
           cpu: 100m
@@ -34,11 +37,6 @@ spec:
         limits:
           cpu: 250m
           memory: 256Mi
-      # HA Architecture: Platform workloads on control plane
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
       dataStorage:
         enabled: true
         size: 10Gi
@@ -62,6 +60,9 @@ spec:
     injector:
       enabled: true
       replicas: 2
+      nodeSelector:
+        kubernetes.io/os: linux
+        workload.cryptophys.work/apps-core: "true"
       resources:
         requests:
           cpu: 100m
@@ -69,7 +70,6 @@ spec:
         limits:
           cpu: 250m
           memory: 128Mi
-        workload.cryptophys.work/apps-core: "true"
       # cert-manager manages TLS cert — persistent, auto-renewing, institutional grade
       certs:
         secretName: vault-injector-certs

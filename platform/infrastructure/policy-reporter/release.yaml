@@ -31,10 +31,9 @@ spec:
       enabled: true
       mode: detailed
     worker: 10
-    tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
+    nodeSelector:
+      kubernetes.io/os: linux
+      workload.cryptophys.work/apps-core: "true"
     resources:
       requests:
         cpu: 50m
@@ -47,15 +46,14 @@ spec:
       replicaCount: 1
       displayMode: dark
       banner: "Cryptophys Policy Control Center"
+      nodeSelector:
+        kubernetes.io/os: linux
+        workload.cryptophys.work/apps-core: "true"
       logging:
         api: true
         server: true
         encoding: json
         logLevel: 1
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
       resources:
         requests:
           cpu: 50m
@@ -105,15 +103,14 @@ spec:
     kyvernoPlugin:
       enabled: true
       replicaCount: 1
+      nodeSelector:
+        kubernetes.io/os: linux
+        workload.cryptophys.work/apps-core: "true"
       logging:
         api: true
         server: true
         encoding: json
         logLevel: 1
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
       resources:
         requests:
           cpu: 50m
@@ -131,15 +128,14 @@ spec:
     gatekeeperPlugin:
       enabled: true
       replicaCount: 1
+      nodeSelector:
+        kubernetes.io/os: linux
+        workload.cryptophys.work/apps-core: "true"
       logging:
         api: true
         server: true
         encoding: json
         logLevel: 1
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
       resources:
         requests:
           cpu: 50m

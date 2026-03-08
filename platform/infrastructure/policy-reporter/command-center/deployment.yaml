@@ -15,10 +15,9 @@ spec:
       labels:
         app.kubernetes.io/name: kyverno-command-center
     spec:
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
+      nodeSelector:
+        kubernetes.io/os: linux
+        workload.cryptophys.work/apps-core: "true"
       containers:
         - name: nginx
           image: nginxinc/nginx-unprivileged:stable-alpine
