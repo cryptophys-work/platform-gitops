@@ -15,7 +15,7 @@ spec:
                 name: ingress-gateway-ingress-nginx-controller
                 namespace: ingress-system
               spec:
-                replicas: 2
+                replicas: 1
                 strategy:
                   type: RollingUpdate
                   rollingUpdate:
@@ -35,7 +35,6 @@ spec:
                                 - key: kubernetes.io/hostname
                                   operator: In
                                   values:
-                                    - cortex-178-18-250-39
                                     - corpus-207-180-206-69
                     tolerations:
                       - key: node-role.kubernetes.io/control-plane
@@ -69,7 +68,7 @@ spec:
   values:
     controller:
       kind: Deployment
-      replicaCount: 2
+      replicaCount: 1
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       extraArgs:
@@ -109,7 +108,6 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - cortex-178-18-250-39
                       - corpus-207-180-206-69
       tolerations:
         - key: node-role.kubernetes.io/control-plane
