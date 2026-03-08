@@ -15,7 +15,7 @@ spec:
                 name: ingress-gateway-ingress-nginx-controller
                 namespace: ingress-system
               spec:
-                replicas: 2
+                replicas: 3
                 strategy:
                   type: RollingUpdate
                   rollingUpdate:
@@ -24,9 +24,13 @@ spec:
                 template:
                   spec:
                     nodeSelector:
+                      cryptophys.io/tier: platform
                       kubernetes.io/os: linux
-                      workload.cryptophys.work/apps-core: "true"
-                    tolerations: []
+                      node-role.kubernetes.io/control-plane: ""
+                    tolerations:
+                      - key: node-role.kubernetes.io/control-plane
+                        operator: Exists
+                        effect: NoSchedule
                     containers:
                       - name: controller
                         resources:
@@ -52,7 +56,7 @@ spec:
   values:
     controller:
       kind: Deployment
-      replicaCount: 2
+      replicaCount: 3
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       extraArgs:
@@ -81,14 +85,22 @@ spec:
           cpu: 250m
           memory: 192Mi
       nodeSelector:
+        cryptophys.io/tier: platform
         kubernetes.io/os: linux
-        workload.cryptophys.work/apps-core: "true"
-      tolerations: []
+        node-role.kubernetes.io/control-plane: ""
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
       service:
         type: LoadBalancer
     admissionWebhooks:
       patch:
         nodeSelector:
+          cryptophys.io/tier: platform
           kubernetes.io/os: linux
-          workload.cryptophys.work/apps-core: "true"
-        tolerations: []
+          node-role.kubernetes.io/control-plane: ""
+        tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
