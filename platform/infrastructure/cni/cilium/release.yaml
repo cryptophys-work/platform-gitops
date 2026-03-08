@@ -64,9 +64,11 @@ spec:
       enabled: true
       relay:
         enabled: true
+        nodeSelector:
           workload.cryptophys.work/apps-core: "true"
       ui:
         enabled: true
+        nodeSelector:
           workload.cryptophys.work/apps-core: "true"
     ipam:
       mode: kubernetes
