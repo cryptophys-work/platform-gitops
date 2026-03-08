@@ -15,11 +15,27 @@ spec:
                 name: ingress-gateway-ingress-nginx-controller
                 namespace: ingress-system
               spec:
+                replicas: 2
                 strategy:
                   type: RollingUpdate
                   rollingUpdate:
                     maxSurge: 0
                     maxUnavailable: 1
+                template:
+                  spec:
+                    nodeSelector:
+                      kubernetes.io/os: linux
+                      workload.cryptophys.work/apps-core: "true"
+                    tolerations: []
+                    containers:
+                      - name: controller
+                        resources:
+                          requests:
+                            cpu: 50m
+                            memory: 64Mi
+                          limits:
+                            cpu: 250m
+                            memory: 192Mi
             target:
               group: apps
               version: v1
