@@ -19,7 +19,10 @@ spec:
     initdb:
       database: trustedledger
       owner: trustedledger
-  # HA Architecture: Platform workloads on control plane
+  # HA architecture: allow storage-worker fallback during worker saturation.
   affinity:
-    tolerations: []
+    tolerations:
+      - key: cryptophys.io/storage-only
+        operator: Exists
+        effect: NoSchedule
     podAntiAffinityType: required
