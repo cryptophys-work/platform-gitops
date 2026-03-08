@@ -87,7 +87,7 @@ spec:
       service:
         type: LoadBalancer
     admissionWebhooks:
-      enabled: false
+      enabled: true
       patch:
         nodeSelector:
           kubernetes.io/os: linux
