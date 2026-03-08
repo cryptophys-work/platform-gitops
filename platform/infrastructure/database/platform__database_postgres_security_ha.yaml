@@ -23,5 +23,8 @@ spec:
         name: spire-postgres-secret
   # HA Architecture: Security databases on application workers
   affinity:
-    tolerations: []
+    tolerations:
+      - key: cryptophys.io/storage-only
+        operator: Exists
+        effect: NoSchedule
     podAntiAffinityType: required

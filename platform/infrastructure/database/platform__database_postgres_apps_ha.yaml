@@ -21,5 +21,8 @@ spec:
       owner: app
   # HA Architecture: App databases on application workers
   affinity:
-    tolerations: []
+    tolerations:
+      - key: cryptophys.io/storage-only
+        operator: Exists
+        effect: NoSchedule
     podAntiAffinityType: required
