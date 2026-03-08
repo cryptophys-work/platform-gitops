@@ -10,7 +10,7 @@ patches:
       metadata:
         name: all
       spec:
-        replicas: 2
+        replicas: 1
         template:
           spec:
             nodeSelector:
