@@ -7,7 +7,6 @@ resources:
   - cert-manager.yaml
   - external-secrets.yaml
   - ingress-nginx.yaml
-  - ingress-emergency-proxy.yaml
   - ingress-nginx-network-policy.yaml
   - metrics-server.yaml
   - pdbs.yaml
