@@ -147,13 +147,22 @@ spec:
           value: "true"
           effect: NoSchedule
     registry:
-      resources:
-        limits:
-          cpu: 500m
-          memory: 1Gi
-        requests:
-          cpu: 100m
-          memory: 256Mi
+      registry:
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+      controller:
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Equal
