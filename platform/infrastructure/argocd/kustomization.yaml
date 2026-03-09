@@ -2,6 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: apps-system
 resources:
+  - apps-bootstrap.yaml
+  - argocd-repo-mtls-secret.yaml
   - redis-ha/
   - spiffe-helper-config.yaml
   - release.yaml
