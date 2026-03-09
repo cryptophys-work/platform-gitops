@@ -19,9 +19,18 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       serviceAccountName: spire-agent
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/role
+          operator: Exists
+          effect: NoSchedule
       nodeSelector:
         kubernetes.io/os: linux
-        workload.cryptophys.work/apps-core: "true"
       containers:
         - name: spire-agent
           image: ghcr.io/spiffe/spire-agent:1.8.0

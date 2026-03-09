@@ -54,9 +54,18 @@ spec:
       serviceAccountName: spiffe-csi-driver
       hostNetwork: true
       hostPID: true
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/role
+          operator: Exists
+          effect: NoSchedule
       nodeSelector:
         kubernetes.io/os: linux
-        workload.cryptophys.work/apps-core: "true"
       containers:
         - name: spiffe-csi-driver
           image: ghcr.io/spiffe/spiffe-csi-driver:0.2.6
