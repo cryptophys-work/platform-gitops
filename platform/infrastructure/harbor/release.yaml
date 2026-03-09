@@ -50,7 +50,7 @@ spec:
       persistentVolumeClaim:
         registry:
           storageClass: longhorn
-          size: 5Gi
+          size: 50Gi
         jobservice:
           jobLog:
             storageClass: longhorn
@@ -67,6 +67,13 @@ spec:
     database:
       type: internal
       internal:
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
         tolerations:
           - key: cryptophys.io/storage-only
             operator: Equal
@@ -74,6 +81,13 @@ spec:
             effect: NoSchedule
     redis:
       internal:
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
         tolerations:
           - key: cryptophys.io/storage-only
             operator: Equal
@@ -81,36 +95,78 @@ spec:
             effect: NoSchedule
     trivy:
       enabled: true
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 256Mi
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Equal
           value: "true"
           effect: NoSchedule
     portal:
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 10m
+          memory: 32Mi
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Equal
           value: "true"
           effect: NoSchedule
     core:
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 256Mi
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Equal
           value: "true"
           effect: NoSchedule
     jobservice:
+      resources:
+        limits:
+          cpu: 200m
+          memory: 512Mi
+        requests:
+          cpu: 50m
+          memory: 128Mi
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Equal
           value: "true"
           effect: NoSchedule
     registry:
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 256Mi
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Equal
           value: "true"
           effect: NoSchedule
     exporter:
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 10m
+          memory: 32Mi
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Equal
