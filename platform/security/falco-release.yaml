@@ -26,7 +26,6 @@ spec:
       limits:
         cpu: 500m
         memory: 512Mi
-      workload.cryptophys.work/apps-core: "true"
     tolerations:
       - key: node-role.kubernetes.io/control-plane
         operator: Exists
