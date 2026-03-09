@@ -17,5 +17,4 @@ spec:
     kind: GitRepository
     name: platform-repo
   dependsOn:
-    - name: 31-secrets
     - name: 12-storage
