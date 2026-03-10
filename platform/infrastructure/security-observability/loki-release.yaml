@@ -29,6 +29,7 @@ spec:
         enabled: false
       image:
         repository: docker.io/grafana/loki
+      nodeSelector: {}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
