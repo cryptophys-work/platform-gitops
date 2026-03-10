@@ -12484,6 +12484,7 @@ webhooks:
       values:
       - kube-system
       - kueue-system
+      - apps-user
   rules:
   - apiGroups:
     - ""
