@@ -17,10 +17,10 @@ metadata:
   namespace: apps-system
 spec:
   hard:
-    requests.cpu: "3000m"
-    requests.memory: "4Gi"
-    limits.cpu: "6000m"
-    limits.memory: "8Gi"
+    requests.cpu: "5000m"
+    requests.memory: "8Gi"
+    limits.cpu: "12000m"
+    limits.memory: "16Gi"
 ---
 apiVersion: v1
 kind: ResourceQuota
