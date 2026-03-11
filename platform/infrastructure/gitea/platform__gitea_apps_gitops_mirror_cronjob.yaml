@@ -73,29 +73,34 @@ spec:
                   set -eu
                   src_url="https://github.com/cryptophys-work/apps-gitops.git"
                   auth_header="$(printf '%s:%s' "${GITHUB_USERNAME}" "${GITHUB_PASSWORD}" | base64 | tr -d '\n')"
-                  repo_dir="/data/git/gitea-repositories/cryptophys-work/apps-gitops.git"
+                  served_repo_dir="/data/gitea/repositories/cryptophys-work/apps-gitops.git"
+                  legacy_repo_dir="/data/git/gitea-repositories/cryptophys-work/apps-gitops.git"
                   clone_url="http://gitops-gitea-http.gitops-system.svc.cluster.local:3000/cryptophys-work/apps-gitops.git"
                   webhook_url="http://webhook-receiver.tekton-system.svc.cluster.local/hook"
                   old_rev=""
-                  mkdir -p /tmp/home /data/git/gitea-repositories/cryptophys-work
-                  if [ -d "$repo_dir" ] && git --git-dir="$repo_dir" rev-parse --is-bare-repository >/dev/null 2>&1; then
-                    old_rev="$(git --git-dir="$repo_dir" rev-parse refs/heads/main 2>/dev/null || true)"
-                    git --git-dir="$repo_dir" remote set-url origin "$src_url" || true
+                  mkdir -p /tmp/home \
+                    /data/gitea/repositories/cryptophys-work \
+                    /data/git/gitea-repositories/cryptophys-work
+                  if [ -d "$served_repo_dir" ] && git --git-dir="$served_repo_dir" rev-parse --is-bare-repository >/dev/null 2>&1; then
+                    old_rev="$(git --git-dir="$served_repo_dir" rev-parse refs/heads/main 2>/dev/null || true)"
+                    git --git-dir="$served_repo_dir" remote set-url origin "$src_url" || true
                     git -c http.extraheader="AUTHORIZATION: Basic ${auth_header}" \
-                      --git-dir="$repo_dir" fetch --prune origin "+refs/*:refs/*"
+                      --git-dir="$served_repo_dir" fetch --prune origin "+refs/*:refs/*"
                   else
                     tmp_repo="$(mktemp -d /tmp/apps-gitops.XXXXXX.git)"
                     rmdir "$tmp_repo"
                     git -c http.extraheader="AUTHORIZATION: Basic ${auth_header}" \
                       clone --mirror "$src_url" "$tmp_repo"
-                    rm -rf "$repo_dir"
-                    mv "$tmp_repo" "$repo_dir"
+                    rm -rf "$served_repo_dir"
+                    mv "$tmp_repo" "$served_repo_dir"
                   fi
-                  git --git-dir="$repo_dir" symbolic-ref HEAD refs/heads/main || true
-                  new_rev="$(git --git-dir="$repo_dir" rev-parse refs/heads/main)"
+                  git --git-dir="$served_repo_dir" symbolic-ref HEAD refs/heads/main || true
+                  new_rev="$(git --git-dir="$served_repo_dir" rev-parse refs/heads/main)"
+                  rm -rf "$legacy_repo_dir"
+                  git clone --mirror "$served_repo_dir" "$legacy_repo_dir"
                   if [ -n "$old_rev" ] && [ "$old_rev" != "$new_rev" ]; then
                     modified_json="$(
-                      git --git-dir="$repo_dir" diff --name-only "$old_rev" "$new_rev" \
+                      git --git-dir="$served_repo_dir" diff --name-only "$old_rev" "$new_rev" \
                         | sed 's/\\/\\\\/g; s/"/\\"/g; s/^/"/; s/$/"/' \
                         | paste -sd, -
                     )"
