@@ -83,7 +83,11 @@ spec:
                     /data/git/gitea-repositories/cryptophys-work
                   if [ -d "$served_repo_dir" ] && git --git-dir="$served_repo_dir" rev-parse --is-bare-repository >/dev/null 2>&1; then
                     old_rev="$(git --git-dir="$served_repo_dir" rev-parse refs/heads/main 2>/dev/null || true)"
-                    git --git-dir="$served_repo_dir" remote set-url origin "$src_url" || true
+                    if git --git-dir="$served_repo_dir" remote get-url origin >/dev/null 2>&1; then
+                      git --git-dir="$served_repo_dir" remote set-url origin "$src_url"
+                    else
+                      git --git-dir="$served_repo_dir" remote add origin "$src_url"
+                    fi
                     git -c http.extraheader="AUTHORIZATION: Basic ${auth_header}" \
                       --git-dir="$served_repo_dir" fetch --prune origin "+refs/*:refs/*"
                   else
