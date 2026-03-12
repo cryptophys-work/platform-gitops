@@ -56,13 +56,13 @@ spec:
             storageClass: longhorn
             size: 5Gi
         database:
-          storageClass: longhorn-single
+          storageClass: longhorn
           size: 20Gi
         redis:
-          storageClass: longhorn-single
+          storageClass: longhorn
           size: 5Gi
         trivy:
-          storageClass: longhorn-single
+          storageClass: longhorn
           size: 20Gi
     database:
       type: internal
