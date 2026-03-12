@@ -37,4 +37,11 @@ data:
           keys_path = "/run/spire/data/keys.json"
         }
       }
+      Notifier "k8sbundle" {
+        plugin_data {
+          namespace = "spire-system"
+          config_map = "spire-bundle"
+          config_map_key = "bundle.crt"
+        }
+      }
     }
