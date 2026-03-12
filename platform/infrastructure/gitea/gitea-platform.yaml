@@ -58,6 +58,12 @@ spec:
           GIT_EXECUTABLE_PATH: /usr/bin/git
         webhook:
           ALLOWED_HOST_LIST: webhook.cryptophys.work,webhook-receiver.tekton-system.svc.cluster.local,webhook-receiver.tekton-system.svc,localhost,127.0.0.1
+        repository:
+          MIN_MIRROR_SYNC_INTERVAL: 3m
+          DEFAULT_MIRROR_SYNC_INTERVAL: 3m
+        mirror:
+          MIN_INTERVAL: 3m
+          DEFAULT_INTERVAL: 3m
     extraEnv:
       - name: GITEA__WEBHOOK__ALLOWED_HOST_LIST
         value: webhook.cryptophys.work,webhook-receiver.tekton-system.svc.cluster.local,webhook-receiver.tekton-system.svc,localhost,127.0.0.1
@@ -73,6 +79,38 @@ spec:
         value: redis
       - name: GITEA__QUEUE__CONN_STR
         value: redis://gitea-redis.gitops-system.svc.cluster.local:6379/1
+      - name: GITEA__REPOSITORY__MIN_MIRROR_SYNC_INTERVAL
+        value: "3m"
+      - name: GITEA__REPOSITORY__DEFAULT_MIRROR_SYNC_INTERVAL
+        value: "3m"
+      - name: GITEA__MIRROR__MIN_INTERVAL
+        value: "3m"
+      - name: GITEA__MIRROR__DEFAULT_INTERVAL
+        value: "3m"
+      - name: GITHUB_MIRROR_USER
+        valueFrom:
+          secretKeyRef:
+            name: gitea-mirror-token
+            key: user
+      - name: GITHUB_MIRROR_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: gitea-mirror-token
+            key: token
+    deployment:
+      lifecycle:
+        postStart:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - |
+                REPO=/data/git/gitea-repositories/cryptophys-work/apps-gitops.git
+                if [ -d "$REPO" ]; then
+                  git -C "$REPO" remote set-url origin \
+                    "https://${GITHUB_MIRROR_USER}:${GITHUB_MIRROR_TOKEN}@github.com/cryptophys-work/apps-gitops.git"
+                  echo "[mirror-init] remote URL set for apps-gitops" >> /tmp/mirror-init.log
+                fi
     ingress:
       enabled: true
       className: nginx
