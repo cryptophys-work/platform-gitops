@@ -12721,6 +12721,14 @@ webhooks:
       path: /mutate-apps-v1-statefulset
   failurePolicy: Fail
   name: mstatefulset.kb.io
+  namespaceSelector:
+    matchExpressions:
+    - key: kubernetes.io/metadata.name
+      operator: NotIn
+      values:
+      - apps-system
+      - flux-system
+      - kube-system
   rules:
   - apiGroups:
     - apps
