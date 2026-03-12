@@ -5,3 +5,4 @@ resources:
   - namespace.yaml
   - vault.yaml
   - vault-injector-cert.yaml
+  - vault-auto-unseal-cronjob.yaml
