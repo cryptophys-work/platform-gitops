@@ -170,6 +170,8 @@ spec:
           operator: Equal
           value: "true"
           effect: NoSchedule
+      nodeSelector:
+        kubernetes.io/hostname: campus-212-47-66-101
     exporter:
       resources:
         limits:
