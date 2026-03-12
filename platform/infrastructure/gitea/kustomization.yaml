@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   - platform__gitea_shared_storage_v2_pvc.yaml
-  - platform__gitea_apps_gitops_mirror_cronjob.yaml
   - gitea-redis.yaml
   - gitea-platform.yaml
   - gitea-internal-mtls.yaml
