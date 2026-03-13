@@ -37,6 +37,16 @@ spec:
       runAsRoot: true
       iptablesMode: nft
       ignoreOutboundPorts: "4567,4568"
+
+    # Proxy sidecar resource limits — increase to prevent OOMKill on busy components
+    proxy:
+      resources:
+        cpu:
+          limit: "1"
+          request: 100m
+        memory:
+          limit: 256Mi
+          request: 64Mi
     
     # Identity: self-managed CA (linkerd-identity-issuer Secret + trust-roots ConfigMap)
     # linkerd-identity-issuer Secret created manually with issuer CA cert/key
