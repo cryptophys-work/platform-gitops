@@ -43,4 +43,17 @@ spec:
         cpu: 2000m
         memory: 4Gi
     
-    # Schedule on compute worker nodes (quanta/synapse/thalamus)
+    # Schedule on compute worker nodes — exclude thalamus (stale iSCSI sessions from quanta outage)
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: cryptophys.io/tier
+              operator: In
+              values:
+              - compute
+            - key: kubernetes.io/hostname
+              operator: NotIn
+              values:
+              - thalamus-217-76-59-241
