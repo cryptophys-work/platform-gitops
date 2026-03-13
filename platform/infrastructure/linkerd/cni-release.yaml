@@ -18,6 +18,9 @@ spec:
     # Talos Linux: use CNI plugin instead of init container (no iptables)
     destCNINetDir: /etc/cni/net.d
     destCNIBinDir: /opt/cni/bin
+    # hostNetwork=true breaks the bootstrap deadlock:
+    # without it, the CNI DaemonSet pod needs CNI to create its own network → Unauthorized loop
+    useHostNetwork: true
     # Run on all nodes
     tolerations:
       - operator: Exists
