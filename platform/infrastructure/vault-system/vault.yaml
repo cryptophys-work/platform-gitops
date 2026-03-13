@@ -71,6 +71,12 @@ spec:
       startupProbe:
         failureThreshold: 20
         periodSeconds: 5
+      # Rolling update in-place to avoid needing extra scheduling capacity
+      strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxSurge: 0
+          maxUnavailable: 1
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
