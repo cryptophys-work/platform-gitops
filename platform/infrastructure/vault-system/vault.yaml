@@ -58,6 +58,19 @@ spec:
       resources:
         requests: { cpu: 100m, memory: 64Mi }
         limits: { cpu: 250m, memory: 128Mi }
+      # Increase liveness failureThreshold: cert-manager takes a few seconds to
+      # populate vault-injector-certs at pod start → default threshold=2 kills pod too early
+      livenessProbe:
+        failureThreshold: 10
+        initialDelaySeconds: 10
+        periodSeconds: 5
+      readinessProbe:
+        failureThreshold: 5
+        initialDelaySeconds: 5
+        periodSeconds: 5
+      startupProbe:
+        failureThreshold: 20
+        periodSeconds: 5
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"

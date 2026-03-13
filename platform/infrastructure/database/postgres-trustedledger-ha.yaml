@@ -19,6 +19,21 @@ spec:
     initdb:
       database: trustedledger
       owner: trustedledger
+  # WAL archiving: prevents pg_rewind loop on replica restart
+  backup:
+    barmanObjectStore:
+      endpointURL: http://platform-backup-minio.minio-system.svc.cluster.local:9000
+      destinationPath: s3://cnpg-wal/postgres-trustedledger-ha/
+      s3Credentials:
+        accessKeyId:
+          name: cnpg-minio-s3-credentials
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: cnpg-minio-s3-credentials
+          key: ACCESS_SECRET_KEY
+    wal:
+      compression: gzip
+    retentionPolicy: 7d
   # HA architecture: allow storage-worker fallback during worker saturation.
   affinity:
     tolerations:

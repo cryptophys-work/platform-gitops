@@ -21,6 +21,21 @@ spec:
       owner: spire
       secret:
         name: spire-postgres-secret
+  # WAL archiving: prevents pg_rewind loop on replica restart
+  backup:
+    barmanObjectStore:
+      endpointURL: http://platform-backup-minio.minio-system.svc.cluster.local:9000
+      destinationPath: s3://cnpg-wal/postgres-security-ha/
+      s3Credentials:
+        accessKeyId:
+          name: cnpg-minio-s3-credentials
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: cnpg-minio-s3-credentials
+          key: ACCESS_SECRET_KEY
+    wal:
+      compression: gzip
+    retentionPolicy: 7d
   # HA Architecture: Security databases on application workers
   affinity:
     tolerations:
