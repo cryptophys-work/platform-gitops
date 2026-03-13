@@ -31,8 +31,8 @@ spec:
         secretAccessKey:
           name: cnpg-minio-s3-credentials
           key: ACCESS_SECRET_KEY
-    wal:
-      compression: gzip
+      wal:
+        compression: gzip
     retentionPolicy: 7d
   # HA architecture: allow storage-worker fallback during worker saturation.
   affinity:
