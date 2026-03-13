@@ -76,6 +76,8 @@ spec:
           requests:
             cpu: 100m
             memory: 256Mi
+        nodeSelector:
+          kubernetes.io/hostname: campus-212-47-66-101
         tolerations:
           - key: cryptophys.io/storage-only
             operator: Equal
@@ -90,6 +92,8 @@ spec:
           requests:
             cpu: 50m
             memory: 64Mi
+        nodeSelector:
+          kubernetes.io/hostname: campus-212-47-66-101
         tolerations:
           - key: cryptophys.io/storage-only
             operator: Equal
@@ -104,6 +108,8 @@ spec:
         requests:
           cpu: 100m
           memory: 256Mi
+      nodeSelector:
+        kubernetes.io/hostname: campus-212-47-66-101
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Equal
@@ -143,6 +149,8 @@ spec:
         requests:
           cpu: 50m
           memory: 128Mi
+      nodeSelector:
+        kubernetes.io/hostname: campus-212-47-66-101
       tolerations:
         - key: cryptophys.io/storage-only
           operator: Equal
