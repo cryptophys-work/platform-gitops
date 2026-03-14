@@ -6,6 +6,7 @@ metadata:
 spec:
   instances: 2
   imageName: ghcr.io/cloudnative-pg/postgresql:16.2
+  logLevel: info
   # Disable ALL monitoring: monitoring.coreos.com/v1 API times out during reconcile
   # blocking cluster object creation (primary pod never recreated).
   # disableDefaultQueries skips the API group discovery call entirely.
