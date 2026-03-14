@@ -6,6 +6,9 @@ metadata:
 spec:
   instances: 2
   imageName: ghcr.io/cloudnative-pg/postgresql:16.2
+  # Disable PodMonitor: monitoring.coreos.com/v1 API times out during reconcile
+  monitoring:
+    enablePodMonitor: false
   enableSuperuserAccess: true
   superuserSecret:
     name: postgres-superuser-secret
