@@ -36,6 +36,8 @@ spec:
       admin:
         username: gitea-admin
         email: gitea-admin@cryptophys.work
+        existingSecret: gitea-admin-secret
+        passwordMode: keepUpdated
       config:
         database:
           DB_TYPE: postgres
