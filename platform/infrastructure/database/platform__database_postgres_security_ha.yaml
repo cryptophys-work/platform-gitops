@@ -8,6 +8,7 @@ spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:16.2
   monitoring:
     enablePodMonitor: false
+    disableDefaultQueries: true
   enableSuperuserAccess: true
   superuserSecret:
     name: postgres-superuser-secret
