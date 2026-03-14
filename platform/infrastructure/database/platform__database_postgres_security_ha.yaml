@@ -3,6 +3,8 @@ kind: Cluster
 metadata:
   name: postgres-security-ha
   namespace: postgresql-system
+  annotations:
+    cnpg.io/clusterRestart: "true"
 spec:
   instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:16.2
