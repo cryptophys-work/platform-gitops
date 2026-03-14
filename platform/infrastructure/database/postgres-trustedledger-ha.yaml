@@ -41,6 +41,22 @@ spec:
       wal:
         compression: gzip
     retentionPolicy: 7d
+  # externalClusters: enables restore_command on replicas so pg_rewind can fetch WAL from MinIO
+  # without this, replicas fail pg_rewind with "restore_command is not set"
+  externalClusters:
+    - name: postgres-trustedledger-ha
+      barmanObjectStore:
+        endpointURL: http://platform-backup-minio.minio-system.svc.cluster.local:9000
+        destinationPath: s3://cnpg-wal/postgres-trustedledger-ha/
+        s3Credentials:
+          accessKeyId:
+            name: cnpg-minio-s3-credentials
+            key: ACCESS_KEY_ID
+          secretAccessKey:
+            name: cnpg-minio-s3-credentials
+            key: ACCESS_SECRET_KEY
+        wal:
+          compression: gzip
   # HA architecture: allow storage-worker fallback during worker saturation.
   affinity:
     tolerations:

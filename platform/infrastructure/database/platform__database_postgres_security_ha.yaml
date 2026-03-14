@@ -39,6 +39,21 @@ spec:
       wal:
         compression: gzip
     retentionPolicy: 7d
+  # externalClusters: enables restore_command on replicas so pg_rewind can fetch WAL from MinIO
+  externalClusters:
+    - name: postgres-security-ha
+      barmanObjectStore:
+        endpointURL: http://platform-backup-minio.minio-system.svc.cluster.local:9000
+        destinationPath: s3://cnpg-wal/postgres-security-ha/
+        s3Credentials:
+          accessKeyId:
+            name: cnpg-minio-s3-credentials
+            key: ACCESS_KEY_ID
+          secretAccessKey:
+            name: cnpg-minio-s3-credentials
+            key: ACCESS_SECRET_KEY
+        wal:
+          compression: gzip
   # HA Architecture: Security databases on application workers
   affinity:
     tolerations:
