@@ -33,6 +33,8 @@ spec:
       params:
         server.insecure: "true"
       cm:
+        # Enable non-expiring API token for drift-sentinel + automation tooling
+        accounts.admin: "apiKey, login"
         resource.customizations.ignoreDifferences.all: |
           jsonPointers:
             - /metadata/annotations/argocd.argoproj.io~1tracking-id
