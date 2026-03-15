@@ -165,6 +165,12 @@ spec:
           requests:
             cpu: 100m
             memory: 256Mi
+        middleware:
+          storage:
+            - name: redirect
+              options:
+                baseurl: ""
+                disable: true
       controller:
         resources:
           limits:
