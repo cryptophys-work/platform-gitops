@@ -42,6 +42,8 @@ spec:
           nginx.ingress.kubernetes.io/ssl-redirect: "true"
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
     externalURL: https://registry.cryptophys.work
+    storage:
+      disableredirect: true
     existingSecretAdminPassword: harbor-admin-credentials
     existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
     internalTLS:
@@ -165,12 +167,7 @@ spec:
           requests:
             cpu: 100m
             memory: 256Mi
-        middleware:
-          storage:
-            - name: redirect
-              options:
-                baseurl: ""
-                disable: true
+
       controller:
         resources:
           limits:
