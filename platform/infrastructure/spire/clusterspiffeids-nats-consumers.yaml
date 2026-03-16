@@ -336,28 +336,7 @@ spec:
       app: trustedledger-api
   autoPopulateDNSNames: true
   ttl: "1h"
----
-# contract-synthesizer (cerebrum namespace, app=contract-synthesizer label)
-apiVersion: spire.spiffe.io/v1alpha1
-kind: ClusterSPIFFEID
-metadata:
-  name: contract-synthesizer
-  labels:
-    app.kubernetes.io/name: spire
-    cryptophys.work/domain: cerebrum
-  annotations:
-    cryptophys.io/contract: contract.platform.spire.v1
-    cryptophys.io/anti-regression: "true"
-spec:
-  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
-  namespaceSelector:
-    matchLabels:
-      kubernetes.io/metadata.name: cerebrum
-  podSelector:
-    matchLabels:
-      app: contract-synthesizer
-  autoPopulateDNSNames: true
-  ttl: "1h"
+
 ---
 # openclaw-agent (openclaw namespace, app.kubernetes.io/name=openclaw label)
 apiVersion: spire.spiffe.io/v1alpha1
@@ -378,5 +357,27 @@ spec:
   podSelector:
     matchLabels:
       app.kubernetes.io/name: openclaw
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# cerebrum-audit-compiler (cerebrum namespace, app=cerebrum-audit-compiler label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: cerebrum-audit-compiler
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: cerebrum
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: cerebrum
+  podSelector:
+    matchLabels:
+      app: cerebrum-audit-compiler
   autoPopulateDNSNames: true
   ttl: "1h"
