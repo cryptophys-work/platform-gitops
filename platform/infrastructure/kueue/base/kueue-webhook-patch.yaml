@@ -8,28 +8,36 @@ metadata:
     cryptophys.io/managed-by: flux
 webhooks:
   - name: vjob.kb.io
-    # Change to Ignore so Kueue restarts don't block Job dry-runs cluster-wide
     failurePolicy: Ignore
-    namespaceSelector:
-      matchExpressions:
-        - key: kubernetes.io/metadata.name
-          operator: NotIn
-          values:
-            - kube-system
-            - kube-public
-            - kube-node-lease
-            - kueue-system
   - name: vjobset.kb.io
     failurePolicy: Ignore
-    namespaceSelector:
-      matchExpressions:
-        - key: kubernetes.io/metadata.name
-          operator: NotIn
-          values:
-            - kube-system
-            - kube-public
-            - kube-node-lease
-            - kueue-system
   - name: vclusterqueue.kb.io
-    # Avoid Flux deadlock when Kueue webhook service is temporarily unreachable.
+    failurePolicy: Ignore
+  - name: vpod.kb.io
+    failurePolicy: Ignore
+  - name: vdeployment.kb.io
+    failurePolicy: Ignore
+  - name: vmxjob.kb.io
+    failurePolicy: Ignore
+  - name: vpaddlejob.kb.io
+    failurePolicy: Ignore
+  - name: vpytorchjob.kb.io
+    failurePolicy: Ignore
+  - name: vtfjob.kb.io
+    failurePolicy: Ignore
+  - name: vxgboostjob.kb.io
+    failurePolicy: Ignore
+  - name: vmpijob.kb.io
+    failurePolicy: Ignore
+  - name: vraycluster.kb.io
+    failurePolicy: Ignore
+  - name: vrayjob.kb.io
+    failurePolicy: Ignore
+  - name: vstatefulset.kb.io
+    failurePolicy: Ignore
+  - name: vcohort.kb.io
+    failurePolicy: Ignore
+  - name: vresourceflavor.kb.io
+    failurePolicy: Ignore
+  - name: vworkload.kb.io
     failurePolicy: Ignore
