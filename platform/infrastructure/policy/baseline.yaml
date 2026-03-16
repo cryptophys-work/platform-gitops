@@ -4,5 +4,5 @@ metadata:
   name: "default-deny-baseline"
 spec:
   endpointSelector: {}
-  ingress: [{fromEntities: [host, cluster]}]
+  ingress: [{fromEntities: [host, cluster, kube-apiserver]}]
   egress: [{toEntities: [host, cluster, kube-apiserver]}]
