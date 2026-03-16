@@ -4495,7 +4495,7 @@ spec:
             resourceFieldRef:
               containerName: manager
               resource: limits.memory
-        image: ghcr.io/fluxcd/source-controller:v1.7.4 # {"$imagepolicy": "flux-system/flux-source-controller"}
+        image: ghcr.io/fluxcd/source-controller:v1.7.4 # {"$imagepolicy": "flux-system:flux-source-controller"}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -5976,7 +5976,7 @@ spec:
             resourceFieldRef:
               containerName: manager
               resource: limits.memory
-        image: ghcr.io/fluxcd/kustomize-controller:v1.7.3 # {"$imagepolicy": "flux-system/flux-kustomize-controller"}
+        image: ghcr.io/fluxcd/kustomize-controller:v1.7.3 # {"$imagepolicy": "flux-system:flux-kustomize-controller"}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -8711,7 +8711,7 @@ spec:
             resourceFieldRef:
               containerName: manager
               resource: limits.memory
-        image: ghcr.io/fluxcd/helm-controller:v1.4.5 # {"$imagepolicy": "flux-system/flux-helm-controller"}
+        image: ghcr.io/fluxcd/helm-controller:v1.4.5 # {"$imagepolicy": "flux-system:flux-helm-controller"}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -10135,7 +10135,7 @@ spec:
             resourceFieldRef:
               containerName: manager
               resource: limits.memory
-        image: ghcr.io/fluxcd/notification-controller:v1.7.5 # {"$imagepolicy": "flux-system/flux-notification-controller"}
+        image: ghcr.io/fluxcd/notification-controller:v1.7.5 # {"$imagepolicy": "flux-system:flux-notification-controller"}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -11446,7 +11446,7 @@ spec:
             resourceFieldRef:
               containerName: manager
               resource: limits.memory
-        image: ghcr.io/fluxcd/image-reflector-controller:v1.0.4 # {"$imagepolicy": "flux-system/flux-image-reflector-controller"}
+        image: ghcr.io/fluxcd/image-reflector-controller:v1.0.4 # {"$imagepolicy": "flux-system:flux-image-reflector-controller"}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -12382,7 +12382,7 @@ spec:
             resourceFieldRef:
               containerName: manager
               resource: limits.memory
-        image: ghcr.io/fluxcd/image-automation-controller:v1.0.4 # {"$imagepolicy": "flux-system/flux-image-automation-controller"}
+        image: ghcr.io/fluxcd/image-automation-controller:v1.0.4 # {"$imagepolicy": "flux-system:flux-image-automation-controller"}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
