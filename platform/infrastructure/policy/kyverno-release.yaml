@@ -37,6 +37,7 @@ spec:
         - "[*/*,kueue-system,*]"
         - "[*/*,spire-system,*]"
         - "[*/*,apps-system,*]"
+        - "[*/*,observability-system,*]"
     admissionController:
       createSelfSignedCert: true
       replicas: 2
