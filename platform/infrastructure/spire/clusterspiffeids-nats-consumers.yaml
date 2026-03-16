@@ -381,3 +381,25 @@ spec:
       app: cerebrum-audit-compiler
   autoPopulateDNSNames: true
   ttl: "1h"
+---
+# execution-router (apps-user namespace, app=execution-router label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: execution-router
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: apps-user
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: apps-user
+  podSelector:
+    matchLabels:
+      app: execution-router
+  autoPopulateDNSNames: true
+  ttl: "1h"
