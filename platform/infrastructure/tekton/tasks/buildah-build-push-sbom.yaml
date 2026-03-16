@@ -48,7 +48,7 @@ spec:
       description: Full image reference with digest
   steps:
     - name: build-and-push
-      image: quay.io/buildah/stable:latest
+      image: quay.io/buildah/stable@sha256:4a43a3793a2e3e312eef564d54b2dc62b0c58371fda980d1fd8e038532c30559
       securityContext:
         privileged: true
       script: |
@@ -83,7 +83,7 @@ spec:
         echo -n "$IMAGE_URL@$DIGEST" > $(results.IMAGE_REF.path)
 
     - name: generate-sbom
-      image: aquasec/trivy:latest
+      image: aquasec/trivy:0.61.0
       script: |
         #!/bin/sh
         set -e
