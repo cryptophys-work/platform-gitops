@@ -82,7 +82,7 @@ spec:
           - name: source
         steps:
           - name: trivy-sbom
-            image: aquasec/trivy:latest
+            image: aquasec/trivy:0.61.0
             script: |
               #!/bin/sh
               set -e
