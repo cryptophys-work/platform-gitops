@@ -17,3 +17,4 @@ resources:
   - controller-manager.yaml
   - webhook.yaml
   - clusterspiffeid-argocd.yaml
+  - clusterspiffeids-nats-consumers.yaml
