@@ -91,7 +91,7 @@ spec:
       kubernetes.io/metadata.name: cerebrum
   podSelector:
     matchLabels:
-      app: cerebrum-drift-sentinel
+      app.kubernetes.io/component: drift-sentinel
   autoPopulateDNSNames: true
   ttl: "1h"
 ---
