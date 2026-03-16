@@ -29,3 +29,7 @@ webhooks:
             - kube-system
             - kube-public
             - kube-node-lease
+            - kueue-system
+  - name: vclusterqueue.kb.io
+    # Avoid Flux deadlock when Kueue webhook service is temporarily unreachable.
+    failurePolicy: Ignore

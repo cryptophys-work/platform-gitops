@@ -10,3 +10,7 @@ patches:
     target:
       kind: ValidatingWebhookConfiguration
       name: kueue-validating-webhook-configuration
+  - path: kueue-mutating-webhook-patch.yaml
+    target:
+      kind: MutatingWebhookConfiguration
+      name: kueue-mutating-webhook-configuration

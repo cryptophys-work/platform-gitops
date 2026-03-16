@@ -1,0 +1,22 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: kueue-mutating-webhook-configuration
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: kueue
+    cryptophys.io/managed-by: flux
+webhooks:
+  - name: mjob.kb.io
+    failurePolicy: Ignore
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: NotIn
+          values:
+            - kube-system
+            - kube-public
+            - kube-node-lease
+            - kueue-system
+  - name: mclusterqueue.kb.io
+    failurePolicy: Ignore
