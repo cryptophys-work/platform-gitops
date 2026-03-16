@@ -26,7 +26,6 @@ spec:
     spec:
       serviceAccountName: spire-server
       nodeSelector:
-        kubernetes.io/hostname: synapse-161-97-136-251
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
       affinity:
