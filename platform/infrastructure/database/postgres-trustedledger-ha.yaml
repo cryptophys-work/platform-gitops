@@ -57,6 +57,14 @@ spec:
             key: ACCESS_SECRET_KEY
         wal:
           compression: gzip
+  # Resource limits: explicit to prevent Kyverno mutation of running pod specs
+  resources:
+    requests:
+      cpu: 50m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
   # HA architecture: allow storage-worker fallback during worker saturation.
   affinity:
     tolerations:
