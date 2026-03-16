@@ -35,6 +35,8 @@ spec:
         - "[*/*,gitops-system,*]"
         - "[*/*,security-system,*]"
         - "[*/*,kueue-system,*]"
+        - "[*/*,spire-system,*]"
+        - "[*/*,apps-system,*]"
     admissionController:
       createSelfSignedCert: true
       replicas: 2
