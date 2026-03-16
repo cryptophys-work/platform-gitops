@@ -1,0 +1,156 @@
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: flux-source-controller
+  namespace: flux-system
+spec:
+  image: ghcr.io/fluxcd/source-controller
+  interval: 30m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: flux-source-controller
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: flux-source-controller
+  policy:
+    semver:
+      range: ">=1.7.0 <2.0.0"
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: flux-kustomize-controller
+  namespace: flux-system
+spec:
+  image: ghcr.io/fluxcd/kustomize-controller
+  interval: 30m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: flux-kustomize-controller
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: flux-kustomize-controller
+  policy:
+    semver:
+      range: ">=1.7.0 <2.0.0"
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: flux-helm-controller
+  namespace: flux-system
+spec:
+  image: ghcr.io/fluxcd/helm-controller
+  interval: 30m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: flux-helm-controller
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: flux-helm-controller
+  policy:
+    semver:
+      range: ">=1.4.0 <2.0.0"
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: flux-notification-controller
+  namespace: flux-system
+spec:
+  image: ghcr.io/fluxcd/notification-controller
+  interval: 30m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: flux-notification-controller
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: flux-notification-controller
+  policy:
+    semver:
+      range: ">=1.7.0 <2.0.0"
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: flux-image-reflector-controller
+  namespace: flux-system
+spec:
+  image: ghcr.io/fluxcd/image-reflector-controller
+  interval: 30m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: flux-image-reflector-controller
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: flux-image-reflector-controller
+  policy:
+    semver:
+      range: ">=1.0.0 <2.0.0"
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: flux-image-automation-controller
+  namespace: flux-system
+spec:
+  image: ghcr.io/fluxcd/image-automation-controller
+  interval: 30m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: flux-image-automation-controller
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: flux-image-automation-controller
+  policy:
+    semver:
+      range: ">=1.0.0 <2.0.0"
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageUpdateAutomation
+metadata:
+  name: flux-components-auto
+  namespace: flux-system
+spec:
+  interval: 10m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        name: flux-image-automation
+        email: flux-image-automation@cryptophys.work
+      messageTemplate: |
+        chore(flux): bump Flux controller images
+
+        Automated by Flux image-automation-controller.
+        {{- range .Updated.Images }}
+        - {{ . }}
+        {{- end }}
+    push:
+      branch: main
+  update:
+    path: ./clusters/cryptophys-genesis/flux-system
+    strategy: Setters
