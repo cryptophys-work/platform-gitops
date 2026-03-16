@@ -3,5 +3,4 @@ kind: Kustomization
 resources:
   - campus-storage-worker.yaml
   - priority-classes.yaml
-  - node-labeler-job.yaml
   - resource-quotas.yaml
