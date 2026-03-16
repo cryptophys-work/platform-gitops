@@ -4,3 +4,9 @@ kind: Kustomization
 resources:
   - kueue-install.yaml
   - kueue-config.yaml
+
+patches:
+  - path: kueue-webhook-patch.yaml
+    target:
+      kind: ValidatingWebhookConfiguration
+      name: kueue-validating-webhook-configuration
