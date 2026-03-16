@@ -29,6 +29,11 @@ spec:
         enabled: true
     config:
       exceptionNamespace: kyverno-system
+      resourceFilters:
+        # Exclude resources that generate null-kind dry-run requests (Kyverno 3.x webhook parse bug)
+        - "[CronJob,vault-system,vault-auto-unseal]"
+        - "[Deployment,gitops-system,gitea-redis]"
+        - "[Deployment,security-system,trivy-server]"
     admissionController:
       createSelfSignedCert: true
       replicas: 2
