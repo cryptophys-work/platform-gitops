@@ -6,3 +6,4 @@ resources:
   - kyverno-release.yaml
   # cp-restriction-policy.yaml moved to 15-policy-crs (Kyverno CRDs not ready at dry-run time)
   - kyverno-cleanup-rbac.yaml
+  - kyverno-background-rbac.yaml
