@@ -1,0 +1,39 @@
+# RBAC: Grant kyverno background-controller permission to generate Secrets
+# Required for ClusterPolicy/cp-generate-registry-pullsecret-v1 in ssot-core
+# Error: "system:serviceaccount:kyverno-system:kyverno-background-controller
+#   requires permissions get,create,update,delete for resource v1/Secret"
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kyverno:background-controller:secrets
+  labels:
+    app.kubernetes.io/component: background-controller
+    app.kubernetes.io/part-of: kyverno
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+  annotations:
+    cryptophys.io/contract: contract.platform.policy.v1
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kyverno:background-controller:secrets
+  labels:
+    app.kubernetes.io/component: background-controller
+    app.kubernetes.io/part-of: kyverno
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+  annotations:
+    cryptophys.io/contract: contract.platform.policy.v1
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kyverno:background-controller:secrets
+subjects:
+- kind: ServiceAccount
+  name: kyverno-background-controller
+  namespace: kyverno-system
