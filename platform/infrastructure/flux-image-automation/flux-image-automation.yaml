@@ -142,13 +142,7 @@ spec:
       author:
         name: flux-image-automation
         email: flux-image-automation@cryptophys.work
-      messageTemplate: |
-        chore(flux): bump Flux controller images
-
-        Automated by Flux image-automation-controller.
-        {{- range .Updated.Images }}
-        - {{ . }}
-        {{- end }}
+      messageTemplate: "chore(flux): automated Flux controller image update"
     push:
       branch: main
   update:
