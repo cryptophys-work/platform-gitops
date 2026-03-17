@@ -197,15 +197,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: cerebrum
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: linkerd-system
-  labels:
-    app.kubernetes.io/created-by: aide
-    pod-security.kubernetes.io/enforce: privileged
-    pod-security.kubernetes.io/warn: privileged
+
 ---
 apiVersion: v1
 kind: Namespace
