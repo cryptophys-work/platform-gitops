@@ -49,10 +49,14 @@ cluster:
       max-mutating-requests-inflight: "100"  # Was 400
 
       # ── Watch cache — bounded per-resource object caches ──
-      watch-cache-sizes: "pods#500,nodes#50,services#200,endpoints#200,configmaps#200,secrets#200,persistentvolumes#100,persistentvolumeclaims#200,deployments.apps#200,replicasets.apps#300,statefulsets.apps#100,daemonsets.apps#50"
+      # Reduced pods (500→200) and replicasets (300→100) — biggest RAM consumers
+      # Each watch-cache entry = ~1.5 kB; 500 pods × N watchers (Flux,ArgoCD,Kyverno,ESO) = GBs
+      watch-cache-sizes: "pods#200,nodes#50,services#150,endpoints#150,configmaps#150,secrets#150,persistentvolumes#100,persistentvolumeclaims#150,deployments.apps#150,replicasets.apps#100,statefulsets.apps#50,daemonsets.apps#50"
 
-      # ── Connection hygiene — periodically reset HTTP/2 to flush stale watchers ──
-      goaway-chance: "0.001"
+      # ── Connection hygiene — reset 1% of HTTP/2 conns per request (was 0.1%) ──
+      # Forces stale long-lived watchers (Flux, ArgoCD, ESO) to reconnect and flush
+      # goroutine stacks. Higher value = more aggressive GC of stale connections.
+      goaway-chance: "0.01"
 
     auditPolicy:
       apiVersion: audit.k8s.io/v1
