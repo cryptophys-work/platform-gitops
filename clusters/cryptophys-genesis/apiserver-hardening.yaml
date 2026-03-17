@@ -18,11 +18,11 @@ machine:
         ephemeral-storage: "1Gi"
       # ── Eviction thresholds — shed pods BEFORE kernel OOM killer fires ──
       evictionHard:
-        memory.available: "512Mi"    # Hard evict when <512Mi free
+        memory.available: "256Mi"    # CP nodes: 256Mi hard evict (lower than workers; more OS/system overhead)
         nodefs.available: "5%"
         imagefs.available: "5%"
       evictionSoft:
-        memory.available: "1Gi"      # Soft-evict warning at <1Gi free
+        memory.available: "512Mi"    # Soft-evict warning at <512Mi free
         nodefs.available: "10%"
         imagefs.available: "10%"
       evictionSoftGracePeriod:
