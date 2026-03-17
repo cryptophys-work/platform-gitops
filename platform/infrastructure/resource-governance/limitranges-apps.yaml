@@ -18,7 +18,7 @@ spec:
   limits:
     - type: Container
       default:
-        memory: "2Gi"
+        memory: "512Mi"
         cpu: "2"
       defaultRequest:
         memory: "256Mi"
@@ -44,7 +44,7 @@ spec:
   limits:
     - type: Container
       default:
-        memory: "2Gi"
+        memory: "512Mi"
         cpu: "2"
       defaultRequest:
         memory: "256Mi"
@@ -70,7 +70,7 @@ spec:
   limits:
     - type: Container
       default:
-        memory: "2Gi"
+        memory: "512Mi"
         cpu: "2"
       defaultRequest:
         memory: "128Mi"
@@ -96,7 +96,7 @@ spec:
   limits:
     - type: Container
       default:
-        memory: "1Gi"
+        memory: "512Mi"
         cpu: "1"
       defaultRequest:
         memory: "128Mi"
@@ -122,7 +122,7 @@ spec:
   limits:
     - type: Container
       default:
-        memory: "1Gi"
+        memory: "512Mi"
         cpu: "1"
       defaultRequest:
         memory: "128Mi"
@@ -200,7 +200,7 @@ spec:
   limits:
     - type: Container
       default:
-        memory: "2Gi"
+        memory: "512Mi"
         cpu: "2"
       defaultRequest:
         memory: "256Mi"
@@ -226,7 +226,7 @@ spec:
   limits:
     - type: Container
       default:
-        memory: "1Gi"
+        memory: "512Mi"
         cpu: "1"
       defaultRequest:
         memory: "128Mi"
@@ -252,7 +252,7 @@ spec:
   limits:
     - type: Container
       default:
-        memory: "1Gi"
+        memory: "512Mi"
         cpu: "1"
       defaultRequest:
         memory: "128Mi"
@@ -278,7 +278,7 @@ spec:
   limits:
     - type: Container
       default:
-        memory: "1Gi"
+        memory: "512Mi"
         cpu: "1"
       defaultRequest:
         memory: "256Mi"
@@ -304,7 +304,7 @@ spec:
   limits:
     - type: Container
       default:
-        memory: "1Gi"
+        memory: "512Mi"
         cpu: "1"
       defaultRequest:
         memory: "128Mi"
@@ -428,7 +428,7 @@ spec:
   limits:
     - type: Container
       default:
-        memory: "1Gi"
+        memory: "512Mi"
         cpu: "1"
       defaultRequest:
         memory: "128Mi"
