@@ -181,7 +181,6 @@ spec:
                 - falco-system
                 - tetragon-system
       validate:
-        message: "Container {{ element.name }} requests {{ element.resources.requests.memory }} — exceeds 4Gi threshold. Consider vertical scaling review."
         foreach:
           - list: "request.object.spec.containers"
             deny:
@@ -190,3 +189,4 @@ spec:
                   - key: "{{ element.resources.requests.memory || '0' }}"
                     operator: GreaterThan
                     value: "4Gi"
+            message: "Container {{ element.name }} requests {{ element.resources.requests.memory }} — exceeds 4Gi threshold. Consider vertical scaling review."
