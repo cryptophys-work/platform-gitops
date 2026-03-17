@@ -13,7 +13,6 @@ resources:
   - kustomization/11-controllers-gateway.yaml
   - kustomization/12-storage.yaml
   - kustomization/13-networking.yaml
-  - kustomization/14-linkerd.yaml
   - kustomization/15-policy.yaml
   - kustomization/15-policy-crs.yaml
   - kustomization/15-security-runtime.yaml
@@ -28,7 +27,6 @@ resources:
   - kustomization/30-vault.yaml
   - kustomization/31-secrets.yaml
   - kustomization/35-spire.yaml
-  - kustomization/36-linkerd.yaml
   - kustomization/40-gitea.yaml
   - kustomization/41-harbor.yaml
   - kustomization/42-argocd.yaml
