@@ -118,7 +118,7 @@ spec:
                 - metallb-system
       mutate:
         foreach:
-          - list: "request.object.spec.containers"
+          - list: "request.object.spec.containers || `[]`"
             preconditions:
               all:
                 - key: "{{ element.resources.limits.memory || 'unset' }}"
@@ -131,7 +131,7 @@ spec:
                     resources:
                       limits:
                         memory: "512Mi"
-          - list: "request.object.spec.initContainers"
+          - list: "request.object.spec.initContainers || `[]`"
             preconditions:
               all:
                 - key: "{{ element.resources.limits.memory || 'unset' }}"

@@ -1,0 +1,39 @@
+# =============================================================================
+# Longhorn Memory Governance — v1.0
+# Applied via: 30-storage kustomization
+# Purpose: Prevent instance-manager and engine-manager pods from consuming
+#          unbounded memory. Root cause: prior analysis showed instance-manager
+#          on medulla consumed 5.9Gi (of 7.7Gi allocatable) with no limit set.
+# =============================================================================
+---
+# LimitRange enforces a default memory limit on ALL pods in longhorn-system.
+# This applies to NEW pods created after this manifest is applied.
+# Existing pods (e.g. instance-manager-b2b26...) are NOT affected until restarted.
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: longhorn-memory-limits
+  namespace: longhorn-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: storage
+    cryptophys.io/managed-by: flux
+    cryptophys.io/anti-regression: "true"
+    cryptophys.io/contract: contract.platform.storage.v1
+spec:
+  limits:
+    # ── Per-container defaults — applies to any container that omits resources ──
+    - type: Container
+      default:
+        memory: "2Gi"    # Default limit — instance-manager gets max 2Gi unless spec overrides
+        cpu: "1"
+      defaultRequest:
+        memory: "256Mi"  # Default request — ensures scheduler sees realistic footprint
+        cpu: "50m"
+      max:
+        memory: "4Gi"    # Hard cap — no container in longhorn-system may exceed 4Gi
+        cpu: "4"
+    # ── Per-pod defaults ──
+    - type: Pod
+      max:
+        memory: "8Gi"    # One instance-manager pod max = 8Gi (multiple containers)
