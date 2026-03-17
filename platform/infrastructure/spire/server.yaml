@@ -43,11 +43,11 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              # Pin to cortex: lowest memory pressure on CP (32%), stable Longhorn CSI
+              # Pin to synapse: worker node with Longhorn CSI, PVC already attached here
               - matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
-                    values: ["cortex-178-18-250-39"]
+                    values: ["synapse-161-97-136-251"]
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
