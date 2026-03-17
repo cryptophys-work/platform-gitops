@@ -20,6 +20,7 @@ resources:
   - kustomization/15-security-runtime-crs.yaml
   - kustomization/16-policy-ssot.yaml
   - kustomization/17-policy-reporter.yaml
+  - kustomization/18-resource-governance.yaml
   - kustomization/20-certificates.yaml
   - kustomization/21-dns-core.yaml
   - kustomization/25-database.yaml

@@ -1,0 +1,23 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 18-resource-governance
+  namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: resource-governance
+    cryptophys.io/managed-by: flux
+    cryptophys.io/anti-regression: "true"
+spec:
+  suspend: false
+  interval: 10m          # Short interval — guardrails must always be current
+  prune: true            # Remove stale LimitRanges/policies when updated in Git
+  wait: true
+  timeout: 5m
+  path: ./platform/infrastructure/resource-governance
+  sourceRef:
+    kind: GitRepository
+    name: platform-repo
+  dependsOn:
+    - name: 16-policy-ssot   # Kyverno must be ready before adding policies
+    - name: 01-namespaces    # Target namespaces must exist

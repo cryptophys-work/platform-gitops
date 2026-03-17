@@ -1,0 +1,192 @@
+# =============================================================================
+# cryptophys — Memory Guardrail: Kyverno Policies
+# Goal: Persistent, idempotent enforcement of memory limits cluster-wide.
+#   1. ClusterPolicy: auto-generate LimitRange in every new namespace
+#   2. ClusterPolicy: mutation — inject default limits into containers missing them
+#   3. ClusterPolicy: audit — report pods violating memory ceiling (>4Gi)
+# =============================================================================
+
+---
+# Policy 1: Generate LimitRange in every namespace automatically
+# Idempotent: synchronize: true ensures the LimitRange stays consistent
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: generate-namespace-limitrange
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: resource-governance
+    cryptophys.io/managed-by: flux
+    cryptophys.io/anti-regression: "true"
+    policies.kyverno.io/title: Auto-generate LimitRange per namespace
+    policies.kyverno.io/description: >
+      Every new namespace automatically receives a LimitRange that enforces
+      default memory/CPU limits on all containers. Prevents unbounded memory
+      growth from pods without explicit resource limits.
+spec:
+  rules:
+    - name: generate-default-limitrange
+      match:
+        any:
+          - resources:
+              kinds: [Namespace]
+      exclude:
+        any:
+          - resources:
+              names:
+                # System namespaces: unconstrained by design
+                - kube-system
+                - kube-public
+                - kube-node-lease
+                - longhorn-system
+                - kyverno-system
+                - gatekeeper-system
+                - flux-system
+                - cert-manager
+                - spire-system
+                - falco-system
+                - tetragon-system
+                - cilium-system
+                - metallb-system
+                - external-secrets
+      generate:
+        apiVersion: v1
+        kind: LimitRange
+        name: cryptophys-default-limits
+        namespace: "{{request.object.metadata.name}}"
+        synchronize: true   # Kyverno re-creates if deleted — persistent!
+        data:
+          metadata:
+            annotations:
+              cryptophys.io/managed-by: kyverno
+              cryptophys.io/component: resource-governance
+          spec:
+            limits:
+              - type: Container
+                default:          # Applied when container has no limits
+                  memory: "2Gi"
+                  cpu: "2"
+                defaultRequest:   # Applied when container has no requests
+                  memory: "128Mi"
+                  cpu: "100m"
+                max:              # Hard ceiling — reject containers asking more
+                  memory: "8Gi"
+                  cpu: "8"
+                min:
+                  memory: "4Mi"
+                  cpu: "10m"
+              - type: Pod
+                max:
+                  memory: "16Gi"  # Per-pod ceiling
+                  cpu: "16"
+
+---
+# Policy 2: Mutation — inject default memory limits into containers missing them
+# Fires at admission time on every Pod CREATE/UPDATE
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-add-memory-limits
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: resource-governance
+    cryptophys.io/managed-by: flux
+    policies.kyverno.io/title: Inject default memory limits if missing
+    policies.kyverno.io/description: >
+      Mutates Pod specs at admission to add memory limits/requests when absent.
+      Deterministic: same input always produces same output.
+spec:
+  rules:
+    - name: add-memory-limit-if-missing
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                - kube-system
+                - longhorn-system
+                - kyverno-system
+                - gatekeeper-system
+                - flux-system
+                - spire-system
+                - falco-system
+                - tetragon-system
+                - cilium-system
+                - metallb-system
+      mutate:
+        foreach:
+          - list: "request.object.spec.containers"
+            preconditions:
+              all:
+                - key: "{{ element.resources.limits.memory || 'unset' }}"
+                  operator: Equals
+                  value: "unset"
+            patchStrategicMerge:
+              spec:
+                containers:
+                  - name: "{{ element.name }}"
+                    resources:
+                      limits:
+                        memory: "2Gi"
+          - list: "request.object.spec.initContainers"
+            preconditions:
+              all:
+                - key: "{{ element.resources.limits.memory || 'unset' }}"
+                  operator: Equals
+                  value: "unset"
+            patchStrategicMerge:
+              spec:
+                initContainers:
+                  - name: "{{ element.name }}"
+                    resources:
+                      limits:
+                        memory: "512Mi"  # init containers get smaller default
+
+---
+# Policy 3: Audit — detect pods exceeding 4Gi actual memory requests
+# Generates PolicyReport entries; does NOT block (non-disruptive observability)
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: audit-high-memory-pods
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: resource-governance
+    cryptophys.io/managed-by: flux
+    policies.kyverno.io/title: Audit pods requesting excessive memory
+    policies.kyverno.io/description: >
+      Audit-only policy that flags pods requesting more than 4Gi memory.
+      Generates PolicyReport without blocking deployments. Use for visibility.
+spec:
+  validationFailureAction: Audit   # WARN only — never block
+  background: true                 # Scan existing pods too
+  rules:
+    - name: check-memory-request-ceiling
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                - kube-system
+                - longhorn-system
+                - kyverno-system
+                - flux-system
+                - spire-system
+                - falco-system
+                - tetragon-system
+      validate:
+        message: "Container {{ element.name }} requests {{ element.resources.requests.memory }} — exceeds 4Gi threshold. Consider vertical scaling review."
+        foreach:
+          - list: "request.object.spec.containers"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.resources.requests.memory || '0' }}"
+                    operator: GreaterThan
+                    value: "4Gi"
