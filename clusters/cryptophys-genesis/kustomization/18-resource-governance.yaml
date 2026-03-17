@@ -19,5 +19,5 @@ spec:
     kind: GitRepository
     name: platform-repo
   dependsOn:
-    - name: 16-policy-ssot   # Kyverno must be ready before adding policies
+    - name: 15-policy        # Kyverno CRDs+controller must be ready before adding policies
     - name: 01-namespaces    # Target namespaces must exist
