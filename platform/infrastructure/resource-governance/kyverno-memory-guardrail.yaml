@@ -64,7 +64,7 @@ spec:
             limits:
               - type: Container
                 default:          # Applied when container has no limits
-                  memory: "2Gi"
+                  memory: "512Mi"
                   cpu: "2"
                 defaultRequest:   # Applied when container has no requests
                   memory: "128Mi"
@@ -130,7 +130,7 @@ spec:
                   - name: "{{ element.name }}"
                     resources:
                       limits:
-                        memory: "2Gi"
+                        memory: "512Mi"
           - list: "request.object.spec.initContainers"
             preconditions:
               all:
