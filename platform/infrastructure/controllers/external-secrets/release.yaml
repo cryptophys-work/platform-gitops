@@ -18,11 +18,26 @@ spec:
     nodeSelector:
       kubernetes.io/os: linux
       workload.cryptophys.work/apps-core: "true"
+    tolerations:
+    - key: cryptophys.io/role
+      operator: Equal
+      value: llm-inference
+      effect: NoSchedule
     webhook:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
+      tolerations:
+      - key: cryptophys.io/role
+        operator: Equal
+        value: llm-inference
+        effect: NoSchedule
     certController:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
+      tolerations:
+      - key: cryptophys.io/role
+        operator: Equal
+        value: llm-inference
+        effect: NoSchedule
