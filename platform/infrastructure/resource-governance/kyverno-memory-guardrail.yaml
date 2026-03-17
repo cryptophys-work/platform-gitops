@@ -181,7 +181,6 @@ spec:
                 - falco-system
                 - tetragon-system
       validate:
-        message: "One or more containers request more than 4Gi memory — exceeds the safety threshold. Please review resource requests and consider vertical scaling."
         foreach:
           - list: "request.object.spec.containers"
             deny:
