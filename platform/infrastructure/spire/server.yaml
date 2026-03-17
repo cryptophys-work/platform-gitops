@@ -41,13 +41,13 @@ spec:
           tolerationSeconds: 300
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            # Prefer CP nodes (stable infra, lower workload churn)
-            - weight: 80
-              preference:
-                matchExpressions:
-                  - key: node-role.kubernetes.io/control-plane
-                    operator: Exists
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              # Pin to cortex: lowest memory pressure on CP (32%), stable Longhorn CSI
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values: ["cortex-178-18-250-39"]
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
