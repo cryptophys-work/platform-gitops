@@ -1,0 +1,35 @@
+# =============================================================================
+# cryptophys-genesis — Worker Node Kubelet Hardening v1.0
+# Applied via: talosctl machineconfig patch <worker-node> --patch @worker-kubelet-hardening.yaml
+# Scope: ALL worker nodes (campus, medulla, synapse, thalamus, cerebellum, quanta, aether)
+# =============================================================================
+
+machine:
+  kubelet:
+    extraConfig:
+      # ── Protected headroom — OS + kubelet must never be evictable ──
+      kubeReserved:
+        cpu: "300m"
+        memory: "1536Mi"       # 1.5Gi — workers run app workloads, need less than CP
+        ephemeral-storage: "1Gi"
+      systemReserved:
+        cpu: "100m"
+        memory: "512Mi"
+        ephemeral-storage: "512Mi"
+      # ── Eviction thresholds — shed pods BEFORE kernel OOM killer fires ──
+      evictionHard:
+        memory.available: "256Mi"    # Evict at <256Mi free
+        nodefs.available: "5%"
+        imagefs.available: "5%"
+      evictionSoft:
+        memory.available: "512Mi"    # Soft-evict warning at <512Mi
+        nodefs.available: "10%"
+        imagefs.available: "10%"
+      evictionSoftGracePeriod:
+        memory.available: "1m"
+        nodefs.available: "5m"
+        imagefs.available: "5m"
+      evictionMaxPodGracePeriod: 60  # Workers get 60s (app pods need more time)
+      # ── Image GC — keep disk clean, less eviction pressure ──
+      imageGCHighThresholdPercent: 80
+      imageGCLowThresholdPercent: 70

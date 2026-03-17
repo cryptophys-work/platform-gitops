@@ -1,30 +1,118 @@
+# =============================================================================
+# cryptophys-genesis — Control Plane Memory Hardening v2.0
+# Applied via: talosctl machineconfig patch <cp-node> --patch @apiserver-hardening.yaml
+# Scope: ALL control-plane nodes (cortex, cerebrum, corpus)
+# =============================================================================
+
+machine:
+  kubelet:
+    extraConfig:
+      # ── Protected headroom — kubelet + OS must never be evictable by pods ──
+      kubeReserved:
+        cpu: "500m"
+        memory: "3Gi"          # Up from ~1Gi — critical: prevents kubelet OOMKill
+        ephemeral-storage: "2Gi"
+      systemReserved:
+        cpu: "200m"
+        memory: "1Gi"
+        ephemeral-storage: "1Gi"
+      # ── Eviction thresholds — shed pods BEFORE kernel OOM killer fires ──
+      evictionHard:
+        memory.available: "512Mi"    # Hard evict when <512Mi free
+        nodefs.available: "5%"
+        imagefs.available: "5%"
+      evictionSoft:
+        memory.available: "1Gi"      # Soft-evict warning at <1Gi free
+        nodefs.available: "10%"
+        imagefs.available: "10%"
+      evictionSoftGracePeriod:
+        memory.available: "1m30s"
+        nodefs.available: "5m"
+        imagefs.available: "5m"
+      evictionMaxPodGracePeriod: 30  # Max 30s termination grace during eviction
+
 cluster:
   apiServer:
+    # ── Hard memory cap — OOMKill apiserver pod, NOT the entire node ──
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+      limits:
+        cpu: "6"
+        memory: "6Gi"          # Was: unlimited (8.6Gi consumed). Cap at 6Gi.
+
     extraArgs:
-      # API Priority and Fairness (APF) Enforced
+      # ── Concurrency limits — each inflight request holds memory state ──
       enable-priority-and-fairness: "true"
-      max-requests-inflight: "800"
-      max-mutating-requests-inflight: "400"
-      # Audit Logging Configuration
+      max-requests-inflight: "200"           # Was 800 — reduces inflight buffer by 75%
+      max-mutating-requests-inflight: "100"  # Was 400
+
+      # ── Watch cache — bounded per-resource object caches ──
+      watch-cache-sizes: "pods#500,nodes#50,services#200,endpoints#200,configmaps#200,secrets#200,persistentvolumes#100,persistentvolumeclaims#200,deployments.apps#200,replicasets.apps#300,statefulsets.apps#100,daemonsets.apps#50"
+
+      # ── Connection hygiene — periodically reset HTTP/2 to flush stale watchers ──
+      goaway-chance: "0.001"
+
+      # ── Audit log — reduce disk and in-memory buffer footprint ──
       audit-log-path: "/var/log/audit/audit.log"
-      audit-log-maxage: "30"
-      audit-log-maxbackup: "10"
-      audit-log-maxsize: "100"
+      audit-log-maxage: "7"          # Was 30 — keep 1 week only
+      audit-log-maxbackup: "3"       # Was 10 — 3 compressed backups
+      audit-log-maxsize: "50"        # Was 100 — 50MB per file
+      audit-log-compress: "true"
+
     auditPolicy:
       apiVersion: audit.k8s.io/v1
       kind: Policy
       omitStages:
         - "RequestReceived"
       rules:
-        # Ignore noisy system components
+        # ── Silent: noisy system components that generate thousands of reads ──
         - level: None
-          users: ["system:kube-proxy", "system:apiserver"]
-        # Deep audit for Autonomous Agents (ArgoCD, Tekton, AIDE, Orchestrator)
+          users:
+            - "system:kube-proxy"
+            - "system:apiserver"
+            - "system:kube-scheduler"
+            - "system:kube-controller-manager"
+        # ── Silent: kubelet reads (node status updates — extremely high frequency) ──
+        - level: None
+          userGroups: ["system:nodes"]
+          verbs: ["get", "list", "watch"]
+        # ── Silent: high-frequency watch/list reads on core resources ──
+        - level: None
+          verbs: ["get", "list", "watch"]
+          resources:
+            - group: ""
+              resources:
+                - "endpoints"
+                - "services"
+                - "nodes"
+                - "pods/log"
+                - "pods/status"
+                - "configmaps"
+            - group: "coordination.k8s.io"
+              resources: ["leases"]
+            - group: "discovery.k8s.io"
+              resources: ["endpointslices"]
+        # ── Silent: Flux/ArgoCD reconciliation reads (very high frequency) ──
+        - level: None
+          users:
+            - "system:serviceaccount:flux-system:source-controller"
+            - "system:serviceaccount:flux-system:kustomize-controller"
+            - "system:serviceaccount:flux-system:helm-controller"
+            - "system:serviceaccount:apps-system:argocd-application-controller"
+          verbs: ["get", "list", "watch"]
+        # ── Deep audit: autonomous agents WRITES only ──
         - level: RequestResponse
-          users: 
+          users:
             - "system:serviceaccount:apps-system:argocd-application-controller"
             - "system:serviceaccount:flux-system:helm-controller"
             - "system:serviceaccount:aide:aide-sa"
             - "system:serviceaccount:orchestrator:orchestrator-sa"
-        # Catch-all for other actions
+            - "system:serviceaccount:facilitator:facilitator-sa"
+          verbs: ["create", "update", "patch", "delete"]
+        # ── Catch-all: metadata only for remaining writes (no body = minimal RAM) ──
         - level: Metadata
+          verbs: ["create", "update", "patch", "delete"]
+        # ── Everything else: silent ──
+        - level: None

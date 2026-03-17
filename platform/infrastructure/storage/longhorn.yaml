@@ -3,6 +3,11 @@ kind: HelmRelease
 metadata:
   name: longhorn
   namespace: longhorn-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: storage
+    cryptophys.io/managed-by: flux
+    cryptophys.io/anti-regression: "true"
 spec:
   interval: 1h
   timeout: 15m
@@ -30,6 +35,9 @@ spec:
       storageReservedPercentageForDefaultDisk: 25
       replicaSoftAntiAffinity: true
       replicaAutoBalance: best-effort
+      # ── Instance manager CPU guardrail ──
+      guaranteedInstanceManagerCPU: 12    # % of CPU reserved per instance-manager (was default 12%)
+    # ── Manager runs everywhere (needs to coordinate volumes on all nodes) ──
     longhornManager:
       tolerations:
         - key: node-role.kubernetes.io/control-plane
@@ -44,28 +52,26 @@ spec:
         - key: cryptophys.io/role
           operator: Exists
           effect: NoSchedule
+      resources:
+        requests:
+          cpu: "50m"
+          memory: "128Mi"
+        limits:
+          cpu: "1"
+          memory: "512Mi"    # Hard cap per longhorn-manager pod
+    # ── Driver/CSI: exclude control-plane — reduces CP memory pressure ──
     longhornDriver:
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-        - key: node-role.kubernetes.io/master
-          operator: Exists
-          effect: NoSchedule
         - key: cryptophys.io/storage-only
           operator: Exists
           effect: NoSchedule
         - key: cryptophys.io/role
           operator: Exists
           effect: NoSchedule
+      # Deliberately NO control-plane toleration — CSI driver not needed on CP
+    # ── UI: workers only ──
     longhornUI:
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-        - key: node-role.kubernetes.io/master
-          operator: Exists
-          effect: NoSchedule
         - key: cryptophys.io/storage-only
           operator: Exists
           effect: NoSchedule

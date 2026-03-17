@@ -1,0 +1,441 @@
+# =============================================================================
+# cryptophys — Explicit LimitRanges for High-Memory Namespaces
+# These cover EXISTING namespaces created before the generate policy was active.
+# Sorted by memory request (highest first per kubectl top analysis).
+# =============================================================================
+
+# ── tekton-system (10944Mi requested) ──
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: tekton-system
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "2Gi"
+        cpu: "2"
+      defaultRequest:
+        memory: "256Mi"
+        cpu: "100m"
+      max:
+        memory: "8Gi"
+        cpu: "8"
+      min:
+        memory: "4Mi"
+        cpu: "10m"
+
+# ── aide (6432Mi requested) ──
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: aide
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "2Gi"
+        cpu: "2"
+      defaultRequest:
+        memory: "256Mi"
+        cpu: "100m"
+      max:
+        memory: "8Gi"
+        cpu: "8"
+      min:
+        memory: "4Mi"
+        cpu: "10m"
+
+# ── bridge (4096Mi requested) ──
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: bridge
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "2Gi"
+        cpu: "2"
+      defaultRequest:
+        memory: "128Mi"
+        cpu: "100m"
+      max:
+        memory: "8Gi"
+        cpu: "8"
+      min:
+        memory: "4Mi"
+        cpu: "10m"
+
+# ── apps-dash (3968Mi requested) ──
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: apps-dash
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "1Gi"
+        cpu: "1"
+      defaultRequest:
+        memory: "128Mi"
+        cpu: "50m"
+      max:
+        memory: "4Gi"
+        cpu: "4"
+      min:
+        memory: "4Mi"
+        cpu: "10m"
+
+# ── apps-system / ArgoCD (3008Mi requested) ──
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: apps-system
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "1Gi"
+        cpu: "1"
+      defaultRequest:
+        memory: "128Mi"
+        cpu: "50m"
+      max:
+        memory: "4Gi"
+        cpu: "4"
+      min:
+        memory: "4Mi"
+        cpu: "10m"
+
+# ── image-factory (2560Mi requested) ──
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: image-factory
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "4Gi"   # buildkit needs more headroom
+        cpu: "4"
+      defaultRequest:
+        memory: "512Mi"
+        cpu: "500m"
+      max:
+        memory: "16Gi"  # BuildKit can use a lot for large builds
+        cpu: "8"
+      min:
+        memory: "64Mi"
+        cpu: "50m"
+
+# ── cerebrum (2240Mi requested, LLM inference node) ──
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: cerebrum
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "4Gi"   # LLM models need more headroom
+        cpu: "4"
+      defaultRequest:
+        memory: "512Mi"
+        cpu: "200m"
+      max:
+        memory: "16Gi"  # GGUF models can use up to 8Gi+
+        cpu: "8"
+      min:
+        memory: "64Mi"
+        cpu: "50m"
+
+# ── monitoring-core (1792Mi requested) ──
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: monitoring-core
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "2Gi"
+        cpu: "2"
+      defaultRequest:
+        memory: "256Mi"
+        cpu: "100m"
+      max:
+        memory: "8Gi"
+        cpu: "4"
+      min:
+        memory: "4Mi"
+        cpu: "10m"
+
+# ── orchestrator (1536Mi requested) ──
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: orchestrator
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "1Gi"
+        cpu: "1"
+      defaultRequest:
+        memory: "128Mi"
+        cpu: "100m"
+      max:
+        memory: "4Gi"
+        cpu: "4"
+      min:
+        memory: "4Mi"
+        cpu: "10m"
+
+# ── navigator ──
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: navigator
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "1Gi"
+        cpu: "1"
+      defaultRequest:
+        memory: "128Mi"
+        cpu: "100m"
+      max:
+        memory: "4Gi"
+        cpu: "4"
+      min:
+        memory: "4Mi"
+        cpu: "10m"
+
+# ── mesh-system / NATS ──
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: mesh-system
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "1Gi"
+        cpu: "1"
+      defaultRequest:
+        memory: "256Mi"
+        cpu: "100m"
+      max:
+        memory: "4Gi"
+        cpu: "4"
+      min:
+        memory: "32Mi"
+        cpu: "10m"
+
+# ── trustedledger ──
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: trustedledger
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "1Gi"
+        cpu: "1"
+      defaultRequest:
+        memory: "128Mi"
+        cpu: "100m"
+      max:
+        memory: "4Gi"
+        cpu: "4"
+      min:
+        memory: "4Mi"
+        cpu: "10m"
+
+# ── watcher, automation, facilitator, notification ──
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: watcher
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "512Mi"
+        cpu: "500m"
+      defaultRequest:
+        memory: "64Mi"
+        cpu: "50m"
+      max:
+        memory: "2Gi"
+        cpu: "2"
+      min:
+        memory: "4Mi"
+        cpu: "10m"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: automation
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "512Mi"
+        cpu: "500m"
+      defaultRequest:
+        memory: "64Mi"
+        cpu: "50m"
+      max:
+        memory: "2Gi"
+        cpu: "2"
+      min:
+        memory: "4Mi"
+        cpu: "10m"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: facilitator
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "512Mi"
+        cpu: "500m"
+      defaultRequest:
+        memory: "64Mi"
+        cpu: "50m"
+      max:
+        memory: "2Gi"
+        cpu: "2"
+      min:
+        memory: "4Mi"
+        cpu: "10m"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: notification
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "512Mi"
+        cpu: "500m"
+      defaultRequest:
+        memory: "64Mi"
+        cpu: "50m"
+      max:
+        memory: "2Gi"
+        cpu: "2"
+      min:
+        memory: "4Mi"
+        cpu: "10m"
+
+# ── apps-core (MCP servers, service mesh registry) ──
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: apps-core
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "1Gi"
+        cpu: "1"
+      defaultRequest:
+        memory: "128Mi"
+        cpu: "100m"
+      max:
+        memory: "4Gi"
+        cpu: "4"
+      min:
+        memory: "4Mi"
+        cpu: "10m"
