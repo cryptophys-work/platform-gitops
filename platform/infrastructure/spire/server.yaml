@@ -43,11 +43,11 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              # Pin to synapse: worker node with Longhorn CSI, PVC already attached here
+              # Pin to cerebrum: Longhorn volume currently attached here, server running
               - matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
-                    values: ["synapse-161-97-136-251"]
+                    values: ["cerebrum-157-173-120-200"]
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
