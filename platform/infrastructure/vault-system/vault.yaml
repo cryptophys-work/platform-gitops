@@ -24,6 +24,13 @@ spec:
         limits: { cpu: 250m, memory: 256Mi }
       nodeSelector:
         kubernetes.io/os: linux
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: DoesNotExist
       tolerations:
         - key: cryptophys.io/role
           operator: Equal
@@ -34,6 +41,10 @@ spec:
           effect: NoSchedule
         - key: node.kubernetes.io/memory-pressure
           operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Equal
+          value: "true"
           effect: NoSchedule
       dataStorage:
         enabled: true
@@ -84,6 +95,13 @@ spec:
           maxUnavailable: 1
       nodeSelector:
         kubernetes.io/os: linux
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: DoesNotExist
       tolerations:
         - key: cryptophys.io/role
           operator: Equal
@@ -94,4 +112,8 @@ spec:
           effect: NoSchedule
         - key: node.kubernetes.io/memory-pressure
           operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Equal
+          value: "true"
           effect: NoSchedule
