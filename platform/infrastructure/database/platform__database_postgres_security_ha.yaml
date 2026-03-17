@@ -4,7 +4,7 @@ metadata:
   name: postgres-security-ha
   namespace: postgresql-system
 spec:
-  instances: 3
+  instances: 1
   imageName: ghcr.io/cloudnative-pg/postgresql:16.2
   monitoring:
     enablePodMonitor: false
