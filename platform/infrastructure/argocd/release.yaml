@@ -63,6 +63,12 @@ spec:
     global:
       tolerations: []
     controller:
+      tolerations:
+        # Allow controller to schedule on medulla (llm-inference taint) when compute nodes are full
+        - key: "cryptophys.io/role"
+          operator: "Equal"
+          value: "llm-inference"
+          effect: "NoSchedule"
       replicas: 2
       resources:
         requests:
