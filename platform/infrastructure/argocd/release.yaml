@@ -21,7 +21,6 @@ spec:
       retries: 3
   upgrade:
     timeout: 30m
-    force: true
     cleanupOnFail: true
     remediation:
       retries: 3
