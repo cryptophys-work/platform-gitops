@@ -3,6 +3,11 @@ kind: HelmRelease
 metadata:
   name: cert-manager
   namespace: cert-manager
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: cert-manager
+    cryptophys.io/managed-by: flux
+    cryptophys.io/anti-regression: "true"
 spec:
   interval: 1h
   chart:
@@ -13,12 +18,71 @@ spec:
         kind: HelmRepository
         name: jetstack
         namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+    cleanupOnFail: true
   values:
     installCRDs: true
-      workload.cryptophys.work/apps-core: "true"
+    replicaCount: 2
+    nodeSelector:
+      kubernetes.io/os: linux
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: node-role.kubernetes.io/control-plane
+              operator: DoesNotExist
+    tolerations:
+    - key: cryptophys.io/storage-only
+      operator: Exists
+      effect: NoSchedule
     webhook:
-        workload.cryptophys.work/apps-core: "true"
+      replicaCount: 2
+      nodeSelector:
+        kubernetes.io/os: linux
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: DoesNotExist
+      tolerations:
+      - key: cryptophys.io/storage-only
+        operator: Exists
+        effect: NoSchedule
     cainjector:
-        workload.cryptophys.work/apps-core: "true"
+      replicaCount: 2
+      nodeSelector:
+        kubernetes.io/os: linux
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: DoesNotExist
+      tolerations:
+      - key: cryptophys.io/storage-only
+        operator: Exists
+        effect: NoSchedule
     startupapicheck:
-        workload.cryptophys.work/apps-core: "true"
+      nodeSelector:
+        kubernetes.io/os: linux
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: DoesNotExist
+      tolerations:
+      - key: cryptophys.io/storage-only
+        operator: Exists
+        effect: NoSchedule
