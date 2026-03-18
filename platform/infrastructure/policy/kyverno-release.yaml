@@ -76,6 +76,16 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values:
+                - thalamus-217-76-59-241
+                - synapse-161-97-136-251
       serviceWebhook:
         failurePolicy: Ignore
       resources:
@@ -101,3 +111,17 @@ spec:
         backgroundScanInterval: "12h"
         backgroundScanWorkers: "1"
         enableReporting: "validate"
+  postRenderers:
+    - kustomize:
+        patches:
+          # kyverno-cleanup-validating-webhook-cfg failurePolicy is hardcoded to Fail in the
+          # chart (not exposed via serviceWebhook.failurePolicy). Change to Ignore so that
+          # ClusterCleanupPolicy dry-run succeeds even when the cleanup controller pod is
+          # temporarily unavailable (e.g., rescheduling after node eviction on thalamus).
+          - target:
+              kind: ValidatingWebhookConfiguration
+              name: kyverno-cleanup-validating-webhook-cfg
+            patch: |-
+              - op: replace
+                path: /webhooks/0/failurePolicy
+                value: Ignore
