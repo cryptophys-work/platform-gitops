@@ -4,7 +4,7 @@ resources:
   - crossplane-operator.yaml
   - crossplane-policy-exception.yaml
   - platform-resource-quota.yaml
-  - cert-manager.yaml
+  - cert-manager/
   - external-secrets.yaml
   - ingress-nginx.yaml
   - ingress-nginx-network-policy.yaml
