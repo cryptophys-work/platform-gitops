@@ -61,11 +61,9 @@ cluster:
 
     # ── Go GC tuning: run GC at 50% heap growth instead of default 100% ──
     # Halves peak heap; costs ~5-8% CPU. Best single lever for apiserver memory.
-    extraEnv:
-      - name: GOGC
-        value: "50"
-      - name: GOMEMLIMIT
-        value: "3750MiB"
+    env:
+      GOGC: "50"
+      GOMEMLIMIT: "3750MiB"
 
     extraArgs:
       enable-priority-and-fairness: "true"
