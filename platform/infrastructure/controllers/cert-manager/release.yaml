@@ -42,10 +42,13 @@ spec:
     - key: cryptophys.io/storage-only
       operator: Exists
       effect: NoSchedule
-    - key: cryptophys.io/role
-      operator: Equal
-      value: llm-inference
-      effect: NoSchedule
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
     webhook:
       replicaCount: 2
       nodeSelector:
@@ -61,10 +64,13 @@ spec:
       - key: cryptophys.io/storage-only
         operator: Exists
         effect: NoSchedule
-      - key: cryptophys.io/role
-        operator: Equal
-        value: llm-inference
-        effect: NoSchedule
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 64Mi
     cainjector:
       replicaCount: 2
       nodeSelector:
@@ -80,10 +86,13 @@ spec:
       - key: cryptophys.io/storage-only
         operator: Exists
         effect: NoSchedule
-      - key: cryptophys.io/role
-        operator: Equal
-        value: llm-inference
-        effect: NoSchedule
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 128Mi
     startupapicheck:
       nodeSelector:
         kubernetes.io/os: linux
@@ -98,7 +107,10 @@ spec:
       - key: cryptophys.io/storage-only
         operator: Exists
         effect: NoSchedule
-      - key: cryptophys.io/role
-        operator: Equal
-        value: llm-inference
-        effect: NoSchedule
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 64Mi
