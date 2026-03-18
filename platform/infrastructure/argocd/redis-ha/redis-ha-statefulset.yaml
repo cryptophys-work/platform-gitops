@@ -68,7 +68,7 @@ metadata:
     cryptophys.io/anti-regression: "true"
 spec:
   serviceName: argocd-redis-ha-announce
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app.kubernetes.io/name: argocd-redis-ha
@@ -91,6 +91,9 @@ spec:
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
+          effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Exists
           effect: NoSchedule
       affinity:
         podAntiAffinity:
