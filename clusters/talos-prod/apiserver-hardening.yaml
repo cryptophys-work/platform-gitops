@@ -1,62 +1,85 @@
 # =============================================================================
-# cryptophys-genesis — Control Plane Memory Hardening v2.0
+# cryptophys-genesis — Control Plane Memory Hardening v3.0
 # Applied via: talosctl machineconfig patch <cp-node> --patch @apiserver-hardening.yaml
 # Scope: ALL control-plane nodes (cortex, cerebrum, corpus)
+# Changes v3.0:
+#   - kubeReserved: 3Gi → 2Gi (kubelet+containerd actual ~700Mi-1Gi, 2x buffer is safe)
+#   - systemReserved: 1Gi → 0.5Gi (Talos OS actual ~300-400Mi)
+#   - allocatable gain: +1.5Gi per CP node (7.7Gi → 9.2Gi)
+#   - evictionHard: 256Mi → 500Mi (evict earlier, before cascade)
+#   - evictionSoft: 512Mi → 1Gi (graceful shed at 1Gi free)
+#   - apiserver limit: 6Gi → 4Gi (force Go GC to run earlier)
+#   - max-requests-inflight: 200 → 100
+#   - max-mutating-requests-inflight: 100 → 50
+#   - default-watch-cache-size: (missing) → 50 (caps ALL unlisted resources)
+#   - watch-cache-sizes: reduced pods 200→100, others 150→75
+#   - GOGC=50 env: Go GC runs 2x more often — trades ~5% CPU for ~30% less heap
 # =============================================================================
 
 machine:
   kubelet:
     extraConfig:
       # ── Protected headroom — kubelet + OS must never be evictable by pods ──
+      # v3.0: Reduced from 3Gi+1Gi → 2Gi+0.5Gi. Actual kubelet+containerd usage
+      # is ~700Mi-1Gi; 2Gi gives a safe 2x buffer while freeing +1.5Gi allocatable.
       kubeReserved:
         cpu: "500m"
-        memory: "3Gi"          # Up from ~1Gi — critical: prevents kubelet OOMKill
+        memory: "2Gi"
         ephemeral-storage: "2Gi"
       systemReserved:
         cpu: "200m"
-        memory: "1Gi"
+        memory: "500Mi"
         ephemeral-storage: "1Gi"
       # ── Eviction thresholds — shed pods BEFORE kernel OOM killer fires ──
+      # v3.0: Raised eviction floors so kubelet acts earlier (500Mi hard, 1Gi soft)
       evictionHard:
-        memory.available: "256Mi"    # CP nodes: 256Mi hard evict (lower than workers; more OS/system overhead)
+        memory.available: "500Mi"
         nodefs.available: "5%"
         imagefs.available: "5%"
       evictionSoft:
-        memory.available: "512Mi"    # Soft-evict warning at <512Mi free
+        memory.available: "1Gi"
         nodefs.available: "10%"
         imagefs.available: "10%"
       evictionSoftGracePeriod:
-        memory.available: "1m30s"
+        memory.available: "1m"
         nodefs.available: "5m"
         imagefs.available: "5m"
-      evictionMaxPodGracePeriod: 30  # Max 30s termination grace during eviction
+      evictionMaxPodGracePeriod: 30
 
 cluster:
   apiServer:
-    # ── Hard memory cap — OOMKill apiserver pod, NOT the entire node ──
+    # ── Hard memory cap — 4Gi forces Go GC to run much more aggressively ──
+    # v3.0: Reduced 6Gi → 4Gi. Combined with GOGC=50 and reduced watch-cache,
+    # target actual usage is 3.0-3.5Gi (was 5.5-5.7Gi).
     resources:
       requests:
         cpu: "500m"
         memory: "1Gi"
       limits:
         cpu: "6"
-        memory: "6Gi"          # Was: unlimited (8.6Gi consumed). Cap at 6Gi.
+        memory: "4Gi"
+
+    # ── Go GC tuning: run GC at 50% heap growth instead of default 100% ──
+    # Halves peak heap; costs ~5-8% CPU. Best single lever for apiserver memory.
+    extraEnv:
+      - name: GOGC
+        value: "50"
+      - name: GOMEMLIMIT
+        value: "3750MiB"
 
     extraArgs:
-      # ── Concurrency limits — each inflight request holds memory state ──
       enable-priority-and-fairness: "true"
-      max-requests-inflight: "200"           # Was 800 — reduces inflight buffer by 75%
-      max-mutating-requests-inflight: "100"  # Was 400
+      # ── Concurrency: each inflight req buffers response in memory ──
+      max-requests-inflight: "100"
+      max-mutating-requests-inflight: "50"
 
-      # ── Watch cache — bounded per-resource object caches ──
-      # Reduced pods (500→200) and replicasets (300→100) — biggest RAM consumers
-      # Each watch-cache entry = ~1.5 kB; 500 pods × N watchers (Flux,ArgoCD,Kyverno,ESO) = GBs
-      watch-cache-sizes: "pods#200,nodes#50,services#150,endpoints#150,configmaps#150,secrets#150,persistentvolumes#100,persistentvolumeclaims#150,deployments.apps#150,replicasets.apps#100,statefulsets.apps#50,daemonsets.apps#50"
+      # ── Watch cache: per-resource bounded object store ──
+      # default-watch-cache-size caps ALL resources not listed below (was 100)
+      default-watch-cache-size: "50"
+      watch-cache-sizes: "pods#100,nodes#30,services#75,endpoints#75,configmaps#75,secrets#75,persistentvolumes#50,persistentvolumeclaims#75,deployments.apps#75,replicasets.apps#50,statefulsets.apps#30,daemonsets.apps#30"
 
-      # ── Connection hygiene — reset 1% of HTTP/2 conns per request (was 0.1%) ──
-      # Forces stale long-lived watchers (Flux, ArgoCD, ESO) to reconnect and flush
-      # goroutine stacks. Higher value = more aggressive GC of stale connections.
-      goaway-chance: "0.01"
+      # ── Connection hygiene: force 2% of HTTP/2 conns to reset/GC goroutines ──
+      goaway-chance: "0.02"
 
     auditPolicy:
       apiVersion: audit.k8s.io/v1
