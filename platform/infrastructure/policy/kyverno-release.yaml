@@ -136,6 +136,13 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "256Mi"
+        limits:
+          cpu: "500m"
+          memory: "512Mi"
       container:
         extraArgs:
           forceFailurePolicyIgnore: "true"
