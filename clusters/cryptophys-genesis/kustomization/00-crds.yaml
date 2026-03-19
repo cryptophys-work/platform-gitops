@@ -11,8 +11,8 @@ spec:
   suspend: false   # First stage — unsuspend first, no dependsOn
   interval: 1h
   prune: false    # Never prune CRDs (destructive)
-  wait: true
-  timeout: 10m
+  wait: false     # CRDs are already Established; skip health-check to avoid apiserver timeout
+  timeout: 5m
   path: ./platform/infrastructure/crds
   sourceRef:
     kind: GitRepository
