@@ -57,7 +57,13 @@ spec:
     controller:
       nodeSelector:
         workload.cryptophys.work/apps-core: "true"
-      tolerations: []
+      tolerations:
+        - key: cryptophys.io/role
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Exists
+          effect: NoSchedule
     speaker:
       excludeInterfaces:
         enabled: true
