@@ -18,6 +18,26 @@ spec:
     crds: CreateReplace
   upgrade:
     crds: CreateReplace
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: ValidatingWebhookConfiguration
+          name: crossplane
+        patch: |
+          - op: replace
+            path: /webhooks/0/failurePolicy
+            value: Ignore
+          - op: replace
+            path: /webhooks/1/failurePolicy
+            value: Ignore
+      - target:
+          kind: ValidatingWebhookConfiguration
+          name: crossplane-no-usages
+        patch: |
+          - op: replace
+            path: /webhooks/0/failurePolicy
+            value: Ignore
   values:
     replicas: 2
     deploymentStrategy: RollingUpdate

@@ -23,6 +23,34 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: ValidatingWebhookConfiguration
+          name: metallb-webhook-configuration
+        patch: |
+          - op: replace
+            path: /webhooks/0/failurePolicy
+            value: Ignore
+          - op: replace
+            path: /webhooks/1/failurePolicy
+            value: Ignore
+          - op: replace
+            path: /webhooks/2/failurePolicy
+            value: Ignore
+          - op: replace
+            path: /webhooks/3/failurePolicy
+            value: Ignore
+          - op: replace
+            path: /webhooks/4/failurePolicy
+            value: Ignore
+          - op: replace
+            path: /webhooks/5/failurePolicy
+            value: Ignore
+          - op: replace
+            path: /webhooks/6/failurePolicy
+            value: Ignore
   values:
     crds:
       enabled: true
