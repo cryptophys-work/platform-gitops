@@ -83,29 +83,30 @@ spec:
                 operator: NotIn
                 values:
                 - thalamus-217-76-59-241
-      container:
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "256Mi"
-          limits:
-            cpu: "1000m"
-            memory: "1Gi"
+      # backgroundController uses top-level resources (not container.resources)
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "256Mi"
+        limits:
+          cpu: "1000m"
+          memory: "1Gi"
     cleanupController:
       createSelfSignedCert: true
       replicas: 1
       nodeSelector:
         kubernetes.io/os: linux
+      # cleanupController uses top-level resources (not container.resources)
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "256Mi"
+        limits:
+          cpu: "500m"
+          memory: "512Mi"
       container:
         extraArgs:
           forceFailurePolicyIgnore: "true"
-        resources:
-          requests:
-            cpu: "200m"
-            memory: "256Mi"
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
       tolerations:
         # Allow scheduling on medulla (LLM inference node) — only viable node with free resources
         # when cerebellum and quanta are at capacity
@@ -136,6 +137,7 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
+      # reportsController uses top-level resources (consistent with other non-admission controllers)
       resources:
         requests:
           cpu: "100m"
@@ -149,13 +151,6 @@ spec:
           backgroundScanInterval: "12h"
           backgroundScanWorkers: "1"
           enableReporting: "validate"
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "256Mi"
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
       tolerations:
         - key: cryptophys.io/role
           operator: Equal
