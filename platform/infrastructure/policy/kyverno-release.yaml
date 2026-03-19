@@ -43,6 +43,10 @@ spec:
     admissionController:
       createSelfSignedCert: true
       replicas: 2
+      updateStrategy:
+        rollingUpdate:
+          maxSurge: 0
+          maxUnavailable: 1
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
