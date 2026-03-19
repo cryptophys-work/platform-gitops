@@ -1,8 +1,5 @@
-apiVersion: "cilium.io/v2"
-kind: CiliumClusterwideNetworkPolicy
-metadata:
-  name: "default-deny-baseline"
-spec:
-  endpointSelector: {}
-  ingress: [{fromEntities: [host, cluster, kube-apiserver]}]
-  egress: [{toEntities: [host, cluster, kube-apiserver]}]
+# default-deny-baseline removed: conflicted with platform-baseline-allow-internal
+# (platform-baseline-allow-internal in cilium-baseline.yaml provides the actual allow policy)
+# When kubeProxyReplacement=false, kube-proxy service VIPs are not Cilium endpoints
+# and toEntities:[cluster] does not cover them, causing EPERM / context deadline exceeded
+# for API server webhooks and inter-service connections.
