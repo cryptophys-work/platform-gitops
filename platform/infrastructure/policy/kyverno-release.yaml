@@ -100,11 +100,17 @@ spec:
         failurePolicy: Ignore
       resources:
         requests:
-          cpu: "50m"
-          memory: "128Mi"
+          cpu: "200m"
+          memory: "256Mi"
         limits:
           cpu: "500m"
           memory: "512Mi"
+      # Increase startup tolerance — medulla (LLM node) is CPU-contended;
+      # cleanup controller needs 3+ minutes to warm up (cache sync + webhook registration)
+      startupProbe:
+        initialDelaySeconds: 30
+        failureThreshold: 50
+        periodSeconds: 6
     reportsController:
       replicas: 1
       nodeSelector:
