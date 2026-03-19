@@ -4,7 +4,7 @@ metadata:
   name: postgres-apps-ha
   namespace: postgresql-system
 spec:
-  instances: 2
+  instances: 1
   imageName: ghcr.io/cloudnative-pg/postgresql:16.2
   monitoring:
     enablePodMonitor: false
@@ -52,18 +52,20 @@ spec:
             key: ACCESS_SECRET_KEY
         wal:
           compression: gzip
-  # Resource limits: explicit to prevent Kyverno mutation of running pod specs
+  # Resource limits: reduced to allow scheduling on memory-pressured workers
   resources:
     requests:
       cpu: 50m
-      memory: 512Mi
+      memory: 256Mi
     limits:
       cpu: 500m
-      memory: 1Gi
-  # HA Architecture: App databases on application workers
+      memory: 512Mi
+  # Affinity: tolerate storage-only and llm-inference nodes; single instance so no anti-affinity needed
   affinity:
     tolerations:
       - key: cryptophys.io/storage-only
         operator: Exists
         effect: NoSchedule
-    podAntiAffinityType: required
+      - key: cryptophys.io/role
+        operator: Exists
+        effect: NoSchedule
