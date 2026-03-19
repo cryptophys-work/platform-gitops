@@ -49,29 +49,26 @@ spec:
       container:
         extraArgs:
           forceFailurePolicyIgnore: "true"
-      serviceWebhook:
-        failurePolicy: Ignore
-      resources:
-        requests:
-          cpu: "200m"
-          memory: "512Mi"
-        limits:
-          cpu: "1000m"
-          memory: "1Gi"
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
     backgroundController:
       replicas: 1
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
-      serviceWebhook:
-        failurePolicy: Ignore
-      resources:
-        requests:
-          cpu: "200m"
-          memory: "512Mi"
-        limits:
-          cpu: "1000m"
-          memory: "1Gi"
+      container:
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
     cleanupController:
       createSelfSignedCert: true
       replicas: 1
@@ -80,6 +77,13 @@ spec:
       container:
         extraArgs:
           forceFailurePolicyIgnore: "true"
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
       tolerations:
         # Allow scheduling on medulla (LLM inference node) — only viable node with free resources
         # when cerebellum and quanta are at capacity
@@ -99,15 +103,6 @@ spec:
                 - synapse-161-97-136-251
               - key: node-role.kubernetes.io/control-plane
                 operator: DoesNotExist
-      serviceWebhook:
-        failurePolicy: Ignore
-      resources:
-        requests:
-          cpu: "200m"
-          memory: "256Mi"
-        limits:
-          cpu: "500m"
-          memory: "512Mi"
       # Increase startup tolerance — medulla (LLM node) is CPU-contended;
       # cleanup controller needs 3+ minutes to warm up (cache sync + webhook registration)
       startupProbe:
@@ -122,61 +117,22 @@ spec:
       container:
         extraArgs:
           forceFailurePolicyIgnore: "true"
+          backgroundScanInterval: "12h"
+          backgroundScanWorkers: "1"
+          enableReporting: "validate"
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
       tolerations:
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
           effect: NoSchedule
-      resources:
-        requests:
-          cpu: "100m"
-          memory: "256Mi"
-        limits:
-          cpu: "500m"
-          memory: "512Mi"
-      extraArgs:
-        backgroundScanInterval: "12h"
-        backgroundScanWorkers: "1"
-        enableReporting: "validate"
-  postRenderers:
-    - kustomize:
-        patches:
-          # kyverno-cleanup-validating-webhook-cfg failurePolicy is hardcoded to Fail in the
-          # chart (not exposed via serviceWebhook.failurePolicy). Change to Ignore so that
-          # ClusterCleanupPolicy dry-run succeeds even when the cleanup controller pod is
-          # temporarily unavailable (e.g., rescheduling after node eviction on thalamus).
-          - target:
-              kind: ValidatingWebhookConfiguration
-              name: kyverno-cleanup-validating-webhook-cfg
-            patch: |-
-              - op: replace
-                path: /webhooks/0/failurePolicy
-                value: Ignore
-          - target:
-              kind: ValidatingWebhookConfiguration
-              name: kyverno-cel-exception-validating-webhook-cfg
-            patch: |-
-              - op: replace
-                path: /webhooks/0/failurePolicy
-                value: Ignore
-          - target:
-              kind: ValidatingWebhookConfiguration
-              name: kyverno-exception-validating-webhook-cfg
-            patch: |-
-              - op: replace
-                path: /webhooks/0/failurePolicy
-                value: Ignore
-          - target:
-              kind: ValidatingWebhookConfiguration
-              name: kyverno-global-context-validating-webhook-cfg
-            patch: |-
-              - op: replace
-                path: /webhooks/0/failurePolicy
-                value: Ignore
-          - target:
-              kind: ValidatingWebhookConfiguration
-              name: kyverno-policy-validating-webhook-cfg
-            patch: |-
-              - op: replace
-                path: /webhooks/0/failurePolicy
-                value: Ignore
+  # Note: Kyverno webhook configurations (ValidatingWebhookConfiguration) are managed
+  # dynamically by the Kyverno admission controller at runtime — they are NOT part of the
+  # Helm chart's rendered manifest. postRenderers patches targeting them have no effect.
+  # Resource limits are now correctly specified under container.resources (Kyverno v3.5.x path).
