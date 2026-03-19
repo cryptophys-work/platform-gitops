@@ -77,6 +77,9 @@ spec:
       replicas: 1
       nodeSelector:
         kubernetes.io/os: linux
+      container:
+        extraArgs:
+          forceFailurePolicyIgnore: "true"
       tolerations:
         # Allow scheduling on medulla (LLM inference node) — only viable node with free resources
         # when cerebellum and quanta are at capacity
@@ -116,6 +119,9 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
+      container:
+        extraArgs:
+          forceFailurePolicyIgnore: "true"
       tolerations:
         - key: cryptophys.io/role
           operator: Equal
