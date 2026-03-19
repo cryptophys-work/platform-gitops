@@ -19,12 +19,12 @@ patches:
             tolerations: []
     target:
       kind: Deployment
-  # helm-controller: exclude quanta (97% CPU/mem — causes crash-loop during Helm upgrades)
+  # All Flux controllers: exclude quanta (97% CPU/mem — causes crash-loops and stale pending-upgrade)
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
       metadata:
-        name: helm-controller
+        name: all
       spec:
         template:
           spec:
@@ -39,4 +39,3 @@ patches:
                       - quanta-194-163-186-222
     target:
       kind: Deployment
-      name: helm-controller
