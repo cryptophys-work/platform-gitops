@@ -1,0 +1,22 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 07-flux-system
+  namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/layer: platform
+    cryptophys.io/managed-by: flux
+    cryptophys.io/anti-regression: "true"
+spec:
+  suspend: false
+  interval: 30m
+  prune: false    # Never prune Flux controllers
+  wait: false
+  timeout: 5m
+  path: ./clusters/cryptophys-genesis/flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  dependsOn:
+    - name: 00-crds

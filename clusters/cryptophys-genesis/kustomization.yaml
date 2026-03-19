@@ -6,6 +6,7 @@ resources:
   - kustomization/02-scheduling.yaml
   - kustomization/05-sources.yaml
   - kustomization/06-flux-image-automation.yaml
+  - kustomization/07-flux-system.yaml
   - kustomization/10-metallb.yaml
   - kustomization/10-metallb-config.yaml
   - kustomization/10-cni-cilium.yaml
