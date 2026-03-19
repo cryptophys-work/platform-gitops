@@ -4,6 +4,7 @@ resources:
   - gotk-components.yaml
   - gotk-sync.yaml
 patches:
+  # All Flux controllers: apps-core nodes only, no tolerations
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
@@ -13,7 +14,29 @@ patches:
         replicas: 1
         template:
           spec:
+            nodeSelector:
               workload.cryptophys.work/apps-core: "true"
             tolerations: []
     target:
       kind: Deployment
+  # helm-controller: exclude quanta (97% CPU/mem — causes crash-loop during Helm upgrades)
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: helm-controller
+      spec:
+        template:
+          spec:
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                  - matchExpressions:
+                    - key: kubernetes.io/hostname
+                      operator: NotIn
+                      values:
+                      - quanta-194-163-186-222
+    target:
+      kind: Deployment
+      name: helm-controller
