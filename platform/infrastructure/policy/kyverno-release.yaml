@@ -140,3 +140,31 @@ spec:
               - op: replace
                 path: /webhooks/0/failurePolicy
                 value: Ignore
+          - target:
+              kind: ValidatingWebhookConfiguration
+              name: kyverno-cel-exception-validating-webhook-cfg
+            patch: |-
+              - op: replace
+                path: /webhooks/0/failurePolicy
+                value: Ignore
+          - target:
+              kind: ValidatingWebhookConfiguration
+              name: kyverno-exception-validating-webhook-cfg
+            patch: |-
+              - op: replace
+                path: /webhooks/0/failurePolicy
+                value: Ignore
+          - target:
+              kind: ValidatingWebhookConfiguration
+              name: kyverno-global-context-validating-webhook-cfg
+            patch: |-
+              - op: replace
+                path: /webhooks/0/failurePolicy
+                value: Ignore
+          - target:
+              kind: ValidatingWebhookConfiguration
+              name: kyverno-policy-validating-webhook-cfg
+            patch: |-
+              - op: replace
+                path: /webhooks/0/failurePolicy
+                value: Ignore
