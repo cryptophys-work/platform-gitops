@@ -19,6 +19,14 @@ spec:
         spec:
           restartPolicy: OnFailure
           serviceAccountName: default
+          tolerations:
+          - key: cryptophys.io/role
+            operator: Equal
+            value: llm-inference
+            effect: NoSchedule
+          - key: cryptophys.io/storage-only
+            operator: Exists
+            effect: NoSchedule
           securityContext:
             runAsNonRoot: true
             runAsUser: 65534
