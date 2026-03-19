@@ -75,7 +75,13 @@ spec:
       replicas: 1
       nodeSelector:
         kubernetes.io/os: linux
-        workload.cryptophys.work/apps-core: "true"
+      tolerations:
+        # Allow scheduling on medulla (LLM inference node) — only viable node with free resources
+        # when cerebellum and quanta are at capacity
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -86,15 +92,17 @@ spec:
                 values:
                 - thalamus-217-76-59-241
                 - synapse-161-97-136-251
+              - key: node-role.kubernetes.io/control-plane
+                operator: DoesNotExist
       serviceWebhook:
         failurePolicy: Ignore
       resources:
         requests:
-          cpu: "200m"
-          memory: "512Mi"
+          cpu: "50m"
+          memory: "128Mi"
         limits:
-          cpu: "1000m"
-          memory: "1Gi"
+          cpu: "500m"
+          memory: "512Mi"
     reportsController:
       replicas: 1
       nodeSelector:
