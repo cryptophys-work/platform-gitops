@@ -103,9 +103,12 @@ spec:
     cleanupController:
       createSelfSignedCert: true
       replicas: 1
-      # extraArgs forces cleanup-controller webhook to failurePolicy: Ignore
+      # extraArgs: webhook failurePolicy + leader election tolerance for API latency spikes
       extraArgs:
         forceFailurePolicyIgnore: "true"
+        leaderElectionLeaseDuration: "240s"
+        leaderElectionRenewDeadline: "120s"
+        leaderElectionRetryPeriod: "15s"
       nodeSelector:
         kubernetes.io/os: linux
       # cleanupController uses top-level resources (not container.resources)
