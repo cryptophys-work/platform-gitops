@@ -99,8 +99,9 @@ spec:
           secretKeyRef:
             name: gitea-mirror-token
             key: token
+    strategy:
+      type: Recreate
     deployment:
-      strategy: Recreate
       lifecycle:
         postStart:
           exec:
