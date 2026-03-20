@@ -103,6 +103,10 @@ spec:
     cleanupController:
       createSelfSignedCert: true
       replicas: 1
+      # featuresOverride forces cleanup-controller webhook to failurePolicy: Ignore
+      featuresOverride:
+        forceFailurePolicyIgnore:
+          enabled: true
       nodeSelector:
         kubernetes.io/os: linux
       # cleanupController uses top-level resources (not container.resources)
@@ -113,9 +117,6 @@ spec:
         limits:
           cpu: "500m"
           memory: "512Mi"
-      container:
-        extraArgs:
-          forceFailurePolicyIgnore: "true"
       tolerations:
         # Allow scheduling on medulla (LLM inference node) — only viable node with free resources
         # when cerebellum and quanta are at capacity
