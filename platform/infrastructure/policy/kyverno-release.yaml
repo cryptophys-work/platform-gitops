@@ -29,6 +29,8 @@ spec:
     features:
       policyExceptions:
         enabled: true
+      forceFailurePolicyIgnore:
+        enabled: true
     config:
       exceptionNamespace: kyverno-system
       resourceFilters:
