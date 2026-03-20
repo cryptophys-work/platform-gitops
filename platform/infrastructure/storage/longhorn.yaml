@@ -69,6 +69,13 @@ spec:
           operator: Exists
           effect: NoSchedule
       # Deliberately NO control-plane toleration — CSI driver not needed on CP
+      resources:
+        requests:
+          cpu: "20m"
+          memory: "64Mi"   # actual ~50Mi per pod (3 containers × ~17Mi)
+        limits:
+          cpu: "500m"
+          memory: "512Mi"
     # ── UI: workers only ──
     longhornUI:
       tolerations:

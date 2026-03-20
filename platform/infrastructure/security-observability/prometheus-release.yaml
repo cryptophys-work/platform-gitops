@@ -100,11 +100,11 @@ spec:
             effect: NoSchedule
         resources:
           requests:
-            cpu: 200m
-            memory: 1536Mi
+            cpu: 700m      # peak 677m over 7d
+            memory: 2Gi    # steady-state ~2Gi; peak 4028Mi during WAL replay
           limits:
             cpu: 1000m
-            memory: 4Gi
+            memory: 6Gi    # 4028Mi peak × 1.5 = 6Gi; prevents OOM during WAL
         storageSpec:
           volumeClaimTemplate:
             spec:

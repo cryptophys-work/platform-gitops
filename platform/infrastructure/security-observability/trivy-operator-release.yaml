@@ -36,7 +36,7 @@ spec:
           memory: 100M
         limits:
           cpu: 500m
-          memory: 500M
+          memory: 2Gi    # peak 1394Mi; was 500M (too low!)
     serviceMonitor:
       enabled: true
     tolerations: []
@@ -48,4 +48,4 @@ spec:
         memory: 512Mi
       limits:
         cpu: 1
-        memory: 4Gi
+        memory: 2Gi    # trivy-server: peak ~715Mi actual, 2Gi for scan bursts

@@ -157,10 +157,10 @@ spec:
     resources:
       requests:
         cpu: 200m
-        memory: 512Mi
+        memory: 512Mi  # peak 490Mi
       limits:
-        cpu: 1000m
-        memory: 2Gi
+        cpu: 600m      # peak 398m × 1.5
+        memory: 768Mi  # peak 490Mi × 1.5 = 735 → 768Mi
     initContainers:
       resources:
         requests:
