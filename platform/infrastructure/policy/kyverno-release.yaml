@@ -103,11 +103,9 @@ spec:
     cleanupController:
       createSelfSignedCert: true
       replicas: 1
-      # extraArgs: webhook failurePolicy + leader election tolerance for API latency spikes
+      # extraArgs: only leaderElectionRetryPeriod is supported by cleanup-controller binary
+      # forceFailurePolicyIgnore and leaseDuration/renewDeadline are NOT valid flags here
       extraArgs:
-        forceFailurePolicyIgnore: "true"
-        leaderElectionLeaseDuration: "240s"
-        leaderElectionRenewDeadline: "120s"
         leaderElectionRetryPeriod: "15s"
       nodeSelector:
         kubernetes.io/os: linux
