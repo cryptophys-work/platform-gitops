@@ -8494,6 +8494,9 @@ spec:
         - --log-level=info
         - --log-encoding=json
         - --enable-leader-election
+        - --leader-election-lease-duration=240s
+        - --leader-election-renew-deadline=120s
+        - --leader-election-retry-period=15s
         env:
         - name: RUNTIME_NAMESPACE
           valueFrom:
