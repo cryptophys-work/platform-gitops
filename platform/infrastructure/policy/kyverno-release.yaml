@@ -103,10 +103,9 @@ spec:
     cleanupController:
       createSelfSignedCert: true
       replicas: 1
-      # featuresOverride forces cleanup-controller webhook to failurePolicy: Ignore
-      featuresOverride:
-        forceFailurePolicyIgnore:
-          enabled: true
+      # extraArgs forces cleanup-controller webhook to failurePolicy: Ignore
+      extraArgs:
+        forceFailurePolicyIgnore: "true"
       nodeSelector:
         kubernetes.io/os: linux
       # cleanupController uses top-level resources (not container.resources)
