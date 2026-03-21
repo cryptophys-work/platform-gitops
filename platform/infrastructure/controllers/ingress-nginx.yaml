@@ -35,7 +35,7 @@ spec:
       strategy:
         type: RollingUpdate
         rollingUpdate:
-          maxSurge: 1
+          maxSurge: 0
           maxUnavailable: 1
       resources:
         requests:
