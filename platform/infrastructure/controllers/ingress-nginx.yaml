@@ -32,7 +32,7 @@ spec:
           port: 11054
       metrics:
         port: 11054
-      strategy:
+      updateStrategy:
         type: RollingUpdate
         rollingUpdate:
           maxSurge: 0
