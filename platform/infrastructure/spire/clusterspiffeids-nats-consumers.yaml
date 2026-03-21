@@ -382,6 +382,50 @@ spec:
   autoPopulateDNSNames: true
   ttl: "1h"
 ---
+# corpus-bridge (apps-user namespace, app=corpus-bridge label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: corpus-bridge
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: apps-user
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: apps-user
+  podSelector:
+    matchLabels:
+      app: corpus-bridge
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# aether-engine (apps-user namespace, app=aether-engine label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: aether-engine
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: apps-user
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: apps-user
+  podSelector:
+    matchLabels:
+      app: aether-engine
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
 # execution-router (apps-user namespace, app=execution-router label)
 apiVersion: spire.spiffe.io/v1alpha1
 kind: ClusterSPIFFEID
