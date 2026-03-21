@@ -19,4 +19,4 @@ spec:
   - matchLabels:
       kubernetes.io/hostname: synapse-161-97-136-251
   - matchLabels:
-      kubernetes.io/hostname: thalamus-217-76-59-241
+      kubernetes.io/hostname: medulla-82-208-20-242
