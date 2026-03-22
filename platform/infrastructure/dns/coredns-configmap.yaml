@@ -7,8 +7,8 @@ data:
            lameduck 5s
         }
         ready
-        rewrite name registry.cryptophys.work registry-harbor-core.registry-system.svc.cluster.local
         hosts {
+           10.98.40.190 registry.cryptophys.work
            10.107.45.144 giteainternal.cryptophys.work
            fallthrough
         }
