@@ -87,6 +87,7 @@ spec:
 
               # medulla: LLM inference tier (largest worker - 8CPU/23.5GB)
               kubectl label node medulla-82-208-20-242 \
+                node-role.kubernetes.io/worker= \
                 cryptophys.io/role=llm-inference \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
@@ -99,6 +100,7 @@ spec:
 
               # synapse: apps-core general compute (6CPU/11.5GB)
               kubectl label node synapse-161-97-136-251 \
+                node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
                 --overwrite
@@ -106,6 +108,7 @@ spec:
 
               # thalamus: apps-core general compute (6CPU/11.5GB)
               kubectl label node thalamus-217-76-59-241 \
+                node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
                 --overwrite
@@ -113,6 +116,7 @@ spec:
 
               # quanta: apps-core lightweight (4CPU/7.4GB)
               kubectl label node quanta-194-163-186-222 \
+                node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
                 --overwrite
@@ -120,6 +124,7 @@ spec:
 
               # campus: storage-only (4CPU/7.4GB) + NoSchedule taint
               kubectl label node campus-212-47-66-101 \
+                node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=storage \
                 cryptophys.io/node-role=storage-worker \
                 workload.cryptophys.work/storage=true \
