@@ -49,6 +49,9 @@ spec:
         - effect: NoSchedule
           key: node.kubernetes.io/memory-pressure
           operator: Exists
+        - effect: NoSchedule
+          key: cryptophys.io/storage-only
+          operator: Exists
       admissionWebhooks:
         enabled: false
       service:
