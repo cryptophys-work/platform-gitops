@@ -15,8 +15,7 @@ spec:
         namespace: flux-system
   values:
     controller:
-      kind: Deployment
-      replicaCount: 2
+      kind: DaemonSet
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       extraArgs:
@@ -32,48 +31,24 @@ spec:
           port: 11054
       metrics:
         port: 11054
-      updateStrategy:
-        type: RollingUpdate
-        rollingUpdate:
-          maxSurge: 0
-          maxUnavailable: 1
       resources:
         requests:
-          cpu: 5m
-          memory: 64Mi
+          cpu: 50m
+          memory: 128Mi
         limits:
-          cpu: 250m
-          memory: 192Mi
+          cpu: 500m
+          memory: 256Mi
       nodeSelector:
-        workload.cryptophys.work/apps-core: "true"
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: app.kubernetes.io/component
-                      operator: In
-                      values:
-                        - controller
-                    - key: app.kubernetes.io/instance
-                      operator: In
-                      values:
-                        - ingress-gateway
-                topologyKey: kubernetes.io/hostname
+        node-role.kubernetes.io/control-plane: ""
+      affinity: {}
       tolerations:
         - effect: NoSchedule
           key: node-role.kubernetes.io/control-plane
           operator: Exists
-        - effect: NoSchedule
-          key: cryptophys.io/role
-          operator: Equal
-          value: llm-inference
         - effect: NoSchedule
           key: node.kubernetes.io/memory-pressure
           operator: Exists
       admissionWebhooks:
         enabled: false
       service:
-        type: LoadBalancer
+        type: ClusterIP
