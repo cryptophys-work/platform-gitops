@@ -52,6 +52,9 @@ spec:
         - effect: NoSchedule
           key: cryptophys.io/storage-only
           operator: Exists
+        - effect: NoSchedule
+          key: cryptophys.io/role
+          operator: Exists
       admissionWebhooks:
         enabled: false
       service:
