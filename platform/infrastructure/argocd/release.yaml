@@ -72,7 +72,7 @@ spec:
       resources:
         requests:
           cpu: 100m
-          memory: 1.5Gi  # peak 2460Mi during cascade; steady ~1Gi; burstable to 4Gi
+          memory: 1Gi  # peak 2460Mi during cascade; steady ~1Gi; burstable to 4Gi
         limits:
           cpu: 2000m
           memory: 4Gi
