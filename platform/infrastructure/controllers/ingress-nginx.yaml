@@ -38,7 +38,9 @@ spec:
         limits:
           cpu: 500m
           memory: 256Mi
-      nodeSelector: null
+      nodeSelector:
+        cryptophys.io/tier: null
+        node-role.kubernetes.io/control-plane: null
       affinity: {}
       tolerations:
         - effect: NoSchedule
