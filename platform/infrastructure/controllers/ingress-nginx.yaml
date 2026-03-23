@@ -40,6 +40,7 @@ spec:
           memory: 256Mi
       nodeSelector:
         node-role.kubernetes.io/control-plane: ""
+        cryptophys.io/tier: "platform"
       affinity: {}
       tolerations:
         - effect: NoSchedule
