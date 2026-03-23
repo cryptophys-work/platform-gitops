@@ -53,4 +53,6 @@ spec:
       admissionWebhooks:
         enabled: false
       service:
-        type: ClusterIP
+        type: LoadBalancer
+        loadBalancerIP: "10.8.0.240"
+
