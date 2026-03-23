@@ -77,7 +77,7 @@ spec:
                     operator: DoesNotExist
       containers:
         - name: labeler
-          image: bitnami/kubectl:6e2cdb22d6ab7264ea198c717f555e30536b54029d26c8781b9f25f78951b564
+          image: bitnami/kubectl:latest
           command:
             - /bin/sh
             - -c
