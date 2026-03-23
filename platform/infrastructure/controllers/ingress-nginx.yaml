@@ -16,6 +16,7 @@ spec:
   values:
     controller:
       kind: DaemonSet
+      priorityClassName: cryptophys-platform-critical
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       extraArgs:
