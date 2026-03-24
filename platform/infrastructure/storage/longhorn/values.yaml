@@ -12,3 +12,28 @@ longhornCSI:
     - key: cryptophys.io/storage-only
       operator: Exists
       effect: NoSchedule
+# Optimized resource requests based on actual usage audit (2026-03-19)
+longhornUI:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 256Mi
+longhornManager:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+longhornDriver:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi

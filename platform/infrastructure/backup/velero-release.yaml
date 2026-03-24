@@ -53,10 +53,18 @@ spec:
     deployNodeAgent: false
     snapshotsEnabled: false
     upgradeCRDs: false
-    nodeSelector:
-      cryptophys.io/node-role: storage-worker
-      kubernetes.io/hostname: campus-212-47-66-101
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
     tolerations:
-    - key: cryptophys.io/storage-only
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+    - key: node.kubernetes.io/memory-pressure
       operator: Exists
       effect: NoSchedule

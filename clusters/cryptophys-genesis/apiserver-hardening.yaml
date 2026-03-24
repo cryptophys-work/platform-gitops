@@ -8,7 +8,9 @@
 #   - allocatable gain: +1.5Gi per CP node (7.7Gi → 9.2Gi)
 #   - evictionHard: 256Mi → 500Mi (evict earlier, before cascade)
 #   - evictionSoft: 512Mi → 1Gi (graceful shed at 1Gi free)
-#   - apiserver limit: 6Gi → 4Gi (force Go GC to run earlier)
+#   - apiserver limit: 4Gi → 6Gi (4Gi proved too tight under control-plane churn)
+#   - apiserver request: 1Gi → 2Gi (reserve realistic memory for steady-state load)
+#   - GOMEMLIMIT: 3750MiB → 5500MiB (keep GC pressure, but leave safer burst headroom)
 #   - max-requests-inflight: 200 → 100
 #   - max-mutating-requests-inflight: 100 → 50
 #   - default-watch-cache-size: (missing) → 50 (caps ALL unlisted resources)
@@ -48,24 +50,22 @@ machine:
 
 cluster:
   apiServer:
-    # ── Hard memory cap — 4Gi forces Go GC to run much more aggressively ──
-    # v3.0: Reduced 6Gi → 4Gi. Combined with GOGC=50 and reduced watch-cache,
-    # target actual usage is 3.0-3.5Gi (was 5.5-5.7Gi).
+    # ── Hard memory cap — 6Gi keeps GC pressure, but avoids repeated OOM spikes ──
+    # 4Gi proved too tight in production: cerebrum and cortex were both OOMKilled
+    # around ~3.8Gi steady-state usage during control-plane churn and API aggregation.
     resources:
       requests:
         cpu: "500m"
-        memory: "1Gi"
+        memory: "2Gi"
       limits:
         cpu: "6"
-        memory: "4Gi"
+        memory: "6Gi"
 
     # ── Go GC tuning: run GC at 50% heap growth instead of default 100% ──
     # Halves peak heap; costs ~5-8% CPU. Best single lever for apiserver memory.
-    extraEnv:
-      - name: GOGC
-        value: "50"
-      - name: GOMEMLIMIT
-        value: "3750MiB"
+    env:
+      GOGC: "50"
+      GOMEMLIMIT: "5500MiB"
 
     extraArgs:
       enable-priority-and-fairness: "true"
