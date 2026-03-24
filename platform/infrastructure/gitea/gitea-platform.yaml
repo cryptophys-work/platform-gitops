@@ -153,11 +153,17 @@ spec:
       enabled: false
     resources:
       requests:
-        cpu: 200m
-        memory: 512Mi  # peak 490Mi
+        cpu: 50m
+        memory: 256Mi
       limits:
         cpu: 600m      # peak 398m × 1.5
         memory: 768Mi  # peak 490Mi × 1.5 = 735 → 768Mi
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+    nodeSelector:
+      kubernetes.io/hostname: corpus-207-180-206-69
     initContainers:
       resources:
         requests:
