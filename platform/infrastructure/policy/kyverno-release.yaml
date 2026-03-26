@@ -143,6 +143,8 @@ spec:
         failureThreshold: 50
         periodSeconds: 6
     reportsController:
+      imagePullSecrets:
+        - name: harbor-pull-secret
       replicas: 1
       nodeSelector:
         kubernetes.io/os: linux
