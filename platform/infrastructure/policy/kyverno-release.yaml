@@ -29,7 +29,7 @@ spec:
     # imagePullSecrets removed to fix type mismatch error
     global:
       imagePullSecrets:
-        - name: harbor-pull-secret
+        - name: registry-cryptophys-work-auth
     features:
       policyExceptions:
         enabled: true
@@ -159,7 +159,7 @@ spec:
         periodSeconds: 6
     reportsController:
       imagePullSecrets:
-        - name: harbor-pull-secret
+        - name: registry-cryptophys-work-auth
       replicas: 1
       nodeSelector:
         kubernetes.io/os: linux
