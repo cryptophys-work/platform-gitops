@@ -447,3 +447,26 @@ spec:
       app: execution-router
   autoPopulateDNSNames: true
   ttl: "1h"
+
+---
+# aide-worker-deployment (pods use component=workerDeployment label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: aide-worker-deployment
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: aide
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: aide
+  podSelector:
+    matchLabels:
+      component: workerDeployment
+  autoPopulateDNSNames: true
+  ttl: "1h"

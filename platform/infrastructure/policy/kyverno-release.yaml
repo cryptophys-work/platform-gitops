@@ -26,6 +26,11 @@ spec:
       retries: 3
     crds: CreateReplace
   values:
+    imagePullSecrets:
+      - name: harbor-pull-secret
+    global:
+      imagePullSecrets:
+        - name: harbor-pull-secret
     features:
       policyExceptions:
         enabled: true
