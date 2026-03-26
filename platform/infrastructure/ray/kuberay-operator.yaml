@@ -23,11 +23,11 @@ spec:
     tolerations: []
     resources:
       requests:
-        cpu: 100m
-        memory: 128Mi
-      limits:
         cpu: 500m
-        memory: 384Mi
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 768Mi
     batchScheduler:
       enabled: false
     extraArgs:
