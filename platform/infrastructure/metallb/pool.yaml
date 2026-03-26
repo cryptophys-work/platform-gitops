@@ -15,3 +15,5 @@ metadata:
 spec:
   ipAddressPools:
     - platform-metallb-pool
+  interfaces:
+    - eth0
