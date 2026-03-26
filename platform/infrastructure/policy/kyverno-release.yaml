@@ -45,6 +45,17 @@ spec:
     admissionController:
       createSelfSignedCert: true
       replicas: 2
+      # Increase probe timeouts to prevent crashloops during high load or network latency
+      livenessProbe:
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        timeoutSeconds: 15
+        failureThreshold: 4
+      readinessProbe:
+        initialDelaySeconds: 15
+        periodSeconds: 10
+        timeoutSeconds: 15
+        failureThreshold: 6
       updateStrategy:
         rollingUpdate:
           maxSurge: 0
