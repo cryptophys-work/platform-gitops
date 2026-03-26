@@ -3,6 +3,12 @@ kind: PolicyException
 metadata:
   name: ingress-gateway-exceptions
   namespace: ingress-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/owner: platform
+    cryptophys.io/reason: "Allow ingress-nginx to use host networking and capabilities"
+    cryptophys.io/ticket: "CRYPTOPHYS-2026-INGRESS"
+    cryptophys.io/expiry: "2027-01-01"
 spec:
   exceptions:
   - policyName: cp-supplychain-registry-v1
