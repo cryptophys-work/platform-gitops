@@ -8,3 +8,8 @@ resources:
   - redis-ha/
   - spiffe-helper-config.yaml
   - release.yaml
+patches:
+  - path: argocd-cm-health-patch.yaml
+    target:
+      kind: ConfigMap
+      name: argocd-cm
