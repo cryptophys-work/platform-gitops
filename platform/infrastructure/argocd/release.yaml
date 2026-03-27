@@ -34,6 +34,7 @@ spec:
       cm:
         # Enable non-expiring API token for drift-sentinel + automation tooling
         accounts.admin: "apiKey, login"
+        cluster.inClusterEnabled: "true"
         # Exclude high-churn Trivy report CRDs from ArgoCD cache/diff to avoid
         # intermittent cache sync timeouts on large report sets.
         resource.exclusions: |
