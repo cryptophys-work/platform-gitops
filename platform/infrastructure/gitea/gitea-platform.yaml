@@ -133,6 +133,29 @@ spec:
         type: ClusterIP
         port: 3000
         clusterIP: ""
+    extraContainers:
+      - name: picoclaw-sentinel
+        image: registry.cryptophys.work/core/picoclaw:sha-main
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          runAsNonRoot: true
+          runAsUser: 1000
+        env:
+          - name: TARGET_NAME
+            value: "gitea-core"
+          - name: MEM_THRESHOLD_MB
+            value: "768"
+          - name: NATS_URL
+            value: "tls://nats.mesh-system.svc.cluster.local:4222"
+        resources:
+          requests:
+            cpu: 10m
+            memory: 16Mi
+          limits:
+            cpu: 50m
+            memory: 32Mi
     persistence:
       enabled: true
       create: false
