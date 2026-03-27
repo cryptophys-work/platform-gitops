@@ -88,6 +88,8 @@ spec:
             memory: "1Gi"
     backgroundController:
       replicas: 1
+      extraArgs:
+        exceptionNamespace: kyverno-system
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
