@@ -148,7 +148,7 @@ spec:
           - name: MEM_THRESHOLD_MB
             value: "768"
           - name: NATS_URL
-            value: "tls://nats.mesh-system.svc.cluster.local:4222"
+            value: "nats://mesh-agent:Pss3IVGahHalq9x6VmGBjq3u@mesh-broker-client.mesh-system.svc.cluster.local:4222"
         resources:
           requests:
             cpu: 50m
