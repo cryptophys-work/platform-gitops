@@ -122,6 +122,21 @@ spec:
                 --overwrite
               echo "quanta: labelled (apps-core lightweight)"
 
+              # corpus: control-plane node that also accepts apps-core workloads
+              kubectl label node corpus-207-180-206-69 \
+                workload.cryptophys.work/apps-core=true \
+                --overwrite 2>/dev/null || true
+              echo "corpus: labelled (apps-core)"
+
+              # cerebellum: extra worker node
+              kubectl label node cerebellum-161-97-117-96 \
+                node-role.kubernetes.io/worker= \
+                cryptophys.io/tier=compute \
+                workload.cryptophys.work/apps-core=true \
+                workload.cryptophys.work/compute=true \
+                --overwrite 2>/dev/null || true
+              echo "cerebellum: labelled (apps-core)"
+
               # campus: storage-only (4CPU/7.4GB) + NoSchedule taint
               kubectl label node campus-212-47-66-101 \
                 node-role.kubernetes.io/worker= \
