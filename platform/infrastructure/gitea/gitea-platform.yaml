@@ -135,7 +135,7 @@ spec:
         clusterIP: ""
     extraContainers:
       - name: picoclaw-sentinel
-        image: registry.cryptophys.work/core/picoclaw:sha-main
+        image: registry.cryptophys.work/core/picoclaw@sha256:a10dbeb63111757550b121e34299776fa165f92339d1e946d122765f7b3fa071
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -151,11 +151,11 @@ spec:
             value: "tls://nats.mesh-system.svc.cluster.local:4222"
         resources:
           requests:
-            cpu: 10m
-            memory: 16Mi
-          limits:
             cpu: 50m
-            memory: 32Mi
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
     persistence:
       enabled: true
       create: false
