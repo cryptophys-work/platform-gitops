@@ -34,6 +34,18 @@ spec:
       cm:
         # Enable non-expiring API token for drift-sentinel + automation tooling
         accounts.admin: "apiKey, login"
+        # Exclude high-churn Trivy report CRDs from ArgoCD cache/diff to avoid
+        # intermittent cache sync timeouts on large report sets.
+        resource.exclusions: |
+          - apiGroups:
+              - aquasecurity.github.io
+            kinds:
+              - SbomReport
+              - VulnerabilityReport
+              - ClusterSbomReport
+              - ClusterVulnerabilityReport
+            clusters:
+              - "*"
         resource.customizations.ignoreDifferences.all: |
           jsonPointers:
             - /metadata/annotations/argocd.argoproj.io~1tracking-id
