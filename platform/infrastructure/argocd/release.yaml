@@ -79,11 +79,11 @@ spec:
           local available = obj.status.availableReplicas or 0
           if ready >= replicas and available >= replicas then
             hs.status = "Healthy"
-            hs.message = string.format("%d/%d replicas ready", ready, replicas)
+            hs.message = tostring(ready) .. "/" .. tostring(replicas) .. " replicas ready"
             return hs
           end
           hs.status = "Progressing"
-          hs.message = string.format("%d/%d replicas ready", ready, replicas)
+          hs.message = tostring(ready) .. "/" .. tostring(replicas) .. " replicas ready"
           return hs
         resource.customizations.health.gateway.envoyproxy.io_SecurityPolicy: |
           hs = {}
