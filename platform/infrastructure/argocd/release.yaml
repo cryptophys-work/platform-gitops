@@ -87,6 +87,15 @@ spec:
           memory: 256Mi
     repoServer:
       replicas: 2
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values:
+                - cerebellum-161-97-117-96
       resources:
         requests:
           cpu: 50m
