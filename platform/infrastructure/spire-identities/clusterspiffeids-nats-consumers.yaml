@@ -1,0 +1,494 @@
+# SPIRE Workload Registrations for NATS mTLS — all NATS consumers
+# Trust domain: spiffe://cryptophys.work
+# Pattern: verify client cert (no password), cert rotates every 1h via SPIRE
+---
+# ai-mesh-broker (NATS server itself)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: ai-mesh-broker
+  labels:
+    app.kubernetes.io/name: spire
+    app.kubernetes.io/part-of: spire
+    cryptophys.work/domain: mesh
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: mesh-system
+  podSelector:
+    matchLabels:
+      app: ai-mesh-broker
+  dnsNameTemplates:
+    - "ai-mesh-broker.mesh-system.svc.cluster.local"
+    - "mesh-broker.mesh-system.svc.cluster.local"
+    - "{{ .PodMeta.Name }}.mesh-broker.mesh-system.svc.cluster.local"
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# cerebrum-hub
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: cerebrum-hub
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: cerebrum
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: cerebrum
+  podSelector:
+    matchLabels:
+      app: cerebrum-hub
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# contract-synthesizer
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: contract-synthesizer
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: cerebrum
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: cerebrum
+  podSelector:
+    matchLabels:
+      app: contract-synthesizer
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# cerebrum-drift-sentinel
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: cerebrum-drift-sentinel
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: cerebrum
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: cerebrum
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: drift-sentinel
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# audit-compiler
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: audit-compiler
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: cerebrum
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: cerebrum
+  podSelector:
+    matchLabels:
+      app: audit-compiler
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# aide-executor (pods use component=executor label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: aide-executor
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: aide
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: aide
+  podSelector:
+    matchLabels:
+      component: executor
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# aide-brain-gateway (pods use component=brainGateway label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: aide-brain-gateway
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: aide
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: aide
+  podSelector:
+    matchLabels:
+      component: brainGateway
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# aide-evolution-engine (pods use component=evolutionEngine label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: aide-evolution-engine
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: aide
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: aide
+  podSelector:
+    matchLabels:
+      component: evolutionEngine
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# aide-git-committer (pods use component=gitCommitter label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: aide-git-committer
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: aide
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: aide
+  podSelector:
+    matchLabels:
+      component: gitCommitter
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# aide-worker-pool (pods use component=workerPool label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: aide-worker-pool
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: aide
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: aide
+  podSelector:
+    matchLabels:
+      component: workerPool
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# cerebrum-core (app=cerebrum-core label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: cerebrum-core
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: cerebrum
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: cerebrum
+  podSelector:
+    matchLabels:
+      app: cerebrum-core
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# orchestrator-spark
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: orchestrator-spark
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: orchestrator
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: orchestrator
+  podSelector:
+    matchLabels:
+      app: orchestrator-spark
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# bridge-core (sync service)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: bridge-core
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: bridge
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: bridge
+  podSelector:
+    matchLabels:
+      app: bridge-core
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# openclaw
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: openclaw
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: openclaw
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: openclaw
+  podSelector:
+    matchLabels:
+      app: openclaw
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# trustedledger-api
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: trustedledger-api
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: trustedledger
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: trustedledger
+  podSelector:
+    matchLabels:
+      app: trustedledger-api
+  autoPopulateDNSNames: true
+  ttl: "1h"
+
+---
+# openclaw-agent (openclaw namespace, app.kubernetes.io/name=openclaw label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: openclaw-agent
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: openclaw
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: openclaw
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: openclaw
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# openclaw-agent-apps-core (pod deployed in apps-core namespace)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: openclaw-agent-apps-core
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: openclaw
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: apps-core
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: openclaw
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# cerebrum-audit-compiler (cerebrum namespace, app=cerebrum-audit-compiler label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: cerebrum-audit-compiler
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: cerebrum
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: cerebrum
+  podSelector:
+    matchLabels:
+      app: cerebrum-audit-compiler
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# corpus-bridge (apps-user namespace, app=corpus-bridge label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: corpus-bridge
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: apps-user
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: apps-user
+  podSelector:
+    matchLabels:
+      app: corpus-bridge
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# aether-engine (apps-user namespace, app=aether-engine label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: aether-engine
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: apps-user
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: apps-user
+  podSelector:
+    matchLabels:
+      app: aether-engine
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# execution-router (apps-user namespace, app=execution-router label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: execution-router
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: apps-user
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: apps-user
+  podSelector:
+    matchLabels:
+      app: execution-router
+  autoPopulateDNSNames: true
+  ttl: "1h"
+
+---
+# aide-worker-deployment (pods use component=workerDeployment label)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: aide-worker-deployment
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: aide
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: aide
+  podSelector:
+    matchLabels:
+      component: workerDeployment
+  autoPopulateDNSNames: true
+  ttl: "1h"

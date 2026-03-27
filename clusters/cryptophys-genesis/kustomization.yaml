@@ -28,6 +28,7 @@ resources:
   - kustomization/30-vault.yaml
   - kustomization/31-secrets.yaml
   - kustomization/35-spire.yaml
+  - kustomization/36-spire-identities.yaml
   - kustomization/40-gitea.yaml
   - kustomization/41-harbor.yaml
   - kustomization/42-argocd.yaml
