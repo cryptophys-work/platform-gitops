@@ -360,6 +360,28 @@ spec:
   autoPopulateDNSNames: true
   ttl: "1h"
 ---
+# openclaw-agent-apps-core (pod deployed in apps-core namespace)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: openclaw-agent-apps-core
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: openclaw
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: apps-core
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: openclaw
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
 # cerebrum-audit-compiler (cerebrum namespace, app=cerebrum-audit-compiler label)
 apiVersion: spire.spiffe.io/v1alpha1
 kind: ClusterSPIFFEID
