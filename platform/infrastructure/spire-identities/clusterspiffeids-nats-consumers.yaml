@@ -492,3 +492,25 @@ spec:
       component: workerDeployment
   autoPopulateDNSNames: true
   ttl: "1h"
+---
+# tekton nats-publish taskruns
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: tekton-nats-publish
+  labels:
+    app.kubernetes.io/name: spire
+    cryptophys.work/domain: tekton
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: tekton-system
+  podSelector:
+    matchLabels:
+      tekton.dev/task: nats-publish
+  autoPopulateDNSNames: true
+  ttl: "1h"
