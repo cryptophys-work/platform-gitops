@@ -28,6 +28,13 @@ spec:
     tetragon:
       image:
         repository: quay.io/cilium/tetragon
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
       extraVolumeMounts:
         - name: tracefs
           mountPath: /sys/kernel/tracing  # Talos tracefs: pre-mounted at this path on host

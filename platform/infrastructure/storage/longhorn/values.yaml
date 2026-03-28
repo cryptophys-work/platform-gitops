@@ -14,6 +14,13 @@ longhornCSI:
       effect: NoSchedule
 # Optimized resource requests based on actual usage audit (2026-03-19)
 longhornUI:
+  replicas: 1
+  nodeSelector:
+    workload.cryptophys.work/apps-core: "true"
+  tolerations:
+    - key: cryptophys.io/storage-only
+      operator: Exists
+      effect: NoSchedule
   resources:
     requests:
       cpu: 10m
@@ -28,7 +35,7 @@ longhornManager:
       memory: 256Mi
     limits:
       cpu: 1000m
-      memory: 1Gi
+      memory: 768Mi
 longhornDriver:
   resources:
     requests:
