@@ -35,6 +35,8 @@ spec:
         enabled: true
       forceFailurePolicyIgnore:
         enabled: true
+    webhookConfiguration:
+      failurePolicy: Ignore
     config:
       exceptionNamespace: kyverno-system
       resourceFilters:
