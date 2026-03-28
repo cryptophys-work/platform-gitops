@@ -37,3 +37,45 @@ subjects:
 - kind: ServiceAccount
   name: kyverno-background-controller
   namespace: kyverno-system
+---
+# RBAC: Grant kyverno background-controller permission to mutate the Tekton
+# controller Deployment when mutateExisting policies target it directly.
+# Required for ClusterPolicy/tekton-controller-harbor-images.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kyverno:background-controller:tekton-controller
+  namespace: tekton-pipelines
+  labels:
+    app.kubernetes.io/component: background-controller
+    app.kubernetes.io/part-of: kyverno
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+  annotations:
+    cryptophys.io/contract: contract.platform.policy.v1
+rules:
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  resourceNames: ["tekton-pipelines-controller"]
+  verbs: ["get", "list", "watch", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kyverno:background-controller:tekton-controller
+  namespace: tekton-pipelines
+  labels:
+    app.kubernetes.io/component: background-controller
+    app.kubernetes.io/part-of: kyverno
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+  annotations:
+    cryptophys.io/contract: contract.platform.policy.v1
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kyverno:background-controller:tekton-controller
+subjects:
+- kind: ServiceAccount
+  name: kyverno-background-controller
+  namespace: kyverno-system
