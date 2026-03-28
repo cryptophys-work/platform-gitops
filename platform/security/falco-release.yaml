@@ -5,6 +5,7 @@ metadata:
   namespace: falco-system
 spec:
   interval: 1h
+  suspend: true  # Suspended: driver compatibility issues on Talos (330+ restarts, no useful data)
   chart:
     spec:
       chart: falco
