@@ -5,6 +5,7 @@ resources:
   - apps-bootstrap.yaml
   - argocd-repo-mtls-secret.yaml
   - argocd-server-secret-eso.yaml
+  - argocd-picoclaw-guard-script.yaml
   - redis-ha/
   - spiffe-helper-config.yaml
   - release.yaml
