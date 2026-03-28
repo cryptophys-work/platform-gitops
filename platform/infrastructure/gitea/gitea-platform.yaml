@@ -246,6 +246,16 @@ spec:
     tolerations: []
     nodeSelector:
       workload.cryptophys.work/apps-core: "true"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: NotIn
+                  values:
+                    - quanta-194-163-186-222
+                    - synapse-161-97-136-251
     initContainers:
       resources:
         requests:
