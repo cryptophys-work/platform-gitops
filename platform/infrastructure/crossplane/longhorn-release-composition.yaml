@@ -46,6 +46,11 @@ spec:
                   storageReservedPercentageForDefaultDisk: 25
                   replicaSoftAntiAffinity: true
                   replicaAutoBalance: best-effort
+                  orphanAutoDeletion: true
+                  concurrentReplicaRebuildPerNodeLimit: 3
+                  autoCleanupSystemGeneratedSnapshot: true
+                  storageOverProvisioningPercentage: 200
+                  autoDeletePodWhenVolumeDetachedUnexpectedly: true
                 longhornManager:
                   resources:
                     requests:
