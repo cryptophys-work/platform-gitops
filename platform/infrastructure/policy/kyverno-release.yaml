@@ -79,6 +79,7 @@ spec:
       container:
         extraArgs:
           forceFailurePolicyIgnore: "true"
+          maxAdmissionReports: "200"
         resources:
           requests:
             cpu: "100m"
@@ -177,9 +178,10 @@ spec:
       container:
         extraArgs:
           forceFailurePolicyIgnore: "true"
-          backgroundScanInterval: "12h"
+          backgroundScanInterval: "24h"
           backgroundScanWorkers: "1"
           enableReporting: "validate"
+          skipResourceFilters: "true"
       tolerations:
         - key: cryptophys.io/role
           operator: Equal

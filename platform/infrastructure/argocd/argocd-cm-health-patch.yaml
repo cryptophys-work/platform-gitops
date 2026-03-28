@@ -30,3 +30,58 @@ data:
     hs.status = "Progressing"
     hs.message = tostring(ready) .. "/" .. tostring(replicas) .. " replicas ready"
     return hs
+  resource.customizations.health.tekton.dev_PipelineRun: |
+    hs = {}
+    if obj.status == nil then
+      hs.status = "Healthy"
+      hs.message = "No status"
+      return hs
+    end
+    local succeeded = nil
+    if obj.status.conditions ~= nil then
+      for _, c in ipairs(obj.status.conditions) do
+        if c.type == "Succeeded" then
+          succeeded = c
+          break
+        end
+      end
+    end
+    if succeeded == nil then
+      hs.status = "Progressing"
+      hs.message = "Running"
+      return hs
+    end
+    if succeeded.status == "True" then
+      hs.status = "Healthy"
+      hs.message = "Completed"
+      return hs
+    elseif succeeded.status == "False" then
+      hs.status = "Degraded"
+      hs.message = succeeded.reason or "Failed"
+      return hs
+    end
+    hs.status = "Progressing"
+    hs.message = succeeded.reason or "Running"
+    return hs
+  resource.customizations.health.tekton.dev_TaskRun: |
+    hs = {}
+    if obj.status == nil then
+      hs.status = "Healthy"
+      hs.message = "No status"
+      return hs
+    end
+    local succeeded = nil
+    if obj.status.conditions ~= nil then
+      for _, c in ipairs(obj.status.conditions) do
+        if c.type == "Succeeded" then succeeded = c; break end
+      end
+    end
+    if succeeded == nil then
+      hs.status = "Progressing"; hs.message = "Running"; return hs
+    end
+    if succeeded.status == "True" then
+      hs.status = "Healthy"; hs.message = "Completed"; return hs
+    elseif succeeded.status == "False" then
+      hs.status = "Degraded"; hs.message = succeeded.reason or "Failed"; return hs
+    end
+    hs.status = "Progressing"; hs.message = "Running"; return hs

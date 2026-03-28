@@ -7,3 +7,10 @@ resources:
   # cp-restriction-policy.yaml moved to 15-policy-crs (Kyverno CRDs not ready at dry-run time)
   - kyverno-cleanup-rbac.yaml
   - kyverno-background-rbac.yaml
+patches:
+  # forceFailurePolicyIgnore does not apply to policy-validation webhook in Kyverno 3.5.x;
+  # patch it to Ignore so Flux dry-runs succeed during transient Kyverno overload.
+  - path: kyverno-policy-webhook-patch.yaml
+    target:
+      kind: ValidatingWebhookConfiguration
+      name: kyverno-policy-validating-webhook-cfg
