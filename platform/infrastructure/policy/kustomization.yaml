@@ -6,8 +6,9 @@ resources:
   - kyverno-release.yaml
   - ../tekton
   # cp-restriction-policy.yaml moved to 15-policy-crs (Kyverno CRDs not ready at dry-run time)
-  - kyverno-cleanup-rbac.yaml
-  - kyverno-background-rbac.yaml
+  # kyverno-cleanup-rbac.yaml and kyverno-background-rbac.yaml moved to
+  # ../policy-rbac/ (stage 14-policy-rbac) to break chicken-and-egg:
+  # RBAC must exist before ClusterPolicy dry-run triggers webhook validation
 patches:
   # forceFailurePolicyIgnore does not apply to policy-validation webhook in Kyverno 3.5.x;
   # patch it to Ignore so Flux dry-runs succeed during transient Kyverno overload.
