@@ -16,6 +16,68 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 5
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: gitops-gitea
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: gitops-gitea
+              spec:
+                template:
+                  spec:
+                    volumes:
+                      - name: picoclaw-guard-script
+                        configMap:
+                          name: gitea-picoclaw-guard-script
+                          defaultMode: 0444
+                    containers:
+                      - name: picoclaw-sentinel
+                        env:
+                          - name: TARGET_NAME
+                            value: gitea-core
+                          - name: MEM_THRESHOLD_MB
+                            value: "768"
+                          - name: CHECK_INTERVAL
+                            value: "20"
+                          - name: HEALTH_PORT
+                            value: "8088"
+                          - name: PROBE_TIMEOUT_SECONDS
+                            value: "5"
+                          - name: PROBE_FAILURE_THRESHOLD
+                            value: "3"
+                          - name: PROBE_URLS
+                            value: http://127.0.0.1:3000/,http://127.0.0.1:3000/cryptophys-work/apps-gitops.git/info/refs?service=git-upload-pack
+                          - name: NATS_URL
+                            value: nats://mesh-agent:Pss3IVGahHalq9x6VmGBjq3u@mesh-broker-client.mesh-system.svc.cluster.local:4222
+                        ports:
+                          - name: picoclaw-http
+                            containerPort: 8088
+                        readinessProbe:
+                          httpGet:
+                            path: /readyz
+                            port: 8088
+                          initialDelaySeconds: 15
+                          periodSeconds: 15
+                          timeoutSeconds: 3
+                          failureThreshold: 3
+                        livenessProbe:
+                          httpGet:
+                            path: /healthz
+                            port: 8088
+                          initialDelaySeconds: 20
+                          periodSeconds: 20
+                          timeoutSeconds: 3
+                          failureThreshold: 3
+                        volumeMounts:
+                          - name: picoclaw-guard-script
+                            mountPath: /app/guardian.py
+                            subPath: guardian.py
+                            readOnly: true
   chart:
     spec:
       chart: gitea

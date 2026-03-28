@@ -1,0 +1,239 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitea-picoclaw-guard-script
+  namespace: gitops-system
+data:
+  guardian.py: |
+    import asyncio
+    import json
+    import logging
+    import os
+    import threading
+    import time
+    import urllib.error
+    import urllib.request
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    from nats_tls import nats_connect
+
+
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s [PICOCLAW] %(message)s")
+    log = logging.getLogger("picoclaw")
+
+    TARGET_NAME = os.getenv("TARGET_NAME", "generic-guardian")
+    MEM_THRESHOLD_MB = int(os.getenv("MEM_THRESHOLD_MB", "512"))
+    CHECK_INTERVAL = int(os.getenv("CHECK_INTERVAL", "20"))
+    HEALTH_PORT = int(os.getenv("HEALTH_PORT", "8088"))
+    PROBE_TIMEOUT_SECONDS = int(os.getenv("PROBE_TIMEOUT_SECONDS", "5"))
+    PROBE_FAILURE_THRESHOLD = int(os.getenv("PROBE_FAILURE_THRESHOLD", "3"))
+    NATS_URL = os.getenv("NATS_URL", "nats://mesh-agent:Pss3IVGahHalq9x6VmGBjq3u@mesh-broker-client.mesh-system.svc.cluster.local:4222")
+    PROBE_URLS = [value.strip() for value in os.getenv("PROBE_URLS", "").split(",") if value.strip()]
+
+    started_at = time.time()
+    state_lock = threading.Lock()
+    state = {
+        "ready": False,
+        "status": "starting",
+        "posture": "trust-first",
+        "last_error": "",
+        "consecutive_failures": 0,
+        "last_probe_ts": 0,
+        "metrics": {},
+    }
+
+
+    def get_container_memory_usage():
+        try:
+            if os.path.exists("/sys/fs/cgroup/memory.current"):
+                with open("/sys/fs/cgroup/memory.current", "r", encoding="utf-8") as handle:
+                    return int(handle.read().strip()) / (1024 * 1024)
+        except Exception as exc:
+            log.warning("Could not read cgroup memory: %s", exc)
+        return 0.0
+
+
+    def run_probe(url):
+        request = urllib.request.Request(
+            url,
+            headers={"User-Agent": f"cryptophys-picoclaw/{TARGET_NAME}"},
+            method="GET",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=PROBE_TIMEOUT_SECONDS) as response:
+                status = getattr(response, "status", 200)
+                response.read(256)
+                if status < 200 or status >= 400:
+                    raise RuntimeError(f"http_{status}")
+                return {"url": url, "status": status}
+        except urllib.error.HTTPError as exc:
+            raise RuntimeError(f"http_{exc.code}") from exc
+        except Exception as exc:
+            raise RuntimeError(str(exc)) from exc
+
+
+    class Handler(BaseHTTPRequestHandler):
+        def log_message(self, format, *args):
+            return
+
+        def _send(self, code):
+            with state_lock:
+                payload = {
+                    "target": TARGET_NAME,
+                    "ready": state["ready"],
+                    "status": state["status"],
+                    "posture": state["posture"],
+                    "last_error": state["last_error"],
+                    "consecutive_failures": state["consecutive_failures"],
+                    "last_probe_ts": state["last_probe_ts"],
+                    "metrics": state["metrics"],
+                }
+            body = json.dumps(payload, sort_keys=True).encode("utf-8")
+            self.send_response(code)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def do_GET(self):
+            if self.path == "/healthz":
+                self._send(200)
+                return
+            if self.path == "/readyz":
+                with state_lock:
+                    ready = state["ready"]
+                self._send(200 if ready else 503)
+                return
+            self._send(404)
+
+
+    def serve_health():
+        server = HTTPServer(("0.0.0.0", HEALTH_PORT), Handler)
+        server.serve_forever()
+
+
+    async def publish_safe(connection, subject, payload):
+        if connection is None:
+            return
+        try:
+            await connection.publish(subject, json.dumps(payload, sort_keys=True).encode("utf-8"))
+        except Exception as exc:
+            log.warning("NATS publish failed for %s: %s", subject, exc)
+
+
+    async def connect_nats():
+        try:
+            return await nats_connect(NATS_URL)
+        except Exception as exc:
+            log.warning("NATS connect failed: %s", exc)
+            return None
+
+
+    async def monitor():
+        threading.Thread(target=serve_health, daemon=True).start()
+        nats_connection = await connect_nats()
+        last_status = "starting"
+
+        while True:
+            now = time.time()
+            mem_usage = get_container_memory_usage()
+            probe_results = []
+            failures = []
+
+            for url in PROBE_URLS:
+                try:
+                    probe_results.append(run_probe(url))
+                except Exception as exc:
+                    failures.append({"url": url, "error": str(exc)})
+
+            with state_lock:
+                previous_failures = state["consecutive_failures"]
+            consecutive_failures = 0 if not failures else previous_failures + 1
+
+            usage_percent = (mem_usage / MEM_THRESHOLD_MB) * 100 if MEM_THRESHOLD_MB > 0 else 0
+            if failures and consecutive_failures >= PROBE_FAILURE_THRESHOLD:
+                status = "critical"
+                posture = "defensive"
+                ready = False
+                last_error = "; ".join(f"{item['url']}={item['error']}" for item in failures)
+            elif failures:
+                status = "degraded"
+                posture = "watchful"
+                ready = True
+                last_error = "; ".join(f"{item['url']}={item['error']}" for item in failures)
+            else:
+                status = "active"
+                posture = "trust-first"
+                ready = True
+                last_error = ""
+
+            if usage_percent > 95:
+                status = "critical"
+                posture = "defensive"
+                ready = False
+                last_error = f"memory {mem_usage:.2f}MB exceeds 95% threshold"
+
+            payload = {
+                "target": TARGET_NAME,
+                "status": status,
+                "posture": posture,
+                "metrics": {
+                    "heartbeat": True,
+                    "timestamp": now,
+                    "uptime_seconds": int(now - started_at),
+                    "memory_mb": round(mem_usage, 2),
+                    "memory_usage_percent": round(usage_percent, 1),
+                    "check_interval": CHECK_INTERVAL,
+                    "probe_success_count": len(probe_results),
+                    "probe_failure_count": len(failures),
+                    "consecutive_failures": consecutive_failures,
+                    "probe_urls": PROBE_URLS,
+                },
+                "failures": failures,
+            }
+
+            with state_lock:
+                state["ready"] = ready
+                state["status"] = status
+                state["posture"] = posture
+                state["last_error"] = last_error
+                state["consecutive_failures"] = consecutive_failures
+                state["last_probe_ts"] = now
+                state["metrics"] = payload["metrics"]
+
+            if nats_connection is None or getattr(nats_connection, "is_closed", False):
+                nats_connection = await connect_nats()
+
+            await publish_safe(nats_connection, f"aide.picoclaw.{TARGET_NAME}.heartbeat", payload)
+            if status == "critical" and last_status != "critical":
+                await publish_safe(
+                    nats_connection,
+                    f"aide.picoclaw.{TARGET_NAME}.alert",
+                    {
+                        "type": "DEPENDENCY_FAILURE",
+                        "severity": "CRITICAL",
+                        "target": TARGET_NAME,
+                        "timestamp": now,
+                        "details": last_error,
+                        "probe_urls": PROBE_URLS,
+                    },
+                )
+            if status == "active" and last_status in {"critical", "degraded"}:
+                await publish_safe(
+                    nats_connection,
+                    f"aide.picoclaw.{TARGET_NAME}.recovered",
+                    {
+                        "type": "DEPENDENCY_RECOVERED",
+                        "severity": "INFO",
+                        "target": TARGET_NAME,
+                        "timestamp": now,
+                        "probe_urls": PROBE_URLS,
+                    },
+                )
+
+            last_status = status
+            await asyncio.sleep(CHECK_INTERVAL)
+
+
+    if __name__ == "__main__":
+        asyncio.run(monitor())
