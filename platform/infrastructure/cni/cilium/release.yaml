@@ -62,7 +62,7 @@ spec:
           enabled: true
           install:
             enabled: false   # We manage SPIRE ourselves (35-spire stage)
-          serverAddress: spire-server.spire-system.svc.cluster.local:8081
+          serverAddress: spire-server-api.spire-system.svc.cluster.local:8081
           trustDomain: cryptophys.work
           agentSocketPath: /run/spire/sockets/agent/agent.sock
           adminSocketPath: /run/spire/sockets/admin.sock

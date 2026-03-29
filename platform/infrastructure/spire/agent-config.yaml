@@ -8,7 +8,7 @@ data:
     Agent {
       data_dir = "/run/spire/data"
       log_level = "INFO"
-      server_address = "spire-server.spire-system.svc.cluster.local"
+      server_address = "spire-server-api.spire-system.svc.cluster.local"
       server_port = "8081"
       socket_path = "/run/spire/sockets/agent/agent.sock"
       trust_bundle_path = "/run/spire/bundle/bundle.crt"
