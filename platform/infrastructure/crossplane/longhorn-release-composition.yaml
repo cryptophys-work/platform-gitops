@@ -49,7 +49,7 @@ spec:
                   orphanAutoDeletion: true
                   concurrentReplicaRebuildPerNodeLimit: 3
                   autoCleanupSystemGeneratedSnapshot: true
-                  storageOverProvisioningPercentage: 200
+                  storageOverProvisioningPercentage: 100
                   autoDeletePodWhenVolumeDetachedUnexpectedly: true
                 longhornManager:
                   resources:
