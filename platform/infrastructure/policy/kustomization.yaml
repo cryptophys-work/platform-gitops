@@ -4,6 +4,7 @@ resources:
   - baseline.yaml
   - cilium-baseline.yaml
   - kyverno-release.yaml
+  - pdbs-critical-services.yaml
   - ../tekton
   # cp-restriction-policy.yaml moved to 15-policy-crs (Kyverno CRDs not ready at dry-run time)
   # kyverno-cleanup-rbac.yaml and kyverno-background-rbac.yaml moved to

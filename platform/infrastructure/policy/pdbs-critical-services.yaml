@@ -1,0 +1,48 @@
+---
+# NATS JetStream — nervous system backbone; never take >1 pod down at once
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: nats-pdb
+  namespace: mesh-system
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nats
+---
+# ArgoCD — GitOps controller; keep at least 1 server always up
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: argocd-server-pdb
+  namespace: apps-system
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-server
+---
+# Longhorn Manager — storage control plane; never take >1 down
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: longhorn-manager-pdb
+  namespace: longhorn-system
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: longhorn-manager
+---
+# Gitea — source-of-truth for AIDE git commits; keep alive
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: gitea-pdb
+  namespace: gitops-system
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gitea
