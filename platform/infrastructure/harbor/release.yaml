@@ -53,6 +53,7 @@ spec:
       resourcePolicy: keep
       persistentVolumeClaim:
         registry:
+          existingClaim: registry-harbor-registry-v2
           storageClass: longhorn
           size: 50Gi
         jobservice:
