@@ -54,6 +54,10 @@ spec:
           env:
             - name: TRIVY_CACHE_DIR
               value: /trivy-db
+            - name: TRIVY_DB_REPOSITORY
+              value: mirror.gcr.io/aquasec/trivy-db
+            # DB auto-update interval: 24h (upstream default). CronJob tidak dipakai karena
+            # PVC trivy-server-db adalah ReadWriteOnce — tidak bisa di-mount lintas pod/node.
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:

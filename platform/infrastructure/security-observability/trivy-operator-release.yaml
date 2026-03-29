@@ -43,8 +43,22 @@ spec:
     operator:
       # Limit parallel scan bursts so security scans cannot starve Longhorn on a single worker.
       scanJobsConcurrentLimit: 2
+      scanJobTimeout: 10m
+      infraAssessmentScannerEnabled: false   # disabled: high CPU, low value vs trivy vuln scan
+      clusterComplianceEnabled: false         # disabled: no compliance profile configured
     scanJob:
       tolerations: []
+      nodeSelector:
+        workload.cryptophys.work/apps-core: "true"   # pin scan jobs to general workers only
+      priorityClassName: cryptophys-batch             # preemptionPolicy: Never — tidak preempt workloads
+    nodeCollector:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
     resources:
       requests:
         cpu: 200m
