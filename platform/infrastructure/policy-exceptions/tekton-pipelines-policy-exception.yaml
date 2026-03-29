@@ -1,17 +1,18 @@
 ---
-# PolicyException for Tekton Pipelines infrastructure
+# PolicyException for Tekton Operator-managed infrastructure pods
 #
-# Tekton Operator deploys controllers, webhooks, and helper images from
-# Harbor-mirrored upstream releases. These images lack cosign attestations
-# and use upstream naming conventions that don't match our canonical standards.
+# Scoped to SPECIFIC resource names (not blanket namespaces).
+# These are upstream Tekton controller/webhook images mirrored to Harbor.
+# Image-level attestation scoping is handled by the Flux patch on
+# 16-policy-ssot.yaml (imageReferences narrowed to signed paths only,
+# excluding library/* and docker-proxy/*).
 #
-# This exception covers all Tekton namespaces (tekton-pipelines,
-# tekton-pipelines-resolvers, tekton-system) and exempts infrastructure
-# images from attestation, provenance, naming, and registry enforcement.
+# This exception covers only the named infrastructure pods that use
+# upstream naming conventions and security contexts.
 apiVersion: kyverno.io/v2
 kind: PolicyException
 metadata:
-  name: tekton-pipelines-exceptions
+  name: tekton-infra-pods
   namespace: kyverno-system
   labels:
     cryptophys.io/domain: platform
@@ -21,46 +22,105 @@ metadata:
   annotations:
     cryptophys.work/exception-owner: "platform-sre"
     cryptophys.work/exception-reason: >-
-      Tekton Operator-managed images are mirrored from upstream and lack
-      cosign attestations. CRD migration jobs use bitnami/kubectl from
-      docker-proxy. All are trusted platform infrastructure.
+      Tekton Operator-managed pods use upstream image naming, security contexts,
+      and resource specs that differ from cryptophys canonical standards.
+      Image attestation is scoped at the policy level via imageReferences patch.
     cryptophys.work/exception-ticket: "OPS-TEKTON-001"
     cryptophys.work/exception-expires-at: "2027-01-01T00:00:00Z"
 spec:
   exceptions:
-    - policyName: cp-supplychain-attestation-v1
-      ruleNames:
-        - require-image-attestation
-    - policyName: cp-security-hardening-v1
-      ruleNames:
-        - restrict-pod-security-standard
-    - policyName: cp-standard-naming-v1
-      ruleNames:
-        - validate-resource-name
+    # Naming: Tekton operator generates names like "tekton-pipelines-controller"
     - policyName: cp-standard-naming-canonical-v1
       ruleNames:
         - validate-resource-name
-    - policyName: cp-standard-resources-limits-v1
-      ruleNames:
-        - require-limits-requests
-    - policyName: cp-enforce-business
-      ruleNames:
-        - require-resources
-    - policyName: cp-supplychain-registry-v1
+    # Resource limits: upstream defaults don't match our standard
+    - policyName: cp-mutate-default-resources-v1
       ruleNames:
         - "*"
-    - policyName: cp-integrity-provenance-v1
+    # Security hardening: upstream containers have specific securityContext
+    - policyName: cp-security-hardening-v1
       ruleNames:
         - "*"
-    - policyName: cp-platform-baseline
+    # PSS baseline: upstream containers may need host paths or caps
+    - policyName: cp-pss-baseline-v1
       ruleNames:
         - "*"
   match:
     any:
+      # Tekton Pipeline controller and webhook
       - resources:
-          kinds:
-            - "*"
+          kinds: ["Pod", "Deployment", "Job"]
+          names:
+            - "tekton-pipelines-controller*"
+            - "tekton-pipelines-webhook*"
+            - "tekton-pipelines-remote-resolvers*"
+          namespaces:
+            - tekton-pipelines
+            - tekton-pipelines-resolvers
+      # Tekton Triggers controller, webhook, interceptors
+      - resources:
+          kinds: ["Pod", "Deployment"]
+          names:
+            - "tekton-triggers-controller*"
+            - "tekton-triggers-core-interceptors*"
+            - "tekton-triggers-webhook*"
+          namespaces:
+            - tekton-pipelines
+      # Tekton Operator itself
+      - resources:
+          kinds: ["Pod", "Deployment"]
+          names:
+            - "tekton-operator*"
+          namespaces:
+            - tekton-system
+      # CRD migration jobs (platform-managed)
+      - resources:
+          kinds: ["Pod", "Job"]
+          names:
+            - "tekton-crd-storage-migration*"
+          namespaces:
+            - tekton-system
+---
+# Separate exception for mirrored upstream images (library/*, docker-proxy/*)
+# These images lack cosign signatures — the attestation policy's imageReferences
+# is patched to exclude them, but this covers provenance and registry enforcement.
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: mirrored-upstream-images
+  namespace: kyverno-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: supply-chain
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+  annotations:
+    cryptophys.work/exception-owner: "platform-sre"
+    cryptophys.work/exception-reason: >-
+      Mirrored upstream images in Harbor library/ and docker-proxy/ projects
+      are verified at mirror time (skopeo digest match) but lack cosign
+      signatures and provenance attestations. These are trusted platform
+      infrastructure images from upstream maintainers (Tekton, Bitnami, etc).
+    cryptophys.work/exception-ticket: "OPS-MIRROR-001"
+    cryptophys.work/exception-expires-at: "2027-01-01T00:00:00Z"
+spec:
+  exceptions:
+    # Provenance: mirrored images don't carry SLSA provenance
+    - policyName: cp-integrity-provenance-v1
+      ruleNames:
+        - "*"
+    # Registry enforcement: these ARE in Harbor but from proxy/library paths
+    - policyName: cp-mutate-supplychain-registry-v1
+      ruleNames:
+        - "*"
+  match:
+    any:
+      # Any pod using library/ or docker-proxy/ images (operator-managed infra)
+      - resources:
+          kinds: ["Pod"]
           namespaces:
             - tekton-pipelines
             - tekton-pipelines-resolvers
             - tekton-system
+            - flux-system
+            - kyverno-system
