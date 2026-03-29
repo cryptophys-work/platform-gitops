@@ -54,7 +54,7 @@ spec:
       persistentVolumeClaim:
         registry:
           existingClaim: registry-harbor-registry-v2
-          storageClass: longhorn
+          storageClass: longhorn-single
           size: 50Gi
         jobservice:
           jobLog:
