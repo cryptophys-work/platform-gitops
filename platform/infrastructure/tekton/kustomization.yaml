@@ -5,3 +5,4 @@ kind: Kustomization
 # Application-layer Tekton resources are in apps-gitops (ArgoCD-managed).
 resources:
   - policies/tekton-controller-harbor-images.yaml
+  - crd-migration/tekton-crd-storage-migration.yaml

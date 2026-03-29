@@ -1,34 +1,33 @@
 ---
-# Kyverno ClusterPolicy: Replace Tekton gcr.io images with GHCR
+# Kyverno ClusterPolicy: Enforce Harbor-local Tekton helper images
 #
-# Problem: Tekton Pipelines v0.59.0 controller still injects gcr.io sidecar
-# images. gcr.io pulls are failing in-cluster, while ghcr.io is allowed and
-# already used successfully by other Tekton components.
+# Problem: Tekton Operator injects helper image args (entrypoint, nop,
+# sidecarlogresults, workingdirinit) pointing to gcr.io/ghcr.io.
+# Both upstream registries are unreachable (403 / deleted images).
 #
 # Solution: This policy intercepts every CREATE/UPDATE on the
-# tekton-pipelines-controller Deployment and atomically replaces gcr.io
-# arg values with ghcr.io equivalents at their deterministic positions.
+# tekton-pipelines-controller Deployment and atomically replaces
+# helper image args with Harbor-local copies at deterministic positions.
 #
-# The operator reconcile loop CANNOT win: after every reconcile, the Kyverno
-# admission webhook fires and overwrites gcr.io refs with ghcr.io refs before
-# the resource is committed to etcd.
+# Idempotent: precondition checks if Harbor refs are already present;
+# if so, mutation is skipped. mutateExistingOnPolicyUpdate ensures
+# the existing deployment is also patched when this policy changes.
 #
-# mutateExistingOnPolicyUpdate: true — updating this policy also mutates the
-# existing controller Deployment immediately, so the current v0.59.0 controller
-# stops injecting gcr.io sidecars without waiting for another reconcile.
+# Images mirrored to Harbor: registry.cryptophys.work/library/tekton-pipeline-*:v0.68.0
+# Source: ghcr.io/tektoncd/pipeline v0.68.0 (verified 2026-03-29)
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: tekton-controller-harbor-images
   annotations:
-    policies.kyverno.io/title: Replace Tekton gcr.io images with GHCR
+    policies.kyverno.io/title: Enforce Harbor-local Tekton helper images
     policies.kyverno.io/category: Platform
     policies.kyverno.io/severity: high
     policies.kyverno.io/description: >-
       Intercepts CREATE/UPDATE on tekton-pipelines-controller Deployment and
-      replaces gcr.io image references with ghcr.io equivalents that are
-      reachable from-cluster. Also remutates the existing controller on policy
-      update so the override becomes effective immediately.
+      replaces upstream image references (gcr.io/ghcr.io) with Harbor-local
+      copies. Idempotent — skips mutation if Harbor refs already present.
+      Remutates existing controller on policy update.
     cryptophys.io/domain: platform
     cryptophys.io/component: tekton
     cryptophys.io/contract: contract.platform.tekton.v1
@@ -38,7 +37,7 @@ metadata:
 spec:
   background: true
   rules:
-    - name: replace-gcrio-with-ghcr
+    - name: enforce-harbor-images
       match:
         any:
           - resources:
@@ -53,7 +52,7 @@ spec:
           - key: "{{ request.object.spec.template.spec.containers[0].args[0] }}"
             operator: Equals
             value: "-entrypoint-image"
-          - key: "ghcr.io/tektoncd/pipeline/entrypoint:v0.59.0"
+          - key: "registry.cryptophys.work/library/tekton-pipeline-entrypoint:v0.68.0"
             operator: NotIn
             value: "{{ request.object.spec.template.spec.containers[0].args }}"
       mutate:
@@ -63,21 +62,21 @@ spec:
             kind: Deployment
             name: tekton-pipelines-controller
             namespace: tekton-pipelines
-        # Deterministic: operator always generates args in this order:
-        # [0]="-entrypoint-image"  [1]=<entrypoint-img>
-        # [2]="-nop-image"         [3]=<nop-img>
-        # [4]="-sidecarlogresults-image" [5]=<sidecarlogresults-img>
-        # [6]="-workingdirinit-image"    [7]=<workingdirinit-img>
+        # Deterministic arg positions (operator-generated):
+        # [0]="-entrypoint-image"        [1]=<entrypoint-img>
+        # [2]="-nop-image"               [3]=<nop-img>
+        # [4]="-sidecarlogresults-image"  [5]=<sidecarlogresults-img>
+        # [6]="-workingdirinit-image"     [7]=<workingdirinit-img>
         patchesJson6902: |-
           - op: replace
             path: /spec/template/spec/containers/0/args/1
-            value: "ghcr.io/tektoncd/pipeline/entrypoint:v0.59.0"
+            value: "registry.cryptophys.work/library/tekton-pipeline-entrypoint:v0.68.0"
           - op: replace
             path: /spec/template/spec/containers/0/args/3
-            value: "ghcr.io/tektoncd/pipeline/nop:v0.59.0"
+            value: "registry.cryptophys.work/library/tekton-pipeline-nop:v0.68.0"
           - op: replace
             path: /spec/template/spec/containers/0/args/5
-            value: "ghcr.io/tektoncd/pipeline/sidecarlogresults:v0.59.0"
+            value: "registry.cryptophys.work/library/tekton-pipeline-sidecarlogresults:v0.68.0"
           - op: replace
             path: /spec/template/spec/containers/0/args/7
-            value: "ghcr.io/tektoncd/pipeline/workingdirinit:v0.59.0"
+            value: "registry.cryptophys.work/library/tekton-pipeline-workingdirinit:v0.68.0"
