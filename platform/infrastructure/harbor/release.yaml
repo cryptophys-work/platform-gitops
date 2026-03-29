@@ -71,6 +71,7 @@ spec:
     database:
       type: internal
       internal:
+        nodeSelector: {}
         resources:
           limits:
             cpu: 500m
@@ -91,6 +92,7 @@ spec:
                       operator: Exists
     redis:
       internal:
+        nodeSelector: {}
         resources:
           limits:
             cpu: 200m
@@ -111,6 +113,7 @@ spec:
                       operator: Exists
     trivy:
       enabled: true
+      nodeSelector: {}
       resources:
         limits:
           cpu: 500m
@@ -130,6 +133,7 @@ spec:
                   - key: node-role.kubernetes.io/worker
                     operator: Exists
     portal:
+      nodeSelector: {}
       resources:
         limits:
           cpu: 100m
@@ -149,6 +153,7 @@ spec:
                   - key: node-role.kubernetes.io/worker
                     operator: Exists
     core:
+      nodeSelector: {}
       resources:
         limits:
           cpu: 500m
@@ -168,6 +173,7 @@ spec:
                   - key: node-role.kubernetes.io/worker
                     operator: Exists
     jobservice:
+      nodeSelector: {}
       resources:
         limits:
           cpu: 200m
@@ -187,6 +193,7 @@ spec:
                   - key: node-role.kubernetes.io/worker
                     operator: Exists
     registry:
+      nodeSelector: {}
       registry:
         resources:
           limits:
@@ -216,6 +223,7 @@ spec:
                   - key: node-role.kubernetes.io/worker
                     operator: Exists
     exporter:
+      nodeSelector: {}
       resources:
         limits:
           cpu: 100m
