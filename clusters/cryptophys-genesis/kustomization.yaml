@@ -13,7 +13,9 @@ resources:
   - kustomization/11-controllers.yaml
   - kustomization/11-controllers-gateway.yaml
   - kustomization/12-storage.yaml
+  - kustomization/12-kueue.yaml
   - kustomization/13-networking.yaml
+  - kustomization/14-policy-rbac.yaml
   - kustomization/15-policy.yaml
   - kustomization/15-policy-crs.yaml
   - kustomization/15-security-runtime.yaml
