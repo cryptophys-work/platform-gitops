@@ -1,32 +1,27 @@
 ---
-# Kyverno ClusterPolicy: Enforce Harbor-local Tekton helper images
+# Kyverno ClusterPolicy: Pin Tekton helper images to ghcr.io digest references
 #
-# Problem: Tekton Operator injects helper image args (entrypoint, nop,
-# sidecarlogresults, workingdirinit) pointing to gcr.io/ghcr.io.
-# Both upstream registries are unreachable (403 / deleted images).
+# Tekton Pipelines v1.10.2 uses ghcr.io images (approved registry).
+# This policy ensures controller args always point to the pinned v1.10.2
+# digest references, preventing drift from operator injection or manual edits.
 #
-# Solution: This policy intercepts every CREATE/UPDATE on the
-# tekton-pipelines-controller Deployment and atomically replaces
-# helper image args with Harbor-local copies at deterministic positions.
-#
-# Idempotent: precondition checks if Harbor refs are already present;
+# Idempotent: precondition checks if correct entrypoint is already present;
 # if so, mutation is skipped. mutateExistingOnPolicyUpdate ensures
 # the existing deployment is also patched when this policy changes.
 #
-# Images mirrored to Harbor: registry.cryptophys.work/library/tekton-pipeline-*:v0.68.0
-# Source: ghcr.io/tektoncd/pipeline v0.68.0 (verified 2026-03-29)
+# Images: ghcr.io/tektoncd/pipeline v1.10.2 (pinned by digest)
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: tekton-controller-harbor-images
   annotations:
-    policies.kyverno.io/title: Enforce Harbor-local Tekton helper images
+    policies.kyverno.io/title: Pin Tekton helper images to ghcr.io v1.10.2
     policies.kyverno.io/category: Platform
     policies.kyverno.io/severity: high
     policies.kyverno.io/description: >-
       Intercepts CREATE/UPDATE on tekton-pipelines-controller Deployment and
-      replaces upstream image references (gcr.io/ghcr.io) with Harbor-local
-      copies. Idempotent — skips mutation if Harbor refs already present.
+      pins helper image args to ghcr.io v1.10.2 digest references.
+      Idempotent — skips mutation if correct refs already present.
       Remutates existing controller on policy update.
     cryptophys.io/domain: platform
     cryptophys.io/component: tekton
@@ -37,7 +32,7 @@ metadata:
 spec:
   background: true
   rules:
-    - name: enforce-harbor-images
+    - name: enforce-pinned-images
       match:
         any:
           - resources:
@@ -52,7 +47,7 @@ spec:
           - key: "{{ request.object.spec.template.spec.containers[0].args[0] }}"
             operator: Equals
             value: "-entrypoint-image"
-          - key: "registry.cryptophys.work/library/tekton-pipeline-entrypoint:v0.68.0"
+          - key: "ghcr.io/tektoncd/pipeline/entrypoint-bff0a22da108bc2f16c818c97641a296:v1.10.2@sha256:bcf235d0a193551e9307a3270d878c5ffa9a4f199c924f39c3fe5a17276c9670"
             operator: NotIn
             value: "{{ request.object.spec.template.spec.containers[0].args }}"
       mutate:
@@ -62,7 +57,7 @@ spec:
             kind: Deployment
             name: tekton-pipelines-controller
             namespace: tekton-pipelines
-        # Deterministic arg positions (operator-generated):
+        # Deterministic arg positions (release-generated):
         # [0]="-entrypoint-image"        [1]=<entrypoint-img>
         # [2]="-nop-image"               [3]=<nop-img>
         # [4]="-sidecarlogresults-image"  [5]=<sidecarlogresults-img>
@@ -70,13 +65,13 @@ spec:
         patchesJson6902: |-
           - op: replace
             path: /spec/template/spec/containers/0/args/1
-            value: "registry.cryptophys.work/library/tekton-pipeline-entrypoint:v0.68.0"
+            value: "ghcr.io/tektoncd/pipeline/entrypoint-bff0a22da108bc2f16c818c97641a296:v1.10.2@sha256:bcf235d0a193551e9307a3270d878c5ffa9a4f199c924f39c3fe5a17276c9670"
           - op: replace
             path: /spec/template/spec/containers/0/args/3
-            value: "registry.cryptophys.work/library/tekton-pipeline-nop:v0.68.0"
+            value: "ghcr.io/tektoncd/pipeline/nop-8eac7c133edad5df719dc37b36b62482:v1.10.2@sha256:a1bd0d95587a9a8ea7d9f0b4925d7abfaf3dffcbda9be72ee44288bfd68f9506"
           - op: replace
             path: /spec/template/spec/containers/0/args/5
-            value: "registry.cryptophys.work/library/tekton-pipeline-sidecarlogresults:v0.68.0"
+            value: "ghcr.io/tektoncd/pipeline/sidecarlogresults-7501c6a20d741631510a448b48ab098f:v1.10.2@sha256:119609ce431a41c30101ad1d8c35393c79b24c6192b3cdf16aa01f3c7725715a"
           - op: replace
             path: /spec/template/spec/containers/0/args/7
-            value: "registry.cryptophys.work/library/tekton-pipeline-workingdirinit:v0.68.0"
+            value: "ghcr.io/tektoncd/pipeline/workingdirinit-0c558922ec6a1b739e550e349f2d5fc1:v1.10.2@sha256:2c4f7e78e01d337b4d1710c94ecabf23b460ebd1d5a6c82de5de64bd889ff112"
