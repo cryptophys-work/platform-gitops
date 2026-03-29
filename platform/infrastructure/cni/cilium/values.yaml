@@ -25,9 +25,9 @@ priorityClassName: system-node-critical
 resources:
   requests:
     cpu: 100m
-    memory: 200Mi
+    memory: 256Mi
   limits:
-    memory: 500Mi
+    memory: 1Gi
 securityContext:
   privileged: true
   capabilities:
