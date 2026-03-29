@@ -51,7 +51,7 @@ spec:
           PROVIDER: redis
           PROVIDER_CONFIG: redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
         queue:
-          TYPE: conn
+          TYPE: channel
           CONN_STR: redis://gitea-redis.gitops-system.svc.cluster.local:6379/1
         server:
           ROOT_URL: https://gitea.cryptophys.work
@@ -83,7 +83,7 @@ spec:
       - name: GITEA__SESSION__PROVIDER_CONFIG
         value: redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
       - name: GITEA__QUEUE__TYPE
-        value: conn
+        value: channel
       - name: GITEA__QUEUE__CONN_STR
         value: redis://gitea-redis.gitops-system.svc.cluster.local:6379/1
       - name: GITEA__REPOSITORY__MIN_MIRROR_SYNC_INTERVAL
