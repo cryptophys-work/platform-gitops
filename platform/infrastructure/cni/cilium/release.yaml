@@ -55,6 +55,17 @@ spec:
       enabled: true
       type: wireguard
       nodeEncryption: true
+    # Mutual authentication via SPIRE — makes SPIFFE/SVID fundamental
+    authentication:
+      mutual:
+        spire:
+          enabled: true
+          install:
+            enabled: false   # We manage SPIRE ourselves (35-spire stage)
+          serverAddress: spire-server.spire-system.svc.cluster.local:8081
+          trustDomain: cryptophys.work
+          agentSocketPath: /run/spire/sockets/agent/agent.sock
+          adminSocketPath: /run/spire/sockets/admin.sock
     mtu: 1370
     # KubePrism local LB (127.0.0.1:7445) — HA across all 3 CP nodes
     # Avoids SPOF from hardcoding a single CP node IP (was 10.8.0.2/cortex only)
