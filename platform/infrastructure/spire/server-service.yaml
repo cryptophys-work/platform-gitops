@@ -1,11 +1,37 @@
+---
+# Headless service — required for StatefulSet pod DNS identity
 apiVersion: v1
 kind: Service
 metadata:
   name: spire-server
   namespace: spire-system
+  labels:
+    app: spire-server
+    cryptophys.io/domain: platform
+    cryptophys.io/component: spire-server
 spec:
   clusterIP: None
   publishNotReadyAddresses: true
+  selector:
+    app: spire-server
+  ports:
+    - name: grpc
+      port: 8081
+      targetPort: 8081
+---
+# ClusterIP service — stable VIP for SPIRE agents and Cilium mTLS delegate.
+# Resolves cerebellum DNS timeout caused by headless svc + Cilium restart race.
+apiVersion: v1
+kind: Service
+metadata:
+  name: spire-server-api
+  namespace: spire-system
+  labels:
+    app: spire-server
+    cryptophys.io/domain: platform
+    cryptophys.io/component: spire-server-api
+spec:
+  type: ClusterIP
   selector:
     app: spire-server
   ports:
