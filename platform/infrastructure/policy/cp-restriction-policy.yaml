@@ -18,7 +18,7 @@ metadata:
       after migration is complete.
 spec:
   validationFailureAction: Audit
-  background: true
+  background: false
   rules:
     - name: check-cp-toleration
       match:
@@ -79,7 +79,7 @@ metadata:
       as nodeSelector, as this would pin them to control plane nodes.
 spec:
   validationFailureAction: Audit
-  background: true
+  background: false
   rules:
     - name: check-cp-nodeselector
       match:
