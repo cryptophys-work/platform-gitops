@@ -58,7 +58,7 @@ spec:
           memory: "512Mi"
         limits:
           cpu: "1"
-          memory: "2Gi"    # Allow manager to survive reconciliation spikes on busy workers
+          memory: "512Mi"    # Hard cap per longhorn-manager pod
     # ── Driver/CSI: exclude control-plane — reduces CP memory pressure ──
     longhornDriver:
       tolerations:
