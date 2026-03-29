@@ -43,6 +43,10 @@ spec:
           limits:
             cpu: 100m
             memory: 256Mi
+        alertmanagerConfigSelector:
+          matchLabels:
+            alertmanagerConfig: platform-observability
+        alertmanagerConfigNamespaceSelector: {}
     grafana:
       enabled: true
       replicas: 1
