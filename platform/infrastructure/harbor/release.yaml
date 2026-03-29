@@ -79,7 +79,11 @@ spec:
           requests:
             cpu: 100m
             memory: 256Mi
-        tolerations: []
+        tolerations:
+          - key: cryptophys.io/role
+            operator: Equal
+            value: llm-inference
+            effect: NoSchedule
         affinity:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
@@ -100,7 +104,11 @@ spec:
           requests:
             cpu: 50m
             memory: 64Mi
-        tolerations: []
+        tolerations:
+          - key: cryptophys.io/role
+            operator: Equal
+            value: llm-inference
+            effect: NoSchedule
         affinity:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
@@ -121,7 +129,11 @@ spec:
         requests:
           cpu: 50m
           memory: 64Mi
-      tolerations: []
+      tolerations:
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -141,7 +153,11 @@ spec:
         requests:
           cpu: 10m
           memory: 32Mi
-      tolerations: []
+      tolerations:
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -161,7 +177,11 @@ spec:
         requests:
           cpu: 100m
           memory: 256Mi
-      tolerations: []
+      tolerations:
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -181,7 +201,11 @@ spec:
         requests:
           cpu: 50m
           memory: 128Mi
-      tolerations: []
+      tolerations:
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -211,7 +235,11 @@ spec:
           requests:
             cpu: 50m
             memory: 64Mi
-      tolerations: []
+      tolerations:
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -231,7 +259,11 @@ spec:
         requests:
           cpu: 10m
           memory: 32Mi
-      tolerations: []
+      tolerations:
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
