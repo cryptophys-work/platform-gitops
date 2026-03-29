@@ -40,6 +40,9 @@ spec:
     serviceMonitor:
       enabled: true
     tolerations: []
+    operator:
+      # Limit parallel scan bursts so security scans cannot starve Longhorn on a single worker.
+      scanJobsConcurrentLimit: 2
     scanJob:
       tolerations: []
     resources:
