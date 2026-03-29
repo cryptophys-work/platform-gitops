@@ -24,7 +24,7 @@ spec:
     logging:
       server: true
       encoding: json
-      logLevel: 1
+      logLevel: 0
     rest:
       enabled: true
     metrics:
@@ -54,7 +54,7 @@ spec:
         api: true
         server: true
         encoding: json
-        logLevel: 1
+        logLevel: 0
       resources:
         requests:
           cpu: 50m
@@ -112,7 +112,7 @@ spec:
         api: true
         server: true
         encoding: json
-        logLevel: 1
+        logLevel: 0
       resources:
         requests:
           cpu: 50m
@@ -125,7 +125,7 @@ spec:
         eventNamespace: kyverno-system
         source: Kyverno Event
         results:
-          maxPerReport: 500
+          maxPerReport: 50
           keepOnlyLatest: true
     gatekeeperPlugin:
       enabled: true
@@ -138,7 +138,7 @@ spec:
         api: true
         server: true
         encoding: json
-        logLevel: 1
+        logLevel: 0
       resources:
         requests:
           cpu: 50m
