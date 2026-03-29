@@ -20,8 +20,13 @@ spec:
     reusePVC: true
   bootstrap:
     initdb:
-      database: app
-      owner: app
+      database: gitea
+      owner: gitea
+      encoding: UTF8
+      localeCType: C
+      localeCollate: C
+      postInitApplicationSQL:
+        - "ALTER USER gitea PASSWORD 'GiteaSecure2026!'"
   # WAL archiving: prevents pg_rewind loop on replica restart
   backup:
     barmanObjectStore:
