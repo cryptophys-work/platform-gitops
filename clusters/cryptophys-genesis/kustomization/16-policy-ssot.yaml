@@ -50,3 +50,20 @@ spec:
       target:
         kind: ClusterPolicy
         name: cp-standard-naming-canonical-v1
+    # Patch: scope attestation to ONLY signed image paths.
+    # Exclude mirrored upstream images (library/*, docker-proxy/*) that lack cosign signatures.
+    # Only verify images built by our Tekton pipeline (core/*, aide/*, tools/*, etc.)
+    - patch: |
+        - op: replace
+          path: /spec/rules/0/verifyImages/0/imageReferences
+          value:
+            - "registry.cryptophys.work/core/*"
+            - "registry.cryptophys.work/aide/*"
+            - "registry.cryptophys.work/aether/*"
+            - "registry.cryptophys.work/corpus/*"
+            - "registry.cryptophys.work/watcher/*"
+            - "registry.cryptophys.work/tools/*"
+            - "registry.cryptophys.work/omega/*"
+      target:
+        kind: ClusterPolicy
+        name: cp-supplychain-attestation-v1
