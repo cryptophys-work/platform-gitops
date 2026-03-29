@@ -37,6 +37,16 @@ spec:
         email: gitea-admin@cryptophys.work
         existingSecret: gitea-admin-secret
         passwordMode: keepUpdated
+      livenessProbe:
+        enabled: true
+        initialDelaySeconds: 120
+        periodSeconds: 10
+        failureThreshold: 10
+      readinessProbe:
+        enabled: true
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        failureThreshold: 10
       config:
         database:
           DB_TYPE: postgres
@@ -52,7 +62,6 @@ spec:
           PROVIDER_CONFIG: redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
         queue:
           TYPE: channel
-          CONN_STR: redis://gitea-redis.gitops-system.svc.cluster.local:6379/1
         server:
           ROOT_URL: https://gitea.cryptophys.work
           DOMAIN: gitea.cryptophys.work
@@ -84,8 +93,6 @@ spec:
         value: redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
       - name: GITEA__QUEUE__TYPE
         value: channel
-      - name: GITEA__QUEUE__CONN_STR
-        value: redis://gitea-redis.gitops-system.svc.cluster.local:6379/1
       - name: GITEA__REPOSITORY__MIN_MIRROR_SYNC_INTERVAL
         value: "3m"
       - name: GITEA__REPOSITORY__DEFAULT_MIRROR_SYNC_INTERVAL
