@@ -5,11 +5,13 @@ metadata:
   namespace: falco-system
 spec:
   interval: 1h
-  suspend: true  # Suspended: driver compatibility issues on Talos (330+ restarts, no useful data)
+  # Previously suspended: 330+ restarts on chart 7.2.1 due to loader.enabled: false conflict
+  # Fix: removed loader block (use default), upgraded chart >=7.3.0 with Talos eBPF fixes
+  # If crashes persist after deploy: re-add suspend: true (Tetragon covers runtime detection)
   chart:
     spec:
       chart: falco
-      version: "7.2.1"
+      version: ">=7.3.0 <8.0.0"
       sourceRef:
         kind: HelmRepository
         name: falcosecurity
@@ -17,8 +19,6 @@ spec:
   values:
     driver:
       kind: modern_ebpf
-      loader:
-        enabled: false
     # FALCO CORE RESOURCES (DaemonSet)
     resources:
       requests:

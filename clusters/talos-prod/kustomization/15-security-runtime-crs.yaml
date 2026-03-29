@@ -1,0 +1,16 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 15-security-runtime-crs
+  namespace: flux-system
+spec:
+  interval: 1h
+  wait: false
+  timeout: 5m
+  path: ./platform/security/tracing-policies
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: platform-repo
+  dependsOn:
+    - name: 15-security-runtime   # TracingPolicy CRD harus siap (Tetragon deployed dulu)
