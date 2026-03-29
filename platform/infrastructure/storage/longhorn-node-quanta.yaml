@@ -1,0 +1,13 @@
+apiVersion: longhorn.io/v1beta2
+kind: Node
+metadata:
+  name: quanta-194-163-186-222
+  namespace: longhorn-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: longhorn-node-quanta
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+spec:
+  allowScheduling: true
+  evictionRequested: false
