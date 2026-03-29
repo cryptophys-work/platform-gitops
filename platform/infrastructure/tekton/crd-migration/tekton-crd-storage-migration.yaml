@@ -1,0 +1,142 @@
+---
+# Tekton CRD Storage Version Migration
+#
+# The Tekton Operator v0.71.0 needs to update stepactions.tekton.dev CRD
+# from v1beta1 → v1alpha1 storage. Kubernetes rejects this because v1beta1
+# is in status.storedVersions. No StepAction resources exist in the cluster,
+# so migration is safe.
+#
+# This Job patches the CRD status subresource to clear v1beta1 from
+# storedVersions, unblocking the operator upgrade.
+#
+# Idempotent: patching storedVersions to ["v1alpha1"] when it's already
+# ["v1alpha1"] is a no-op.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tekton-crd-migrator
+  namespace: tekton-pipelines
+  labels:
+    app.kubernetes.io/name: tekton-crd-migrator
+    cryptophys.io/domain: platform
+    cryptophys.io/component: tekton
+    cryptophys.io/managed-by: flux
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tekton-crd-migrator
+  labels:
+    app.kubernetes.io/name: tekton-crd-migrator
+    cryptophys.io/domain: platform
+    cryptophys.io/component: tekton
+rules:
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["get", "list"]
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions/status"]
+    verbs: ["get", "patch"]
+  - apiGroups: ["tekton.dev"]
+    resources: ["stepactions"]
+    verbs: ["list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-crd-migrator
+  labels:
+    app.kubernetes.io/name: tekton-crd-migrator
+    cryptophys.io/domain: platform
+    cryptophys.io/component: tekton
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tekton-crd-migrator
+subjects:
+  - kind: ServiceAccount
+    name: tekton-crd-migrator
+    namespace: tekton-pipelines
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tekton-crd-storage-migration-v1
+  namespace: tekton-pipelines
+  labels:
+    app.kubernetes.io/name: tekton-crd-migrator
+    cryptophys.io/domain: platform
+    cryptophys.io/component: tekton
+    cryptophys.io/managed-by: flux
+  annotations:
+    cryptophys.io/purpose: >-
+      One-time CRD storage version migration for stepactions.tekton.dev.
+      Patches storedVersions from v1beta1 to v1alpha1 to unblock
+      Tekton Operator v0.71.0 upgrade.
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: tekton-crd-migrator
+    spec:
+      serviceAccountName: tekton-crd-migrator
+      restartPolicy: OnFailure
+      containers:
+        - name: migrate
+          image: registry.cryptophys.work/docker-proxy/bitnami/kubectl@sha256:a0fa7201b97239cdbcb2777465710201c7eb5676ffa646ec8466b417bf479196
+          command: ["/bin/sh", "-exc"]
+          args:
+            - |
+              # Step 1: Check if migration is needed
+              STORED=$(kubectl get crd stepactions.tekton.dev -o jsonpath='{.status.storedVersions}')
+              echo "Current storedVersions: ${STORED}"
+
+              if echo "${STORED}" | grep -q 'v1alpha1'; then
+                if ! echo "${STORED}" | grep -q 'v1beta1'; then
+                  echo "Migration already complete (storedVersions=[v1alpha1]). Nothing to do."
+                  exit 0
+                fi
+              fi
+
+              # Step 2: Verify no StepAction resources exist at v1beta1
+              COUNT=$(kubectl get stepactions --all-namespaces --no-headers 2>/dev/null | wc -l)
+              echo "StepAction resource count: ${COUNT}"
+              if [ "${COUNT}" -ne 0 ]; then
+                echo "ERROR: StepAction resources exist. Manual data migration required."
+                exit 1
+              fi
+
+              # Step 3: Patch storedVersions to v1alpha1
+              kubectl patch crd stepactions.tekton.dev \
+                --subresource=status \
+                --type=json \
+                -p '[{"op":"replace","path":"/status/storedVersions","value":["v1alpha1"]}]'
+
+              # Step 4: Verify
+              AFTER=$(kubectl get crd stepactions.tekton.dev -o jsonpath='{.status.storedVersions}')
+              echo "After migration storedVersions: ${AFTER}"
+
+              if echo "${AFTER}" | grep -q 'v1alpha1'; then
+                echo "CRD storage migration SUCCEEDED."
+              else
+                echo "ERROR: Migration verification failed."
+                exit 1
+              fi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 65534
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
