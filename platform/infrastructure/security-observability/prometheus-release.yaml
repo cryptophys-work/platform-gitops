@@ -105,10 +105,10 @@ spec:
         resources:
           requests:
             cpu: 700m      # peak 677m over 7d
-            memory: 2Gi    # steady-state ~2Gi; peak 4028Mi during WAL replay
+            memory: 1.5Gi  # steady-state ~2Gi; reduced from 2Gi to free cluster memory
           limits:
             cpu: 1000m
-            memory: 6Gi    # 4028Mi peak × 1.5 = 6Gi; prevents OOM during WAL
+            memory: 4Gi    # 4028Mi peak × 1.0 = 4Gi; cluster-wide memory pressure requires reduction
         storageSpec:
           volumeClaimTemplate:
             spec:
