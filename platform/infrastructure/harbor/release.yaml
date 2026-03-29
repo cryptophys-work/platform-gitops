@@ -78,13 +78,17 @@ spec:
           requests:
             cpu: 100m
             memory: 256Mi
-        nodeSelector:
-          kubernetes.io/hostname: campus-212-47-66-101
-        tolerations:
-          - key: cryptophys.io/storage-only
-            operator: Equal
-            value: "true"
-            effect: NoSchedule
+        tolerations: []
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: workload.cryptophys.work/apps-core
+                      operator: In
+                      values: ["true"]
+                    - key: node-role.kubernetes.io/worker
+                      operator: Exists
     redis:
       internal:
         resources:
@@ -94,13 +98,17 @@ spec:
           requests:
             cpu: 50m
             memory: 64Mi
-        nodeSelector:
-          kubernetes.io/hostname: campus-212-47-66-101
-        tolerations:
-          - key: cryptophys.io/storage-only
-            operator: Equal
-            value: "true"
-            effect: NoSchedule
+        tolerations: []
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: workload.cryptophys.work/apps-core
+                      operator: In
+                      values: ["true"]
+                    - key: node-role.kubernetes.io/worker
+                      operator: Exists
     trivy:
       enabled: true
       resources:
@@ -110,13 +118,17 @@ spec:
         requests:
           cpu: 50m
           memory: 64Mi
-      nodeSelector:
-        kubernetes.io/hostname: campus-212-47-66-101
-      tolerations:
-        - key: cryptophys.io/storage-only
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
+      tolerations: []
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload.cryptophys.work/apps-core
+                    operator: In
+                    values: ["true"]
+                  - key: node-role.kubernetes.io/worker
+                    operator: Exists
     portal:
       resources:
         limits:
@@ -125,13 +137,17 @@ spec:
         requests:
           cpu: 10m
           memory: 32Mi
-      nodeSelector:
-        kubernetes.io/hostname: campus-212-47-66-101
-      tolerations:
-        - key: cryptophys.io/storage-only
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
+      tolerations: []
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload.cryptophys.work/apps-core
+                    operator: In
+                    values: ["true"]
+                  - key: node-role.kubernetes.io/worker
+                    operator: Exists
     core:
       resources:
         limits:
@@ -140,13 +156,17 @@ spec:
         requests:
           cpu: 100m
           memory: 256Mi
-      nodeSelector:
-        kubernetes.io/hostname: campus-212-47-66-101
-      tolerations:
-        - key: cryptophys.io/storage-only
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
+      tolerations: []
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload.cryptophys.work/apps-core
+                    operator: In
+                    values: ["true"]
+                  - key: node-role.kubernetes.io/worker
+                    operator: Exists
     jobservice:
       resources:
         limits:
@@ -155,13 +175,17 @@ spec:
         requests:
           cpu: 50m
           memory: 128Mi
-      nodeSelector:
-        kubernetes.io/hostname: campus-212-47-66-101
-      tolerations:
-        - key: cryptophys.io/storage-only
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
+      tolerations: []
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload.cryptophys.work/apps-core
+                    operator: In
+                    values: ["true"]
+                  - key: node-role.kubernetes.io/worker
+                    operator: Exists
     registry:
       registry:
         resources:
@@ -180,13 +204,17 @@ spec:
           requests:
             cpu: 50m
             memory: 64Mi
-      tolerations:
-        - key: cryptophys.io/storage-only
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-      nodeSelector:
-        kubernetes.io/hostname: campus-212-47-66-101
+      tolerations: []
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload.cryptophys.work/apps-core
+                    operator: In
+                    values: ["true"]
+                  - key: node-role.kubernetes.io/worker
+                    operator: Exists
     exporter:
       resources:
         limits:
@@ -195,10 +223,16 @@ spec:
         requests:
           cpu: 10m
           memory: 32Mi
-      tolerations:
-        - key: cryptophys.io/storage-only
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
+      tolerations: []
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload.cryptophys.work/apps-core
+                    operator: In
+                    values: ["true"]
+                  - key: node-role.kubernetes.io/worker
+                    operator: Exists
     metrics:
       enabled: true
