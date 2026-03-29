@@ -1,0 +1,66 @@
+---
+# PolicyException for Tekton Pipelines infrastructure
+#
+# Tekton Operator deploys controllers, webhooks, and helper images from
+# Harbor-mirrored upstream releases. These images lack cosign attestations
+# and use upstream naming conventions that don't match our canonical standards.
+#
+# This exception covers all Tekton namespaces (tekton-pipelines,
+# tekton-pipelines-resolvers, tekton-system) and exempts infrastructure
+# images from attestation, provenance, naming, and registry enforcement.
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: tekton-pipelines-exceptions
+  namespace: kyverno-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: tekton
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+  annotations:
+    cryptophys.work/exception-owner: "platform-sre"
+    cryptophys.work/exception-reason: >-
+      Tekton Operator-managed images are mirrored from upstream and lack
+      cosign attestations. CRD migration jobs use bitnami/kubectl from
+      docker-proxy. All are trusted platform infrastructure.
+    cryptophys.work/exception-ticket: "OPS-TEKTON-001"
+    cryptophys.work/exception-expires-at: "2027-01-01T00:00:00Z"
+spec:
+  exceptions:
+    - policyName: cp-supplychain-attestation-v1
+      ruleNames:
+        - require-image-attestation
+    - policyName: cp-security-hardening-v1
+      ruleNames:
+        - restrict-pod-security-standard
+    - policyName: cp-standard-naming-v1
+      ruleNames:
+        - validate-resource-name
+    - policyName: cp-standard-naming-canonical-v1
+      ruleNames:
+        - validate-resource-name
+    - policyName: cp-standard-resources-limits-v1
+      ruleNames:
+        - require-limits-requests
+    - policyName: cp-enforce-business
+      ruleNames:
+        - require-resources
+    - policyName: cp-supplychain-registry-v1
+      ruleNames:
+        - "*"
+    - policyName: cp-integrity-provenance-v1
+      ruleNames:
+        - "*"
+    - policyName: cp-platform-baseline
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - "*"
+          namespaces:
+            - tekton-pipelines
+            - tekton-pipelines-resolvers
+            - tekton-system
