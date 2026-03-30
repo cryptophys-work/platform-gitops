@@ -17,5 +17,5 @@ spec:
   resources:
     requests:
       storage: 50Gi
-  storageClassName: longhorn-single
+  storageClassName: longhorn
   volumeMode: Filesystem
