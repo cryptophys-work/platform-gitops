@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: harbor-exporter
+  namespace: monitoring-core
+  labels:
+    release: platform-observability-prometheus
+    cryptophys.io/domain: platform
+    cryptophys.io/component: harbor-metrics
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+spec:
+  endpoints:
+  - port: http-metrics
+    interval: 30s
+    path: /metrics
+    honorLabels: true
+  namespaceSelector:
+    matchNames:
+    - registry-system
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: harbor
+      app.kubernetes.io/part-of: harbor
