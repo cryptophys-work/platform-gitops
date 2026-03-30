@@ -169,8 +169,8 @@ spec:
         cpu: 50m
         memory: 256Mi
       limits:
-        cpu: 600m      # peak 398m × 1.5
-        memory: 768Mi  # peak 490Mi × 1.5 = 735 → 768Mi
+        cpu: 1000m     # increased from 600m for 280MB repo with concurrent git ops
+        memory: 1Gi    # increased from 768Mi
     tolerations: []
     nodeSelector:
       workload.cryptophys.work/apps-core: "true"
