@@ -59,6 +59,10 @@ spec:
         - effect: NoSchedule
           key: cryptophys.io/role
           operator: Exists
+      updateStrategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 2
       admissionWebhooks:
         enabled: false
       service:
