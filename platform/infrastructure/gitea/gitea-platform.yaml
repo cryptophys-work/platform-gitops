@@ -182,8 +182,6 @@ spec:
                 - key: kubernetes.io/hostname
                   operator: NotIn
                   values:
-                    - quanta-194-163-186-222
-                    - synapse-161-97-136-251
                     - cerebellum-161-97-117-96
     initContainers:
       resources:
