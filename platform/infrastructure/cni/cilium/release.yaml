@@ -71,6 +71,9 @@ spec:
     # Avoids SPOF from hardcoding a single CP node IP (was 10.8.0.2/cortex only)
     k8sServiceHost: 127.0.0.1
     k8sServicePort: 7445
+    extraEnv:
+      - name: CRYPTOPHYS_CILIUM_ROLLOUT_AT
+        value: "2026-03-31T14:17:56Z"
     hubble:
       enabled: true
       relay:
