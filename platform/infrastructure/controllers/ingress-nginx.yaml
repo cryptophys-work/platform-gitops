@@ -19,6 +19,8 @@ spec:
       priorityClassName: cryptophys-platform-critical
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      podAnnotations:
+        cryptophys.io/restarted-at: "2026-03-31T14:03:08Z"
       extraArgs:
         default-ssl-certificate: ingress-system/platform-wildcard-tls
         healthz-port: "11054"
@@ -61,4 +63,3 @@ spec:
       service:
         type: LoadBalancer
         loadBalancerIP: "10.8.0.240"
-
