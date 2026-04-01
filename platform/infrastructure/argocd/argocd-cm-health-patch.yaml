@@ -113,3 +113,18 @@ data:
     hs.status = "Healthy"
     hs.message = "Tekton components running"
     return hs
+  resource.customizations.health.batch_CronJob: |
+    hs = {}
+    if obj.status == nil then
+      hs.status = "Healthy"
+      hs.message = "No status"
+      return hs
+    end
+    if obj.spec ~= nil and obj.spec.suspend == true then
+      hs.status = "Degraded"
+      hs.message = "CronJob is suspended"
+      return hs
+    end
+    hs.status = "Healthy"
+    hs.message = "CronJob active"
+    return hs
