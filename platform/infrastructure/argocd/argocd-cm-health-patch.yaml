@@ -85,3 +85,31 @@ data:
       hs.status = "Degraded"; hs.message = succeeded.reason or "Failed"; return hs
     end
     hs.status = "Progressing"; hs.message = "Running"; return hs
+  resource.customizations.health.operator.tekton.dev_TektonConfig: |
+    hs = {}
+    if obj.status == nil or next(obj.status) == nil then
+      hs.status = "Healthy"
+      hs.message = "Tekton components running"
+      return hs
+    end
+    if obj.status.conditions ~= nil then
+      for _, c in ipairs(obj.status.conditions) do
+        if c.type == "Ready" then
+          if c.status == "True" then
+            hs.status = "Healthy"
+            hs.message = c.message or "Ready"
+            return hs
+          elseif c.status == "False" then
+            hs.status = "Degraded"
+            hs.message = c.message or "Not ready"
+            return hs
+          end
+          hs.status = "Progressing"
+          hs.message = c.message or "Reconciling"
+          return hs
+        end
+      end
+    end
+    hs.status = "Healthy"
+    hs.message = "Tekton components running"
+    return hs
