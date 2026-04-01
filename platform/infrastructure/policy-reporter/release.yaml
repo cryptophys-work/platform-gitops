@@ -9,6 +9,7 @@ spec:
     remediation:
       retries: 3
   upgrade:
+    force: true
     remediation:
       retries: 3
   chart:
@@ -38,6 +39,7 @@ spec:
       limits:
         cpu: 200m
         memory: 256Mi
+    ui:
       enabled: true
       replicaCount: 0
       displayMode: dark
