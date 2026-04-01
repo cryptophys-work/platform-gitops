@@ -120,13 +120,12 @@ data:
       hs.message = "No status"
       return hs
     end
-    if obj.spec ~= nil and obj.spec.suspend == true then
-      hs.status = "Degraded"
-      hs.message = "CronJob is suspended"
-      return hs
-    end
     hs.status = "Healthy"
-    hs.message = "CronJob active"
+    if obj.spec ~= nil and obj.spec.suspend == true then
+      hs.message = "CronJob suspended"
+    else
+      hs.message = "CronJob active"
+    end
     return hs
   resource.customizations.health.apiextensions.k8s.io_CustomResourceDefinition: |
     hs = {}
