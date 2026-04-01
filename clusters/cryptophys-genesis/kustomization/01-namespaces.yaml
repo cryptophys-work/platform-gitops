@@ -11,7 +11,7 @@ spec:
   suspend: false   # Unsuspend after 00-crds is Applied
   interval: 10m
   prune: false    # Never prune namespaces
-  wait: true
+  wait: false
   timeout: 5m
   path: ./platform/infrastructure/namespaces
   sourceRef:
