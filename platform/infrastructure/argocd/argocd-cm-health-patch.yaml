@@ -128,3 +128,26 @@ data:
     hs.status = "Healthy"
     hs.message = "CronJob active"
     return hs
+  resource.customizations.health.apiextensions.k8s.io_CustomResourceDefinition: |
+    hs = {}
+    if obj.status == nil then
+      hs.status = "Healthy"
+      hs.message = "No status"
+      return hs
+    end
+    local established = false
+    if obj.status.conditions ~= nil then
+      for _, c in ipairs(obj.status.conditions) do
+        if c.type == "Established" and c.status == "True" then
+          established = true
+        end
+      end
+    end
+    if established then
+      hs.status = "Healthy"
+      hs.message = "CRD established"
+      return hs
+    end
+    hs.status = "Progressing"
+    hs.message = "CRD not yet established"
+    return hs
