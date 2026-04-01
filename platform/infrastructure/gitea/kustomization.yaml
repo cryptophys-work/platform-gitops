@@ -7,5 +7,6 @@ resources:
   - gitea-platform.yaml
   - platform__gitea_apps_gitops_mirror_cronjob.yaml
   - platform__gitea_picoclaw_guard_script.yaml
+  - gitea-postgres-egress-netpol.yaml
   - gitea-internal-mtls.yaml
   - gitea-internal-cnp.yaml
