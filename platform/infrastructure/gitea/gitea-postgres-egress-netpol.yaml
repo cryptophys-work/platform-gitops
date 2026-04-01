@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: gitea-postgres-egress
+  namespace: gitops-system
+  labels:
+    app.kubernetes.io/name: gitea
+    app.kubernetes.io/instance: gitops-gitea
+    cryptophys.io/domain: platform
+    cryptophys.io/component: gitea
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: gitea
+      app.kubernetes.io/instance: gitops-gitea
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: postgresql-system
+          podSelector:
+            matchLabels:
+              cnpg.io/cluster: postgres-apps-ha
+      ports:
+        - protocol: TCP
+          port: 5432
