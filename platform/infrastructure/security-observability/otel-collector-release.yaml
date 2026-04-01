@@ -9,11 +9,14 @@ spec:
     remediation:
       retries: 3
   upgrade:
+    force: true
+    cleanupOnFail: true
     remediation:
       retries: 3
   chart:
     spec:
       chart: opentelemetry-collector
+      version: "0.147.1"
       sourceRef:
         kind: HelmRepository
         name: open-telemetry
@@ -24,6 +27,8 @@ spec:
       tag: 0.145.0
     mode: deployment
     replicaCount: 1
+    nodeSelector:
+      workload.cryptophys.work/apps-core: "true"
     tolerations: []
     resources:
       requests:
