@@ -111,6 +111,16 @@ spec:
           secretKeyRef:
             name: gitea-mirror-token
             key: token
+      - name: GITEA_ADMIN_BOOTSTRAP_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: gitea-admin-secret
+            key: username
+      - name: GITEA_ADMIN_BOOTSTRAP_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: gitea-admin-secret
+            key: password
     strategy:
       type: Recreate
     deployment:
@@ -126,6 +136,21 @@ spec:
                   git -C "$REPO" remote set-url origin \
                     "https://${GITHUB_MIRROR_USER}:${GITHUB_MIRROR_TOKEN}@github.com/cryptophys-work/apps-gitops.git"
                   echo "[mirror-init] remote URL set for apps-gitops" >> /tmp/mirror-init.log
+                fi
+                if [ -n "${GITEA_ADMIN_BOOTSTRAP_USERNAME:-}" ] && [ -n "${GITEA_ADMIN_BOOTSTRAP_PASSWORD:-}" ]; then
+                  n=0
+                  until gitea admin user change-password \
+                    --username "${GITEA_ADMIN_BOOTSTRAP_USERNAME}" \
+                    --password "${GITEA_ADMIN_BOOTSTRAP_PASSWORD}" \
+                    --must-change-password=false >> /tmp/mirror-init.log 2>&1; do
+                    n=$((n+1))
+                    if [ "$n" -ge 12 ]; then
+                      echo "[bootstrap-auth] failed to normalize ${GITEA_ADMIN_BOOTSTRAP_USERNAME}" >> /tmp/mirror-init.log
+                      exit 1
+                    fi
+                    sleep 5
+                  done
+                  echo "[bootstrap-auth] normalized ${GITEA_ADMIN_BOOTSTRAP_USERNAME}" >> /tmp/mirror-init.log
                 fi
     ingress:
       enabled: true
