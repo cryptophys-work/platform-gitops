@@ -41,6 +41,4 @@ spec:
                   values:
                     - synapse-161-97-136-251
     extraArgs:
-      leader-election-lease-duration: 60s
-      leader-election-renew-deadline: 40s
-      leader-election-retry-period: 10s
+      leader-elect: "false"
