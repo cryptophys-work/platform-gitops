@@ -54,16 +54,21 @@ spec:
         limits:
           cpu: "1"
           memory: "512Mi"    # Hard cap per longhorn-manager pod
-    # ── Driver/CSI: exclude control-plane — reduces CP memory pressure ──
+    # ── Driver/CSI: runs on platform (CP) nodes; needs CP taint toleration ──
     longhornDriver:
       tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
         - key: cryptophys.io/storage-only
           operator: Exists
           effect: NoSchedule
         - key: cryptophys.io/role
           operator: Exists
           effect: NoSchedule
-      # Deliberately NO control-plane toleration — CSI driver not needed on CP
       resources:
         requests:
           cpu: "20m"
