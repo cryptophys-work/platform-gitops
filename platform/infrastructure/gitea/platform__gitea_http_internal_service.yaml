@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitea-http-internal
+  namespace: gitops-system
+  labels:
+    app.kubernetes.io/name: gitea
+    cryptophys.io/domain: platform
+    cryptophys.io/component: gitea
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+  annotations:
+    cryptophys.io/contract: contract.platform.gitea.v1
+    cryptophys.io/ssot: "true"
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: gitea
+  ports:
+    - name: http
+      port: 3000
+      protocol: TCP
+      targetPort: 3000
