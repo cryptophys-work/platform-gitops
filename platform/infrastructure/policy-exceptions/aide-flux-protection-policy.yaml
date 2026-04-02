@@ -1,0 +1,38 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: deny-aide-mutations-flux-system
+  annotations:
+    policies.kyverno.io/title: Protect Flux System from AIDE Mutations
+    policies.kyverno.io/category: Governance
+    policies.kyverno.io/severity: critical
+    policies.kyverno.io/description: >
+      Blocks service accounts from the aide namespace from mutating namespaced
+      resources in flux-system. Flux controllers must only be changed via GitOps.
+spec:
+  validationFailureAction: Enforce
+  background: false
+  rules:
+    - name: deny-aide-mutate-flux-system
+      match:
+        any:
+          - resources:
+              kinds:
+                - "*"
+              namespaces:
+                - flux-system
+              operations:
+                - CREATE
+                - UPDATE
+                - PATCH
+                - DELETE
+      validate:
+        message: >
+          Mutations in flux-system by AIDE service accounts are forbidden.
+          Commit GitOps changes to platform-gitops instead of mutating live resources.
+        deny:
+          conditions:
+            all:
+              - key: "{{ request.userInfo.username || '' }}"
+                operator: Contains
+                value: "system:serviceaccount:aide:"
