@@ -36,6 +36,12 @@ spec:
       storageOverProvisioningPercentage: 250
       replicaSoftAntiAffinity: true
       replicaAutoBalance: best-effort
+      concurrentReplicaRebuildPerNodeLimit: 2
+      concurrentVolumeBackupRestorePerNodeLimit: 2
+      replicaReplenishmentWaitInterval: 900
+      autoCleanupSystemGeneratedSnapshot: true
+      orphanResourceAutoDeletion: replica-data;instance
+      orphanResourceAutoDeletionGracePeriod: 1200
       # ── Instance manager CPU guardrail ──
       guaranteedInstanceManagerCPU: 12    # % of CPU reserved per instance-manager (was default 12%)
     # ── Manager runs everywhere (needs to coordinate volumes on all nodes) ──
