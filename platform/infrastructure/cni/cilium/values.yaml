@@ -22,12 +22,15 @@ encryption:
   type: wireguard
   nodeEncryption: true
 priorityClassName: system-node-critical
+bpf:
+  policyMapMax: 65536
+  mapDynamicSizeRatio: 0.005
 resources:
   requests:
     cpu: 100m
-    memory: 256Mi
+    memory: 512Mi
   limits:
-    memory: 1Gi
+    memory: 2Gi
 securityContext:
   privileged: true
   capabilities:
