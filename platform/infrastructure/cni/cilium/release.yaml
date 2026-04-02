@@ -94,6 +94,15 @@ spec:
             operator: Equal
             value: llm-inference
             effect: NoSchedule
+    bpf:
+      policyMapMax: 65536
+      mapDynamicSizeRatio: 0.005
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        memory: 2Gi
     ipam:
       mode: kubernetes
     operator:
