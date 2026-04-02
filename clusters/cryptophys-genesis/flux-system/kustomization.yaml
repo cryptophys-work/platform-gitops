@@ -23,3 +23,21 @@ patches:
                 effect: NoSchedule
     target:
       kind: Deployment
+  # Pin source-controller to a known healthy control-plane node while worker Cilium is unstable.
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: source-controller
+      spec:
+        template:
+          spec:
+            nodeSelector:
+              kubernetes.io/hostname: corpus-207-180-206-69
+            tolerations:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+                effect: NoSchedule
+    target:
+      kind: Deployment
+      name: source-controller
