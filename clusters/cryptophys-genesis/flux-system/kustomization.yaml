@@ -4,7 +4,8 @@ resources:
   - gotk-components.yaml
   - gotk-sync.yaml
 patches:
-  # All Flux controllers: apps-core nodes only, no tolerations
+  # All Flux controllers: apps-core nodes only, tolerate control-plane taint
+  # so flux can still schedule when worker pool is pressure/partially degraded.
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
@@ -16,6 +17,9 @@ patches:
           spec:
             nodeSelector:
               workload.cryptophys.work/apps-core: "true"
-            tolerations: []
+            tolerations:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+                effect: NoSchedule
     target:
       kind: Deployment
