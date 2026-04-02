@@ -19,23 +19,3 @@ patches:
             tolerations: []
     target:
       kind: Deployment
-  # All Flux controllers: exclude quanta (97% CPU/mem — causes crash-loops and stale pending-upgrade)
-  - patch: |
-      apiVersion: apps/v1
-      kind: Deployment
-      metadata:
-        name: all
-      spec:
-        template:
-          spec:
-            affinity:
-              nodeAffinity:
-                requiredDuringSchedulingIgnoredDuringExecution:
-                  nodeSelectorTerms:
-                  - matchExpressions:
-                    - key: kubernetes.io/hostname
-                      operator: NotIn
-                      values:
-                      - quanta-194-163-186-222
-    target:
-      kind: Deployment
