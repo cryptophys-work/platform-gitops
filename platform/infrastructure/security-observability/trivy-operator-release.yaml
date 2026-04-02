@@ -42,8 +42,12 @@ spec:
     tolerations: []
     operator:
       # Limit parallel scan bursts so security scans cannot starve Longhorn on a single worker.
-      scanJobsConcurrentLimit: 2
+      scanJobsConcurrentLimit: 1
       scanJobTimeout: 10m
+      vulnerabilityScannerEnabled: true
+      configAuditScannerEnabled: false
+      rbacAssessmentScannerEnabled: false
+      exposedSecretScannerEnabled: false
       infraAssessmentScannerEnabled: false   # disabled: high CPU, low value vs trivy vuln scan
       clusterComplianceEnabled: false         # disabled: no compliance profile configured
     scanJob:
