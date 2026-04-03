@@ -51,6 +51,10 @@ spec:
     persistence:
       enabled: true
       resourcePolicy: keep
+      imageChartStorage:
+        type: filesystem
+        filesystem:
+          rootdirectory: /storage
       persistentVolumeClaim:
         registry:
           existingClaim: registry-harbor-registry-v2
