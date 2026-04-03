@@ -48,6 +48,9 @@ spec:
         - "[*/*,spire-system,*]"
         - "[*/*,apps-system,*]"
         - "[*/*,observability-system,*]"
+        # Skip Velero CRDs — kyverno-reports-controller SA lacks velero.io RBAC, causing restart loops
+        - "[backup.velero.io/*,*,*]"
+        - "[velero.io/*,*,*]"
     admissionController:
       createSelfSignedCert: true
       replicas: 2
@@ -183,7 +186,7 @@ spec:
           backgroundScanInterval: "24h"
           backgroundScanWorkers: "1"
           enableReporting: "validate"
-          skipResourceFilters: "true"
+          # skipResourceFilters removed — allows velero.io filter to take effect
       tolerations:
         - key: cryptophys.io/role
           operator: Equal
