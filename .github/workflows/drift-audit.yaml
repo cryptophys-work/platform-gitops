@@ -29,8 +29,8 @@ jobs:
           list_stage_files clusters/talos-prod > "$talos"
           list_stage_files clusters/cryptophys-genesis > "$genesis"
 
-          [ -s "$talos" ] || echo "No stage YAML files discovered for talos-prod"
-          [ -s "$genesis" ] || echo "No stage YAML files discovered for cryptophys-genesis"
+          [ -s "$talos" ] || { echo "No stage YAML files discovered for talos-prod" >&2; exit 1; }
+          [ -s "$genesis" ] || { echo "No stage YAML files discovered for cryptophys-genesis" >&2; exit 1; }
 
           echo "## Stage files only in talos-prod"
           comm -23 "$talos" "$genesis" || true
