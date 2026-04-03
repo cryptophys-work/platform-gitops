@@ -1,7 +1,7 @@
-# Tekton CI/CD Infrastructure
+# Tekton CI/CD Infrastructure (Historical Reference)
 
-Note: Tekton pipelines/tasks are now managed by ArgoCD from `apps-gitops`.
-This folder is retained for historical reference only.
+> Historical document. Active Tekton ownership is in `apps-gitops`.
+> Do not use this file as the operational source of truth.
 
 **Institutional-grade continuous integration and delivery platform with automatic image signing, SBOM generation, and supply chain security.**
 
@@ -163,6 +163,6 @@ kubectl get taskrun <name> -o jsonpath='{.metadata.annotations}' | grep chains
 - Rekor: https://docs.sigstore.dev/rekor/
 
 ---
-**Status:** ✅ Production Ready
+**Status:** Historical Reference Only
 **Last Updated:** 2026-02-18
 **Cluster:** cryptophys-genesis

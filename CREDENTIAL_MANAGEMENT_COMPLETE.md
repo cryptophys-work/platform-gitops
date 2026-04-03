@@ -41,5 +41,4 @@ Path: `secret/platform-credentials/<service>`
 ## Access
 All services: https://*.cryptophys.work (valid Let's Encrypt cert)
 
-Vault root token: `/opt/cryptophys/.secrets/vault-init-20260215T181816Z.json`
-
+Privileged break-glass credentials are stored outside git in approved secure storage and must be retrieved through authorized operational procedures.

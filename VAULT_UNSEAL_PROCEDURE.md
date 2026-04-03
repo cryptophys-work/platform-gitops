@@ -10,21 +10,9 @@ Vault uses Shamir secret sharing for unsealing. After restarts or seal events, V
 - Applications continue running but cannot rotate/update secrets
 
 ## Unseal Keys Location
-Keys stored in: `/root/.copilot/session-state/317d4b09-76b2-4b42-84ce-cdab279d8601/files/vault-init-new.json`
+Unseal keys and privileged tokens MUST NOT be stored in this repository.
 
-```json
-{
-  "unseal_keys_b64": [
-    "eQnzjzHWylYDrI1pxUkGet33t1YtwCFRlF45OjWCnTm2",
-    "x/rHbduGziqteIoDe0RBFKKEiFnJceBegDf9Qk04zRQV",
-    "peS+JvQFVJwtZWLiqSzEREddp7oRgo3oumc6oBTfcBdM",
-    "w19GhQ948J7ZqepBZos+zLgM058+OiUkNRc5ySdSk6Qb",
-    "QuI0lpMb4qVrj14c/dm7DXd/RzMvLBdcsHUEoDAGZVxZ"
-  ],
-  "unseal_threshold": 3,
-  "root_token": "hvs.0mINJZmq1wGLTFTtgkdETN8Z"
-}
-```
+Store and retrieve break-glass materials from an approved secure system (HSM, cloud KMS, encrypted secret manager, or offline sealed storage) following your security policy.
 
 **⚠️ SECURITY NOTICE:** These keys should be stored securely in production (e.g., encrypted storage, HSM, or key management service). Consider implementing Vault auto-unseal.
 
@@ -43,19 +31,19 @@ Each pod requires 3 keys (can be any 3 of the 5):
 
 ```bash
 # Unseal vault-0
-kubectl exec -n vault-system vault-0 -- vault operator unseal eQnzjzHWylYDrI1pxUkGet33t1YtwCFRlF45OjWCnTm2
-kubectl exec -n vault-system vault-0 -- vault operator unseal x/rHbduGziqteIoDe0RBFKKEiFnJceBegDf9Qk04zRQV
-kubectl exec -n vault-system vault-0 -- vault operator unseal peS+JvQFVJwtZWLiqSzEREddp7oRgo3oumc6oBTfcBdM
+kubectl exec -n vault-system vault-0 -- vault operator unseal <UNSEAL_KEY_1>
+kubectl exec -n vault-system vault-0 -- vault operator unseal <UNSEAL_KEY_2>
+kubectl exec -n vault-system vault-0 -- vault operator unseal <UNSEAL_KEY_3>
 
 # Unseal vault-1
-kubectl exec -n vault-system vault-1 -- vault operator unseal eQnzjzHWylYDrI1pxUkGet33t1YtwCFRlF45OjWCnTm2
-kubectl exec -n vault-system vault-1 -- vault operator unseal x/rHbduGziqteIoDe0RBFKKEiFnJceBegDf9Qk04zRQV
-kubectl exec -n vault-system vault-1 -- vault operator unseal peS+JvQFVJwtZWLiqSzEREddp7oRgo3oumc6oBTfcBdM
+kubectl exec -n vault-system vault-1 -- vault operator unseal <UNSEAL_KEY_1>
+kubectl exec -n vault-system vault-1 -- vault operator unseal <UNSEAL_KEY_2>
+kubectl exec -n vault-system vault-1 -- vault operator unseal <UNSEAL_KEY_3>
 
 # Unseal vault-2
-kubectl exec -n vault-system vault-2 -- vault operator unseal eQnzjzHWylYDrI1pxUkGet33t1YtwCFRlF45OjWCnTm2
-kubectl exec -n vault-system vault-2 -- vault operator unseal x/rHbduGziqteIoDe0RBFKKEiFnJceBegDf9Qk04zRQV
-kubectl exec -n vault-system vault-2 -- vault operator unseal peS+JvQFVJwtZWLiqSzEREddp7oRgo3oumc6oBTfcBdM
+kubectl exec -n vault-system vault-2 -- vault operator unseal <UNSEAL_KEY_1>
+kubectl exec -n vault-system vault-2 -- vault operator unseal <UNSEAL_KEY_2>
+kubectl exec -n vault-system vault-2 -- vault operator unseal <UNSEAL_KEY_3>
 ```
 
 **Note:** Only 2 keys needed after first key (shows `Unseal Progress: 2/3`), but third key completes unseal.
@@ -86,11 +74,11 @@ kubectl get clustersecretstore vault-backend
 If still showing `ValidationFailed`, the ESO token may be invalid. Regenerate:
 
 ```bash
-# Login with root token
-kubectl exec -n vault-system vault-0 -- vault login hvs.0mINJZmq1wGLTFTtgkdETN8Z
+# Login with privileged token from secure storage
+kubectl exec -n vault-system vault-0 -- vault login <SECURELY_RETRIEVED_VAULT_TOKEN>
 
 # Create policy for External Secrets (if not exists)
-kubectl exec -n vault-system vault-0 -- sh -c 'export VAULT_TOKEN=hvs.0mINJZmq1wGLTFTtgkdETN8Z && vault policy write external-secrets - <<EOF
+kubectl exec -n vault-system vault-0 -- sh -c 'export VAULT_TOKEN=<SECURELY_RETRIEVED_VAULT_TOKEN> && vault policy write external-secrets - <<EOF
 path "secret/data/*" {
   capabilities = ["read"]
 }
@@ -118,7 +106,7 @@ path "auth/token/renew-self" {
 EOF'
 
 # Generate new token
-NEW_TOKEN=$(kubectl exec -n vault-system vault-0 -- sh -c 'export VAULT_TOKEN=hvs.0mINJZmq1wGLTFTtgkdETN8Z && vault token create -policy=external-secrets -ttl=0 -format=json' | jq -r '.auth.client_token')
+NEW_TOKEN=$(kubectl exec -n vault-system vault-0 -- sh -c 'export VAULT_TOKEN=<SECURELY_RETRIEVED_VAULT_TOKEN> && vault token create -policy=external-secrets -ttl=0 -format=json' | jq -r '.auth.client_token')
 
 # Update secret
 kubectl create secret generic vault-eso-token \
@@ -166,3 +154,13 @@ Reference: https://developer.hashicorp.com/vault/docs/concepts/seal#auto-unseal
 ## Recovery History
 
 **2026-02-17:** Vault sealed after restart. Root cause: Shamir unseal requires manual intervention. Successfully unsealed all 3 pods and regenerated ESO token. Result: 14/14 ExternalSecrets synced, 100% cluster health restored.
+
+## Security Follow-up (Mandatory)
+
+If any unseal keys or privileged Vault tokens are ever committed to git:
+
+1. Treat as credential compromise.
+2. Rotate exposed tokens/keys immediately.
+3. Invalidate downstream derived credentials.
+4. Remove exposed material from repository history.
+5. Record incident and remediation completion in security operations logs.
