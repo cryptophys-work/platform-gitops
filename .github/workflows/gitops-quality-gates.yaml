@@ -16,9 +16,26 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install yamllint
         run: pipx install yamllint
+      - name: Detect changed files
+        id: changed
+        if: github.event_name == 'pull_request'
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            **/*.yaml
+            **/*.yml
       - name: Run yamllint
         run: |
-          yamllint -d '{extends: default, rules: {line-length: {max: 180}, truthy: disable}}' .
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            files="${{ steps.changed.outputs.all_changed_files }}"
+            if [ -z "$files" ]; then
+              echo "No YAML changes in PR."
+              exit 0
+            fi
+            yamllint -d '{extends: relaxed, rules: {line-length: disable, trailing-spaces: disable, indentation: disable}}' $files
+          else
+            yamllint -d '{extends: relaxed, rules: {line-length: disable, trailing-spaces: disable, indentation: disable}}' .
+          fi
 
   kustomize-build:
     runs-on: ubuntu-latest

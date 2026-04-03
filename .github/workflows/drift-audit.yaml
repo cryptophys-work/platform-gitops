@@ -1,0 +1,30 @@
+name: Drift Audit Snapshot
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compare-cluster-stages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare stage files between clusters
+        run: |
+          set -euo pipefail
+          talos=$(mktemp)
+          genesis=$(mktemp)
+          ls clusters/talos-prod/kustomization | sort > "$talos"
+          ls clusters/cryptophys-genesis/kustomization | sort > "$genesis"
+
+          echo "## Stage files only in talos-prod"
+          comm -23 "$talos" "$genesis" || true
+
+          echo "## Stage files only in cryptophys-genesis"
+          comm -13 "$talos" "$genesis" || true
+
+          echo "## Common stage files"
+          comm -12 "$talos" "$genesis" || true
