@@ -1,0 +1,35 @@
+name: Docs Change Guard
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  require-docs-on-infra-change:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Detect changed files
+        id: changed
+        uses: tj-actions/changed-files@v45
+        with:
+          files_yaml: |
+            infra:
+              - 'clusters/**'
+              - 'platform/**'
+            docs:
+              - 'docs/**'
+              - '*.md'
+      - name: Enforce docs updates for infra changes
+        run: |
+          if [ "${{ steps.changed.outputs.infra_any_changed }}" = "true" ] && [ "${{ steps.changed.outputs.docs_any_changed }}" != "true" ]; then
+            echo "Infrastructure/manifests changed without documentation updates." >&2
+            echo "Update docs/ or relevant root markdown runbooks before merge." >&2
+            exit 1
+          fi
+          echo "Docs guard passed."
