@@ -9,8 +9,8 @@ spec:
   timeout: 10m
   path: ./platform/infrastructure/cni
   prune: true
-  wait: true
-  suspend: true
+  wait: false
+  suspend: false
   sourceRef:
     kind: GitRepository
     name: platform-repo
