@@ -166,10 +166,10 @@ spec:
         failureThreshold: 50
         periodSeconds: 6
     reportsController:
+      enabled: false  # Disabled — crashes trying to watch 100+ CRD kinds at startup (context timeout)
+      # Re-enable once Kyverno 3.6+ fixes CRD discovery throttling or cluster CRD count reduces
       imagePullSecrets:
         - name: registry-cryptophys-work-auth
-      replicas: 0  # Disabled — reports-controller crashes trying to watch 100+ CRD kinds at startup
-      # Re-enable by setting replicas: 1 once Kyverno 3.6+ fixes CRD discovery throttling
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
