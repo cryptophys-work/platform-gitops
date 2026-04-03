@@ -62,3 +62,17 @@ platform-gitops/
 - `HelmRelease` menggunakan `helm.toolkit.fluxcd.io/v2beta2`.
 - Jika terjadi konflik ownership CRD (kasus Longhorn), gunakan runbook:
   - `docs/runbooks/LONGHORN_CRD_ADOPTION_RECOVERY.md`
+
+## Governance & Operating Model
+
+- Branch protection and merge blocking policy:
+  - `docs/governance/branch-protection-and-merge-blocking.md`
+- Cross-repo contract model (`platform-gitops`, `apps-gitops`, `ssot-core`):
+  - `docs/contracts/cross-repo-contract-model.md`
+- Environment parity and drift baseline:
+  - `docs/parity/environment-parity-and-drift.md`
+- Architecture index (cluster stage -> source mapping):
+  - `docs/architecture/repo-architecture-index.md`
+- Runbook standards and ownership:
+  - `docs/operations/runbook-standard.md`
+  - `docs/governance/docs-ownership.md`
