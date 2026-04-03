@@ -24,7 +24,6 @@ spec:
               operations:
                 - CREATE
                 - UPDATE
-                - PATCH
                 - DELETE
       validate:
         message: >
