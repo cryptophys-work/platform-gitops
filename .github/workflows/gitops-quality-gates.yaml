@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install yamllint
-        run: pipx install yamllint
+        run: pipx install yamllint==1.35.1
       - name: Detect changed files
         id: changed
         if: github.event_name == 'pull_request'

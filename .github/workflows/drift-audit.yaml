@@ -17,8 +17,17 @@ jobs:
           set -euo pipefail
           talos=$(mktemp)
           genesis=$(mktemp)
-          ls clusters/talos-prod/kustomization | sort > "$talos"
-          ls clusters/cryptophys-genesis/kustomization | sort > "$genesis"
+          if [ -d clusters/talos-prod/kustomization ]; then
+            ls clusters/talos-prod/kustomization/*.yaml | xargs -n1 basename | sort > "$talos"
+          else
+            ls clusters/talos-prod/*.yaml | xargs -n1 basename | sort > "$talos"
+          fi
+
+          if [ -d clusters/cryptophys-genesis/kustomization ]; then
+            ls clusters/cryptophys-genesis/kustomization/*.yaml | xargs -n1 basename | sort > "$genesis"
+          else
+            ls clusters/cryptophys-genesis/*.yaml | xargs -n1 basename | sort > "$genesis"
+          fi
 
           echo "## Stage files only in talos-prod"
           comm -23 "$talos" "$genesis" || true

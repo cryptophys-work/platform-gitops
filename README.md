@@ -66,13 +66,13 @@ platform-gitops/
 ## Governance & Operating Model
 
 - Branch protection and merge blocking policy:
-  - `/home/runner/work/platform-gitops/platform-gitops/docs/governance/branch-protection-and-merge-blocking.md`
+  - `docs/governance/branch-protection-and-merge-blocking.md`
 - Cross-repo contract model (`platform-gitops`, `apps-gitops`, `ssot-core`):
-  - `/home/runner/work/platform-gitops/platform-gitops/docs/contracts/cross-repo-contract-model.md`
+  - `docs/contracts/cross-repo-contract-model.md`
 - Environment parity and drift baseline:
-  - `/home/runner/work/platform-gitops/platform-gitops/docs/parity/environment-parity-and-drift.md`
+  - `docs/parity/environment-parity-and-drift.md`
 - Architecture index (cluster stage -> source mapping):
-  - `/home/runner/work/platform-gitops/platform-gitops/docs/architecture/repo-architecture-index.md`
+  - `docs/architecture/repo-architecture-index.md`
 - Runbook standards and ownership:
-  - `/home/runner/work/platform-gitops/platform-gitops/docs/operations/runbook-standard.md`
-  - `/home/runner/work/platform-gitops/platform-gitops/docs/governance/docs-ownership.md`
+  - `docs/operations/runbook-standard.md`
+  - `docs/governance/docs-ownership.md`

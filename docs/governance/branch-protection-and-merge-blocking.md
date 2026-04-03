@@ -26,6 +26,9 @@ The following checks MUST pass before merge:
 ## Signing Controls
 - Require signed commits on protected branches.
 - Require signed tags for release tags.
+- Contributors must configure signing before merging:
+  - Commit signing: GitHub Docs -> "Tell Git about your signing key"
+  - Tag signing: Git documentation -> signed tags (`git tag -s`)
 
 ## Failed Reconciliation Blocker
 If any of the following conditions occur in CI validation or post-merge reconciliation evidence, merge is blocked until resolved:
