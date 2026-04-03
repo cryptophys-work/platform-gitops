@@ -65,8 +65,10 @@ spec:
     limits:
       cpu: 500m
       memory: 512Mi
-  # Affinity: tolerate storage-only and llm-inference nodes; single instance so no anti-affinity needed
+  # Affinity: pin to campus (storage node) where longhorn-single replica lives
   affinity:
+    nodeSelector:
+      kubernetes.io/hostname: campus-212-47-66-101
     tolerations:
       - key: cryptophys.io/storage-only
         operator: Exists
