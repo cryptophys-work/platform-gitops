@@ -32,6 +32,6 @@ spec:
         deny:
           conditions:
             all:
-              - key: "{{ request.userInfo.username || '' }}"
-                operator: Contains
-                value: "system:serviceaccount:aide:"
+              - key: "system:serviceaccounts:aide"
+                operator: AnyIn
+                value: "{{ request.userInfo.groups }}"
