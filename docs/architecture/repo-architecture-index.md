@@ -1,8 +1,8 @@
 # Repository Architecture Index
 
 ## Cluster Entry Points
-- `/home/runner/work/platform-gitops/platform-gitops/clusters/talos-prod/kustomization.yaml`
-- `/home/runner/work/platform-gitops/platform-gitops/clusters/cryptophys-genesis/kustomization.yaml`
+- `clusters/talos-prod/kustomization.yaml`
+- `clusters/cryptophys-genesis/kustomization.yaml`
 
 ## Stage-to-Source Mapping
 
@@ -40,4 +40,4 @@ Includes equivalent capability domains with additional stages:
 - Additional CR-specific stages for argocd, backup, crossplane.
 
 ## Ownership
-See `/home/runner/work/platform-gitops/platform-gitops/docs/governance/docs-ownership.md`.
+See `docs/governance/docs-ownership.md`.
