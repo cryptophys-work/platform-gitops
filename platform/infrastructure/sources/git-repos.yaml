@@ -7,7 +7,9 @@ spec:
   interval: 1m
   ref:
     branch: main
-  url: https://gitea.cryptophys.work/cryptophys-work/platform-gitops.git
+  secretRef:
+    name: flux-system
+  url: http://gitops-gitea-http.gitops-system.svc.cluster.local:3000/cryptophys-work/platform-gitops.git
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
@@ -18,4 +20,6 @@ spec:
   interval: 1m
   ref:
     branch: main
-  url: https://gitea.cryptophys.work/cryptophys-work/ssot-core.git
+  secretRef:
+    name: flux-system
+  url: http://gitops-gitea-http.gitops-system.svc.cluster.local:3000/cryptophys-work/ssot-core.git
