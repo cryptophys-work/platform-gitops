@@ -28,6 +28,7 @@ spec:
     mode: deployment
     replicaCount: 1
     nodeSelector:
+      cryptophys.io/tier: platform
       workload.cryptophys.work/apps-core: "true"
     tolerations:
       - key: "node-role.kubernetes.io/control-plane"
