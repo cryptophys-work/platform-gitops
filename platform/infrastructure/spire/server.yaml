@@ -84,7 +84,7 @@ spec:
             - name: spire-config
               mountPath: /run/spire/config
               readOnly: true
-            - name: spire-data
+            - name: spire-data-v2
               mountPath: /run/spire/data
               readOnly: false
             - name: server-socket
@@ -157,7 +157,7 @@ spec:
           emptyDir: {}
   volumeClaimTemplates:
     - metadata:
-        name: spire-data
+        name: spire-data-v2
       spec:
         accessModes: ["ReadWriteOnce"]
         storageClassName: longhorn
