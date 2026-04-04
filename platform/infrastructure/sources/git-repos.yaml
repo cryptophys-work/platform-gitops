@@ -7,9 +7,7 @@ spec:
   interval: 1m
   ref:
     branch: main
-  secretRef:
-    name: github-repo-auth
-  url: https://github.com/cryptophys-work/platform-gitops.git
+  url: https://gitea.cryptophys.work/cryptophys-work/platform-gitops.git
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
@@ -20,6 +18,4 @@ spec:
   interval: 1m
   ref:
     branch: main
-  secretRef:
-    name: github-repo-auth
-  url: https://github.com/cryptophys-work/ssot-core.git
+  url: https://gitea.cryptophys.work/cryptophys-work/ssot-core.git
