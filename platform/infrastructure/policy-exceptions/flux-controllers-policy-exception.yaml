@@ -23,6 +23,8 @@ spec:
           kinds:
             - Deployment
             - Pod
+            - Service
+            - ServiceAccount
           namespaces:
             - flux-system
           names:

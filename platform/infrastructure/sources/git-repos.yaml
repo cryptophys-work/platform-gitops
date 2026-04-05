@@ -8,8 +8,8 @@ spec:
   ref:
     branch: main
   secretRef:
-    name: flux-system
-  url: http://gitops-gitea-http.gitops-system.svc.cluster.local:3000/cryptophys-work/platform-gitops.git
+    name: github-ssh-key
+  url: ssh://git@github.com/cryptophys-work/platform-gitops.git
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
@@ -21,5 +21,5 @@ spec:
   ref:
     branch: main
   secretRef:
-    name: flux-system
-  url: http://gitops-gitea-http.gitops-system.svc.cluster.local:3000/cryptophys-work/ssot-core.git
+    name: github-ssh-key
+  url: ssh://git@github.com/cryptophys-work/ssot-core.git
