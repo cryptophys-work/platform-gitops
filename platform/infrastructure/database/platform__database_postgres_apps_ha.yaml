@@ -67,6 +67,14 @@ spec:
       memory: 512Mi
   # Affinity: avoid hard pinning to a single node; allow rescheduling if one worker degrades
   affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                  - quanta-194-163-186-222
     tolerations:
       - key: cryptophys.io/storage-only
         operator: Exists
