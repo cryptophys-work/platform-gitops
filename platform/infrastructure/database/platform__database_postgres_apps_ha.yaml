@@ -65,10 +65,8 @@ spec:
     limits:
       cpu: 500m
       memory: 512Mi
-  # Affinity: pin to campus (storage node) where longhorn-single replica lives
+  # Affinity: avoid hard pinning to a single node; allow rescheduling if one worker degrades
   affinity:
-    nodeSelector:
-      kubernetes.io/hostname: campus-212-47-66-101
     tolerations:
       - key: cryptophys.io/storage-only
         operator: Exists
