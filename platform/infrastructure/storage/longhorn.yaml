@@ -33,7 +33,7 @@ spec:
       defaultReplicaCount: 2
       taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule"
       storageReservedPercentageForDefaultDisk: 30
-      storageOverProvisioningPercentage: 80
+      storageOverProvisioningPercentage: 200
       replicaSoftAntiAffinity: true
       replicaAutoBalance: best-effort
       concurrentReplicaRebuildPerNodeLimit: 2
