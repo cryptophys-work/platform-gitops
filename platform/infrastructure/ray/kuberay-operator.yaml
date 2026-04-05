@@ -40,5 +40,5 @@ spec:
                   operator: NotIn
                   values:
                     - synapse-161-97-136-251
-    extraArgs:
-      leader-elect: "false"
+    leaderElectionEnabled: false
+    useKubernetesProxy: true
