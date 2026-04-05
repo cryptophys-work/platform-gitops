@@ -141,6 +141,6 @@ spec:
           volumes:
             - name: data
               persistentVolumeClaim:
-                claimName: gitea-shared-storage-v2
+                claimName: gitea-shared-storage
             - name: tmp
               emptyDir: {}
