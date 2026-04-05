@@ -139,6 +139,7 @@ spec:
                 operator: NotIn
                 values:
                 - cerebellum-161-97-117-96
+                - quanta-194-163-186-222
       resources:
         requests:
           cpu: 50m
