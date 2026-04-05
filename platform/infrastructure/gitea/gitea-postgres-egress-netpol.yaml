@@ -24,7 +24,7 @@ spec:
               kubernetes.io/metadata.name: postgresql-system
           podSelector:
             matchLabels:
-              cnpg.io/cluster: postgres-security-ha
+              cnpg.io/cluster: postgres-apps-ha
       ports:
         - protocol: TCP
           port: 5432
