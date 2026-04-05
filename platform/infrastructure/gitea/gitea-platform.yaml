@@ -174,8 +174,8 @@ spec:
     persistence:
       enabled: true
       create: false
-      claimName: gitea-shared-storage-v2
-      size: 10Gi
+      claimName: gitea-shared-storage
+      size: 50Gi
       storageClass: longhorn
       accessModes:
         - ReadWriteOnce
@@ -198,7 +198,7 @@ spec:
         memory: 1Gi    # increased from 768Mi
     tolerations: []
     nodeSelector:
-      workload.cryptophys.work/apps-core: "true"
+      apps-core-target: apps-core
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -207,9 +207,8 @@ spec:
                 - key: kubernetes.io/hostname
                   operator: NotIn
                   values:
-                    - cerebellum-161-97-117-96
-                    - quanta-194-163-186-222
-                    - synapse-161-97-136-251
+                   - cerebellum-161-97-117-96
+                   - quanta-194-163-186-222
     initContainers:
       resources:
         requests:
