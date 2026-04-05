@@ -111,7 +111,7 @@ spec:
           operator: "Equal"
           value: "llm-inference"
           effect: "NoSchedule"
-      replicas: 2
+      replicas: 1
       resources:
         requests:
           cpu: 100m
