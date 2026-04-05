@@ -83,6 +83,7 @@ spec:
                 - thalamus-217-76-59-241
       container:
         extraArgs:
+          exceptionNamespace: "kyverno-system"
           forceFailurePolicyIgnore: "true"
           maxAdmissionReports: "200"
         resources:
