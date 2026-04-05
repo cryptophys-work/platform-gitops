@@ -1,0 +1,20 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: aide-kyverno-exclusions
+  namespace: flux-system
+  annotations:
+    cryptophys.io/reason: "Exclude aide namespace from image attestation/cosign policies until Tekton Chains signing is stable"
+    cryptophys.io/ticket: "PLAT-AIDE-ATTESTATION-001"
+spec:
+  suspend: false
+  interval: 10m
+  prune: false
+  wait: true
+  timeout: 2m
+  path: ./platform/infrastructure/aide-policy-exclusions
+  sourceRef:
+    kind: GitRepository
+    name: platform-repo
+  dependsOn:
+    - name: ssot-kyverno-policies

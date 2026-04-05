@@ -8,3 +8,4 @@ resources:
   - ssot-gatekeeper-constraints.yaml
   - ssot-gatekeeper-enforce-business.yaml
   - ssot-waiver-cleanup-ops.yaml
+  - aide-kyverno-exclusions.yaml
