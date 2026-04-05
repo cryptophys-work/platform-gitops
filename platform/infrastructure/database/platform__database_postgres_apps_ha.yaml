@@ -65,16 +65,10 @@ spec:
     limits:
       cpu: 500m
       memory: 512Mi
-  # Affinity: avoid hard pinning to a single node; allow rescheduling if one worker degrades
+  # Affinity: pin to storage worker for stable single-replica Longhorn placement
   affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-          - matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                  - quanta-194-163-186-222
+    nodeSelector:
+      kubernetes.io/hostname: campus-212-47-66-101
     tolerations:
       - key: cryptophys.io/storage-only
         operator: Exists
