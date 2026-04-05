@@ -50,10 +50,10 @@ spec:
       config:
         database:
           DB_TYPE: postgres
-          HOST: postgres-apps-ha-rw.postgresql-system.svc.cluster.local:5432
+          HOST: postgres-security-ha-rw.postgresql-system.svc.cluster.local:5432
           NAME: gitea
           USER: gitea
-          PASSWD: GiteaSecure2026!
+          PASSWD: GiteaSecure2026
         cache:
           ADAPTER: redis
           HOST: redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
