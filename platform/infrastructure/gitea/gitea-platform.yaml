@@ -206,8 +206,9 @@ spec:
             - matchExpressions:
                 - key: kubernetes.io/hostname
                   operator: NotIn
-                  values:
-                    - cerebellum-161-97-117-96
+                   values:
+                     - cerebellum-161-97-117-96
+                     - quanta-194-163-186-222
     initContainers:
       resources:
         requests:
