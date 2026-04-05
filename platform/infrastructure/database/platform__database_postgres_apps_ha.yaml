@@ -14,7 +14,7 @@ spec:
     name: postgres-superuser-secret
   storage:
     size: 10Gi
-    storageClass: longhorn
+    storageClass: longhorn-single
   nodeMaintenanceWindow:
     inProgress: false
     reusePVC: true
@@ -26,7 +26,7 @@ spec:
       localeCType: C
       localeCollate: C
       postInitApplicationSQL:
-        - "ALTER USER gitea PASSWORD 'GiteaSecure2026'"
+        - "ALTER USER gitea PASSWORD 'GiteaSecure2026!'"
   # WAL archiving: prevents pg_rewind loop on replica restart
   backup:
     barmanObjectStore:
