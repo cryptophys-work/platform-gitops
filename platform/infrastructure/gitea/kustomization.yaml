@@ -2,7 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - platform__gitea_shared_storage_v2_pvc.yaml
   - platform__gitea_http_internal_service.yaml
   - gitea-redis.yaml
   - gitea-platform.yaml
