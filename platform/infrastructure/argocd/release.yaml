@@ -249,5 +249,19 @@ spec:
         limits:
           cpu: 100m
           memory: 128Mi
+      tolerations:
+        - key: "cryptophys.io/role"
+          operator: "Equal"
+          value: "llm-inference"
+          effect: "NoSchedule"
+        - key: "cryptophys.io/storage-only"
+          operator: "Exists"
+          effect: "NoSchedule"
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+        - key: "node.cilium.io/agent-not-ready"
+          operator: "Exists"
+          effect: "NoSchedule"
     dex:
       enabled: false
