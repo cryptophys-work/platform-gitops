@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: kyverno-command-center
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: kyverno-command-center
@@ -18,6 +18,20 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
+      tolerations:
+        - key: "cryptophys.io/role"
+          operator: "Equal"
+          value: "llm-inference"
+          effect: "NoSchedule"
+        - key: "cryptophys.io/storage-only"
+          operator: "Exists"
+          effect: "NoSchedule"
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+        - key: "node.cilium.io/agent-not-ready"
+          operator: "Exists"
+          effect: "NoSchedule"
       containers:
         - name: nginx
           image: nginxinc/nginx-unprivileged:stable-alpine
