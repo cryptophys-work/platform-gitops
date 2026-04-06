@@ -141,31 +141,6 @@ spec:
         limits:
           cpu: 250m
           memory: 256Mi
-    redis-ha:
-      persistentVolume:
-        enabled: false
-      nodeSelector:
-        workload.cryptophys.work/apps-core: "true"
-        kubernetes.io/os: linux
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: NotIn
-                values:
-                - campus-212-47-66-101
-                - cerebellum-161-97-117-96
-                - synapse-161-97-136-251
-      tolerations:
-      - key: cryptophys.io/role
-        operator: Equal
-        value: llm-inference
-        effect: NoSchedule
-      - key: cryptophys.io/storage-only
-        operator: Exists
-        effect: NoSchedule
     repoServer:
       replicas: 2
       affinity:
