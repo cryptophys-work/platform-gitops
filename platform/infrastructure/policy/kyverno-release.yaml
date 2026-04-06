@@ -26,6 +26,31 @@ spec:
     remediation:
       retries: 3
     crds: CreateReplace
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: Job
+          name: kyverno-migrate-resources
+        patch: |
+          - op: add
+            path: /spec/template/spec/nodeSelector
+            value:
+              kubernetes.io/os: linux
+              workload.cryptophys.work/apps-core: "true"
+          - op: add
+            path: /spec/template/spec/tolerations/-
+            value:
+              key: cryptophys.io/role
+              operator: Equal
+              value: llm-inference
+              effect: NoSchedule
+          - op: add
+            path: /spec/template/spec/tolerations/-
+            value:
+              key: cryptophys.io/storage-only
+              operator: Exists
+              effect: NoSchedule
   values:
     # imagePullSecrets removed to fix type mismatch error
     global:
