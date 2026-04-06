@@ -39,23 +39,42 @@ spec:
               kubernetes.io/os: linux
               workload.cryptophys.work/apps-core: "true"
           - op: add
-            path: /spec/template/spec/tolerations/-
+            path: /spec/template/spec/tolerations
             value:
-              key: cryptophys.io/role
-              operator: Equal
-              value: llm-inference
-              effect: NoSchedule
-          - op: add
-            path: /spec/template/spec/tolerations/-
-            value:
-              key: cryptophys.io/storage-only
-              operator: Exists
-              effect: NoSchedule
+              - key: node.kubernetes.io/not-ready
+                operator: Exists
+                effect: NoExecute
+                tolerationSeconds: 300
+              - key: node.kubernetes.io/unreachable
+                operator: Exists
+                effect: NoExecute
+                tolerationSeconds: 300
+              - key: cryptophys.io/role
+                operator: Equal
+                value: llm-inference
+                effect: NoSchedule
+              - key: cryptophys.io/storage-only
+                operator: Exists
+                effect: NoSchedule
   values:
     # imagePullSecrets removed to fix type mismatch error
     global:
       imagePullSecrets:
         - name: registry-cryptophys-work-auth
+    crds:
+      migration:
+        # Keep CRD migration hook enabled, but allow scheduling on tainted worker pools.
+        enabled: true
+        nodeSelector:
+          kubernetes.io/os: linux
+        tolerations:
+          - key: cryptophys.io/role
+            operator: Equal
+            value: llm-inference
+            effect: NoSchedule
+          - key: cryptophys.io/storage-only
+            operator: Exists
+            effect: NoSchedule
     features:
       policyExceptions:
         enabled: true
