@@ -242,8 +242,10 @@ spec:
             memory: 64Mi
       tolerations:
         - key: cryptophys.io/role
-          operator: Equal
-          value: llm-inference
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Exists
           effect: NoSchedule
       affinity:
         nodeAffinity:
