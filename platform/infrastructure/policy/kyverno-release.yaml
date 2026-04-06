@@ -97,6 +97,10 @@ spec:
       replicas: 1
       extraArgs:
         exceptionNamespace: kyverno-system
+      updateStrategy:
+        rollingUpdate:
+          maxSurge: 0
+          maxUnavailable: 1
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
@@ -112,11 +116,11 @@ spec:
       # backgroundController uses top-level resources (not container.resources)
       resources:
         requests:
-          cpu: "100m"
-          memory: "256Mi"
+          cpu: "50m"
+          memory: "128Mi"
         limits:
-          cpu: "1000m"
-          memory: "1Gi"
+          cpu: "500m"
+          memory: "512Mi"
       tolerations:
         - key: node.kubernetes.io/not-ready
           operator: Exists
@@ -129,13 +133,17 @@ spec:
       # forceFailurePolicyIgnore and leaseDuration/renewDeadline are NOT valid flags here
       extraArgs:
         leaderElectionRetryPeriod: "15s"
+      updateStrategy:
+        rollingUpdate:
+          maxSurge: 0
+          maxUnavailable: 1
       nodeSelector:
         kubernetes.io/os: linux
       # cleanupController uses top-level resources (not container.resources)
       resources:
         requests:
-          cpu: "100m"
-          memory: "256Mi"
+          cpu: "50m"
+          memory: "128Mi"
         limits:
           cpu: "500m"
           memory: "512Mi"
