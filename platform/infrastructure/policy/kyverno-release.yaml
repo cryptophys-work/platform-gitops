@@ -54,7 +54,7 @@ spec:
         - "[velero.io/*,*,*]"
     admissionController:
       createSelfSignedCert: true
-      replicas: 2
+      replicas: 1
       # Increase probe timeouts to prevent crashloops during high load or network latency
       livenessProbe:
         initialDelaySeconds: 30
@@ -72,7 +72,6 @@ spec:
           maxUnavailable: 1
       nodeSelector:
         kubernetes.io/os: linux
-        workload.cryptophys.work/apps-core: "true"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -82,6 +81,17 @@ spec:
                 operator: NotIn
                 values:
                 - thalamus-217-76-59-241
+                - cerebellum-161-97-117-96
+                - synapse-161-97-136-251
+                - quanta-194-163-186-222
+      tolerations:
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
+          effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Exists
+          effect: NoSchedule
       container:
         extraArgs:
           exceptionNamespace: "kyverno-system"
@@ -104,7 +114,6 @@ spec:
           maxUnavailable: 1
       nodeSelector:
         kubernetes.io/os: linux
-        workload.cryptophys.work/apps-core: "true"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -114,6 +123,9 @@ spec:
                 operator: NotIn
                 values:
                 - thalamus-217-76-59-241
+                - cerebellum-161-97-117-96
+                - synapse-161-97-136-251
+                - quanta-194-163-186-222
       # backgroundController uses top-level resources (not container.resources)
       resources:
         requests:
@@ -127,6 +139,13 @@ spec:
           operator: Exists
           effect: NoExecute
           tolerationSeconds: 300
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
+          effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Exists
+          effect: NoSchedule
     cleanupController:
       createSelfSignedCert: true
       replicas: 1
@@ -153,6 +172,13 @@ spec:
           operator: Exists
           effect: NoExecute
           tolerationSeconds: 300
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
+          effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Exists
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -162,6 +188,9 @@ spec:
                 operator: NotIn
                 values:
                 - thalamus-217-76-59-241
+                - cerebellum-161-97-117-96
+                - synapse-161-97-136-251
+                - quanta-194-163-186-222
               - key: node-role.kubernetes.io/control-plane
                 operator: DoesNotExist
       # Increase startup tolerance — medulla (LLM node) is CPU-contended;
