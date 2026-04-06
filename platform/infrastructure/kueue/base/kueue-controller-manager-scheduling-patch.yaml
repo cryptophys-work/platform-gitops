@@ -10,10 +10,22 @@ metadata:
 spec:
   template:
     spec:
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                      - linux
+                  - key: node-role.kubernetes.io/worker
+                    operator: Exists
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values:
+                      - cerebellum-161-97-117-96
+                      - quanta-194-163-186-222
       containers:
         - name: manager
           resources:
