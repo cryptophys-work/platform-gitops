@@ -127,8 +127,8 @@ spec:
       # backgroundController uses top-level resources (not container.resources)
       resources:
         requests:
-          cpu: "50m"
-          memory: "128Mi"
+          cpu: "10m"
+          memory: "96Mi"
         limits:
           cpu: "500m"
           memory: "512Mi"
@@ -160,8 +160,8 @@ spec:
       # cleanupController uses top-level resources (not container.resources)
       resources:
         requests:
-          cpu: "50m"
-          memory: "128Mi"
+          cpu: "10m"
+          memory: "96Mi"
         limits:
           cpu: "500m"
           memory: "512Mi"

@@ -39,7 +39,7 @@ spec:
             path: /webhooks/0/failurePolicy
             value: Ignore
   values:
-    replicas: 2
+    replicas: 1
     deploymentStrategy: RollingUpdate
     nodeSelector:
       kubernetes.io/os: linux
@@ -65,8 +65,8 @@ spec:
               - synapse-161-97-136-251
     resources:
       requests:
-        cpu: 100m
-        memory: 256Mi
+        cpu: 10m
+        memory: 96Mi
       limits:
         cpu: 500m
         memory: 512Mi
