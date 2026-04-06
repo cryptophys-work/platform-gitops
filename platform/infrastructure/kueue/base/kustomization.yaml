@@ -14,3 +14,7 @@ patches:
     target:
       kind: MutatingWebhookConfiguration
       name: kueue-mutating-webhook-configuration
+  - path: kueue-controller-manager-scheduling-patch.yaml
+    target:
+      kind: Deployment
+      name: kueue-controller-manager
