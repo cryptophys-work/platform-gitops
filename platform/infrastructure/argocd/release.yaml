@@ -24,6 +24,31 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: StatefulSet
+          name: argocd-redis-ha
+        patch: |
+          - op: add
+            path: /spec/template/spec/nodeSelector
+            value:
+              workload.cryptophys.work/apps-core: "true"
+              kubernetes.io/os: linux
+          - op: add
+            path: /spec/template/spec/affinity
+            value:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                  - matchExpressions:
+                    - key: kubernetes.io/hostname
+                      operator: NotIn
+                      values:
+                      - campus-212-47-66-101
+                      - cerebellum-161-97-117-96
+                      - synapse-161-97-136-251
   values:
     crds:
       install: true
