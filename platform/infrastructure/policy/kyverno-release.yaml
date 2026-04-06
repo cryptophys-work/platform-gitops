@@ -56,6 +56,41 @@ spec:
               - key: cryptophys.io/storage-only
                 operator: Exists
                 effect: NoSchedule
+      - target:
+          kind: Deployment
+          name: kyverno-command-center
+        patch: |
+          - op: add
+            path: /spec/replicas
+            value: 1
+          - op: add
+            path: /spec/template/spec/nodeSelector
+            value:
+              kubernetes.io/os: linux
+              workload.cryptophys.work/apps-core: "true"
+          - op: add
+            path: /spec/template/spec/affinity
+            value:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                  - matchExpressions:
+                    - key: kubernetes.io/hostname
+                      operator: NotIn
+                      values:
+                      - thalamus-217-76-59-241
+                      - cerebellum-161-97-117-96
+                      - synapse-161-97-136-251
+          - op: add
+            path: /spec/template/spec/tolerations
+            value:
+              - key: cryptophys.io/role
+                operator: Equal
+                value: llm-inference
+                effect: NoSchedule
+              - key: cryptophys.io/storage-only
+                operator: Exists
+                effect: NoSchedule
   values:
     # imagePullSecrets removed to fix type mismatch error
     global:
