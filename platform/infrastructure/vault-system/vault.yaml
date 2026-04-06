@@ -18,10 +18,10 @@ spec:
       enabled: true
       tlsDisable: true
     server:
-      replicas: 3
+      replicas: 2
       resources:
-        requests: { cpu: 200m, memory: 192Mi }  # peak 186Mi
-        limits: { cpu: 500m, memory: 384Mi }    # CPU peak 462m; was 250m limit (throttled!)
+        requests: { cpu: 100m, memory: 128Mi }
+        limits: { cpu: 300m, memory: 256Mi }
       nodeSelector:
         kubernetes.io/os: linux
       affinity:
@@ -35,6 +35,9 @@ spec:
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
+          effect: NoSchedule
+        - key: node.cilium.io/agent-not-ready
+          operator: Exists
           effect: NoSchedule
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
