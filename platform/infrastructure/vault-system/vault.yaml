@@ -5,6 +5,16 @@ metadata:
   namespace: vault-system
 spec:
   interval: 1h
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Service
+              name: vault
+            patch: |
+              - op: replace
+                path: /spec/publishNotReadyAddresses
+                value: false
   chart:
     spec:
       chart: vault
