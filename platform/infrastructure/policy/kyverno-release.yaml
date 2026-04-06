@@ -83,7 +83,6 @@ spec:
                 - thalamus-217-76-59-241
                 - cerebellum-161-97-117-96
                 - synapse-161-97-136-251
-                - quanta-194-163-186-222
       tolerations:
         - key: cryptophys.io/role
           operator: Equal
@@ -125,7 +124,6 @@ spec:
                 - thalamus-217-76-59-241
                 - cerebellum-161-97-117-96
                 - synapse-161-97-136-251
-                - quanta-194-163-186-222
       # backgroundController uses top-level resources (not container.resources)
       resources:
         requests:
@@ -190,7 +188,6 @@ spec:
                 - thalamus-217-76-59-241
                 - cerebellum-161-97-117-96
                 - synapse-161-97-136-251
-                - quanta-194-163-186-222
               - key: node-role.kubernetes.io/control-plane
                 operator: DoesNotExist
       # Increase startup tolerance — medulla (LLM node) is CPU-contended;
