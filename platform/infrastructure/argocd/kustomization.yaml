@@ -6,7 +6,6 @@ resources:
   - argocd-repo-auth-preflight.yaml
   - argocd-repo-credentials-eso.yaml
   - argocd-server-secret-eso.yaml
-  - redis-ha/
   - spiffe-helper-config.yaml
   - release.yaml
 patches:
