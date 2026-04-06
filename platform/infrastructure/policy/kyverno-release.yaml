@@ -118,12 +118,10 @@ spec:
           cpu: "1000m"
           memory: "1Gi"
       tolerations:
-        # Allow scheduling on medulla (LLM inference node) — only viable node with free RAM
-        # when cerebellum and quanta are at 99% memory request capacity
-        - key: cryptophys.io/role
-          operator: Equal
-          value: llm-inference
-          effect: NoSchedule
+        - key: node.kubernetes.io/not-ready
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 300
     cleanupController:
       createSelfSignedCert: true
       replicas: 1
@@ -142,12 +140,10 @@ spec:
           cpu: "500m"
           memory: "512Mi"
       tolerations:
-        # Allow scheduling on medulla (LLM inference node) — only viable node with free resources
-        # when cerebellum and quanta are at capacity
-        - key: cryptophys.io/role
-          operator: Equal
-          value: llm-inference
-          effect: NoSchedule
+        - key: node.kubernetes.io/not-ready
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 300
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -157,7 +153,6 @@ spec:
                 operator: NotIn
                 values:
                 - thalamus-217-76-59-241
-                - synapse-161-97-136-251
               - key: node-role.kubernetes.io/control-plane
                 operator: DoesNotExist
       # Increase startup tolerance — medulla (LLM node) is CPU-contended;
