@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kueue-controller-manager
+  namespace: kueue-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: kueue
+    cryptophys.io/managed-by: flux
+spec:
+  template:
+    spec:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: manager
+          resources:
+            limits:
+              cpu: 300m
+              memory: 384Mi
+            requests:
+              cpu: 50m
+              memory: 96Mi
