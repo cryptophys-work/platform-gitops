@@ -43,6 +43,7 @@ spec:
     deploymentStrategy: RollingUpdate
     nodeSelector:
       kubernetes.io/os: linux
+      workload.cryptophys.work/apps-core: "true"
     tolerations:
       - key: cryptophys.io/role
         operator: Equal
@@ -62,7 +63,6 @@ spec:
               - thalamus-217-76-59-241
               - cerebellum-161-97-117-96
               - synapse-161-97-136-251
-              - quanta-194-163-186-222
     resources:
       requests:
         cpu: 100m
