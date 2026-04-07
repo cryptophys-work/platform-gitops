@@ -202,7 +202,7 @@ spec:
         value: llm-inference
         effect: NoSchedule
     nodeSelector:
-      apps-core-target: apps-core
+      workload.cryptophys.work/apps-core: "true"
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -214,6 +214,7 @@ spec:
                     - nexus-144-91-103-10
                     - quanta-194-163-186-222
                     - synapse-161-97-136-251
+                    - thalamus-217-76-59-241
     initContainers:
       resources:
         requests:
