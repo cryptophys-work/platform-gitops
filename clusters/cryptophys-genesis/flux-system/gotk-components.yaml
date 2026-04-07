@@ -4423,7 +4423,7 @@ spec:
             resourceFieldRef:
               containerName: manager
               resource: limits.memory
-        image: ghcr.io/fluxcd/source-controller:v1.8.1 # {"$imagepolicy": "flux-system:flux-source-controller"}
+        image: ghcr.io/fluxcd/source-controller:v1.8.2 # {"$imagepolicy": "flux-system:flux-source-controller"}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -5857,7 +5857,7 @@ spec:
             resourceFieldRef:
               containerName: manager
               resource: limits.memory
-        image: ghcr.io/fluxcd/kustomize-controller:v1.8.2 # {"$imagepolicy": "flux-system:flux-kustomize-controller"}
+        image: ghcr.io/fluxcd/kustomize-controller:v1.8.3 # {"$imagepolicy": "flux-system:flux-kustomize-controller"}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -9915,7 +9915,7 @@ spec:
             resourceFieldRef:
               containerName: manager
               resource: limits.memory
-        image: ghcr.io/fluxcd/notification-controller:v1.8.2 # {"$imagepolicy": "flux-system:flux-notification-controller"}
+        image: ghcr.io/fluxcd/notification-controller:v1.8.3 # {"$imagepolicy": "flux-system:flux-notification-controller"}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
