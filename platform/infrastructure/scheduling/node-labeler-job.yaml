@@ -50,7 +50,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: node-labeler-nexus-storage
+  name: node-labeler-nexus-storage-v2
   namespace: kube-system
   annotations:
     cryptophys.io/domain: platform
@@ -84,25 +84,28 @@ spec:
             - -c
             - |
               set -e
+              k() {
+                kubectl --request-timeout=10s "$@"
+              }
               echo "=== cryptophys-genesis node labeler ==="
 
               # medulla: general compute worker
-              kubectl label node medulla-82-208-20-242 \
+              k label node medulla-82-208-20-242 \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
                 --overwrite
-              kubectl label node medulla-82-208-20-242 \
+              k label node medulla-82-208-20-242 \
                 cryptophys.io/role- \
                 workload.cryptophys.work/llm- \
                 --overwrite 2>/dev/null || true
-              kubectl taint node medulla-82-208-20-242 \
+              k taint node medulla-82-208-20-242 \
                 cryptophys.io/role=llm-inference:NoSchedule- \
                 --overwrite 2>/dev/null || true
               echo "medulla: labelled (apps-core compute, llm-inference removed)"
 
               # synapse: apps-core general compute (6CPU/11.5GB)
-              kubectl label node synapse-161-97-136-251 \
+              k label node synapse-161-97-136-251 \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
@@ -110,7 +113,7 @@ spec:
               echo "synapse: labelled (apps-core)"
 
               # thalamus: apps-core general compute (6CPU/11.5GB)
-              kubectl label node thalamus-217-76-59-241 \
+              k label node thalamus-217-76-59-241 \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
@@ -118,7 +121,7 @@ spec:
               echo "thalamus: labelled (apps-core)"
 
               # quanta: apps-core lightweight (4CPU/7.4GB)
-              kubectl label node quanta-194-163-186-222 \
+              k label node quanta-194-163-186-222 \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
@@ -126,13 +129,13 @@ spec:
               echo "quanta: labelled (apps-core lightweight)"
 
               # corpus: control-plane node that also accepts apps-core workloads
-              kubectl label node corpus-207-180-206-69 \
+              k label node corpus-207-180-206-69 \
                 workload.cryptophys.work/apps-core=true \
                 --overwrite 2>/dev/null || true
               echo "corpus: labelled (apps-core)"
 
               # cerebellum: extra worker node
-              kubectl label node cerebellum-161-97-117-96 \
+              k label node cerebellum-161-97-117-96 \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
@@ -141,7 +144,7 @@ spec:
               echo "cerebellum: labelled (apps-core)"
 
               # nexus: heavy apps-core worker + LLM inference tier (40CPU/256GB)
-              kubectl label node nexus-144-91-103-10 \
+              k label node nexus-144-91-103-10 \
                 node-role.kubernetes.io/worker= \
                 apps-core-target=apps-core \
                 cryptophys.io/role=llm-inference \
@@ -153,28 +156,28 @@ spec:
                 workload.cryptophys.work/llm=true \
                 workload.cryptophys.work/storage=true \
                 --overwrite 2>/dev/null || true
-              kubectl taint node nexus-144-91-103-10 \
+              k taint node nexus-144-91-103-10 \
                 cryptophys.io/role=llm-inference:NoSchedule \
                 --overwrite 2>/dev/null || true
               echo "nexus: labelled + tainted (apps-core heavy worker, nexus tower, llm-inference, storage)"
 
               # campus: drain storage workloads away; keep taint but remove storage attraction labels
-              kubectl label node campus-212-47-66-101 \
+              k label node campus-212-47-66-101 \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=storage \
                 cryptophys.io/node-role=storage-worker \
                 --overwrite
-              kubectl label node campus-212-47-66-101 \
+              k label node campus-212-47-66-101 \
                 workload.cryptophys.work/storage- \
                 storage- \
                 --overwrite 2>/dev/null || true
-              kubectl taint node campus-212-47-66-101 \
+              k taint node campus-212-47-66-101 \
                 cryptophys.io/storage-only=true:NoSchedule \
                 --overwrite 2>/dev/null || true
               echo "campus: labelled + tainted (draining storage-only)"
 
               echo "=== Node labeling complete ==="
-              kubectl get nodes --show-labels | grep -E "NAME|medulla|synapse|thalamus|quanta|campus|cerebellum|nexus"
+              k get nodes --show-labels | grep -E "NAME|medulla|synapse|thalamus|quanta|campus|cerebellum|nexus" || true
           resources:
             requests:
               cpu: 50m
