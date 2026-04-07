@@ -56,7 +56,7 @@ spec:
           rootdirectory: /storage
       persistentVolumeClaim:
         registry:
-          existingClaim: registry-harbor-registry-v2
+          existingClaim: registry-harbor-registry-v3
           storageClass: longhorn-single
           size: 50Gi
         jobservice:
@@ -105,7 +105,7 @@ spec:
               - name: database-data
                 mountPath: /var/lib/postgresql/data
         nodeSelector:
-          registry-system: "true"
+          kubernetes.io/hostname: nexus-144-91-103-10
         resources:
           limits:
             cpu: 500m
@@ -124,9 +124,9 @@ spec:
               - weight: 100
                 preference:
                   matchExpressions:
-                    - key: registry-system
+                    - key: kubernetes.io/hostname
                       operator: In
-                      values: ["true"]
+                      values: ["nexus-144-91-103-10"]
     redis:
       type: external
       external:
@@ -140,7 +140,7 @@ spec:
     trivy:
       enabled: true
       nodeSelector:
-        registry-system: "true"
+        kubernetes.io/hostname: nexus-144-91-103-10
       resources:
         limits:
           cpu: 500m
@@ -159,12 +159,12 @@ spec:
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: registry-system
+                  - key: kubernetes.io/hostname
                     operator: In
-                    values: ["true"]
+                    values: ["nexus-144-91-103-10"]
     portal:
       nodeSelector:
-        registry-system: "true"
+        kubernetes.io/hostname: nexus-144-91-103-10
       resources:
         limits:
           cpu: 100m
@@ -183,13 +183,13 @@ spec:
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: registry-system
+                  - key: kubernetes.io/hostname
                     operator: In
-                    values: ["true"]
+                    values: ["nexus-144-91-103-10"]
     core:
       replicas: 1
       nodeSelector:
-        registry-system: "true"
+        kubernetes.io/hostname: nexus-144-91-103-10
       resources:
         limits:
           cpu: 500m
@@ -208,9 +208,9 @@ spec:
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: registry-system
+                  - key: kubernetes.io/hostname
                     operator: In
-                    values: ["true"]
+                    values: ["nexus-144-91-103-10"]
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
@@ -223,7 +223,7 @@ spec:
                     release: registry-harbor
     jobservice:
       nodeSelector:
-        registry-system: "true"
+        kubernetes.io/hostname: nexus-144-91-103-10
       resources:
         limits:
           cpu: 200m
@@ -242,12 +242,12 @@ spec:
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: registry-system
+                  - key: kubernetes.io/hostname
                     operator: In
-                    values: ["true"]
+                    values: ["nexus-144-91-103-10"]
     registry:
       nodeSelector:
-        registry-system: "true"
+        kubernetes.io/hostname: nexus-144-91-103-10
       registry:
         resources:
           limits:
@@ -276,12 +276,12 @@ spec:
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: registry-system
+                  - key: kubernetes.io/hostname
                     operator: In
-                    values: ["true"]
+                    values: ["nexus-144-91-103-10"]
     exporter:
       nodeSelector:
-        registry-system: "true"
+        kubernetes.io/hostname: nexus-144-91-103-10
       resources:
         limits:
           cpu: 100m
@@ -300,8 +300,8 @@ spec:
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: registry-system
+                  - key: kubernetes.io/hostname
                     operator: In
-                    values: ["true"]
+                    values: ["nexus-144-91-103-10"]
     metrics:
       enabled: true
