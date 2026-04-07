@@ -61,16 +61,16 @@ spec:
           size: 50Gi
         jobservice:
           jobLog:
-            storageClass: longhorn
+            storageClass: longhorn-single
             size: 5Gi
         database:
-          storageClass: longhorn
+          storageClass: longhorn-single
           size: 20Gi
         redis:
           storageClass: longhorn
           size: 5Gi
         trivy:
-          storageClass: longhorn
+          storageClass: longhorn-single
           size: 20Gi
     database:
       type: internal
