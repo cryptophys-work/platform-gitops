@@ -27,7 +27,7 @@ patches:
                 effect: NoSchedule
     target:
       kind: Deployment
-  # Co-locate source-controller on a healthy apps-core worker to stabilize Git fetches.
+  # Co-locate source-controller on a healthy schedulable apps-core worker to stabilize Git fetches.
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
@@ -37,7 +37,7 @@ patches:
         template:
           spec:
             nodeSelector:
-              kubernetes.io/hostname: medulla-82-208-20-242
+              kubernetes.io/hostname: nexus-144-91-103-10
               workload.cryptophys.work/apps-core: "true"
     target:
       kind: Deployment
@@ -52,7 +52,7 @@ patches:
         template:
           spec:
             nodeSelector:
-              kubernetes.io/hostname: medulla-82-208-20-242
+              kubernetes.io/hostname: nexus-144-91-103-10
               workload.cryptophys.work/apps-core: "true"
     target:
       kind: Deployment
@@ -67,7 +67,7 @@ patches:
         template:
           spec:
             nodeSelector:
-              kubernetes.io/hostname: medulla-82-208-20-242
+              kubernetes.io/hostname: nexus-144-91-103-10
               workload.cryptophys.work/apps-core: "true"
     target:
       kind: Deployment
@@ -82,7 +82,7 @@ patches:
         template:
           spec:
             nodeSelector:
-              kubernetes.io/hostname: medulla-82-208-20-242
+              kubernetes.io/hostname: nexus-144-91-103-10
               workload.cryptophys.work/apps-core: "true"
     target:
       kind: Deployment
