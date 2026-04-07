@@ -1,0 +1,20 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: harbor-internal-connectivity
+  namespace: registry-system
+spec:
+  endpointSelector:
+    matchLabels:
+      app: harbor
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        app: harbor
+  egress:
+  - toEndpoints:
+    - matchLabels:
+        app: harbor
+  - toEntities:
+    - cluster
+    - kube-apiserver

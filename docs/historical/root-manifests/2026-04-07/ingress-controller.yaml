@@ -1,0 +1,185 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    cryptophys.io/gitops-source: unknown-user
+    deployment.kubernetes.io/revision: "16"
+    meta.helm.sh/release-name: ingress-gateway
+    meta.helm.sh/release-namespace: ingress-system
+  creationTimestamp: "2026-03-02T17:24:32Z"
+  generation: 18
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-gateway
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.14.1
+    cryptophys.io/environment: production
+    cryptophys.work/managed-by: aide
+    helm.sh/chart: ingress-nginx-4.14.1
+    helm.toolkit.fluxcd.io/name: ingress-gateway
+    helm.toolkit.fluxcd.io/namespace: ingress-system
+  name: ingress-gateway-ingress-nginx-controller
+  namespace: ingress-system
+  resourceVersion: "13212221"
+  uid: a23629b6-07a5-4086-be43-1b86b9f661da
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: controller
+      app.kubernetes.io/instance: ingress-gateway
+      app.kubernetes.io/name: ingress-nginx
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: "2026-03-08T01:03:55+01:00"
+      labels:
+        app.kubernetes.io/component: controller
+        app.kubernetes.io/instance: ingress-gateway
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: ingress-nginx
+        app.kubernetes.io/part-of: ingress-nginx
+        app.kubernetes.io/version: 1.14.1
+        helm.sh/chart: ingress-nginx-4.14.1
+    spec:
+      automountServiceAccountToken: true
+      containers:
+      - args:
+        - /nginx-ingress-controller
+        - --publish-service=$(POD_NAMESPACE)/ingress-gateway-ingress-nginx-controller
+        - --election-id=ingress-gateway-ingress-nginx-leader
+        - --controller-class=k8s.io/ingress-nginx
+        - --ingress-class=nginx
+        - --configmap=$(POD_NAMESPACE)/ingress-gateway-ingress-nginx-controller
+        - --validating-webhook=:8443
+        - --validating-webhook-certificate=/usr/local/certificates/cert
+        - --validating-webhook-key=/usr/local/certificates/key
+        - --default-ssl-certificate=ingress-system/platform-wildcard-tls
+        - --healthz-port=11054
+        - --profiler-port=0
+        - --profiling=false
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: LD_PRELOAD
+          value: /usr/local/lib/libmimalloc.so
+        image: registry.k8s.io/ingress-nginx/controller:v1.14.1@sha256:f95a79b85fb93ac3de752c71a5c27d5ceae10a18b61904dec224c1c6a4581e47
+        imagePullPolicy: IfNotPresent
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /wait-shutdown
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /healthz
+            port: 11054
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: controller
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        - containerPort: 443
+          name: https
+          protocol: TCP
+        - containerPort: 8443
+          name: webhook
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 11054
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 250m
+            memory: 192Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - ALL
+          readOnlyRootFilesystem: false
+          runAsGroup: 82
+          runAsNonRoot: true
+          runAsUser: 101
+          seccompProfile:
+            type: RuntimeDefault
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/local/certificates/
+          name: webhook-cert
+          readOnly: true
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      nodeSelector:
+        cryptophys.io/tier: platform
+        kubernetes.io/os: linux
+        node-role.kubernetes.io/control-plane: ""
+        workload.cryptophys.work/apps-core: "true"
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: ingress-gateway-ingress-nginx
+      serviceAccountName: ingress-gateway-ingress-nginx
+      terminationGracePeriodSeconds: 300
+      volumes:
+      - name: webhook-cert
+        secret:
+          defaultMode: 420
+          secretName: ingress-gateway-ingress-nginx-admission
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2026-03-08T02:37:34Z"
+    lastUpdateTime: "2026-03-08T02:37:34Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2026-03-08T04:10:17Z"
+    lastUpdateTime: "2026-03-08T04:10:17Z"
+    message: ReplicaSet "ingress-gateway-ingress-nginx-controller-78d97d5b56" is progressing.
+    reason: ReplicaSetUpdated
+    status: "True"
+    type: Progressing
+  observedGeneration: 18
+  readyReplicas: 1
+  replicas: 2
+  terminatingReplicas: 0
+  unavailableReplicas: 1
+  updatedReplicas: 1

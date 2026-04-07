@@ -1,0 +1,26 @@
+Manage the client configuration file (talosconfig)
+
+Usage:
+  talosctl config [command]
+
+Available Commands:
+  add         Add a new context
+  context     Set the current context
+  contexts    List defined contexts
+  endpoint    Set the endpoint(s) for the current context
+  info        Show information about the current context
+  merge       Merge additional contexts from another client configuration file
+  new         Generate a new client configuration file
+  node        Set the node(s) for the current context
+  remove      Remove contexts
+
+Flags:
+  -c, --cluster string             Cluster to connect to if a proxy endpoint is used.
+      --context string             Context to be used in command
+  -e, --endpoints strings          override default endpoints in Talos configuration
+  -h, --help                       help for config
+  -n, --nodes strings              target the specified nodes
+      --siderov1-keys-dir string   The path to the SideroV1 auth PGP keys directory. Defaults to 'SIDEROV1_KEYS_DIR' env variable if set, otherwise '$HOME/.talos/keys'. Only valid for Contexts that use SideroV1 auth.
+      --talosconfig string         The path to the Talos configuration file. Defaults to 'TALOSCONFIG' env variable if set, otherwise '$HOME/.talos/config' and '/var/run/secrets/talos.dev/config' in order.
+
+Use "talosctl config [command] --help" for more information about a command.

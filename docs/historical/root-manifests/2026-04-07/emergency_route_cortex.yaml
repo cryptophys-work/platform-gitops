@@ -1,0 +1,9 @@
+machine:
+  network:
+    interfaces:
+      - interface: wg0
+        routes:
+          - network: 10.0.4.194/32
+            gateway: 10.8.0.1
+          - network: 10.0.2.218/32
+            gateway: 10.8.0.1
