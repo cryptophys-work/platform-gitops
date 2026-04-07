@@ -68,4 +68,4 @@ spec:
   # Affinity: keep TrustedLedger DB off the degraded campus storage node.
   affinity:
     nodeSelector:
-      kubernetes.io/hostname: quanta-194-163-186-222
+      kubernetes.io/hostname: thalamus-217-76-59-241
