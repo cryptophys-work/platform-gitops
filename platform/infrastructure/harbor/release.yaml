@@ -105,18 +105,22 @@ spec:
               - name: database-data
                 mountPath: /var/lib/postgresql/data
         nodeSelector:
-          kubernetes.io/hostname: nexus-144-91-103-10
+          kubernetes.io/hostname: campus-212-47-66-101
         resources:
           limits:
             cpu: 500m
             memory: 1Gi
           requests:
             cpu: 100m
-            memory: 256Mi
+            memory: 128Mi
         tolerations:
           - key: cryptophys.io/role
             operator: Equal
             value: llm-inference
+            effect: NoSchedule
+          - key: cryptophys.io/storage-only
+            operator: Equal
+            value: "true"
             effect: NoSchedule
         affinity:
           nodeAffinity:
@@ -126,7 +130,7 @@ spec:
                   matchExpressions:
                     - key: kubernetes.io/hostname
                       operator: In
-                      values: ["nexus-144-91-103-10"]
+                      values: ["campus-212-47-66-101"]
     redis:
       type: external
       external:
