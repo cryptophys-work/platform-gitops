@@ -196,7 +196,11 @@ spec:
       limits:
         cpu: 1000m     # increased from 600m for 280MB repo with concurrent git ops
         memory: 1Gi    # increased from 768Mi
-    tolerations: []
+    tolerations:
+      - key: cryptophys.io/role
+        operator: Equal
+        value: llm-inference
+        effect: NoSchedule
     nodeSelector:
       apps-core-target: apps-core
     affinity:
@@ -205,9 +209,9 @@ spec:
           nodeSelectorTerms:
             - matchExpressions:
                 - key: kubernetes.io/hostname
-                  operator: NotIn
+                  operator: In
                   values:
-                    - cerebellum-161-97-117-96
+                    - nexus-144-91-103-10
                     - quanta-194-163-186-222
                     - synapse-161-97-136-251
     initContainers:
