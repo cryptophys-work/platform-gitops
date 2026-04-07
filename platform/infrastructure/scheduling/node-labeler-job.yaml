@@ -108,6 +108,7 @@ spec:
 
               # synapse: apps-core general compute (6CPU/11.5GB)
               k label node synapse-161-97-136-251 \
+                apps-core-target=apps-core \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
@@ -116,6 +117,7 @@ spec:
 
               # thalamus: apps-core general compute (6CPU/11.5GB)
               k label node thalamus-217-76-59-241 \
+                apps-core-target=apps-core \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
