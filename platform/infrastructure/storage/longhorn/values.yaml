@@ -1,6 +1,7 @@
 USER-SUPPLIED VALUES:
 defaultSettings:
   defaultReplicaCount: 3
+  systemManagedComponentsNodeSelector: "cryptophys.io/tier:platform"
 persistence:
   defaultClass: true
   defaultClassReplicaCount: 3
@@ -16,7 +17,7 @@ longhornCSI:
 longhornUI:
   replicas: 1
   nodeSelector:
-    nexus-tower: "true"
+    cryptophys.io/tier: platform
   tolerations:
     - key: cryptophys.io/storage-only
       operator: Exists
@@ -38,7 +39,7 @@ longhornManager:
       memory: 768Mi
 longhornDriver:
   nodeSelector:
-    nexus-tower: "true"
+    cryptophys.io/tier: platform
   resources:
     requests:
       cpu: 50m

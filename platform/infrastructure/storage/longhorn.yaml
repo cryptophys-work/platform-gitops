@@ -31,6 +31,9 @@ spec:
       defaultClassReplicaCount: 2
     defaultSettings:
       defaultReplicaCount: 2
+      # Keep system-managed CSI controllers close to the API server and off
+      # unstable worker nodes so lease renewals and PVC provisioning stay stable.
+      systemManagedComponentsNodeSelector: "cryptophys.io/tier:platform"
       # Keep replicas off control-plane nodes under memory pressure; Longhorn
       # managers/CSI may still run there, but data placement should prefer workers.
       taintToleration: "cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule"
@@ -65,10 +68,10 @@ spec:
         limits:
           cpu: "1"
           memory: "2Gi"      # Keep aligned with Crossplane LonghornRelease claim
-    # ── Driver/UI control components: pin to nexus tower instead of control-plane ──
+    # ── Driver/UI control components: keep on platform nodes with API proximity ──
     longhornDriver:
       nodeSelector:
-        nexus-tower: "true"
+        cryptophys.io/tier: platform
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
@@ -91,7 +94,7 @@ spec:
           memory: "512Mi"
     longhornUI:
       nodeSelector:
-        nexus-tower: "true"
+        cryptophys.io/tier: platform
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists

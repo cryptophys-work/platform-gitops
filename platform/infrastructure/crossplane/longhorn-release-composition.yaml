@@ -42,6 +42,7 @@ spec:
                   defaultClassReplicaCount: 2
                 defaultSettings:
                   defaultReplicaCount: 2
+                  systemManagedComponentsNodeSelector: cryptophys.io/tier:platform
                   taintToleration: cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule
                   storageReservedPercentageForDefaultDisk: 10
                   replicaSoftAntiAffinity: true
@@ -76,6 +77,8 @@ spec:
                     operator: Exists
                     effect: NoSchedule
                 longhornDriver:
+                  nodeSelector:
+                    cryptophys.io/tier: platform
                   tolerations:
                   - key: node-role.kubernetes.io/control-plane
                     operator: Exists
@@ -90,6 +93,8 @@ spec:
                     operator: Exists
                     effect: NoSchedule
                 longhornUI:
+                  nodeSelector:
+                    cryptophys.io/tier: platform
                   tolerations:
                   - key: node-role.kubernetes.io/control-plane
                     operator: Exists
