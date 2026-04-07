@@ -17,8 +17,12 @@ longhornCSI:
 longhornUI:
   replicas: 1
   nodeSelector:
-    cryptophys.io/tier: platform
+    nexus-workload-hub: "true"
   tolerations:
+    - key: cryptophys.io/role
+      operator: Equal
+      value: llm-inference
+      effect: NoSchedule
     - key: cryptophys.io/storage-only
       operator: Exists
       effect: NoSchedule
@@ -39,7 +43,15 @@ longhornManager:
       memory: 768Mi
 longhornDriver:
   nodeSelector:
-    cryptophys.io/tier: platform
+    nexus-workload-hub: "true"
+  tolerations:
+    - key: cryptophys.io/role
+      operator: Equal
+      value: llm-inference
+      effect: NoSchedule
+    - key: cryptophys.io/storage-only
+      operator: Exists
+      effect: NoSchedule
   resources:
     requests:
       cpu: 50m
