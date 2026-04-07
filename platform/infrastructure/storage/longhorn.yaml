@@ -31,9 +31,10 @@ spec:
       defaultClassReplicaCount: 2
     defaultSettings:
       defaultReplicaCount: 2
-      # Keep system-managed CSI controllers close to the API server and off
-      # unstable worker nodes so lease renewals and PVC provisioning stay stable.
-      systemManagedComponentsNodeSelector: "cryptophys.io/tier:platform"
+      # System-managed components include instance-managers and engine helpers
+      # that must run on the nodes hosting Longhorn replicas, including storage
+      # workers like campus.
+      systemManagedComponentsNodeSelector: ""
       # Keep replicas off control-plane nodes under memory pressure; Longhorn
       # managers/CSI may still run there, but data placement should prefer workers.
       taintToleration: "cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule"
