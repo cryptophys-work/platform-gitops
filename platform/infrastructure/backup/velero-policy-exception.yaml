@@ -3,6 +3,11 @@ kind: PolicyException
 metadata:
   name: platform-backup-velero
   namespace: velero-system
+  annotations:
+    owner: platform-team
+    reason: velero-backup-service-requires-security-exceptions
+    ticket: PLATFORM-001
+    expiry: "2026-12-31"
 spec:
   exceptions:
     - policyName: cp-security-hardening-v1
