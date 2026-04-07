@@ -147,6 +147,8 @@ spec:
           memory: 4Gi
     server:
       replicas: 1
+      nodeSelector:
+        kubernetes.io/hostname: nexus-144-91-103-10
       resources:
         requests:
           cpu: 50m
@@ -156,6 +158,8 @@ spec:
           memory: 256Mi
     repoServer:
       replicas: 2
+      nodeSelector:
+        kubernetes.io/hostname: nexus-144-91-103-10
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
