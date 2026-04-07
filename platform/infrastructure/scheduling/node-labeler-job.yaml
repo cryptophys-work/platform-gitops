@@ -50,7 +50,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: node-labeler-nexus-storage-v2
+  name: node-labeler-nexus-storage-v3
   namespace: kube-system
   annotations:
     cryptophys.io/domain: platform
@@ -85,7 +85,9 @@ spec:
             - |
               set -e
               k() {
-                kubectl --request-timeout=10s "$@"
+                if ! kubectl --request-timeout=10s "$@"; then
+                  echo "WARN: kubectl failed: $*" >&2
+                fi
               }
               echo "=== cryptophys-genesis node labeler ==="
 
