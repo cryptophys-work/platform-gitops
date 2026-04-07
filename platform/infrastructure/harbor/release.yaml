@@ -222,6 +222,7 @@ spec:
                   - key: node-role.kubernetes.io/worker
                     operator: Exists
     core:
+      replicas: 2
       nodeSelector: {}
       resources:
         limits:
@@ -245,6 +246,25 @@ spec:
                     values: ["true"]
                   - key: node-role.kubernetes.io/worker
                     operator: Exists
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values:
+                      - synapse-161-97-136-251
+                      - campus-212-47-66-101
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: harbor
+                    component: core
+                    release: registry-harbor
     jobservice:
       nodeSelector: {}
       resources:
