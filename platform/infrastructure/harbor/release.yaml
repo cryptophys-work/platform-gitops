@@ -95,8 +95,7 @@ spec:
             volumeMounts:
               - name: database-data
                 mountPath: /var/lib/postgresql/data
-        nodeSelector:
-          kubernetes.io/hostname: quanta-194-163-186-222
+        nodeSelector: {}
         resources:
           limits:
             cpu: 500m
@@ -119,6 +118,25 @@ spec:
                       values: ["true"]
                     - key: node-role.kubernetes.io/worker
                       operator: Exists
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 90
+                preference:
+                  matchExpressions:
+                    - key: kubernetes.io/hostname
+                      operator: In
+                      values: ["medulla-82-208-20-242"]
+              - weight: 60
+                preference:
+                  matchExpressions:
+                    - key: kubernetes.io/hostname
+                      operator: In
+                      values: ["synapse-161-97-136-251"]
+              - weight: 30
+                preference:
+                  matchExpressions:
+                    - key: kubernetes.io/hostname
+                      operator: In
+                      values: ["quanta-194-163-186-222"]
     redis:
       internal:
         nodeSelector: {}
