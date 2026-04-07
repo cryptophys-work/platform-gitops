@@ -76,7 +76,27 @@ spec:
     database:
       type: internal
       internal:
-        nodeSelector: {}
+        extrInitContainers:
+          - name: stale-postmaster-cleaner
+            image: goharbor/harbor-db:v2.14.2
+            imagePullPolicy: IfNotPresent
+            command:
+              - /bin/sh
+            args:
+              - -c
+              - |
+                for candidate in \
+                  /var/lib/postgresql/data/pgdata/postmaster.pid \
+                  /var/lib/postgresql/data/pgdata/pg15/postmaster.pid; do
+                  if [ -f "$candidate" ] && [ -w "$candidate" ]; then
+                    rm -f "$candidate"
+                  fi
+                done
+            volumeMounts:
+              - name: database-data
+                mountPath: /var/lib/postgresql/data
+        nodeSelector:
+          kubernetes.io/hostname: quanta-194-163-186-222
         resources:
           limits:
             cpu: 500m
