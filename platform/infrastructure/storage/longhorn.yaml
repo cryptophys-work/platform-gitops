@@ -65,8 +65,10 @@ spec:
         limits:
           cpu: "1"
           memory: "2Gi"      # Keep aligned with Crossplane LonghornRelease claim
-    # ── Driver/CSI: runs on platform (CP) nodes; needs CP taint toleration ──
+    # ── Driver/UI control components: pin to nexus tower instead of control-plane ──
     longhornDriver:
+      nodeSelector:
+        nexus-tower: "true"
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
@@ -87,8 +89,9 @@ spec:
         limits:
           cpu: "500m"
           memory: "512Mi"
-    # ── UI: platform nodes (nodeSelector cryptophys.io/tier=platform retained from prior state) ──
     longhornUI:
+      nodeSelector:
+        nexus-tower: "true"
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists

@@ -35,6 +35,10 @@ spec:
                 operator: In
                 values:
                 - synapse-161-97-136-251
+              - key: nexus-tower
+                operator: NotIn
+                values:
+                - "true"
       resources:
         limits: { cpu: "1", memory: "2G" }
         requests: { cpu: "500m", memory: "1G" }
@@ -55,10 +59,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: kubernetes.io/hostname
+              - key: nexus-tower
                 operator: In
                 values:
-                - medulla-82-208-20-242
+                - "true"
       tolerations:
         - key: "cryptophys.io/ai-workload"
           operator: "Exists"
@@ -78,11 +82,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: kubernetes.io/hostname
+              - key: nexus-tower
                 operator: In
                 values:
-                - thalamus-217-76-59-241
-                - campus-212-47-66-101
+                - "true"
       resources:
         limits: { cpu: "1", memory: "2Gi" }
         requests: { cpu: "500m", memory: "1Gi" }

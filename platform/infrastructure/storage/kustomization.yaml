@@ -8,6 +8,7 @@ resources:
   - longhorn-node-corpus.yaml
   - longhorn-node-cortex.yaml
   - longhorn-node-medulla.yaml
+  - longhorn-node-nexus.yaml
   - longhorn-node-quanta.yaml
   - longhorn-node-synapse.yaml
   - longhorn-node-thalamus.yaml
