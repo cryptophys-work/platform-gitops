@@ -23,8 +23,12 @@ spec:
             matchLabels:
               kubernetes.io/metadata.name: postgresql-system
           podSelector:
-            matchLabels:
-              cnpg.io/cluster: postgres-security-ha
+            matchExpressions:
+              - key: cnpg.io/cluster
+                operator: In
+                values:
+                  - postgres-apps-ha
+                  - postgres-security-ha
       ports:
         - protocol: TCP
           port: 5432

@@ -65,14 +65,7 @@ spec:
     limits:
       cpu: 500m
       memory: 512Mi
-  # Affinity: pin to storage worker for stable single-replica Longhorn placement
+  # Affinity: keep the single Gitea database off the degraded campus storage node.
   affinity:
     nodeSelector:
-      kubernetes.io/hostname: campus-212-47-66-101
-    tolerations:
-      - key: cryptophys.io/storage-only
-        operator: Exists
-        effect: NoSchedule
-      - key: cryptophys.io/role
-        operator: Exists
-        effect: NoSchedule
+      kubernetes.io/hostname: quanta-194-163-186-222
