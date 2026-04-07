@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h
-  wait: true
+  wait: false
   timeout: 5m
   path: ./platform/infrastructure/namespaces
   prune: false
