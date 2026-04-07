@@ -42,7 +42,7 @@ spec:
                   defaultClassReplicaCount: 2
                 defaultSettings:
                   defaultReplicaCount: 2
-                  systemManagedComponentsNodeSelector: cryptophys.io/tier:platform
+                  systemManagedComponentsNodeSelector: ""
                   taintToleration: cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule
                   storageReservedPercentageForDefaultDisk: 10
                   replicaSoftAntiAffinity: true
