@@ -23,7 +23,7 @@ patches:
                 effect: NoSchedule
     target:
       kind: Deployment
-  # Pin source-controller to a known healthy control-plane node while worker Cilium is unstable.
+  # Keep source-controller off corpus; recent node flaps there break source fetch and stall Flux.
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
@@ -32,15 +32,15 @@ patches:
       spec:
         template:
           spec:
-            nodeSelector:
-              kubernetes.io/hostname: corpus-207-180-206-69
-            tolerations:
-              - key: node-role.kubernetes.io/control-plane
-                operator: Exists
-                effect: NoSchedule
-              - key: node.kubernetes.io/memory-pressure
-                operator: Exists
-                effect: NoSchedule
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                        - key: kubernetes.io/hostname
+                          operator: NotIn
+                          values:
+                            - corpus-207-180-206-69
     target:
       kind: Deployment
       name: source-controller
