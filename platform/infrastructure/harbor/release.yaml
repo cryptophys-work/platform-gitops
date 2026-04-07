@@ -247,7 +247,8 @@ spec:
                     values: ["nexus-144-91-103-10"]
     registry:
       nodeSelector:
-        kubernetes.io/hostname: nexus-144-91-103-10
+        kubernetes.io/hostname: campus-212-47-66-101
+        workload.cryptophys.work/storage: "true"
       registry:
         resources:
           limits:
@@ -266,6 +267,10 @@ spec:
             cpu: 50m
             memory: 64Mi
       tolerations:
+        - key: cryptophys.io/storage-only
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
@@ -278,7 +283,7 @@ spec:
                 matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
-                    values: ["nexus-144-91-103-10"]
+                    values: ["campus-212-47-66-101"]
     exporter:
       nodeSelector:
         kubernetes.io/hostname: nexus-144-91-103-10
