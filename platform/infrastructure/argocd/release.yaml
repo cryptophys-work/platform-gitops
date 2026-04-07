@@ -137,7 +137,6 @@ spec:
                 - cerebellum-161-97-117-96
                 - synapse-161-97-136-251
                 - quanta-194-163-186-222
-                - campus-212-47-66-101
       replicas: 1
       resources:
         requests:
@@ -168,6 +167,7 @@ spec:
                 - cerebellum-161-97-117-96
                 - synapse-161-97-136-251
                 - quanta-194-163-186-222
+                - campus-212-47-66-101
       resources:
         requests:
           cpu: 50m
