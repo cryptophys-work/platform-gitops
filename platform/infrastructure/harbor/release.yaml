@@ -104,7 +104,9 @@ spec:
             volumeMounts:
               - name: database-data
                 mountPath: /var/lib/postgresql/data
-        nodeSelector: {}
+        nodeSelector:
+          kubernetes.io/hostname: medulla-82-208-20-242
+          workload.cryptophys.work/apps-core: "true"
         resources:
           limits:
             cpu: 500m
@@ -127,6 +129,14 @@ spec:
                       values: ["true"]
                     - key: node-role.kubernetes.io/worker
                       operator: Exists
+                    - key: kubernetes.io/hostname
+                      operator: NotIn
+                      values:
+                        - synapse-161-97-136-251
+                        - nexus-144-91-103-10
+                        - quanta-194-163-186-222
+                        - thalamus-217-76-59-241
+                        - campus-212-47-66-101
             preferredDuringSchedulingIgnoredDuringExecution:
               - weight: 90
                 preference:
@@ -138,7 +148,7 @@ spec:
                 preference:
                   matchExpressions:
                     - key: kubernetes.io/hostname
-                      operator: In
+                      operator: NotIn
                       values: ["synapse-161-97-136-251"]
               - weight: 30
                 preference:
@@ -147,33 +157,20 @@ spec:
                       operator: In
                       values: ["quanta-194-163-186-222"]
     redis:
-      internal:
-        nodeSelector: {}
-        resources:
-          limits:
-            cpu: 200m
-            memory: 256Mi
-          requests:
-            cpu: 50m
-            memory: 64Mi
-        tolerations:
-          - key: cryptophys.io/role
-            operator: Equal
-            value: llm-inference
-            effect: NoSchedule
-        affinity:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-                - matchExpressions:
-                    - key: workload.cryptophys.work/apps-core
-                      operator: In
-                      values: ["true"]
-                    - key: node-role.kubernetes.io/worker
-                      operator: Exists
+      type: external
+      external:
+        addr: registry-harbor-redis-external.registry-system.svc.cluster.local:6379
+        coreDatabaseIndex: "0"
+        jobserviceDatabaseIndex: "1"
+        registryDatabaseIndex: "2"
+        trivyAdapterIndex: "5"
+        username: ""
+        password: ""
     trivy:
       enabled: true
-      nodeSelector: {}
+      nodeSelector:
+        kubernetes.io/hostname: medulla-82-208-20-242
+        workload.cryptophys.work/apps-core: "true"
       resources:
         limits:
           cpu: 500m
@@ -191,13 +188,29 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: workload.cryptophys.work/apps-core
-                    operator: In
-                    values: ["true"]
-                  - key: node-role.kubernetes.io/worker
-                    operator: Exists
+                    - key: workload.cryptophys.work/apps-core
+                      operator: In
+                      values: ["true"]
+                    - key: node-role.kubernetes.io/worker
+                      operator: Exists
+                    - key: kubernetes.io/hostname
+                      operator: NotIn
+                      values:
+                        - synapse-161-97-136-251
+                        - nexus-144-91-103-10
+                        - quanta-194-163-186-222
+                        - thalamus-217-76-59-241
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values: ["synapse-161-97-136-251"]
     portal:
-      nodeSelector: {}
+      nodeSelector:
+        kubernetes.io/hostname: medulla-82-208-20-242
+        workload.cryptophys.work/apps-core: "true"
       resources:
         limits:
           cpu: 100m
@@ -215,14 +228,30 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: workload.cryptophys.work/apps-core
-                    operator: In
-                    values: ["true"]
-                  - key: node-role.kubernetes.io/worker
-                    operator: Exists
+                    - key: workload.cryptophys.work/apps-core
+                      operator: In
+                      values: ["true"]
+                    - key: node-role.kubernetes.io/worker
+                      operator: Exists
+                    - key: kubernetes.io/hostname
+                      operator: NotIn
+                      values:
+                        - synapse-161-97-136-251
+                        - nexus-144-91-103-10
+                        - quanta-194-163-186-222
+                        - thalamus-217-76-59-241
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values: ["synapse-161-97-136-251"]
     core:
-      replicas: 2
-      nodeSelector: {}
+      replicas: 1
+      nodeSelector:
+        kubernetes.io/hostname: medulla-82-208-20-242
+        workload.cryptophys.work/apps-core: "true"
       resources:
         limits:
           cpu: 500m
@@ -240,11 +269,19 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: workload.cryptophys.work/apps-core
-                    operator: In
-                    values: ["true"]
-                  - key: node-role.kubernetes.io/worker
-                    operator: Exists
+                    - key: workload.cryptophys.work/apps-core
+                      operator: In
+                      values: ["true"]
+                    - key: node-role.kubernetes.io/worker
+                      operator: Exists
+                    - key: kubernetes.io/hostname
+                      operator: NotIn
+                      values:
+                        - synapse-161-97-136-251
+                        - nexus-144-91-103-10
+                        - quanta-194-163-186-222
+                        - thalamus-217-76-59-241
+                        - campus-212-47-66-101
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
               preference:
@@ -265,7 +302,9 @@ spec:
                     component: core
                     release: registry-harbor
     jobservice:
-      nodeSelector: {}
+      nodeSelector:
+        kubernetes.io/hostname: medulla-82-208-20-242
+        workload.cryptophys.work/apps-core: "true"
       resources:
         limits:
           cpu: 200m
@@ -283,13 +322,29 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: workload.cryptophys.work/apps-core
-                    operator: In
-                    values: ["true"]
-                  - key: node-role.kubernetes.io/worker
-                    operator: Exists
+                    - key: workload.cryptophys.work/apps-core
+                      operator: In
+                      values: ["true"]
+                    - key: node-role.kubernetes.io/worker
+                      operator: Exists
+                    - key: kubernetes.io/hostname
+                      operator: NotIn
+                      values:
+                        - synapse-161-97-136-251
+                        - nexus-144-91-103-10
+                        - quanta-194-163-186-222
+                        - thalamus-217-76-59-241
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values: ["synapse-161-97-136-251"]
     registry:
-      nodeSelector: {}
+      nodeSelector:
+        kubernetes.io/hostname: medulla-82-208-20-242
+        workload.cryptophys.work/apps-core: "true"
       registry:
         resources:
           limits:
@@ -319,13 +374,29 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: workload.cryptophys.work/apps-core
-                    operator: In
-                    values: ["true"]
-                  - key: node-role.kubernetes.io/worker
-                    operator: Exists
+                    - key: workload.cryptophys.work/apps-core
+                      operator: In
+                      values: ["true"]
+                    - key: node-role.kubernetes.io/worker
+                      operator: Exists
+                    - key: kubernetes.io/hostname
+                      operator: NotIn
+                      values:
+                        - synapse-161-97-136-251
+                        - nexus-144-91-103-10
+                        - quanta-194-163-186-222
+                        - thalamus-217-76-59-241
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values: ["synapse-161-97-136-251"]
     exporter:
-      nodeSelector: {}
+      nodeSelector:
+        kubernetes.io/hostname: medulla-82-208-20-242
+        workload.cryptophys.work/apps-core: "true"
       resources:
         limits:
           cpu: 100m
@@ -343,10 +414,17 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: workload.cryptophys.work/apps-core
-                    operator: In
-                    values: ["true"]
-                  - key: node-role.kubernetes.io/worker
-                    operator: Exists
+                    - key: workload.cryptophys.work/apps-core
+                      operator: In
+                      values: ["true"]
+                    - key: node-role.kubernetes.io/worker
+                      operator: Exists
+                    - key: kubernetes.io/hostname
+                      operator: NotIn
+                      values:
+                        - synapse-161-97-136-251
+                        - nexus-144-91-103-10
+                        - quanta-194-163-186-222
+                        - thalamus-217-76-59-241
     metrics:
       enabled: true
