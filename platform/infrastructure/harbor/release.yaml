@@ -14,7 +14,6 @@ spec:
   upgrade:
     timeout: 20m
     cleanupOnFail: true
-    force: true
     remediation:
       retries: 2
       strategy: uninstall
