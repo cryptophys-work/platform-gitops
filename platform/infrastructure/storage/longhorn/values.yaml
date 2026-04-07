@@ -16,7 +16,7 @@ longhornCSI:
 longhornUI:
   replicas: 1
   nodeSelector:
-    workload.cryptophys.work/apps-core: "true"
+    nexus-tower: "true"
   tolerations:
     - key: cryptophys.io/storage-only
       operator: Exists
@@ -37,6 +37,8 @@ longhornManager:
       cpu: 1000m
       memory: 768Mi
 longhornDriver:
+  nodeSelector:
+    nexus-tower: "true"
   resources:
     requests:
       cpu: 50m

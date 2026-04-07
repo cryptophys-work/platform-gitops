@@ -6,6 +6,7 @@
 #   thalamus  → apps-core general compute (6CPU/11.5GB)
 #   quanta    → apps-core lightweight (4CPU/7.4GB)
 #   campus    → storage-only (4CPU/7.4GB) + NoSchedule taint
+#   nexus     → nexus tower for Ray workers (40CPU/256GB)
 
 ---
 apiVersion: v1
@@ -137,6 +138,17 @@ spec:
                 --overwrite 2>/dev/null || true
               echo "cerebellum: labelled (apps-core)"
 
+              # nexus: heavy apps-core worker (40CPU/256GB)
+              kubectl label node nexus-144-91-103-10 \
+                node-role.kubernetes.io/worker= \
+                apps-core-target=apps-core \
+                cryptophys.io/tier=compute \
+                nexus-tower=true \
+                workload.cryptophys.work/apps-core=true \
+                workload.cryptophys.work/compute=true \
+                --overwrite 2>/dev/null || true
+              echo "nexus: labelled (apps-core heavy worker, nexus tower)"
+
               # campus: storage-only (4CPU/7.4GB) + NoSchedule taint
               kubectl label node campus-212-47-66-101 \
                 node-role.kubernetes.io/worker= \
@@ -150,7 +162,7 @@ spec:
               echo "campus: labelled + tainted (storage-only)"
 
               echo "=== Node labeling complete ==="
-              kubectl get nodes --show-labels | grep -E "NAME|medulla|synapse|thalamus|quanta|campus"
+              kubectl get nodes --show-labels | grep -E "NAME|medulla|synapse|thalamus|quanta|campus|cerebellum|nexus"
           resources:
             requests:
               cpu: 50m
