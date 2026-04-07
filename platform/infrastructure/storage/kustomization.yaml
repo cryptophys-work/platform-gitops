@@ -5,4 +5,5 @@ resources:
   - longhorn-node-cerebrum.yaml
   - longhorn-node-corpus.yaml
   - longhorn-node-quanta.yaml
+  - longhorn-vac-rbac.yaml
 # longhorn-policy-exception.yaml is applied in wave 15-policy (after Kyverno CRDs are ready).
