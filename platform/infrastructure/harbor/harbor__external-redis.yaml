@@ -50,7 +50,7 @@ spec:
     spec:
       automountServiceAccountToken: false
       nodeSelector:
-        kubernetes.io/hostname: medulla-82-208-20-242
+        kubernetes.io/hostname: nexus-144-91-103-10
       tolerations:
         - key: cryptophys.io/role
           operator: Equal
