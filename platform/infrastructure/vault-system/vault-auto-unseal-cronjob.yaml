@@ -19,13 +19,12 @@ spec:
         spec:
           restartPolicy: OnFailure
           serviceAccountName: default
+          nodeSelector:
+            kubernetes.io/hostname: nexus-144-91-103-10
           tolerations:
           - key: cryptophys.io/role
             operator: Equal
             value: llm-inference
-            effect: NoSchedule
-          - key: cryptophys.io/storage-only
-            operator: Exists
             effect: NoSchedule
           securityContext:
             runAsNonRoot: true

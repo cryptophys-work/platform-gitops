@@ -147,26 +147,31 @@ spec:
                 cryptophys.io/role=llm-inference \
                 cryptophys.io/tier=compute \
                 nexus-tower=true \
+                storage=storage \
                 workload.cryptophys.work/apps-core=true \
                 workload.cryptophys.work/compute=true \
                 workload.cryptophys.work/llm=true \
+                workload.cryptophys.work/storage=true \
                 --overwrite 2>/dev/null || true
               kubectl taint node nexus-144-91-103-10 \
                 cryptophys.io/role=llm-inference:NoSchedule \
                 --overwrite 2>/dev/null || true
-              echo "nexus: labelled + tainted (apps-core heavy worker, nexus tower, llm-inference)"
+              echo "nexus: labelled + tainted (apps-core heavy worker, nexus tower, llm-inference, storage)"
 
-              # campus: storage-only (4CPU/7.4GB) + NoSchedule taint
+              # campus: drain storage workloads away; keep taint but remove storage attraction labels
               kubectl label node campus-212-47-66-101 \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=storage \
                 cryptophys.io/node-role=storage-worker \
-                workload.cryptophys.work/storage=true \
                 --overwrite
+              kubectl label node campus-212-47-66-101 \
+                workload.cryptophys.work/storage- \
+                storage- \
+                --overwrite 2>/dev/null || true
               kubectl taint node campus-212-47-66-101 \
                 cryptophys.io/storage-only=true:NoSchedule \
                 --overwrite 2>/dev/null || true
-              echo "campus: labelled + tainted (storage-only)"
+              echo "campus: labelled + tainted (draining storage-only)"
 
               echo "=== Node labeling complete ==="
               kubectl get nodes --show-labels | grep -E "NAME|medulla|synapse|thalamus|quanta|campus|cerebellum|nexus"
