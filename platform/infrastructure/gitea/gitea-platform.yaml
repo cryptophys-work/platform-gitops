@@ -201,6 +201,9 @@ spec:
         operator: Equal
         value: llm-inference
         effect: NoSchedule
+      - key: node.cilium.io/agent-not-ready
+        operator: Exists
+        effect: NoSchedule
     nodeSelector:
       workload.cryptophys.work/apps-core: "true"
     affinity:
