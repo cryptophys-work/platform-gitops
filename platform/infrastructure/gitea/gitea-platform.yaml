@@ -191,8 +191,8 @@ spec:
       enabled: false
     resources:
       requests:
-        cpu: 50m
-        memory: 256Mi
+        cpu: 25m
+        memory: 64Mi
       limits:
         cpu: 1000m     # increased from 600m for 280MB repo with concurrent git ops
         memory: 1Gi    # increased from 768Mi
@@ -214,15 +214,12 @@ spec:
                 - key: kubernetes.io/hostname
                   operator: In
                   values:
-                    - nexus-144-91-103-10
-                    - quanta-194-163-186-222
-                    - synapse-161-97-136-251
                     - thalamus-217-76-59-241
     initContainers:
       resources:
         requests:
-          cpu: 50m
-          memory: 64Mi
+          cpu: 25m
+          memory: 32Mi
         limits:
           cpu: 200m
           memory: 256Mi
