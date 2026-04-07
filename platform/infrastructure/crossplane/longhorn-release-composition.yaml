@@ -42,7 +42,7 @@ spec:
                   defaultClassReplicaCount: 2
                 defaultSettings:
                   defaultReplicaCount: 2
-                  taintToleration: node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule
+                  taintToleration: cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule
                   storageReservedPercentageForDefaultDisk: 30
                   replicaSoftAntiAffinity: true
                   replicaAutoBalance: best-effort
@@ -52,7 +52,7 @@ spec:
                   concurrentVolumeBackupRestorePerNodeLimit: 2
                   replicaReplenishmentWaitInterval: 900
                   autoCleanupSystemGeneratedSnapshot: true
-                  storageOverProvisioningPercentage: 80
+                  storageOverProvisioningPercentage: 200
                   autoDeletePodWhenVolumeDetachedUnexpectedly: true
                 longhornManager:
                   resources:
