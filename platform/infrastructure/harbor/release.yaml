@@ -105,7 +105,7 @@ spec:
               - name: database-data
                 mountPath: /var/lib/postgresql/data
         nodeSelector:
-          kubernetes.io/hostname: nexus-144-91-103-10
+          registry-system: "true"
         resources:
           limits:
             cpu: 500m
@@ -124,9 +124,9 @@ spec:
               - weight: 100
                 preference:
                   matchExpressions:
-                    - key: kubernetes.io/hostname
+                    - key: registry-system
                       operator: In
-                      values: ["nexus-144-91-103-10"]
+                      values: ["true"]
     redis:
       type: external
       external:
@@ -140,7 +140,7 @@ spec:
     trivy:
       enabled: true
       nodeSelector:
-        kubernetes.io/hostname: nexus-144-91-103-10
+        registry-system: "true"
       resources:
         limits:
           cpu: 500m
@@ -159,12 +159,12 @@ spec:
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: registry-system
                     operator: In
-                    values: ["nexus-144-91-103-10"]
+                    values: ["true"]
     portal:
       nodeSelector:
-        kubernetes.io/hostname: nexus-144-91-103-10
+        registry-system: "true"
       resources:
         limits:
           cpu: 100m
@@ -183,13 +183,13 @@ spec:
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: registry-system
                     operator: In
-                    values: ["nexus-144-91-103-10"]
+                    values: ["true"]
     core:
       replicas: 1
       nodeSelector:
-        kubernetes.io/hostname: nexus-144-91-103-10
+        registry-system: "true"
       resources:
         limits:
           cpu: 500m
@@ -208,9 +208,9 @@ spec:
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: registry-system
                     operator: In
-                    values: ["nexus-144-91-103-10"]
+                    values: ["true"]
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
@@ -223,7 +223,7 @@ spec:
                     release: registry-harbor
     jobservice:
       nodeSelector:
-        kubernetes.io/hostname: nexus-144-91-103-10
+        registry-system: "true"
       resources:
         limits:
           cpu: 200m
@@ -242,13 +242,12 @@ spec:
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: registry-system
                     operator: In
-                    values: ["nexus-144-91-103-10"]
+                    values: ["true"]
     registry:
       nodeSelector:
-        kubernetes.io/hostname: campus-212-47-66-101
-        workload.cryptophys.work/storage: "true"
+        registry-system: "true"
       registry:
         resources:
           limits:
@@ -267,10 +266,6 @@ spec:
             cpu: 50m
             memory: 64Mi
       tolerations:
-        - key: cryptophys.io/storage-only
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
@@ -281,12 +276,12 @@ spec:
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: registry-system
                     operator: In
-                    values: ["campus-212-47-66-101"]
+                    values: ["true"]
     exporter:
       nodeSelector:
-        kubernetes.io/hostname: nexus-144-91-103-10
+        registry-system: "true"
       resources:
         limits:
           cpu: 100m
@@ -305,8 +300,8 @@ spec:
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: registry-system
                     operator: In
-                    values: ["nexus-144-91-103-10"]
+                    values: ["true"]
     metrics:
       enabled: true
