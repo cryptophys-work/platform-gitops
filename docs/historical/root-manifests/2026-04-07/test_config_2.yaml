@@ -1,0 +1,6 @@
+version: v1alpha1
+machine:
+  type: controlplane
+  install:
+    extensions:
+      - siderolabs/iscsi-tools
