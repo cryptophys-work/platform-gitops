@@ -1,0 +1,40 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: transient-worker-pvc-guardrail
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: resource-governance
+    cryptophys.io/managed-by: flux
+    cryptophys.io/anti-regression: "true"
+    policies.kyverno.io/title: Cap transient worker PVCs
+    policies.kyverno.io/description: >
+      PVCs labeled cryptophys.io/storage-profile=transient-worker are intended for
+      non-persistent scratch/cache/source workloads. Keep them on longhorn-single
+      and cap storage requests at 5Gi.
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: enforce-transient-worker-pvc-profile
+      match:
+        any:
+          - resources:
+              kinds:
+                - PersistentVolumeClaim
+      preconditions:
+        all:
+          - key: "{{ request.object.metadata.labels.\"cryptophys.io/storage-profile\" || '' }}"
+            operator: Equals
+            value: transient-worker
+      validate:
+        message: "Transient worker PVCs must use storageClassName longhorn-single and request no more than 5Gi."
+        deny:
+          conditions:
+            any:
+              - key: "{{ request.object.spec.storageClassName || '' }}"
+                operator: NotEquals
+                value: longhorn-single
+              - key: "{{ request.object.spec.resources.requests.storage || '0' }}"
+                operator: GreaterThan
+                value: "5Gi"

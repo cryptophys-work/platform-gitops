@@ -1,0 +1,13 @@
+apiVersion: longhorn.io/v1beta2
+kind: Node
+metadata:
+  name: cerebrum-157-173-120-200
+  namespace: longhorn-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: longhorn-node-cerebrum
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+spec:
+  allowScheduling: false
+  evictionRequested: false
