@@ -105,7 +105,7 @@ spec:
               - name: database-data
                 mountPath: /var/lib/postgresql/data
         nodeSelector:
-          kubernetes.io/hostname: medulla-82-208-20-242
+          kubernetes.io/hostname: thalamus-217-76-59-241
           workload.cryptophys.work/apps-core: "true"
         resources:
           limits:
@@ -135,7 +135,6 @@ spec:
                         - synapse-161-97-136-251
                         - nexus-144-91-103-10
                         - quanta-194-163-186-222
-                        - thalamus-217-76-59-241
                         - campus-212-47-66-101
             preferredDuringSchedulingIgnoredDuringExecution:
               - weight: 90
@@ -143,7 +142,7 @@ spec:
                   matchExpressions:
                     - key: kubernetes.io/hostname
                       operator: In
-                      values: ["medulla-82-208-20-242"]
+                      values: ["thalamus-217-76-59-241"]
               - weight: 60
                 preference:
                   matchExpressions:
@@ -155,7 +154,7 @@ spec:
                   matchExpressions:
                     - key: kubernetes.io/hostname
                       operator: In
-                      values: ["quanta-194-163-186-222"]
+                      values: ["campus-212-47-66-101"]
     redis:
       type: external
       external:
@@ -343,7 +342,7 @@ spec:
                     values: ["synapse-161-97-136-251"]
     registry:
       nodeSelector:
-        kubernetes.io/hostname: medulla-82-208-20-242
+        kubernetes.io/hostname: campus-212-47-66-101
         workload.cryptophys.work/apps-core: "true"
       registry:
         resources:
@@ -391,8 +390,8 @@ spec:
               preference:
                 matchExpressions:
                   - key: kubernetes.io/hostname
-                    operator: NotIn
-                    values: ["synapse-161-97-136-251"]
+                    operator: In
+                    values: ["campus-212-47-66-101"]
     exporter:
       nodeSelector:
         kubernetes.io/hostname: medulla-82-208-20-242
