@@ -80,6 +80,16 @@ spec:
           - name: stale-postmaster-cleaner
             image: goharbor/harbor-db:v2.14.2
             imagePullPolicy: IfNotPresent
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+              runAsNonRoot: true
+              runAsUser: 999
+              runAsGroup: 999
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - /bin/sh
             args:
