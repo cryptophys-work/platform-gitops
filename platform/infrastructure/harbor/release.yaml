@@ -343,7 +343,7 @@ spec:
     registry:
       nodeSelector:
         kubernetes.io/hostname: campus-212-47-66-101
-        workload.cryptophys.work/apps-core: "true"
+        workload.cryptophys.work/storage: "true"
       registry:
         resources:
           limits:
@@ -372,8 +372,8 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions:
-                    - key: workload.cryptophys.work/apps-core
+                - matchExpressions:
+                    - key: workload.cryptophys.work/storage
                       operator: In
                       values: ["true"]
                     - key: node-role.kubernetes.io/worker
