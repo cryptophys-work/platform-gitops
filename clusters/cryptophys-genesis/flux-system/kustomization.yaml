@@ -21,9 +21,13 @@ patches:
               - key: node-role.kubernetes.io/control-plane
                 operator: Exists
                 effect: NoSchedule
+              - key: cryptophys.io/role
+                operator: Equal
+                value: llm-inference
+                effect: NoSchedule
     target:
       kind: Deployment
-  # Keep source-controller off corpus; recent node flaps there break source fetch and stall Flux.
+  # Co-locate source-controller on a healthy apps-core worker to stabilize Git fetches.
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
@@ -32,15 +36,54 @@ patches:
       spec:
         template:
           spec:
-            affinity:
-              nodeAffinity:
-                requiredDuringSchedulingIgnoredDuringExecution:
-                  nodeSelectorTerms:
-                    - matchExpressions:
-                        - key: kubernetes.io/hostname
-                          operator: NotIn
-                          values:
-                            - corpus-207-180-206-69
+            nodeSelector:
+              kubernetes.io/hostname: medulla-82-208-20-242
+              workload.cryptophys.work/apps-core: "true"
     target:
       kind: Deployment
       name: source-controller
+  # Helm reconciles every downstream release; keep it on the same healthy worker as source-controller.
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: helm-controller
+      spec:
+        template:
+          spec:
+            nodeSelector:
+              kubernetes.io/hostname: medulla-82-208-20-242
+              workload.cryptophys.work/apps-core: "true"
+    target:
+      kind: Deployment
+      name: helm-controller
+  # Keep kustomize-controller on a schedulable apps-core worker; cortex lacks the apps-core label.
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: kustomize-controller
+      spec:
+        template:
+          spec:
+            nodeSelector:
+              kubernetes.io/hostname: medulla-82-208-20-242
+              workload.cryptophys.work/apps-core: "true"
+    target:
+      kind: Deployment
+      name: kustomize-controller
+  # Notification events share the same DNS/event path as kustomize-controller; keep them colocated.
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: notification-controller
+      spec:
+        template:
+          spec:
+            nodeSelector:
+              kubernetes.io/hostname: medulla-82-208-20-242
+              workload.cryptophys.work/apps-core: "true"
+    target:
+      kind: Deployment
+      name: notification-controller
