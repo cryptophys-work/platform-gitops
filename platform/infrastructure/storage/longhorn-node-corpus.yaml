@@ -1,0 +1,13 @@
+apiVersion: longhorn.io/v1beta2
+kind: Node
+metadata:
+  name: corpus-207-180-206-69
+  namespace: longhorn-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: longhorn-node-corpus
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+spec:
+  allowScheduling: false
+  evictionRequested: false
