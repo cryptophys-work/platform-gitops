@@ -215,11 +215,6 @@ spec:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
           whenUnsatisfiable: DoNotSchedule
-          labelSelector:
-            matchLabels:
-              app: harbor
-              component: portal
-              release: registry-harbor
     core:
       replicas: 3
       resources:
@@ -259,11 +254,6 @@ spec:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
           whenUnsatisfiable: DoNotSchedule
-          labelSelector:
-            matchLabels:
-              app: harbor
-              component: core
-              release: registry-harbor
     jobservice:
       resources:
         limits:
@@ -361,10 +351,5 @@ spec:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
           whenUnsatisfiable: DoNotSchedule
-          labelSelector:
-            matchLabels:
-              app: harbor
-              component: exporter
-              release: registry-harbor
       metrics:
         enabled: true
