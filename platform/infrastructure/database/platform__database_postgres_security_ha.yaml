@@ -66,3 +66,8 @@ spec:
   affinity:
     nodeSelector:
       kubernetes.io/hostname: thalamus-217-76-59-241
+    tolerations:
+    - effect: NoSchedule
+      key: cryptophys.io/pool
+      operator: Equal
+      value: platform-ha
