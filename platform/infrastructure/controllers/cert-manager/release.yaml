@@ -29,6 +29,8 @@ spec:
   values:
     installCRDs: true
     replicaCount: 2
+    nodeSelector:
+      kubernetes.io/os: linux
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -57,6 +59,8 @@ spec:
         memory: 256Mi
     webhook:
       replicaCount: 2
+      nodeSelector:
+        kubernetes.io/os: linux
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -85,6 +89,8 @@ spec:
           memory: 64Mi
     cainjector:
       replicaCount: 2
+      nodeSelector:
+        kubernetes.io/os: linux
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -112,6 +118,8 @@ spec:
           cpu: 100m
           memory: 512Mi
     startupapicheck:
+      nodeSelector:
+        kubernetes.io/os: linux
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
