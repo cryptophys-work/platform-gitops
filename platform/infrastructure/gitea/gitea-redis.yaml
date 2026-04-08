@@ -13,6 +13,8 @@ spec:
       labels:
         app: gitea-redis
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: nexus-144-91-103-10
       tolerations:
       containers:
       - name: redis
