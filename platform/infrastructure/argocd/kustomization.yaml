@@ -6,8 +6,11 @@ resources:
   - argocd-repo-auth-preflight.yaml
   - argocd-repo-credentials-eso.yaml
   - argocd-server-secret-eso.yaml
+  - argocd__pv_retain_job.yaml
+  - storageclass-longhorn-retain.yaml
   - spiffe-helper-config.yaml
   - release.yaml
+  - redis-ha
 patches:
   - path: argocd-cm-health-patch.yaml
     target:

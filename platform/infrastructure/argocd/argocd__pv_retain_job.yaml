@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: argocd-pv-retain
+  namespace: apps-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: argocd
+    cryptophys.io/layer: platform
+    cryptophys.io/contract: contract.platform.argocd.v1
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argocd-pv-retain
+rules:
+  - apiGroups: [""]
+    resources: ["persistentvolumes", "persistentvolumeclaims"]
+    verbs: ["get", "list", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: argocd-pv-retain
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argocd-pv-retain
+subjects:
+  - kind: ServiceAccount
+    name: argocd-pv-retain
+    namespace: apps-system
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: argocd-pv-retain-v1
+  namespace: apps-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: argocd
+    cryptophys.io/layer: platform
+    cryptophys.io/managed-by: flux
+    cryptophys.io/contract: contract.platform.argocd.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  ttlSecondsAfterFinished: 600
+  backoffLimit: 3
+  template:
+    spec:
+      serviceAccountName: argocd-pv-retain
+      restartPolicy: OnFailure
+      containers:
+        - name: retain
+          image: bitnami/kubectl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              for pvc in $(kubectl -n apps-system get pvc -l app.kubernetes.io/name=argocd-redis-ha -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'); do
+                pv="$(kubectl -n apps-system get pvc "$pvc" -o jsonpath='{.spec.volumeName}')"
+                if [ -n "$pv" ]; then
+                  kubectl patch pv "$pv" --type=merge -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
+                fi
+              done
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi

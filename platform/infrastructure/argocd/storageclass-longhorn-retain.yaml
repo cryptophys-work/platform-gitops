@@ -1,0 +1,24 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-retain
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: argocd
+    cryptophys.io/layer: platform
+    cryptophys.io/managed-by: flux
+    cryptophys.io/contract: contract.platform.argocd.v1
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "2"
+  staleReplicaTimeout: "30"
+  fromBackup: ""
+  fsType: "ext4"
+  dataLocality: "disabled"
+  unmapMarkSnapChainRemoved: "ignored"
+  disableRevisionCounter: "true"
+  dataEngine: "v1"
+  backupTargetName: "default"
