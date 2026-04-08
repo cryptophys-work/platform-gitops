@@ -4,8 +4,8 @@ resources:
   - gotk-components.yaml
   - gotk-sync.yaml
 patches:
-  # HA base: 2 replicas, schedule on platform nodes (nexus/thalamus/cerebellum),
-  # tolerate control-plane and llm taints for resilience.
+  # HA base: 2 replicas, prefer stable control-plane capacity first and tolerate
+  # transient networking taints so Flux can keep reconciling during worker flaps.
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
@@ -15,10 +15,29 @@ patches:
         replicas: 2
         template:
           spec:
-            nodeSelector:
-              workload.cryptophys.work/platform: "true"
+            affinity:
+              nodeAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    preference:
+                      matchExpressions:
+                        - key: node-role.kubernetes.io/control-plane
+                          operator: Exists
+                  - weight: 80
+                    preference:
+                      matchExpressions:
+                        - key: kubernetes.io/hostname
+                          operator: In
+                          values:
+                            - cerebellum-161-97-117-96
             tolerations:
               - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+                effect: NoSchedule
+              - key: node.cilium.io/agent-not-ready
+                operator: Exists
+                effect: NoSchedule
+              - key: node.kubernetes.io/unreachable
                 operator: Exists
                 effect: NoSchedule
               - key: cryptophys.io/role
