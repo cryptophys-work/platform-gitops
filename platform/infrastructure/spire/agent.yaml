@@ -29,6 +29,21 @@ spec:
         - key: cryptophys.io/role
           operator: Exists
           effect: NoSchedule
+        - key: cryptophys.io/pool
+          operator: Exists
+          effect: NoSchedule
+        - key: ray-head
+          operator: Exists
+          effect: NoSchedule
+        - key: ray-cluster
+          operator: Exists
+          effect: NoSchedule
+        - key: bridge-system
+          operator: Exists
+          effect: NoSchedule
+        - key: dao-system
+          operator: Exists
+          effect: NoSchedule
       nodeSelector:
         kubernetes.io/os: linux
       containers:

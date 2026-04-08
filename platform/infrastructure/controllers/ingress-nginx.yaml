@@ -43,9 +43,21 @@ spec:
           cpu: 500m
           memory: 256Mi
       nodeSelector:
-        cryptophys.io/tier: null
-        node-role.kubernetes.io/control-plane: null
-      affinity: {}
+        kubernetes.io/os: linux
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: cryptophys.io/platform-ha
+                    operator: In
+                    values:
+                      - "true"
+              - matchExpressions:
+                  - key: apps-core-target
+                    operator: In
+                    values:
+                      - apps-core
       tolerations:
         - effect: NoSchedule
           key: node-role.kubernetes.io/control-plane
