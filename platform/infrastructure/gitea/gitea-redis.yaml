@@ -25,6 +25,10 @@ spec:
         operator: Equal
         value: apps-ha
         effect: NoSchedule
+      - key: ray-head
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
       containers:
       - name: redis
         image: redis:7.2-alpine
