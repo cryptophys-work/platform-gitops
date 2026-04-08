@@ -94,6 +94,7 @@ spec:
                       - tetragon-system
                       - mesh-system
                       - database
+                      - minio-system
                       - trustedledger
                       - image-factory
                       - orchestrator
@@ -159,6 +160,7 @@ spec:
                       - tetragon-system
                       - mesh-system
                       - database
+                      - minio-system
                       - trustedledger
                       - image-factory
                       - orchestrator
