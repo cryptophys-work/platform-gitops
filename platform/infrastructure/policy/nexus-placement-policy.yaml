@@ -82,7 +82,6 @@ spec:
                       - kyverno-system
                       - cert-manager
                       - metallb-system
-                      - longhorn-system
                       - external-secrets
                       - spire-system
                       - vault-system
@@ -148,7 +147,6 @@ spec:
                       - kyverno-system
                       - cert-manager
                       - metallb-system
-                      - longhorn-system
                       - external-secrets
                       - spire-system
                       - vault-system
