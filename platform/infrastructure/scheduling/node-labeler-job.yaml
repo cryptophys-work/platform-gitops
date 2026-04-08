@@ -206,12 +206,6 @@ spec:
                 --overwrite 2>/dev/null || true
               echo "quanta: labelled + tainted (bridge-system + dao-system dedicated pool)"
 
-              # corpus: control-plane node that also accepts apps-core workloads
-              k label node corpus-207-180-206-69 \
-                workload.cryptophys.work/apps-core=true \
-                --overwrite 2>/dev/null || true
-              echo "corpus: labelled (apps-core)"
-
               # cerebellum: platform-ha compute pool
               k label node cerebellum-161-97-117-96 \
                 node-role.kubernetes.io/worker= \
