@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - crossplane-operator.yaml
   - platform-resource-quota.yaml
+  - kyverno-controller-overrides.yaml
   - cert-manager/
   - external-secrets.yaml
   - ingress-nginx.yaml
