@@ -11,4 +11,3 @@ resources:
   - pdbs.yaml
   - envoy-gateway.yaml
   - cnpg.yaml
-  - ingress-policy-exception.yaml
