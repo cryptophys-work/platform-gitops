@@ -1,7 +1,7 @@
 # Bootstrap Job: applies node labels and taints for the cryptophys-genesis cluster
 # Runs once at 02-scheduling stage. Safe to re-run (idempotent kubectl label --overwrite).
 # Node role assignment:
-#   medulla   → general compute worker
+#   medulla   → storage-support only; general workloads drained to nexus
 #   synapse   → apps-ha compute pool (6CPU/11.5GB)
 #   thalamus  → platform-ha compute pool (6CPU/11.5GB)
 #   quanta    → apps-ha lightweight pool (4CPU/7.4GB)
@@ -50,7 +50,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: node-labeler-nexus-placement-v6
+  name: node-labeler-nexus-placement-v7
   namespace: kube-system
   annotations:
     cryptophys.io/domain: platform
@@ -91,20 +91,27 @@ spec:
               }
               echo "=== cryptophys-genesis node labeler ==="
 
-              # medulla: general compute worker
+              # medulla: drain general workloads away; keep available for storage/system support
               k label node medulla-82-208-20-242 \
                 node-role.kubernetes.io/worker= \
-                cryptophys.io/tier=compute \
-                workload.cryptophys.work/apps-core=true \
+                cryptophys.io/tier=storage \
+                cryptophys.io/node-role=storage-worker \
                 --overwrite
               k label node medulla-82-208-20-242 \
+                apps-core-target- \
+                cryptophys.io/apps-ha- \
                 cryptophys.io/role- \
+                workload.cryptophys.work/apps-core- \
+                workload.cryptophys.work/compute- \
                 workload.cryptophys.work/llm- \
+                --overwrite 2>/dev/null || true
+              k taint node medulla-82-208-20-242 \
+                cryptophys.io/storage-only=true:NoSchedule \
                 --overwrite 2>/dev/null || true
               k taint node medulla-82-208-20-242 \
                 cryptophys.io/role=llm-inference:NoSchedule- \
                 --overwrite 2>/dev/null || true
-              echo "medulla: labelled (apps-core compute, llm-inference removed)"
+              echo "medulla: labelled + tainted (storage-only, apps-core removed)"
 
               # synapse: apps-ha compute pool (6CPU/11.5GB)
               k label node synapse-161-97-136-251 \
