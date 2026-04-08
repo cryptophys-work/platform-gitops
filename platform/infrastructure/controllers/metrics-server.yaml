@@ -15,8 +15,26 @@ spec:
         namespace: flux-system
   values:
     replicas: 2
-    nodeSelector:
-      kubernetes.io/hostname: nexus-144-91-103-10
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - nexus-144-91-103-10
+                    - thalamus-217-76-59-241
+                    - cerebellum-161-97-117-96
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: metrics-server
+                  app.kubernetes.io/name: metrics-server
+              topologyKey: kubernetes.io/hostname
     args:
       - --kubelet-insecure-tls
       - --kubelet-preferred-address-types=InternalIP
@@ -31,6 +49,10 @@ spec:
       - key: ray-cluster
         operator: Equal
         value: "true"
+        effect: NoSchedule
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
         effect: NoSchedule
       - key: cryptophys.io/storage-only
         operator: Exists
