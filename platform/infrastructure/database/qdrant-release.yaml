@@ -24,6 +24,8 @@ spec:
         name: qdrant-charts
         namespace: flux-system
   values:
+    replicaCount: 1
+
     image:
       repository: qdrant/qdrant
       tag: "v1.7.4"
@@ -43,17 +45,13 @@ spec:
         cpu: 2000m
         memory: 1Gi
     
-    # Schedule on compute worker nodes — exclude thalamus (stale iSCSI sessions from quanta outage)
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: cryptophys.io/tier
-              operator: In
-              values:
-              - compute
-            - key: kubernetes.io/hostname
-              operator: NotIn
-              values:
-              - thalamus-217-76-59-241
+    # Pin Qdrant to Nexus for AI Cognition vector-memory wiring.
+    nodeSelector:
+      kubernetes.io/hostname: nexus-144-91-103-10
+      cryptophys.io/tier: compute
+
+    tolerations:
+      - key: ray-cluster
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
