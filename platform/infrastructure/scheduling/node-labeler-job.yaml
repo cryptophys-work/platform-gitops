@@ -143,6 +143,7 @@ spec:
               # quanta: dedicated bridge/dao pool
               k label node quanta-194-163-186-222 \
                 bridge-system=true \
+                dao-system=true \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
@@ -155,7 +156,10 @@ spec:
               k taint node quanta-194-163-186-222 \
                 bridge-system=true:NoSchedule \
                 --overwrite 2>/dev/null || true
-              echo "quanta: labelled + tainted (bridge-system dedicated pool)"
+              k taint node quanta-194-163-186-222 \
+                dao-system=true:NoSchedule \
+                --overwrite 2>/dev/null || true
+              echo "quanta: labelled + tainted (bridge-system + dao-system dedicated pool)"
 
               # corpus: control-plane node that also accepts apps-core workloads
               k label node corpus-207-180-206-69 \
