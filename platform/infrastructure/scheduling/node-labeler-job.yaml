@@ -50,7 +50,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: node-labeler-nexus-placement-v7
+  name: node-labeler-nexus-placement-v8
   namespace: kube-system
   annotations:
     cryptophys.io/domain: platform
@@ -83,11 +83,19 @@ spec:
             - /bin/sh
             - -c
             - |
-              set -e
+              set -euo pipefail
+              SA_DIR=/var/run/secrets/kubernetes.io/serviceaccount
+              KUBE_SERVER=https://kubernetes.default.svc
+              KUBE_TOKEN="$(cat "${SA_DIR}/token")"
+              KUBE_CA="${SA_DIR}/ca.crt"
+
               k() {
-                if ! kubectl --request-timeout=10s "$@"; then
-                  echo "WARN: kubectl failed: $*" >&2
-                fi
+                kubectl \
+                  --server="${KUBE_SERVER}" \
+                  --certificate-authority="${KUBE_CA}" \
+                  --token="${KUBE_TOKEN}" \
+                  --request-timeout=10s \
+                  "$@"
               }
               echo "=== cryptophys-genesis node labeler ==="
 
