@@ -215,6 +215,8 @@ spec:
                   operator: In
                   values:
                     - thalamus-217-76-59-241
+                    - nexus-144-91-103-10
+                    - cerebellum-161-97-117-96
     initContainers:
       resources:
         requests:
