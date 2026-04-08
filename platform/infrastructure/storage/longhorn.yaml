@@ -21,21 +21,34 @@ spec:
               - op: replace
                 path: /spec/template/spec/tolerations
                 value:
+                  - key: cryptophys.io/storage-only
+                    operator: Exists
+                    effect: NoSchedule
                   - key: cryptophys.io/role
                     operator: Equal
                     value: llm-inference
                     effect: NoSchedule
+                  - key: ray-cluster
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: ray-head
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: bridge-system
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: dao-system
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: node.cilium.io/agent-not-ready
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+                    effect: NoSchedule
               - op: replace
                 path: /spec/template/spec/affinity
                 value:
-                  nodeAffinity:
-                    requiredDuringSchedulingIgnoredDuringExecution:
-                      nodeSelectorTerms:
-                        - matchExpressions:
-                            - key: node-role.kubernetes.io/worker
-                              operator: Exists
-                            - key: workload.cryptophys.work/platform
-                              operator: Exists
                   podAntiAffinity:
                     preferredDuringSchedulingIgnoredDuringExecution:
                       - weight: 100
@@ -54,21 +67,34 @@ spec:
               - op: replace
                 path: /spec/template/spec/tolerations
                 value:
+                  - key: cryptophys.io/storage-only
+                    operator: Exists
+                    effect: NoSchedule
                   - key: cryptophys.io/role
                     operator: Equal
                     value: llm-inference
                     effect: NoSchedule
+                  - key: ray-cluster
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: ray-head
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: bridge-system
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: dao-system
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: node.cilium.io/agent-not-ready
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+                    effect: NoSchedule
               - op: replace
                 path: /spec/template/spec/affinity
                 value:
-                  nodeAffinity:
-                    requiredDuringSchedulingIgnoredDuringExecution:
-                      nodeSelectorTerms:
-                        - matchExpressions:
-                            - key: node-role.kubernetes.io/worker
-                              operator: Exists
-                            - key: workload.cryptophys.work/platform
-                              operator: Exists
                   podAntiAffinity:
                     preferredDuringSchedulingIgnoredDuringExecution:
                       - weight: 100
@@ -87,21 +113,34 @@ spec:
               - op: replace
                 path: /spec/template/spec/tolerations
                 value:
+                  - key: cryptophys.io/storage-only
+                    operator: Exists
+                    effect: NoSchedule
                   - key: cryptophys.io/role
                     operator: Equal
                     value: llm-inference
                     effect: NoSchedule
+                  - key: ray-cluster
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: ray-head
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: bridge-system
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: dao-system
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: node.cilium.io/agent-not-ready
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+                    effect: NoSchedule
               - op: replace
                 path: /spec/template/spec/affinity
                 value:
-                  nodeAffinity:
-                    requiredDuringSchedulingIgnoredDuringExecution:
-                      nodeSelectorTerms:
-                        - matchExpressions:
-                            - key: node-role.kubernetes.io/worker
-                              operator: Exists
-                            - key: workload.cryptophys.work/platform
-                              operator: Exists
                   podAntiAffinity:
                     preferredDuringSchedulingIgnoredDuringExecution:
                       - weight: 100
@@ -120,21 +159,34 @@ spec:
               - op: replace
                 path: /spec/template/spec/tolerations
                 value:
+                  - key: cryptophys.io/storage-only
+                    operator: Exists
+                    effect: NoSchedule
                   - key: cryptophys.io/role
                     operator: Equal
                     value: llm-inference
                     effect: NoSchedule
+                  - key: ray-cluster
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: ray-head
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: bridge-system
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: dao-system
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: node.cilium.io/agent-not-ready
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+                    effect: NoSchedule
               - op: replace
                 path: /spec/template/spec/affinity
                 value:
-                  nodeAffinity:
-                    requiredDuringSchedulingIgnoredDuringExecution:
-                      nodeSelectorTerms:
-                        - matchExpressions:
-                            - key: node-role.kubernetes.io/worker
-                              operator: Exists
-                            - key: workload.cryptophys.work/platform
-                              operator: Exists
                   podAntiAffinity:
                     preferredDuringSchedulingIgnoredDuringExecution:
                       - weight: 100
@@ -146,6 +198,19 @@ spec:
                                 values:
                                   - csi-snapshotter
                           topologyKey: kubernetes.io/hostname
+          - target:
+              kind: DaemonSet
+              name: longhorn-manager
+            patch: |
+              - op: replace
+                path: /spec/template/spec/containers/1/resources
+                value:
+                  requests:
+                    cpu: "50m"
+                    memory: "256Mi"
+                  limits:
+                    cpu: "1"
+                    memory: "2Gi"
   chart:
     spec:
       chart: longhorn
@@ -172,7 +237,7 @@ spec:
       systemManagedComponentsNodeSelector: ""
       # Keep replicas off control-plane nodes under memory pressure; Longhorn
       # managers/CSI may still run there, but data placement should prefer workers.
-      taintToleration: "cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;node-role.kubernetes.io/control-plane:NoSchedule"
+      taintToleration: "cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node-role.kubernetes.io/control-plane:NoSchedule"
       # Fallback reserve for nodes without an explicit per-node disk override.
       storageReservedPercentageForDefaultDisk: 10
       storageOverProvisioningPercentage: 200
@@ -193,6 +258,18 @@ spec:
           operator: Exists
           effect: NoSchedule
         - key: cryptophys.io/role
+          operator: Exists
+          effect: NoSchedule
+        - key: ray-cluster
+          operator: Exists
+          effect: NoSchedule
+        - key: ray-head
+          operator: Exists
+          effect: NoSchedule
+        - key: bridge-system
+          operator: Exists
+          effect: NoSchedule
+        - key: dao-system
           operator: Exists
           effect: NoSchedule
         - key: node.cilium.io/agent-not-ready
@@ -251,6 +328,18 @@ spec:
           - key: cryptophys.io/role
             operator: Equal
             value: llm-inference
+            effect: NoSchedule
+          - key: ray-cluster
+            operator: Exists
+            effect: NoSchedule
+          - key: ray-head
+            operator: Exists
+            effect: NoSchedule
+          - key: bridge-system
+            operator: Exists
+            effect: NoSchedule
+          - key: dao-system
+            operator: Exists
             effect: NoSchedule
           - key: node-role.kubernetes.io/control-plane
             operator: Exists
