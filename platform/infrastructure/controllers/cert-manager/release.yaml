@@ -29,20 +29,29 @@ spec:
   values:
     installCRDs: true
     replicaCount: 2
-    nodeSelector:
-      kubernetes.io/os: linux
-      kubernetes.io/hostname: nexus-144-91-103-10
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
           - matchExpressions:
-            - key: node-role.kubernetes.io/control-plane
-              operator: DoesNotExist
+            - key: kubernetes.io/os
+              operator: In
+              values:
+              - linux
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+              - nexus-144-91-103-10
+              - thalamus-217-76-59-241
+              - cerebellum-161-97-117-96
     tolerations:
-    - key: cryptophys.io/role
+    - key: ray-cluster
       operator: Equal
-      value: llm-inference
+      value: "true"
+      effect: NoSchedule
+    - key: cryptophys.io/pool
+      operator: Equal
+      value: platform-ha
       effect: NoSchedule
     resources:
       requests:
@@ -53,20 +62,29 @@ spec:
         memory: 256Mi
     webhook:
       replicaCount: 2
-      nodeSelector:
-        kubernetes.io/os: linux
-        kubernetes.io/hostname: nexus-144-91-103-10
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: node-role.kubernetes.io/control-plane
-                operator: DoesNotExist
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                - linux
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - nexus-144-91-103-10
+                - thalamus-217-76-59-241
+                - cerebellum-161-97-117-96
       tolerations:
-      - key: cryptophys.io/role
+      - key: ray-cluster
         operator: Equal
-        value: llm-inference
+        value: "true"
+        effect: NoSchedule
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
         effect: NoSchedule
       resources:
         requests:
@@ -77,20 +95,29 @@ spec:
           memory: 64Mi
     cainjector:
       replicaCount: 2
-      nodeSelector:
-        kubernetes.io/os: linux
-        kubernetes.io/hostname: nexus-144-91-103-10
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: node-role.kubernetes.io/control-plane
-                operator: DoesNotExist
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                - linux
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - nexus-144-91-103-10
+                - thalamus-217-76-59-241
+                - cerebellum-161-97-117-96
       tolerations:
-      - key: cryptophys.io/role
+      - key: ray-cluster
         operator: Equal
-        value: llm-inference
+        value: "true"
+        effect: NoSchedule
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
         effect: NoSchedule
       resources:
         requests:
@@ -100,20 +127,29 @@ spec:
           cpu: 100m
           memory: 512Mi
     startupapicheck:
-      nodeSelector:
-        kubernetes.io/os: linux
-        kubernetes.io/hostname: nexus-144-91-103-10
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: node-role.kubernetes.io/control-plane
-                operator: DoesNotExist
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                - linux
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - nexus-144-91-103-10
+                - thalamus-217-76-59-241
+                - cerebellum-161-97-117-96
       tolerations:
-      - key: cryptophys.io/role
+      - key: ray-cluster
         operator: Equal
-        value: llm-inference
+        value: "true"
+        effect: NoSchedule
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
         effect: NoSchedule
       resources:
         requests:
