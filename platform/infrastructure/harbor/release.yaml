@@ -144,7 +144,7 @@ spec:
         password: ""
     trivy:
       enabled: true
-      replicas: 3
+      replicas: 1
       resources:
         limits:
           cpu: 500m
