@@ -112,6 +112,7 @@ spec:
                 cryptophys.io/apps-ha=true \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
+                ray-head=true \
                 workload.cryptophys.work/apps-core=true \
                 --overwrite
               k label node synapse-161-97-136-251 \
@@ -120,6 +121,9 @@ spec:
                 --overwrite 2>/dev/null || true
               k taint node synapse-161-97-136-251 \
                 cryptophys.io/pool=apps-ha:NoSchedule \
+                --overwrite 2>/dev/null || true
+              k taint node synapse-161-97-136-251 \
+                ray-head=true:NoSchedule \
                 --overwrite 2>/dev/null || true
               echo "synapse: labelled + tainted (apps-ha)"
 
@@ -146,6 +150,7 @@ spec:
                 dao-system=true \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
+                ray-head=true \
                 workload.cryptophys.work/apps-core=true \
                 --overwrite
               k label node quanta-194-163-186-222 \
@@ -158,6 +163,9 @@ spec:
                 --overwrite 2>/dev/null || true
               k taint node quanta-194-163-186-222 \
                 dao-system=true:NoSchedule \
+                --overwrite 2>/dev/null || true
+              k taint node quanta-194-163-186-222 \
+                ray-head=true:NoSchedule \
                 --overwrite 2>/dev/null || true
               echo "quanta: labelled + tainted (bridge-system + dao-system dedicated pool)"
 
@@ -194,6 +202,7 @@ spec:
                 cryptophys.io/role=llm-inference \
                 cryptophys.io/tier=compute \
                 nexus-tower=true \
+                ray-cluster=true \
                 storage=storage \
                 workload.cryptophys.work/apps-core=true \
                 workload.cryptophys.work/compute=true \
@@ -205,6 +214,9 @@ spec:
                 --overwrite 2>/dev/null || true
               k taint node nexus-144-91-103-10 \
                 cryptophys.io/pool=nexus-hub:NoSchedule- \
+                --overwrite 2>/dev/null || true
+              k taint node nexus-144-91-103-10 \
+                ray-cluster=true:NoSchedule \
                 --overwrite 2>/dev/null || true
               echo "nexus: labelled (shared apps-ha + platform-ha)"
 
