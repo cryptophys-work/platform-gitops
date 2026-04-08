@@ -67,6 +67,7 @@ spec:
           operator: Exists
           effect: NoSchedule
     speaker:
+      nodeSelector: {}
       excludeInterfaces:
         enabled: true
       frr:
