@@ -48,7 +48,13 @@ spec:
         - key: ray-head
           operator: Exists
           effect: NoSchedule
+        - key: ray-cluster
+          operator: Exists
+          effect: NoSchedule
         - key: node.cilium.io/agent-not-ready
+          operator: Exists
+          effect: NoSchedule
+        - key: node.kubernetes.io/memory-pressure
           operator: Exists
           effect: NoSchedule
 ---
@@ -106,7 +112,13 @@ spec:
         - key: ray-head
           operator: Exists
           effect: NoSchedule
+        - key: ray-cluster
+          operator: Exists
+          effect: NoSchedule
         - key: node.cilium.io/agent-not-ready
+          operator: Exists
+          effect: NoSchedule
+        - key: node.kubernetes.io/memory-pressure
           operator: Exists
           effect: NoSchedule
 ---
@@ -164,6 +176,12 @@ spec:
         - key: ray-head
           operator: Exists
           effect: NoSchedule
+        - key: ray-cluster
+          operator: Exists
+          effect: NoSchedule
         - key: node.cilium.io/agent-not-ready
+          operator: Exists
+          effect: NoSchedule
+        - key: node.kubernetes.io/memory-pressure
           operator: Exists
           effect: NoSchedule
