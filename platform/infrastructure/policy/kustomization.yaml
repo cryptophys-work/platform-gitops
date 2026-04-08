@@ -4,6 +4,7 @@ resources:
   - baseline.yaml
   - cilium-baseline.yaml
   - kyverno-release.yaml
+  - nexus-placement-policy.yaml
   - pdbs-critical-services.yaml
   - ../tekton
   # cp-restriction-policy.yaml moved to 15-policy-crs (Kyverno CRDs not ready at dry-run time)

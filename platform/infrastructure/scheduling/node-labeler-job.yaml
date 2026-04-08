@@ -2,11 +2,11 @@
 # Runs once at 02-scheduling stage. Safe to re-run (idempotent kubectl label --overwrite).
 # Node role assignment:
 #   medulla   → general compute worker
-#   synapse   → apps-core general compute (6CPU/11.5GB)
-#   thalamus  → apps-core general compute (6CPU/11.5GB)
-#   quanta    → apps-core lightweight (4CPU/7.4GB)
+#   synapse   → apps-ha compute pool (6CPU/11.5GB)
+#   thalamus  → platform-ha compute pool (6CPU/11.5GB)
+#   quanta    → apps-ha lightweight pool (4CPU/7.4GB)
 #   campus    → storage-only (4CPU/7.4GB) + NoSchedule taint
-#   nexus     → llm-inference + nexus tower for Ray workers (40CPU/256GB)
+#   nexus     → shared HA node for both platform-ha and apps-ha (40CPU/256GB)
 
 ---
 apiVersion: v1
@@ -50,7 +50,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: node-labeler-nexus-storage-v5
+  name: node-labeler-nexus-placement-v6
   namespace: kube-system
   annotations:
     cryptophys.io/domain: platform
@@ -106,33 +106,55 @@ spec:
                 --overwrite 2>/dev/null || true
               echo "medulla: labelled (apps-core compute, llm-inference removed)"
 
-              # synapse: apps-core general compute (6CPU/11.5GB)
+              # synapse: apps-ha compute pool (6CPU/11.5GB)
               k label node synapse-161-97-136-251 \
                 apps-core-target=apps-core \
+                cryptophys.io/apps-ha=true \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
                 --overwrite
-              echo "synapse: labelled (apps-core)"
+              k label node synapse-161-97-136-251 \
+                cryptophys.io/platform-ha- \
+                cryptophys.io/pool- \
+                --overwrite 2>/dev/null || true
+              k taint node synapse-161-97-136-251 \
+                cryptophys.io/pool=apps-ha:NoSchedule \
+                --overwrite 2>/dev/null || true
+              echo "synapse: labelled + tainted (apps-ha)"
 
-              # thalamus: temporarily reserved away from general apps-core workloads
+              # thalamus: platform-ha compute pool
               k label node thalamus-217-76-59-241 \
                 node-role.kubernetes.io/worker= \
+                cryptophys.io/platform-ha=true \
                 cryptophys.io/tier=compute \
                 --overwrite
               k label node thalamus-217-76-59-241 \
                 apps-core-target- \
                 workload.cryptophys.work/apps-core- \
+                cryptophys.io/apps-ha- \
+                cryptophys.io/pool- \
                 --overwrite 2>/dev/null || true
-              echo "thalamus: labelled (apps-core target removed for temporary relief)"
+              k taint node thalamus-217-76-59-241 \
+                cryptophys.io/pool=platform-ha:NoSchedule \
+                --overwrite 2>/dev/null || true
+              echo "thalamus: labelled + tainted (platform-ha)"
 
-              # quanta: apps-core lightweight (4CPU/7.4GB)
+              # quanta: apps-ha lightweight pool (4CPU/7.4GB)
               k label node quanta-194-163-186-222 \
+                cryptophys.io/apps-ha=true \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
                 --overwrite
-              echo "quanta: labelled (apps-core lightweight)"
+              k label node quanta-194-163-186-222 \
+                cryptophys.io/platform-ha- \
+                cryptophys.io/pool- \
+                --overwrite 2>/dev/null || true
+              k taint node quanta-194-163-186-222 \
+                cryptophys.io/pool=apps-ha:NoSchedule \
+                --overwrite 2>/dev/null || true
+              echo "quanta: labelled + tainted (apps-ha lightweight)"
 
               # corpus: control-plane node that also accepts apps-core workloads
               k label node corpus-207-180-206-69 \
@@ -140,22 +162,30 @@ spec:
                 --overwrite 2>/dev/null || true
               echo "corpus: labelled (apps-core)"
 
-              # cerebellum: temporarily reserved away from general apps-core workloads
+              # cerebellum: platform-ha compute pool
               k label node cerebellum-161-97-117-96 \
                 node-role.kubernetes.io/worker= \
+                cryptophys.io/platform-ha=true \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/compute=true \
                 --overwrite 2>/dev/null || true
               k label node cerebellum-161-97-117-96 \
                 apps-core-target- \
                 workload.cryptophys.work/apps-core- \
+                cryptophys.io/apps-ha- \
+                cryptophys.io/pool- \
                 --overwrite 2>/dev/null || true
-              echo "cerebellum: labelled (apps-core target removed for temporary relief)"
+              k taint node cerebellum-161-97-117-96 \
+                cryptophys.io/pool=platform-ha:NoSchedule \
+                --overwrite 2>/dev/null || true
+              echo "cerebellum: labelled + tainted (platform-ha)"
 
-              # nexus: heavy apps-core worker + LLM inference tier (40CPU/256GB)
+              # nexus: shared HA node for both lanes
               k label node nexus-144-91-103-10 \
                 node-role.kubernetes.io/worker= \
                 apps-core-target=apps-core \
+                cryptophys.io/apps-ha=true \
+                cryptophys.io/platform-ha=true \
                 cryptophys.io/role=llm-inference \
                 cryptophys.io/tier=compute \
                 nexus-tower=true \
@@ -165,13 +195,13 @@ spec:
                 workload.cryptophys.work/llm=true \
                 workload.cryptophys.work/storage=true \
                 --overwrite 2>/dev/null || true
-              k taint node nexus-144-91-103-10 \
-                cryptophys.io/role=llm-inference:NoSchedule \
+              k label node nexus-144-91-103-10 \
+                cryptophys.io/pool- \
                 --overwrite 2>/dev/null || true
               k taint node nexus-144-91-103-10 \
-                cryptophys.io/role=llm-inference:NoSchedule- \
+                cryptophys.io/pool=nexus-hub:NoSchedule- \
                 --overwrite 2>/dev/null || true
-              echo "nexus: labelled (apps-core heavy worker, nexus tower, llm-inference label kept, taint removed temporarily)"
+              echo "nexus: labelled (shared apps-ha + platform-ha)"
 
               # campus: drain storage workloads away; keep taint but remove storage attraction labels
               k label node campus-212-47-66-101 \

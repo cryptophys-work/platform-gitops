@@ -1,0 +1,231 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-apps-ha-toleration
+  annotations:
+    policies.kyverno.io/title: Allow Apps HA Toleration
+    policies.kyverno.io/category: Node Placement
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >
+      Argo-managed application namespaces are allowed onto the apps-ha lane,
+      which spans nexus, quanta, and synapse.
+    cryptophys.io/domain: platform
+    cryptophys.io/contract: contract.infrastructure.talos_topology.v1
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: allow-apps-ha
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaceSelector:
+                matchExpressions:
+                  - key: kubernetes.io/metadata.name
+                    operator: In
+                    values:
+                      - aide
+                      - cerebrum
+                      - apps-core
+                      - apps-dash
+                      - apps-user
+                      - bridge
+                      - automation
+                      - apps-automation
+                      - apps-gateway
+                      - navigator
+                      - platform-ui
+      mutate:
+        patchStrategicMerge:
+          spec:
+            tolerations:
+              - key: cryptophys.io/pool
+                operator: Equal
+                value: apps-ha
+                effect: NoSchedule
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-platform-ha-toleration
+  annotations:
+    policies.kyverno.io/title: Allow Platform HA Toleration
+    policies.kyverno.io/category: Node Placement
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >
+      Flux-managed platform namespaces are allowed onto the platform-ha lane,
+      which spans nexus, thalamus, and cerebellum.
+    cryptophys.io/domain: platform
+    cryptophys.io/contract: contract.infrastructure.talos_topology.v1
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: allow-platform-ha
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaceSelector:
+                matchExpressions:
+                  - key: kubernetes.io/metadata.name
+                    operator: In
+                    values:
+                      - kube-system
+                      - flux-system
+                      - gitops-system
+                      - ingress-system
+                      - registry-system
+                      - kyverno-system
+                      - cert-manager
+                      - metallb-system
+                      - longhorn-system
+                      - external-secrets
+                      - spire-system
+                      - vault-system
+                      - observability-system
+                      - security-system
+                      - security-observability
+                      - gatekeeper-system
+                      - falco-system
+                      - tetragon-system
+                      - mesh-system
+                      - database
+                      - trustedledger
+                      - image-factory
+                      - orchestrator
+                      - facilitator
+                      - tekton-system
+                      - tekton-pipelines
+                      - tekton-pipelines-resolvers
+                      - tekton-dashboard
+                      - kueue-system
+      mutate:
+        patchStrategicMerge:
+          spec:
+            tolerations:
+              - key: cryptophys.io/pool
+                operator: Equal
+                value: platform-ha
+                effect: NoSchedule
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: deny-platform-ha-toleration-outside-platform
+  annotations:
+    policies.kyverno.io/title: Deny Platform HA Toleration Outside Platform
+    policies.kyverno.io/category: Node Placement
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >
+      Prevents non-platform namespaces from tolerating the platform-ha taint.
+    cryptophys.io/domain: platform
+    cryptophys.io/contract: contract.infrastructure.talos_topology.v1
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: block-platform-ha
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaceSelector:
+                matchExpressions:
+                  - key: kubernetes.io/metadata.name
+                    operator: NotIn
+                    values:
+                      - kube-system
+                      - flux-system
+                      - gitops-system
+                      - ingress-system
+                      - registry-system
+                      - kyverno-system
+                      - cert-manager
+                      - metallb-system
+                      - longhorn-system
+                      - external-secrets
+                      - spire-system
+                      - vault-system
+                      - observability-system
+                      - security-system
+                      - security-observability
+                      - gatekeeper-system
+                      - falco-system
+                      - tetragon-system
+                      - mesh-system
+                      - database
+                      - trustedledger
+                      - image-factory
+                      - orchestrator
+                      - facilitator
+                      - tekton-system
+                      - tekton-pipelines
+                      - tekton-pipelines-resolvers
+                      - tekton-dashboard
+                      - kueue-system
+      validate:
+        message: >
+          Namespace '{{ request.object.metadata.namespace }}' is not allowed to
+          tolerate cryptophys.io/pool=platform-ha. Platform HA capacity is
+          reserved for Flux-managed infrastructure workloads.
+        deny:
+          conditions:
+            any:
+              - key: "{{ request.object.spec.tolerations[?key=='cryptophys.io/pool' && value=='platform-ha'] | length(@) }}"
+                operator: GreaterThan
+                value: 0
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: deny-apps-ha-toleration-outside-apps
+  annotations:
+    policies.kyverno.io/title: Deny Apps HA Toleration Outside Apps
+    policies.kyverno.io/category: Node Placement
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >
+      Prevents non-application namespaces from tolerating the apps-ha taint.
+    cryptophys.io/domain: platform
+    cryptophys.io/contract: contract.infrastructure.talos_topology.v1
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: block-apps-ha
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaceSelector:
+                matchExpressions:
+                  - key: kubernetes.io/metadata.name
+                    operator: NotIn
+                    values:
+                      - aide
+                      - cerebrum
+                      - apps-core
+                      - apps-dash
+                      - apps-user
+                      - bridge
+                      - automation
+                      - apps-automation
+                      - apps-gateway
+                      - navigator
+                      - platform-ui
+      validate:
+        message: >
+          Namespace '{{ request.object.metadata.namespace }}' is not allowed to
+          tolerate cryptophys.io/pool=apps-ha. Apps HA capacity is reserved for
+          Argo-managed application workloads.
+        deny:
+          conditions:
+            any:
+              - key: "{{ request.object.spec.tolerations[?key=='cryptophys.io/pool' && value=='apps-ha'] | length(@) }}"
+                operator: GreaterThan
+                value: 0
