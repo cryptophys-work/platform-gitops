@@ -17,6 +17,7 @@ spec:
         name: metallb
         namespace: flux-system
   install:
+    disableWait: true
     remediation:
       retries: 3
   upgrade:
@@ -93,6 +94,21 @@ spec:
           operator: Exists
           effect: NoSchedule
         - key: cryptophys.io/storage-only
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/pool
+          operator: Exists
+          effect: NoSchedule
+        - key: ray-cluster
+          operator: Exists
+          effect: NoSchedule
+        - key: ray-head
+          operator: Exists
+          effect: NoSchedule
+        - key: bridge-system
+          operator: Exists
+          effect: NoSchedule
+        - key: dao-system
           operator: Exists
           effect: NoSchedule
         - key: cryptophys.io/role
