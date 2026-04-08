@@ -205,8 +205,8 @@ spec:
         operator: Exists
         effect: NoSchedule
     nodeSelector:
-      apps-core-target: apps-core
       workload.cryptophys.work/apps-core: "true"
+      kubernetes.io/hostname: synapse-161-97-136-251
     affinity: {}
     initContainers:
       resources:
