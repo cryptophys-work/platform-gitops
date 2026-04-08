@@ -68,12 +68,15 @@ metadata:
     cryptophys.io/anti-regression: "true"
 spec:
   serviceName: argocd-redis-ha-announce
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app.kubernetes.io/name: argocd-redis-ha
       app.kubernetes.io/component: redis-ha
   podManagementPolicy: Parallel
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
   updateStrategy:
     type: RollingUpdate
   template:
@@ -96,6 +99,16 @@ spec:
           operator: Exists
           effect: NoSchedule
       affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - nexus-144-91-103-10
+                      - thalamus-217-76-59-241
+                      - cerebellum-161-97-117-96
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
@@ -243,4 +256,4 @@ spec:
         resources:
           requests:
             storage: 2Gi
-        storageClassName: longhorn
+        storageClassName: longhorn-retain
