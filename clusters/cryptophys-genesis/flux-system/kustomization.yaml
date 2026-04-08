@@ -4,8 +4,9 @@ resources:
   - gotk-components.yaml
   - gotk-sync.yaml
 patches:
-  # Recovery base: keep Flux pinned to control-plane nodes and tolerate transient
-  # control-plane taints so reconciliation can continue while workers flap.
+  # Recovery base: place Flux on the platform-ha worker lane, which is
+  # explicitly reserved for Flux-managed infrastructure by node-labeler and
+  # the mutate-platform-ha-toleration policy.
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
@@ -20,8 +21,10 @@ patches:
                 requiredDuringSchedulingIgnoredDuringExecution:
                   nodeSelectorTerms:
                     - matchExpressions:
-                        - key: node-role.kubernetes.io/control-plane
-                          operator: Exists
+                        - key: cryptophys.io/platform-ha
+                          operator: In
+                          values:
+                            - "true"
                 preferredDuringSchedulingIgnoredDuringExecution:
                   - weight: 100
                     preference:
@@ -29,24 +32,8 @@ patches:
                         - key: kubernetes.io/hostname
                           operator: In
                           values:
-                            - corpus-207-180-206-69
-            tolerations:
-              - key: node-role.kubernetes.io/control-plane
-                operator: Exists
-                effect: NoSchedule
-              - key: node.cilium.io/agent-not-ready
-                operator: Exists
-                effect: NoSchedule
-              - key: node.kubernetes.io/unreachable
-                operator: Exists
-                effect: NoSchedule
-              - key: node.kubernetes.io/memory-pressure
-                operator: Exists
-                effect: NoSchedule
-              - key: cryptophys.io/role
-                operator: Equal
-                value: llm-inference
-                effect: NoSchedule
+                            - cerebellum-161-97-117-96
+                            - thalamus-217-76-59-241
     target:
       kind: Deployment
 
