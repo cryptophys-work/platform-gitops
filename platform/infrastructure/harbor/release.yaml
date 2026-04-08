@@ -202,13 +202,24 @@ spec:
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
         podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchLabels:
-                  app: harbor
-                  component: portal
-                  release: registry-harbor
-              topologyKey: kubernetes.io/hostname
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: harbor
+                    component: portal
+                    release: registry-harbor
+                topologyKey: kubernetes.io/hostname
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: harbor
+              component: portal
+              release: registry-harbor
     core:
       replicas: 3
       resources:
@@ -235,13 +246,24 @@ spec:
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
         podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: kubernetes.io/hostname
-              labelSelector:
-                matchLabels:
-                  app: harbor
-                  component: core
-                  release: registry-harbor
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: harbor
+                    component: core
+                    release: registry-harbor
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: harbor
+              component: core
+              release: registry-harbor
     jobservice:
       resources:
         limits:
@@ -326,12 +348,23 @@ spec:
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
         podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchLabels:
-                  app: harbor
-                  component: exporter
-                  release: registry-harbor
-              topologyKey: kubernetes.io/hostname
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: harbor
+                    component: exporter
+                    release: registry-harbor
+                topologyKey: kubernetes.io/hostname
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: harbor
+              component: exporter
+              release: registry-harbor
       metrics:
         enabled: true
