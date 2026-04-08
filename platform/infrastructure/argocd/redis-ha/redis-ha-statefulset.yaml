@@ -68,7 +68,7 @@ metadata:
     cryptophys.io/anti-regression: "true"
 spec:
   serviceName: argocd-redis-ha-announce
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: argocd-redis-ha

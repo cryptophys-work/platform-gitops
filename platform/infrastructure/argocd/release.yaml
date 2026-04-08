@@ -129,7 +129,7 @@ spec:
           effect: "NoSchedule"
       pdb:
         enabled: true
-        minAvailable: 2
+        minAvailable: 1
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -147,11 +147,11 @@ spec:
                 matchLabels:
                   app.kubernetes.io/name: argocd-application-controller
               topologyKey: kubernetes.io/hostname
-      replicas: 3
+      replicas: 1
       resources:
         requests:
           cpu: 100m
-          memory: 1Gi  # peak 2460Mi during cascade; steady ~1Gi; burstable to 4Gi
+          memory: 512Mi
         limits:
           cpu: 2000m
           memory: 4Gi
@@ -180,7 +180,7 @@ spec:
       resources:
         requests:
           cpu: 50m
-          memory: 64Mi
+          memory: 32Mi
         limits:
           cpu: 250m
           memory: 256Mi
@@ -209,7 +209,7 @@ spec:
       resources:
         requests:
           cpu: 50m
-          memory: 128Mi
+          memory: 64Mi
         limits:
           cpu: 500m
           memory: 512Mi
@@ -251,8 +251,8 @@ spec:
             - /etc/spiffe-helper/helper.conf
           resources:
             requests:
-              cpu: 25m
-              memory: 32Mi
+              cpu: 10m
+              memory: 16Mi
             limits:
               cpu: 100m
               memory: 64Mi
@@ -274,10 +274,10 @@ spec:
               mountPath: /etc/spiffe-helper
               readOnly: true
     applicationSet:
-      replicas: 3
+      replicas: 1
       pdb:
         enabled: true
-        minAvailable: 2
+        minAvailable: 1
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -298,7 +298,7 @@ spec:
       resources:
         requests:
           cpu: 50m
-          memory: 64Mi
+          memory: 32Mi
         limits:
           cpu: 250m
           memory: 256Mi
@@ -332,7 +332,7 @@ spec:
       resources:
         requests:
           cpu: 25m
-          memory: 32Mi
+          memory: 16Mi
         limits:
           cpu: 100m
           memory: 128Mi
