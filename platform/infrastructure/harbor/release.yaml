@@ -8,14 +8,12 @@ spec:
   releaseName: registry-harbor
   timeout: 20m
   install:
-    disableWait: true
     timeout: 20m
     remediation:
       retries: 3
   upgrade:
     timeout: 20m
     cleanupOnFail: true
-    disableWait: true
     remediation:
       retries: 2
       strategy: uninstall
@@ -59,21 +57,23 @@ spec:
       persistentVolumeClaim:
         registry:
           existingClaim: registry-harbor-registry-v3
-          storageClass: longhorn-single
+          storageClass: longhorn-harbor-retain
           size: 50Gi
         jobservice:
           jobLog:
-            storageClass: longhorn-single
+            storageClass: longhorn-harbor-retain
             size: 5Gi
         database:
-          storageClass: longhorn-single
+          storageClass: longhorn-harbor-retain
           size: 20Gi
         redis:
           storageClass: longhorn
           size: 5Gi
         trivy:
-          storageClass: longhorn-single
+          storageClass: longhorn-harbor-retain
           size: 20Gi
+    updateStrategy:
+      type: Recreate
     database:
       type: internal
       internal:
@@ -106,8 +106,6 @@ spec:
             volumeMounts:
               - name: database-data
                 mountPath: /var/lib/postgresql/data
-        nodeSelector:
-          kubernetes.io/hostname: nexus-144-91-103-10
         resources:
           limits:
             cpu: 500m
@@ -122,13 +120,15 @@ spec:
             effect: NoSchedule
         affinity:
           nodeAffinity:
-            preferredDuringSchedulingIgnoredDuringExecution:
-              - weight: 100
-                preference:
-                  matchExpressions:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
                     - key: kubernetes.io/hostname
                       operator: In
-                      values: ["nexus-144-91-103-10"]
+                      values:
+                        - nexus-144-91-103-10
+                        - thalamus-217-76-59-241
+                        - cerebellum-161-97-117-96
     redis:
       type: external
       external:
@@ -141,8 +141,7 @@ spec:
         password: ""
     trivy:
       enabled: true
-      nodeSelector:
-        kubernetes.io/hostname: nexus-144-91-103-10
+      replicas: 3
       resources:
         limits:
           cpu: 500m
@@ -157,16 +156,25 @@ spec:
           effect: NoSchedule
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
-                    values: ["nexus-144-91-103-10"]
+                    values:
+                      - nexus-144-91-103-10
+                      - thalamus-217-76-59-241
+                      - cerebellum-161-97-117-96
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: harbor
+                  component: trivy
+                  release: registry-harbor
+              topologyKey: kubernetes.io/hostname
     portal:
-      nodeSelector:
-        kubernetes.io/hostname: nexus-144-91-103-10
+      replicas: 3
       resources:
         limits:
           cpu: 100m
@@ -181,17 +189,25 @@ spec:
           effect: NoSchedule
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
-                    values: ["nexus-144-91-103-10"]
+                    values:
+                      - nexus-144-91-103-10
+                      - thalamus-217-76-59-241
+                      - cerebellum-161-97-117-96
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: harbor
+                  component: portal
+                  release: registry-harbor
+              topologyKey: kubernetes.io/hostname
     core:
-      replicas: 1
-      nodeSelector:
-        kubernetes.io/hostname: nexus-144-91-103-10
+      replicas: 3
       resources:
         limits:
           cpu: 500m
@@ -206,26 +222,24 @@ spec:
           effect: NoSchedule
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
-                    values: ["nexus-144-91-103-10"]
+                    values:
+                      - nexus-144-91-103-10
+                      - thalamus-217-76-59-241
+                      - cerebellum-161-97-117-96
         podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                topologyKey: kubernetes.io/hostname
-                labelSelector:
-                  matchLabels:
-                    app: harbor
-                    component: core
-                    release: registry-harbor
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: harbor
+                  component: core
+                  release: registry-harbor
     jobservice:
-      nodeSelector:
-        kubernetes.io/hostname: nexus-144-91-103-10
       resources:
         limits:
           cpu: 200m
@@ -240,16 +254,16 @@ spec:
           effect: NoSchedule
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
-                    values: ["nexus-144-91-103-10"]
+                    values:
+                      - nexus-144-91-103-10
+                      - thalamus-217-76-59-241
+                      - cerebellum-161-97-117-96
     registry:
-      nodeSelector:
-        kubernetes.io/hostname: nexus-144-91-103-10
       registry:
         resources:
           limits:
@@ -274,16 +288,17 @@ spec:
           effect: NoSchedule
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
-                    values: ["nexus-144-91-103-10"]
+                    values:
+                      - nexus-144-91-103-10
+                      - thalamus-217-76-59-241
+                      - cerebellum-161-97-117-96
     exporter:
-      nodeSelector:
-        kubernetes.io/hostname: nexus-144-91-103-10
+      replicas: 3
       resources:
         limits:
           cpu: 100m
@@ -298,12 +313,22 @@ spec:
           effect: NoSchedule
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
-                    values: ["nexus-144-91-103-10"]
-    metrics:
-      enabled: true
+                    values:
+                      - nexus-144-91-103-10
+                      - thalamus-217-76-59-241
+                      - cerebellum-161-97-117-96
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: harbor
+                  component: exporter
+                  release: registry-harbor
+              topologyKey: kubernetes.io/hostname
+      metrics:
+        enabled: true

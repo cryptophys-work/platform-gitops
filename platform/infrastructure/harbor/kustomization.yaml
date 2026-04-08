@@ -2,6 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - storageclass-longhorn-single.yaml
+  - storageclass-longhorn-harbor-retain.yaml
   - harbor__registry-pvc.yaml
   - harbor__registry-pvc-v3.yaml
   - harbor__external-redis.yaml

@@ -49,13 +49,22 @@ spec:
         cryptophys.io/layer: platform
     spec:
       automountServiceAccountToken: false
-      nodeSelector:
-        kubernetes.io/hostname: nexus-144-91-103-10
       tolerations:
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
           effect: NoSchedule
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - nexus-144-91-103-10
+                      - thalamus-217-76-59-241
+                      - cerebellum-161-97-117-96
       securityContext:
         fsGroup: 999
       containers:
