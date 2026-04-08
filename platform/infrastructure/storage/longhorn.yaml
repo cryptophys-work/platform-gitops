@@ -201,6 +201,44 @@ spec:
                           topologyKey: kubernetes.io/hostname
           - target:
               kind: DaemonSet
+              name: longhorn-csi-plugin
+            patch: |
+              - op: replace
+                path: /spec/template/spec/tolerations
+                value:
+                  - key: cryptophys.io/storage-only
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: cryptophys.io/role
+                    operator: Equal
+                    value: llm-inference
+                    effect: NoSchedule
+                  - key: cryptophys.io/pool
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: ray-cluster
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: ray-head
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: bridge-system
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: dao-system
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: node.cilium.io/agent-not-ready
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: node.kubernetes.io/memory-pressure
+                    operator: Exists
+                    effect: NoSchedule
+          - target:
+              kind: DaemonSet
               name: longhorn-manager
             patch: |
               - op: replace
@@ -230,7 +268,13 @@ spec:
                   - key: dao-system
                     operator: Exists
                     effect: NoSchedule
+                  - key: cryptophys.io/pool
+                    operator: Exists
+                    effect: NoSchedule
                   - key: node.cilium.io/agent-not-ready
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: node.kubernetes.io/memory-pressure
                     operator: Exists
                     effect: NoSchedule
               - op: replace
@@ -268,7 +312,7 @@ spec:
       systemManagedComponentsNodeSelector: ""
       # Keep replicas off control-plane nodes under memory pressure; Longhorn
       # managers/CSI may still run there, but data placement should prefer workers.
-      taintToleration: "cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node-role.kubernetes.io/control-plane:NoSchedule"
+      taintToleration: "cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node-role.kubernetes.io/control-plane:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
       # Fallback reserve for nodes without an explicit per-node disk override.
       storageReservedPercentageForDefaultDisk: 10
       storageOverProvisioningPercentage: 200
@@ -307,6 +351,12 @@ spec:
           operator: Exists
           effect: NoSchedule
         - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/pool
+          operator: Exists
+          effect: NoSchedule
+        - key: node.kubernetes.io/memory-pressure
           operator: Exists
           effect: NoSchedule
       resources:

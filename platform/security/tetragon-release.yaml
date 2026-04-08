@@ -20,6 +20,20 @@ spec:
         name: cilium
         namespace: flux-system
   values:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: cryptophys.io/platform-ha
+                  operator: In
+                  values:
+                    - "true"
+            - matchExpressions:
+                - key: apps-core-target
+                  operator: In
+                  values:
+                    - apps-core
     extraVolumes:
       - name: tracefs
         hostPath:

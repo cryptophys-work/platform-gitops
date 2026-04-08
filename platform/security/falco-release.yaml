@@ -48,6 +48,18 @@ spec:
       - key: cryptophys.io/role
         operator: Exists
         effect: NoSchedule
+      - key: cryptophys.io/pool
+        operator: Exists
+        effect: NoSchedule
+      - key: ray-head
+        operator: Exists
+        effect: NoSchedule
+      - key: bridge-system
+        operator: Exists
+        effect: NoSchedule
+      - key: dao-system
+        operator: Exists
+        effect: NoSchedule
     falcosidekick:
       enabled: true
       webui:
