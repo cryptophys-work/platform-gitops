@@ -25,6 +25,16 @@ spec:
     spec:
       priorityClassName: system-cluster-critical
       affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - nexus-144-91-103-10
+                - thalamus-217-76-59-241
+                - cerebellum-161-97-117-96
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
@@ -38,11 +48,13 @@ spec:
       - key: CriticalAddonsOnly
         operator: Exists
       - effect: NoSchedule
-        key: node-role.kubernetes.io/control-plane
-        operator: Exists
+        key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
       - effect: NoSchedule
-        key: node-role.kubernetes.io/master
-        operator: Exists
+        key: ray-cluster
+        operator: Equal
+        value: "true"
       containers:
       - args:
         - -conf

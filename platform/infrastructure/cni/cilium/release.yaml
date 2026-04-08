@@ -107,9 +107,12 @@ spec:
       mode: kubernetes
     operator:
       replicas: 2
+      nodeSelector:
+        kubernetes.io/hostname: nexus-144-91-103-10
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
+        - key: ray-cluster
+          operator: Equal
+          value: "true"
           effect: NoSchedule
     securityContext:
       capabilities:
