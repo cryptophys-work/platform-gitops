@@ -14,7 +14,8 @@ spec:
         app: gitea-redis
     spec:
       nodeSelector:
-        kubernetes.io/hostname: nexus-144-91-103-10
+        apps-core-target: apps-core
+        workload.cryptophys.work/apps-core: "true"
       tolerations:
       - key: cryptophys.io/role
         operator: Equal
