@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudflared-config
+  namespace: cloudflare-tunnel
+  labels:
+    app.kubernetes.io/name: cloudflared
+    app.kubernetes.io/part-of: cryptophys-edge
+    cryptophys.io/domain: platform
+    cryptophys.io/component: cloudflared
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+data:
+  config.yaml: |
+    credentials-file: /etc/cloudflared/creds/credentials.json
+    metrics: 0.0.0.0:2000
+    no-autoupdate: true
+    ingress:
+      - hostname: "*.cryptophys.work"
+        service: http://ingress-gateway-ingress-nginx-controller.ingress.svc.cluster.local:80
+      - service: http_status:404
