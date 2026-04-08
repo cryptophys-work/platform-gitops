@@ -72,6 +72,10 @@ spec:
         operator: Equal
         value: "true"
         effect: NoSchedule
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
+        effect: NoSchedule
     resources:
       requests:
         cpu: 100m
