@@ -98,7 +98,6 @@ spec:
                       - image-factory
                       - orchestrator
                       - facilitator
-                      - tekton-system
                       - tekton-pipelines
                       - tekton-pipelines-resolvers
                       - tekton-dashboard
