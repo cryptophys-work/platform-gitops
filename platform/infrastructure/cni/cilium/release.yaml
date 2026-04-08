@@ -85,6 +85,21 @@ spec:
             operator: Equal
             value: llm-inference
             effect: NoSchedule
+          - key: cryptophys.io/pool
+            operator: Exists
+            effect: NoSchedule
+          - key: ray-cluster
+            operator: Exists
+            effect: NoSchedule
+          - key: ray-head
+            operator: Exists
+            effect: NoSchedule
+          - key: bridge-system
+            operator: Exists
+            effect: NoSchedule
+          - key: dao-system
+            operator: Exists
+            effect: NoSchedule
       ui:
         enabled: true
         nodeSelector:
@@ -93,6 +108,21 @@ spec:
           - key: cryptophys.io/role
             operator: Equal
             value: llm-inference
+            effect: NoSchedule
+          - key: cryptophys.io/pool
+            operator: Exists
+            effect: NoSchedule
+          - key: ray-cluster
+            operator: Exists
+            effect: NoSchedule
+          - key: ray-head
+            operator: Exists
+            effect: NoSchedule
+          - key: bridge-system
+            operator: Exists
+            effect: NoSchedule
+          - key: dao-system
+            operator: Exists
             effect: NoSchedule
     bpf:
       policyMapMax: 65536
