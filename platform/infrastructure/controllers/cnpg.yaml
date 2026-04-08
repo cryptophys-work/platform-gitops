@@ -24,7 +24,7 @@ spec:
         name: cloudnative-pg
         namespace: flux-system
   values:
-    replicaCount: 3
+    replicaCount: 1
     nodeSelector:
       kubernetes.io/os: linux
     tolerations:
