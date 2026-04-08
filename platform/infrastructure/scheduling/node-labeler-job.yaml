@@ -50,7 +50,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: node-labeler-nexus-storage-v4
+  name: node-labeler-nexus-storage-v5
   namespace: kube-system
   annotations:
     cryptophys.io/domain: platform
@@ -140,6 +140,7 @@ spec:
 
               # cerebellum: extra worker node
               k label node cerebellum-161-97-117-96 \
+                apps-core-target=apps-core \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
