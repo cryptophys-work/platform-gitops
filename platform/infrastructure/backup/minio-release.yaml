@@ -45,7 +45,7 @@ spec:
             - ALL
         seccompProfile:
           type: RuntimeDefault
-    postJob:
+    postJob: {}
     deploymentUpdate:
       type: Recreate
     persistence:

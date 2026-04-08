@@ -53,18 +53,27 @@ spec:
     deployNodeAgent: false
     snapshotsEnabled: false
     upgradeCRDs: false
+    replicas: 2
+    nodeSelector:
+      workload.cryptophys.work/platform: "true"
     affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: node-role.kubernetes.io/control-plane
-              operator: DoesNotExist
-    tolerations: []
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: velero
+              topologyKey: kubernetes.io/hostname
+    tolerations:
+      - key: cryptophys.io/role
+        operator: Equal
+        value: llm-inference
+        effect: NoSchedule
     livenessProbe:
       httpGet:
         path: /healthz
-        port: http
+        port: 8085
       initialDelaySeconds: 120
       periodSeconds: 30
       timeoutSeconds: 5
@@ -72,7 +81,7 @@ spec:
     readinessProbe:
       httpGet:
         path: /metrics
-        port: http
+        port: 8085
       initialDelaySeconds: 60
       periodSeconds: 10
       timeoutSeconds: 5
