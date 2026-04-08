@@ -51,10 +51,13 @@ spec:
                   check_repo() {
                     name="$1"
                     url="$2"
+                    username="$3"
+                    password="$4"
                     headers_file="/tmp/${name}.headers"
                     body_file="/tmp/${name}.body"
 
                     code="$(curl -sS -o "${body_file}" -D "${headers_file}" \
+                      -u "${username}:${password}" \
                       -w '%{http_code}' \
                       "${url}/info/refs?service=git-upload-pack")"
 
@@ -77,19 +80,39 @@ spec:
                     echo "[argocd-repo-auth-preflight] ${name}: OK (${code})"
                   }
 
-                  check_repo "headless" "${HEADLESS_URL}"
-                  check_repo "internal" "${INTERNAL_URL}"
+                  check_repo "headless" "${HEADLESS_URL}" "${HEADLESS_USERNAME}" "${HEADLESS_PASSWORD}"
+                  check_repo "internal" "${INTERNAL_URL}" "${INTERNAL_USERNAME}" "${INTERNAL_PASSWORD}"
               env:
                 - name: HEADLESS_URL
                   valueFrom:
                     secretKeyRef:
                       name: apps-gitops-repo-headless
                       key: url
+                - name: HEADLESS_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: apps-gitops-repo-headless
+                      key: username
+                - name: HEADLESS_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: apps-gitops-repo-headless
+                      key: password
                 - name: INTERNAL_URL
                   valueFrom:
                     secretKeyRef:
                       name: apps-gitops-repo-internal
                       key: url
+                - name: INTERNAL_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: apps-gitops-repo-internal
+                      key: username
+                - name: INTERNAL_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: apps-gitops-repo-internal
+                      key: password
               resources:
                 requests:
                   cpu: 10m
