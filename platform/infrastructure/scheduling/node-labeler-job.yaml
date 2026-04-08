@@ -112,12 +112,28 @@ spec:
               KUBE_CA="${SA_DIR}/ca.crt"
 
               k() {
-                kubectl \
-                  --server="${KUBE_SERVER}" \
-                  --certificate-authority="${KUBE_CA}" \
-                  --token="${KUBE_TOKEN}" \
-                  --request-timeout=10s \
-                  "$@"
+                local attempt=1
+                local max_attempts=5
+
+                while [ "${attempt}" -le "${max_attempts}" ]; do
+                  if kubectl \
+                    --server="${KUBE_SERVER}" \
+                    --certificate-authority="${KUBE_CA}" \
+                    --token="${KUBE_TOKEN}" \
+                    --request-timeout=30s \
+                    "$@"; then
+                    return 0
+                  fi
+
+                  if [ "${attempt}" -eq "${max_attempts}" ]; then
+                    echo "kubectl command failed after ${max_attempts} attempts: $*" >&2
+                    return 1
+                  fi
+
+                  echo "kubectl command failed, retrying (${attempt}/${max_attempts}): $*" >&2
+                  attempt=$((attempt + 1))
+                  sleep 5
+                done
               }
               echo "=== cryptophys-genesis node labeler ==="
 
