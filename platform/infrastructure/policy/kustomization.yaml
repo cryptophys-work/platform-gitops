@@ -1,12 +1,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - baseline.yaml
-  - cilium-baseline.yaml
   - kyverno-release.yaml
-  - nexus-placement-policy.yaml
   - pdbs-critical-services.yaml
   - ../tekton
+  # Existing ClusterPolicy resources remain live because the Flux kustomization has prune=false.
+  # Keep this stage focused on restoring the Kyverno control plane first; policy CR reapplication
+  # can resume once kyverno-svc has healthy endpoints again.
   # cp-restriction-policy.yaml moved to 15-policy-crs (Kyverno CRDs not ready at dry-run time)
   # kyverno-cleanup-rbac.yaml and kyverno-background-rbac.yaml moved to
   # ../policy-rbac/ (stage 14-policy-rbac) to break chicken-and-egg:
