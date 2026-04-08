@@ -53,7 +53,7 @@ spec:
           HOST: postgres-apps-ha-rw.postgresql-system.svc.cluster.local:5432
           NAME: gitea
           USER: gitea
-          PASSWD: GiteaSecure2026
+          PASSWD: GiteaSecure2026!
         cache:
           ADAPTER: redis
           HOST: redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
@@ -214,9 +214,7 @@ spec:
                 - key: kubernetes.io/hostname
                   operator: In
                   values:
-                    - thalamus-217-76-59-241
-                    - nexus-144-91-103-10
-                    - cerebellum-161-97-117-96
+                    - synapse-161-97-136-251
     initContainers:
       resources:
         requests:
