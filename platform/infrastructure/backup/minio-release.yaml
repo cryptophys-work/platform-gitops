@@ -46,6 +46,19 @@ spec:
         seccompProfile:
           type: RuntimeDefault
     postJob: {}
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      seccompProfile:
+        type: RuntimeDefault
+    securityContext:
+      enabled: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+      fsGroupChangePolicy: OnRootMismatch
     deploymentUpdate:
       type: Recreate
     persistence:
