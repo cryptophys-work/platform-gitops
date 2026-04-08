@@ -71,8 +71,6 @@ spec:
       frr:
         enabled: false
       tolerateMaster: true
-      nodeSelector:
-        kubernetes.io/os: linux
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
