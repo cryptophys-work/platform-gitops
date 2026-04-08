@@ -16,6 +16,10 @@ spec:
       nodeSelector:
         kubernetes.io/hostname: nexus-144-91-103-10
       tolerations:
+      - key: cryptophys.io/role
+        operator: Equal
+        value: llm-inference
+        effect: NoSchedule
       containers:
       - name: redis
         image: redis:7.2-alpine
