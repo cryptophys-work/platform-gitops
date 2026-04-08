@@ -51,6 +51,10 @@ spec:
       cryptophys.io/tier: compute
 
     tolerations:
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
+        effect: NoSchedule
       - key: ray-cluster
         operator: Equal
         value: "true"

@@ -110,6 +110,33 @@ spec:
                 operator: Equal
                 value: platform-ha
                 effect: NoSchedule
+    - name: allow-qdrant-ray-cluster
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaceSelector:
+                matchExpressions:
+                  - key: kubernetes.io/metadata.name
+                    operator: In
+                    values:
+                      - database
+              selector:
+                matchLabels:
+                  app: qdrant
+      mutate:
+        patchStrategicMerge:
+          spec:
+            tolerations:
+              - key: cryptophys.io/pool
+                operator: Equal
+                value: platform-ha
+                effect: NoSchedule
+              - key: ray-cluster
+                operator: Equal
+                value: "true"
+                effect: NoSchedule
 ---
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
