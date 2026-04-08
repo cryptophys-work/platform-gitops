@@ -9,7 +9,7 @@ spec:
   timeout: 10m
   path: ./platform/infrastructure/cni
   prune: true
-  wait: true
+  wait: false
   suspend: false
   sourceRef:
     kind: GitRepository
