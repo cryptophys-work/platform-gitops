@@ -14,6 +14,7 @@ metadata:
     cryptophys.io/managed-by: flux
 spec:
   schedule: "*/10 * * * *"
+  suspend: true
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 3

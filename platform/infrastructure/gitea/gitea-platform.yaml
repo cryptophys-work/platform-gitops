@@ -191,8 +191,8 @@ spec:
       enabled: false
     resources:
       requests:
-        cpu: 25m
-        memory: 64Mi
+        cpu: 10m
+        memory: 32Mi
       limits:
         cpu: 1000m     # increased from 600m for 280MB repo with concurrent git ops
         memory: 1Gi    # increased from 768Mi
@@ -218,8 +218,8 @@ spec:
     initContainers:
       resources:
         requests:
-          cpu: 25m
-          memory: 32Mi
+          cpu: 10m
+          memory: 16Mi
         limits:
           cpu: 200m
           memory: 256Mi
