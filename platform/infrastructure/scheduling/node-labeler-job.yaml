@@ -140,21 +140,22 @@ spec:
                 --overwrite 2>/dev/null || true
               echo "thalamus: labelled + tainted (platform-ha)"
 
-              # quanta: apps-ha lightweight pool (4CPU/7.4GB)
+              # quanta: dedicated bridge/dao pool
               k label node quanta-194-163-186-222 \
-                cryptophys.io/apps-ha=true \
+                bridge-system=true \
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=compute \
                 workload.cryptophys.work/apps-core=true \
                 --overwrite
               k label node quanta-194-163-186-222 \
                 cryptophys.io/platform-ha- \
+                cryptophys.io/apps-ha- \
                 cryptophys.io/pool- \
                 --overwrite 2>/dev/null || true
               k taint node quanta-194-163-186-222 \
-                cryptophys.io/pool=apps-ha:NoSchedule \
+                bridge-system=true:NoSchedule \
                 --overwrite 2>/dev/null || true
-              echo "quanta: labelled + tainted (apps-ha lightweight)"
+              echo "quanta: labelled + tainted (bridge-system dedicated pool)"
 
               # corpus: control-plane node that also accepts apps-core workloads
               k label node corpus-207-180-206-69 \
