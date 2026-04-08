@@ -4,19 +4,19 @@ resources:
   - gotk-components.yaml
   - gotk-sync.yaml
 patches:
-  # All Flux controllers: apps-core nodes only, tolerate control-plane taint
-  # so flux can still schedule when worker pool is pressure/partially degraded.
+  # HA base: 2 replicas, schedule on platform nodes (nexus/thalamus/cerebellum),
+  # tolerate control-plane and llm taints for resilience.
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
       metadata:
         name: all
       spec:
-        replicas: 1
+        replicas: 2
         template:
           spec:
             nodeSelector:
-              workload.cryptophys.work/apps-core: "true"
+              workload.cryptophys.work/platform: "true"
             tolerations:
               - key: node-role.kubernetes.io/control-plane
                 operator: Exists
@@ -27,22 +27,8 @@ patches:
                 effect: NoSchedule
     target:
       kind: Deployment
-  # Co-locate source-controller on a healthy schedulable apps-core worker to stabilize Git fetches.
-  - patch: |
-      apiVersion: apps/v1
-      kind: Deployment
-      metadata:
-        name: source-controller
-      spec:
-        template:
-          spec:
-            nodeSelector:
-              kubernetes.io/hostname: nexus-144-91-103-10
-              workload.cryptophys.work/apps-core: "true"
-    target:
-      kind: Deployment
-      name: source-controller
-  # Helm reconciles every downstream release; keep it on the same healthy worker as source-controller.
+
+  # Spread helm-controller replicas across different nodes.
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
@@ -51,13 +37,20 @@ patches:
       spec:
         template:
           spec:
-            nodeSelector:
-              kubernetes.io/hostname: nexus-144-91-103-10
-              workload.cryptophys.work/apps-core: "true"
+            affinity:
+              podAntiAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    podAffinityTerm:
+                      labelSelector:
+                        matchLabels:
+                          app: helm-controller
+                      topologyKey: kubernetes.io/hostname
     target:
       kind: Deployment
       name: helm-controller
-  # Keep kustomize-controller on a schedulable apps-core worker; cortex lacks the apps-core label.
+
+  # Spread kustomize-controller replicas across different nodes.
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
@@ -66,13 +59,42 @@ patches:
       spec:
         template:
           spec:
-            nodeSelector:
-              kubernetes.io/hostname: nexus-144-91-103-10
-              workload.cryptophys.work/apps-core: "true"
+            affinity:
+              podAntiAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    podAffinityTerm:
+                      labelSelector:
+                        matchLabels:
+                          app: kustomize-controller
+                      topologyKey: kubernetes.io/hostname
     target:
       kind: Deployment
       name: kustomize-controller
-  # Notification events share the same DNS/event path as kustomize-controller; keep them colocated.
+
+  # Spread source-controller replicas across different nodes.
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: source-controller
+      spec:
+        template:
+          spec:
+            affinity:
+              podAntiAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    podAffinityTerm:
+                      labelSelector:
+                        matchLabels:
+                          app: source-controller
+                      topologyKey: kubernetes.io/hostname
+    target:
+      kind: Deployment
+      name: source-controller
+
+  # Spread notification-controller replicas across different nodes.
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
@@ -81,9 +103,15 @@ patches:
       spec:
         template:
           spec:
-            nodeSelector:
-              kubernetes.io/hostname: nexus-144-91-103-10
-              workload.cryptophys.work/apps-core: "true"
+            affinity:
+              podAntiAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    podAffinityTerm:
+                      labelSelector:
+                        matchLabels:
+                          app: notification-controller
+                      topologyKey: kubernetes.io/hostname
     target:
       kind: Deployment
       name: notification-controller
