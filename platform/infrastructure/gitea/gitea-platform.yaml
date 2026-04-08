@@ -207,6 +207,7 @@ spec:
     nodeSelector:
       apps-core-target: apps-core
       workload.cryptophys.work/apps-core: "true"
+    affinity: {}
     initContainers:
       resources:
         requests:
