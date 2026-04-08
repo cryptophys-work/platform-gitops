@@ -54,6 +54,11 @@ spec:
       size: 50Gi
     nodeSelector:
       kubernetes.io/hostname: nexus-144-91-103-10
+    tolerations:
+      - key: ray-cluster
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
     resources:
       requests:
         cpu: 100m
