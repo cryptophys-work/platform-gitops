@@ -1,4 +1,4 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta2
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: registry-harbor
@@ -8,12 +8,14 @@ spec:
   releaseName: registry-harbor
   timeout: 20m
   install:
+    disableWait: true
     timeout: 20m
     remediation:
       retries: 3
   upgrade:
     timeout: 20m
     cleanupOnFail: true
+    disableWait: true
     remediation:
       retries: 2
       strategy: uninstall
