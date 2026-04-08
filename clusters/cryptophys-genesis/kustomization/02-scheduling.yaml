@@ -12,7 +12,7 @@ spec:
   interval: 10m
   prune: true
   wait: true
-  timeout: 5m
+  timeout: 15m
   path: ./platform/infrastructure/scheduling
   sourceRef:
     kind: GitRepository
