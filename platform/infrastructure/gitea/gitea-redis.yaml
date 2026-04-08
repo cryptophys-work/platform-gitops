@@ -21,6 +21,10 @@ spec:
         operator: Equal
         value: llm-inference
         effect: NoSchedule
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: apps-ha
+        effect: NoSchedule
       containers:
       - name: redis
         image: redis:7.2-alpine

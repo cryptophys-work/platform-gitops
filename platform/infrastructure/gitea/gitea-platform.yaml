@@ -201,6 +201,10 @@ spec:
         operator: Equal
         value: llm-inference
         effect: NoSchedule
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: apps-ha
+        effect: NoSchedule
       - key: node.cilium.io/agent-not-ready
         operator: Exists
         effect: NoSchedule
