@@ -4,32 +4,32 @@ resources:
   - gotk-components.yaml
   - gotk-sync.yaml
 patches:
-  # HA base: 2 replicas, prefer stable control-plane capacity first and tolerate
-  # transient networking taints so Flux can keep reconciling during worker flaps.
+  # Recovery base: keep Flux pinned to control-plane nodes and tolerate transient
+  # control-plane taints so reconciliation can continue while workers flap.
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
       metadata:
         name: all
       spec:
-        replicas: 2
+        replicas: 1
         template:
           spec:
             affinity:
               nodeAffinity:
-                preferredDuringSchedulingIgnoredDuringExecution:
-                  - weight: 100
-                    preference:
-                      matchExpressions:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
                         - key: node-role.kubernetes.io/control-plane
                           operator: Exists
-                  - weight: 80
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
                     preference:
                       matchExpressions:
                         - key: kubernetes.io/hostname
                           operator: In
                           values:
-                            - cerebellum-161-97-117-96
+                            - corpus-207-180-206-69
             tolerations:
               - key: node-role.kubernetes.io/control-plane
                 operator: Exists
@@ -38,6 +38,9 @@ patches:
                 operator: Exists
                 effect: NoSchedule
               - key: node.kubernetes.io/unreachable
+                operator: Exists
+                effect: NoSchedule
+              - key: node.kubernetes.io/memory-pressure
                 operator: Exists
                 effect: NoSchedule
               - key: cryptophys.io/role
