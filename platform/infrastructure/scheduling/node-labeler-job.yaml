@@ -69,13 +69,35 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
+        - key: cryptophys.io/storage-only
+          operator: Exists
+          effect: NoSchedule
+        - key: cryptophys.io/pool
+          operator: Exists
+          effect: NoSchedule
+        - key: ray-head
+          operator: Exists
+          effect: NoSchedule
+        - key: ray-cluster
+          operator: Exists
+          effect: NoSchedule
+        - key: bridge-system
+          operator: Exists
+          effect: NoSchedule
+        - key: dao-system
+          operator: Exists
+          effect: NoSchedule
+        - key: node.kubernetes.io/memory-pressure
+          operator: Exists
+          effect: NoSchedule
       affinity:
         nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
                   - key: node-role.kubernetes.io/control-plane
-                    operator: DoesNotExist
+                    operator: Exists
       containers:
         - name: labeler
           image: bitnami/kubectl:latest
