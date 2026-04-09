@@ -312,7 +312,7 @@ spec:
       systemManagedComponentsNodeSelector: ""
       # Keep replicas off control-plane nodes under memory pressure; Longhorn
       # managers/CSI may still run there, but data placement should prefer workers.
-      taintToleration: "cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node-role.kubernetes.io/control-plane:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
+      taintToleration: "cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node-role.kubernetes.io/control-plane:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
       # Fallback reserve for nodes without an explicit per-node disk override.
       storageReservedPercentageForDefaultDisk: 10
       storageOverProvisioningPercentage: 200
