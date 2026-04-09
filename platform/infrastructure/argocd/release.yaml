@@ -161,6 +161,7 @@ spec:
           memory: 4Gi
     server:
       replicas: 3
+      nodeSelector: {}
       deploymentStrategy:
         type: RollingUpdate
         rollingUpdate:
@@ -204,6 +205,7 @@ spec:
           memory: 256Mi
     repoServer:
       replicas: 3
+      nodeSelector: {}
       deploymentStrategy:
         type: RollingUpdate
         rollingUpdate:
@@ -284,7 +286,7 @@ spec:
           resources:
             requests:
               cpu: 10m
-              memory: 2Mi
+              memory: 4Mi
             limits:
               cpu: 100m
               memory: 64Mi
@@ -307,6 +309,16 @@ spec:
               readOnly: true
     applicationSet:
       replicas: 1
+      nodeSelector: {}
+      tolerations:
+        - key: "ray-cluster"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+        - key: "cryptophys.io/pool"
+          operator: "Equal"
+          value: "platform-ha"
+          effect: "NoSchedule"
       pdb:
         enabled: true
         minAvailable: 1
@@ -339,6 +351,16 @@ spec:
     redis-ha:
       enabled: false
     notifications:
+      nodeSelector: {}
+      tolerations:
+        - key: "ray-cluster"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+        - key: "cryptophys.io/pool"
+          operator: "Equal"
+          value: "platform-ha"
+          effect: "NoSchedule"
       pdb:
         enabled: true
         minAvailable: 1

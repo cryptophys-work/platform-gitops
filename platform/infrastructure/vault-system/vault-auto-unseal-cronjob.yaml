@@ -26,6 +26,10 @@ spec:
             operator: Equal
             value: llm-inference
             effect: NoSchedule
+          - key: ray-cluster
+            operator: Equal
+            value: "true"
+            effect: NoSchedule
           securityContext:
             runAsNonRoot: true
             runAsUser: 65534
