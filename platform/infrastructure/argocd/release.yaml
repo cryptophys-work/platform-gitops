@@ -33,16 +33,14 @@ spec:
               kind: Deployment
               name: argocd-server
             patch: |
-              - op: replace
-                path: /spec/template/spec/nodeSelector
-                value: {}
+              - op: remove
+                path: /spec/template/spec/nodeSelector/kubernetes.io~1hostname
           - target:
               kind: Deployment
               name: argocd-repo-server
             patch: |
-              - op: replace
-                path: /spec/template/spec/nodeSelector
-                value: {}
+              - op: remove
+                path: /spec/template/spec/nodeSelector/kubernetes.io~1hostname
               - op: replace
                 path: /spec/template/spec/containers/1/resources/requests/memory
                 value: 4Mi
