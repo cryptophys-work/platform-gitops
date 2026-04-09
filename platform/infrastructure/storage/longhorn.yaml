@@ -41,6 +41,9 @@ spec:
                   - key: dao-system
                     operator: Exists
                     effect: NoSchedule
+                  - key: cryptophys.io/pool
+                    operator: Exists
+                    effect: NoSchedule
                   - key: node.cilium.io/agent-not-ready
                     operator: Exists
                     effect: NoSchedule
@@ -85,6 +88,9 @@ spec:
                     operator: Exists
                     effect: NoSchedule
                   - key: dao-system
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: cryptophys.io/pool
                     operator: Exists
                     effect: NoSchedule
                   - key: node.cilium.io/agent-not-ready
@@ -133,6 +139,9 @@ spec:
                   - key: dao-system
                     operator: Exists
                     effect: NoSchedule
+                  - key: cryptophys.io/pool
+                    operator: Exists
+                    effect: NoSchedule
                   - key: node.cilium.io/agent-not-ready
                     operator: Exists
                     effect: NoSchedule
@@ -177,6 +186,9 @@ spec:
                     operator: Exists
                     effect: NoSchedule
                   - key: dao-system
+                    operator: Exists
+                    effect: NoSchedule
+                  - key: cryptophys.io/pool
                     operator: Exists
                     effect: NoSchedule
                   - key: node.cilium.io/agent-not-ready
