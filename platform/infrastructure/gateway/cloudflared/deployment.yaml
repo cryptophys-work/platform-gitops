@@ -43,6 +43,15 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - thalamus-217-76-59-241
+                      - cerebellum-161-97-117-96
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
@@ -51,6 +60,11 @@ spec:
                   matchLabels:
                     app.kubernetes.io/name: cloudflared
                 topologyKey: kubernetes.io/hostname
+      tolerations:
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
       containers:
         - name: cloudflared
           image: cloudflare/cloudflared:2026.3.0

@@ -10,6 +10,11 @@ metadata:
 spec:
   template:
     spec:
+      tolerations:
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -22,10 +27,10 @@ spec:
                   - key: node-role.kubernetes.io/worker
                     operator: Exists
                   - key: kubernetes.io/hostname
-                    operator: NotIn
+                    operator: In
                     values:
+                      - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
-                      - quanta-194-163-186-222
       containers:
         - name: manager
           resources:
