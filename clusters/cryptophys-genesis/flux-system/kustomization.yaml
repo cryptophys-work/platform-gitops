@@ -4,15 +4,14 @@ resources:
   - gotk-components.yaml
   - gotk-sync.yaml
 patches:
-  # Recovery base: keep Flux on control-plane nodes so it retains the most
-  # stable path to the Kubernetes API even when worker networking degrades.
+  # Recovery base: keep Flux inside the approved platform-ha worker lane only.
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
       metadata:
         name: all
       spec:
-        replicas: 1
+        replicas: 2
         template:
           spec:
             affinity:
@@ -20,10 +19,10 @@ patches:
                 requiredDuringSchedulingIgnoredDuringExecution:
                   nodeSelectorTerms:
                     - matchExpressions:
-                        - key: cryptophys.io/tier
+                        - key: cryptophys.io/platform-ha
                           operator: In
                           values:
-                            - platform
+                            - "true"
                 preferredDuringSchedulingIgnoredDuringExecution:
                   - weight: 100
                     preference:
@@ -31,12 +30,17 @@ patches:
                         - key: kubernetes.io/hostname
                           operator: In
                           values:
-                            - cortex-178-18-250-39
-                            - cerebrum-157-173-120-200
-                            - corpus-207-180-206-69
+                            - nexus-144-91-103-10
+                            - cerebellum-161-97-117-96
+                            - thalamus-217-76-59-241
             tolerations:
-              - key: node-role.kubernetes.io/control-plane
-                operator: Exists
+              - key: cryptophys.io/pool
+                operator: Equal
+                value: platform-ha
+                effect: NoSchedule
+              - key: ray-cluster
+                operator: Equal
+                value: "true"
                 effect: NoSchedule
     target:
       kind: Deployment
@@ -128,3 +132,47 @@ patches:
     target:
       kind: Deployment
       name: notification-controller
+
+  # Spread image-reflector-controller replicas across different nodes.
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: image-reflector-controller
+      spec:
+        template:
+          spec:
+            affinity:
+              podAntiAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    podAffinityTerm:
+                      labelSelector:
+                        matchLabels:
+                          app: image-reflector-controller
+                      topologyKey: kubernetes.io/hostname
+    target:
+      kind: Deployment
+      name: image-reflector-controller
+
+  # Spread image-automation-controller replicas across different nodes.
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: image-automation-controller
+      spec:
+        template:
+          spec:
+            affinity:
+              podAntiAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    podAffinityTerm:
+                      labelSelector:
+                        matchLabels:
+                          app: image-automation-controller
+                      topologyKey: kubernetes.io/hostname
+    target:
+      kind: Deployment
+      name: image-automation-controller
