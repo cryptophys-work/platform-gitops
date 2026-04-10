@@ -18,4 +18,5 @@ spec:
     name: platform-repo
   dependsOn:
     - name: 13-networking
+    - name: 31-secrets
     - name: 42-argocd
