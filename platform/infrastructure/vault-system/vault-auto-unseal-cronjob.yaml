@@ -64,7 +64,7 @@ spec:
             - -c
             - |
               for POD in vault-0 vault-1 vault-2; do
-                ADDR="http://${POD}.vault-internal:8200"
+                ADDR="http://${POD}.vault-internal.vault-system.svc.cluster.local:8200"
                 SEALED=$(vault status -address="$ADDR" 2>/dev/null | grep "^Sealed" | awk '{print $2}')
                 if [ "$SEALED" = "true" ]; then
                   echo "Unsealing $POD..."
