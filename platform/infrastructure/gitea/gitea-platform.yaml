@@ -28,7 +28,9 @@ spec:
               - op: replace
                 path: /spec/template/spec/nodeSelector
                 value:
-                  workload.cryptophys.work/platform: "true"
+                  apps-core-target: apps-core
+                  workload.cryptophys.work/apps-core: "true"
+                  kubernetes.io/hostname: synapse-161-97-136-251
           - target:
               kind: Deployment
               name: gitops-gitea
@@ -65,7 +67,7 @@ spec:
         name: gitea-charts
         namespace: flux-system
   values:
-    replicaCount: 2
+    replicaCount: 1
     image:
       registry: ghcr.io
       repository: go-gitea/gitea
@@ -246,7 +248,7 @@ spec:
         effect: NoSchedule
       - key: cryptophys.io/pool
         operator: Equal
-        value: platform-ha
+        value: apps-ha
         effect: NoSchedule
       - key: ray-head
         operator: Equal
@@ -268,7 +270,9 @@ spec:
         operator: Exists
         effect: NoSchedule
     nodeSelector:
-      workload.cryptophys.work/platform: "true"
+      apps-core-target: apps-core
+      workload.cryptophys.work/apps-core: "true"
+      kubernetes.io/hostname: synapse-161-97-136-251
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -277,9 +281,7 @@ spec:
                 - key: kubernetes.io/hostname
                   operator: In
                   values:
-                    - nexus-144-91-103-10
-                    - cerebellum-161-97-117-96
-                    - thalamus-217-76-59-241
+                    - synapse-161-97-136-251
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
