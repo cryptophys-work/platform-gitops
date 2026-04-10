@@ -263,9 +263,9 @@ spec:
                 cryptophys.io/pool=nexus-hub:NoSchedule- \
                 --overwrite 2>/dev/null || true
               k taint node nexus-144-91-103-10 \
-                ray-cluster=true:NoSchedule \
+                ray-cluster=true:NoSchedule- \
                 --overwrite 2>/dev/null || true
-              echo "nexus: labelled (shared apps-ha + platform-ha)"
+              echo "nexus: labelled (shared apps-ha + platform-ha, untainted shared peer)"
 
               # campus: drain storage workloads away; keep taint but remove storage attraction labels
               k label node campus-212-47-66-101 \
