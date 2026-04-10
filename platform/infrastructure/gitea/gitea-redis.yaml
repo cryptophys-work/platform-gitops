@@ -15,7 +15,7 @@ spec:
     spec:
       nodeSelector:
         workload.cryptophys.work/apps-core: "true"
-        kubernetes.io/hostname: synapse-161-97-136-251
+        kubernetes.io/hostname: quanta-194-163-186-222
       tolerations:
       - key: cryptophys.io/role
         operator: Equal
@@ -26,6 +26,14 @@ spec:
         value: apps-ha
         effect: NoSchedule
       - key: ray-head
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+      - key: dao-system
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+      - key: bridge-system
         operator: Equal
         value: "true"
         effect: NoSchedule

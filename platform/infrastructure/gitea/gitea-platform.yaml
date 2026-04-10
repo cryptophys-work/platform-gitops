@@ -222,6 +222,14 @@ spec:
         operator: Equal
         value: "true"
         effect: NoSchedule
+      - key: dao-system
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+      - key: bridge-system
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
       - key: node.cilium.io/agent-not-ready
         operator: Exists
         effect: NoSchedule
