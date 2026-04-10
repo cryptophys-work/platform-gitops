@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: gitea-shared-storage-rwx-migration
+  name: gitea-shared-storage-rwx-migration-v2
   namespace: gitops-system
   labels:
     app.kubernetes.io/name: gitops-gitea
@@ -31,7 +31,7 @@ spec:
       tolerations:
         - key: cryptophys.io/pool
           operator: Equal
-          value: apps-ha
+          value: platform-ha
           effect: NoSchedule
       containers:
         - name: migrate
