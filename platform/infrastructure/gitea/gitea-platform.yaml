@@ -27,7 +27,7 @@ spec:
             patch: |
               - op: replace
                 path: /spec/replicas
-                value: 2
+                value: 3
               - op: replace
                 path: /spec/strategy
                 value:
@@ -104,7 +104,7 @@ spec:
         name: gitea-charts
         namespace: flux-system
   values:
-    replicaCount: 1
+    replicaCount: 3
     image:
       registry: ghcr.io
       repository: go-gitea/gitea
@@ -279,29 +279,9 @@ spec:
         cpu: 1000m     # increased from 600m for 280MB repo with concurrent git ops
         memory: 1Gi    # increased from 768Mi
     tolerations:
-      - key: cryptophys.io/role
-        operator: Equal
-        value: llm-inference
-        effect: NoSchedule
       - key: cryptophys.io/pool
         operator: Equal
-        value: apps-ha
-        effect: NoSchedule
-      - key: ray-head
-        operator: Equal
-        value: "true"
-        effect: NoSchedule
-      - key: ray-cluster
-        operator: Equal
-        value: "true"
-        effect: NoSchedule
-      - key: dao-system
-        operator: Equal
-        value: "true"
-        effect: NoSchedule
-      - key: bridge-system
-        operator: Equal
-        value: "true"
+        value: platform-ha
         effect: NoSchedule
       - key: node.cilium.io/agent-not-ready
         operator: Exists
