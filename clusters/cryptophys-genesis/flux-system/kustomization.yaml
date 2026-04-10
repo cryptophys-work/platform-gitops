@@ -23,6 +23,12 @@ patches:
                           operator: In
                           values:
                             - "true"
+                        - key: kubernetes.io/hostname
+                          operator: In
+                          values:
+                            - nexus-144-91-103-10
+                            - cerebellum-161-97-117-96
+                            - thalamus-217-76-59-241
                 preferredDuringSchedulingIgnoredDuringExecution:
                   - weight: 100
                     preference:
@@ -39,6 +45,28 @@ patches:
                           values:
                             - cerebellum-161-97-117-96
                             - thalamus-217-76-59-241
+              podAntiAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  - labelSelector:
+                      matchExpressions:
+                        - key: app
+                          operator: In
+                          values:
+                            - source-controller
+                            - kustomize-controller
+                            - helm-controller
+                            - notification-controller
+                            - image-reflector-controller
+                            - image-automation-controller
+                    topologyKey: kubernetes.io/hostname
+            topologySpreadConstraints:
+              - maxSkew: 1
+                topologyKey: kubernetes.io/hostname
+                whenUnsatisfiable: DoNotSchedule
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: Exists
             tolerations:
               - key: cryptophys.io/pool
                 operator: Equal
@@ -67,15 +95,13 @@ patches:
       spec:
         template:
           spec:
-            affinity:
-              podAntiAffinity:
-                preferredDuringSchedulingIgnoredDuringExecution:
-                  - weight: 100
-                    podAffinityTerm:
-                      labelSelector:
-                        matchLabels:
-                          app: helm-controller
-                      topologyKey: kubernetes.io/hostname
+            topologySpreadConstraints:
+              - maxSkew: 1
+                topologyKey: kubernetes.io/hostname
+                whenUnsatisfiable: DoNotSchedule
+                labelSelector:
+                  matchLabels:
+                    app: helm-controller
     target:
       kind: Deployment
       name: helm-controller
@@ -89,15 +115,13 @@ patches:
       spec:
         template:
           spec:
-            affinity:
-              podAntiAffinity:
-                preferredDuringSchedulingIgnoredDuringExecution:
-                  - weight: 100
-                    podAffinityTerm:
-                      labelSelector:
-                        matchLabels:
-                          app: kustomize-controller
-                      topologyKey: kubernetes.io/hostname
+            topologySpreadConstraints:
+              - maxSkew: 1
+                topologyKey: kubernetes.io/hostname
+                whenUnsatisfiable: DoNotSchedule
+                labelSelector:
+                  matchLabels:
+                    app: kustomize-controller
     target:
       kind: Deployment
       name: kustomize-controller
@@ -111,15 +135,13 @@ patches:
       spec:
         template:
           spec:
-            affinity:
-              podAntiAffinity:
-                preferredDuringSchedulingIgnoredDuringExecution:
-                  - weight: 100
-                    podAffinityTerm:
-                      labelSelector:
-                        matchLabels:
-                          app: source-controller
-                      topologyKey: kubernetes.io/hostname
+            topologySpreadConstraints:
+              - maxSkew: 1
+                topologyKey: kubernetes.io/hostname
+                whenUnsatisfiable: DoNotSchedule
+                labelSelector:
+                  matchLabels:
+                    app: source-controller
     target:
       kind: Deployment
       name: source-controller
@@ -133,15 +155,13 @@ patches:
       spec:
         template:
           spec:
-            affinity:
-              podAntiAffinity:
-                preferredDuringSchedulingIgnoredDuringExecution:
-                  - weight: 100
-                    podAffinityTerm:
-                      labelSelector:
-                        matchLabels:
-                          app: notification-controller
-                      topologyKey: kubernetes.io/hostname
+            topologySpreadConstraints:
+              - maxSkew: 1
+                topologyKey: kubernetes.io/hostname
+                whenUnsatisfiable: DoNotSchedule
+                labelSelector:
+                  matchLabels:
+                    app: notification-controller
     target:
       kind: Deployment
       name: notification-controller
@@ -178,15 +198,13 @@ patches:
       spec:
         template:
           spec:
-            affinity:
-              podAntiAffinity:
-                preferredDuringSchedulingIgnoredDuringExecution:
-                  - weight: 100
-                    podAffinityTerm:
-                      labelSelector:
-                        matchLabels:
-                          app: image-reflector-controller
-                      topologyKey: kubernetes.io/hostname
+            topologySpreadConstraints:
+              - maxSkew: 1
+                topologyKey: kubernetes.io/hostname
+                whenUnsatisfiable: DoNotSchedule
+                labelSelector:
+                  matchLabels:
+                    app: image-reflector-controller
     target:
       kind: Deployment
       name: image-reflector-controller
@@ -200,15 +218,13 @@ patches:
       spec:
         template:
           spec:
-            affinity:
-              podAntiAffinity:
-                preferredDuringSchedulingIgnoredDuringExecution:
-                  - weight: 100
-                    podAffinityTerm:
-                      labelSelector:
-                        matchLabels:
-                          app: image-automation-controller
-                      topologyKey: kubernetes.io/hostname
+            topologySpreadConstraints:
+              - maxSkew: 1
+                topologyKey: kubernetes.io/hostname
+                whenUnsatisfiable: DoNotSchedule
+                labelSelector:
+                  matchLabels:
+                    app: image-automation-controller
     target:
       kind: Deployment
       name: image-automation-controller
