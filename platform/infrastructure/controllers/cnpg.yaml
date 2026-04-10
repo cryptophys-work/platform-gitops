@@ -27,15 +27,9 @@ spec:
     replicaCount: 1
     nodeSelector:
       kubernetes.io/os: linux
-      workload.cryptophys.work/apps-core: "true"
     tolerations:
-    - key: cryptophys.io/pool
-      operator: Equal
-      value: platform-ha
-      effect: NoSchedule
-    - key: ray-cluster
-      operator: Equal
-      value: "true"
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
       effect: NoSchedule
     affinity:
       nodeAffinity:
@@ -45,8 +39,7 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values:
-              - thalamus-217-76-59-241
-              - cerebellum-161-97-117-96
+              - corpus-207-180-206-69
     resources:
       requests:
         cpu: 100m

@@ -50,8 +50,7 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - thalamus-217-76-59-241
-                      - cerebellum-161-97-117-96
+                      - corpus-207-180-206-69
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
@@ -61,9 +60,8 @@ spec:
                     app.kubernetes.io/name: cloudflared
                 topologyKey: kubernetes.io/hostname
       tolerations:
-        - key: cryptophys.io/pool
-          operator: Equal
-          value: platform-ha
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
           effect: NoSchedule
       containers:
         - name: cloudflared
