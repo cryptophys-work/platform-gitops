@@ -28,8 +28,7 @@ spec:
               - op: replace
                 path: /spec/template/spec/nodeSelector
                 value:
-                  apps-core-target: apps-core
-                  workload.cryptophys.work/apps-core: "true"
+                  workload.cryptophys.work/platform: "true"
                   kubernetes.io/hostname: synapse-161-97-136-251
           - target:
               kind: Deployment
@@ -270,8 +269,7 @@ spec:
         operator: Exists
         effect: NoSchedule
     nodeSelector:
-      apps-core-target: apps-core
-      workload.cryptophys.work/apps-core: "true"
+      workload.cryptophys.work/platform: "true"
       kubernetes.io/hostname: synapse-161-97-136-251
     affinity:
       nodeAffinity:
