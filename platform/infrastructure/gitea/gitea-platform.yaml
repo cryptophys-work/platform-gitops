@@ -26,9 +26,48 @@ spec:
               name: gitops-gitea
             patch: |
               - op: replace
+                path: /spec/replicas
+                value: 2
+              - op: replace
+                path: /spec/strategy
+                value:
+                  type: RollingUpdate
+                  rollingUpdate:
+                    maxUnavailable: 0
+                    maxSurge: 1
+              - op: replace
                 path: /spec/template/spec/nodeSelector
                 value:
                   workload.cryptophys.work/platform: "true"
+              - op: replace
+                path: /spec/template/spec/tolerations
+                value:
+                  - key: cryptophys.io/pool
+                    operator: Equal
+                    value: platform-ha
+                    effect: NoSchedule
+                  - key: node.cilium.io/agent-not-ready
+                    operator: Exists
+                    effect: NoSchedule
+              - op: replace
+                path: /spec/template/spec/affinity
+                value:
+                  nodeAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      nodeSelectorTerms:
+                        - matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - nexus-144-91-103-10
+                                - cerebellum-161-97-117-96
+                                - thalamus-217-76-59-241
+                  podAntiAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      - labelSelector:
+                          matchLabels:
+                            app: gitea
+                        topologyKey: kubernetes.io/hostname
           - target:
               kind: Deployment
               name: gitops-gitea
