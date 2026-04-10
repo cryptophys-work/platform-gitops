@@ -23,6 +23,7 @@ spec:
   upgrade:
     timeout: 15m
     disableWait: true
+    disableHooks: true
     force: true
     remediation:
       retries: 3
