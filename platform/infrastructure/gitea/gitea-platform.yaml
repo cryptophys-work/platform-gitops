@@ -16,6 +16,19 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 5
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: gitops-gitea
+            patch: |
+              - op: replace
+                path: /spec/template/spec/nodeSelector
+                value:
+                  apps-core-target: apps-core
+                  workload.cryptophys.work/apps-core: "true"
+                  kubernetes.io/hostname: synapse-161-97-136-251
   chart:
     spec:
       chart: gitea
