@@ -1,0 +1,63 @@
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: postgres-apps-ha-platform-ha-exception
+  namespace: kyverno-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: postgresql
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+  annotations:
+    cryptophys.work/exception-owner: "platform-sre"
+    cryptophys.work/exception-reason: >-
+      Allow CloudNativePG to recreate the single postgres-apps-ha primary pod
+      while postgresql-system placement is realigned with current node-pool policy.
+    cryptophys.work/exception-ticket: "OPS-POSTGRES-APPS-001"
+    cryptophys.work/exception-expires-at: "2026-06-30T00:00:00Z"
+spec:
+  exceptions:
+    - policyName: deny-platform-ha-toleration-outside-platform
+      ruleNames:
+        - block-platform-ha
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+          namespaces:
+            - postgresql-system
+          names:
+            - postgres-apps-ha-1
+---
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: postgres-apps-ha-platform-ha-exception
+  namespace: postgresql-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: postgresql
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+  annotations:
+    cryptophys.work/exception-owner: "platform-sre"
+    cryptophys.work/exception-reason: >-
+      Allow CloudNativePG to recreate the single postgres-apps-ha primary pod
+      while postgresql-system placement is realigned with current node-pool policy.
+    cryptophys.work/exception-ticket: "OPS-POSTGRES-APPS-001"
+    cryptophys.work/exception-expires-at: "2026-06-30T00:00:00Z"
+spec:
+  exceptions:
+    - policyName: deny-platform-ha-toleration-outside-platform
+      ruleNames:
+        - block-platform-ha
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+          namespaces:
+            - postgresql-system
+          names:
+            - postgres-apps-ha-1
