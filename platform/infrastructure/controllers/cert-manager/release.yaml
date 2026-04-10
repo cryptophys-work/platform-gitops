@@ -30,9 +30,24 @@ spec:
   values:
     installCRDs: true
     replicaCount: 2
+    podAnnotations:
+      cryptophys.io/redeploy-token: "2026-04-10-cert-manager-podcidr-refresh"
     nodeSelector:
       kubernetes.io/os: linux
-    affinity: {}
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: kubernetes.io/os
+              operator: In
+              values:
+              - linux
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+              - thalamus-217-76-59-241
+              - cerebellum-161-97-117-96
     tolerations:
     - key: cryptophys.io/pool
       operator: Equal
@@ -47,9 +62,24 @@ spec:
         memory: 256Mi
     webhook:
       replicaCount: 2
+      podAnnotations:
+        cryptophys.io/redeploy-token: "2026-04-10-cert-manager-podcidr-refresh"
       nodeSelector:
         kubernetes.io/os: linux
-      affinity: {}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                - linux
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - thalamus-217-76-59-241
+                - cerebellum-161-97-117-96
       tolerations:
       - key: cryptophys.io/pool
         operator: Equal
@@ -64,9 +94,24 @@ spec:
           memory: 64Mi
     cainjector:
       replicaCount: 2
+      podAnnotations:
+        cryptophys.io/redeploy-token: "2026-04-10-cert-manager-podcidr-refresh"
       nodeSelector:
         kubernetes.io/os: linux
-      affinity: {}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                - linux
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - thalamus-217-76-59-241
+                - cerebellum-161-97-117-96
       tolerations:
       - key: cryptophys.io/pool
         operator: Equal
@@ -80,9 +125,24 @@ spec:
           cpu: 100m
           memory: 512Mi
     startupapicheck:
+      podAnnotations:
+        cryptophys.io/redeploy-token: "2026-04-10-cert-manager-podcidr-refresh"
       nodeSelector:
         kubernetes.io/os: linux
-      affinity: {}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                - linux
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - thalamus-217-76-59-241
+                - cerebellum-161-97-117-96
       tolerations:
       - key: cryptophys.io/pool
         operator: Equal
