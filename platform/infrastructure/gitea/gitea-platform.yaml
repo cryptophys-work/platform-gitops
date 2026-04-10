@@ -277,7 +277,9 @@ spec:
                 - key: kubernetes.io/hostname
                   operator: In
                   values:
-                    - synapse-161-97-136-251
+                    - nexus-144-91-103-10
+                    - cerebellum-161-97-117-96
+                    - thalamus-217-76-59-241
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
