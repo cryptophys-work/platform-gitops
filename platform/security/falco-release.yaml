@@ -35,7 +35,7 @@ spec:
                 - key: kubernetes.io/hostname
                   operator: In
                   values:
-                    - synapse-161-97-136-251
+                    - thalamus-217-76-59-241
                     - quanta-194-163-186-222
                     - cerebellum-161-97-117-96
     tolerations:
