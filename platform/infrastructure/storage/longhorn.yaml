@@ -305,6 +305,7 @@ spec:
               - op: replace
                 path: /spec/template/spec/nodeSelector
                 value:
+                  cryptophys.io/tier: compute
                   nexus-workload-hub: "true"
           - target:
               kind: Deployment
@@ -313,6 +314,7 @@ spec:
               - op: replace
                 path: /spec/template/spec/nodeSelector
                 value:
+                  cryptophys.io/tier: compute
                   nexus-workload-hub: "true"
   chart:
     spec:
@@ -397,6 +399,7 @@ spec:
     # ── Driver/UI control components: target nexus workload hub ──
     longhornDriver:
       nodeSelector:
+        cryptophys.io/tier: compute
         nexus-workload-hub: "true"
       tolerations:
         - key: cryptophys.io/role
@@ -415,6 +418,7 @@ spec:
           memory: "512Mi"
     longhornUI:
       nodeSelector:
+        cryptophys.io/tier: compute
         nexus-workload-hub: "true"
       tolerations:
         - key: cryptophys.io/role
