@@ -298,6 +298,22 @@ spec:
                   limits:
                     cpu: "1"
                     memory: "2Gi"
+          - target:
+              kind: Deployment
+              name: longhorn-driver-deployer
+            patch: |
+              - op: replace
+                path: /spec/template/spec/nodeSelector
+                value:
+                  nexus-workload-hub: "true"
+          - target:
+              kind: Deployment
+              name: longhorn-ui
+            patch: |
+              - op: replace
+                path: /spec/template/spec/nodeSelector
+                value:
+                  nexus-workload-hub: "true"
   chart:
     spec:
       chart: longhorn
