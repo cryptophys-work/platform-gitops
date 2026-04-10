@@ -29,7 +29,6 @@ spec:
                 path: /spec/template/spec/nodeSelector
                 value:
                   workload.cryptophys.work/platform: "true"
-                  kubernetes.io/hostname: synapse-161-97-136-251
           - target:
               kind: Deployment
               name: gitops-gitea
@@ -270,7 +269,6 @@ spec:
         effect: NoSchedule
     nodeSelector:
       workload.cryptophys.work/platform: "true"
-      kubernetes.io/hostname: synapse-161-97-136-251
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
