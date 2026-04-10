@@ -80,6 +80,8 @@ spec:
     database:
       type: internal
       internal:
+        nodeSelector:
+          kubernetes.io/hostname: cerebellum-161-97-117-96
         extrInitContainers:
           - name: stale-postmaster-cleaner
             image: goharbor/harbor-db:v2.14.2
@@ -275,6 +277,8 @@ spec:
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
     registry:
+      nodeSelector:
+        kubernetes.io/hostname: cerebellum-161-97-117-96
       registry:
         resources:
           limits:
