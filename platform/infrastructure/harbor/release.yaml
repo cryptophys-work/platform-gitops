@@ -202,19 +202,17 @@ spec:
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
         podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    app: harbor
-                    component: portal
-                    release: registry-harbor
-                topologyKey: kubernetes.io/hostname
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: harbor
+                  component: portal
+                  release: registry-harbor
+              topologyKey: kubernetes.io/hostname
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: ScheduleAnyway
+          whenUnsatisfiable: DoNotSchedule
     core:
       replicas: 3
       resources:
@@ -241,19 +239,17 @@ spec:
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
         podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                topologyKey: kubernetes.io/hostname
-                labelSelector:
-                  matchLabels:
-                    app: harbor
-                    component: core
-                    release: registry-harbor
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: harbor
+                  component: core
+                  release: registry-harbor
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: ScheduleAnyway
+          whenUnsatisfiable: DoNotSchedule
     jobservice:
       resources:
         limits:

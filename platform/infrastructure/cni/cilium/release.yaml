@@ -75,7 +75,8 @@ spec:
     k8sServicePort: 7445
     extraEnv:
       - name: CRYPTOPHYS_CILIUM_ROLLOUT_AT
-        value: "2026-03-31T14:17:56Z"
+        value: "2026-04-10T07:45:31Z"
+    rollOutCiliumPods: true
     hubble:
       enabled: true
       relay:
@@ -137,8 +138,11 @@ spec:
         memory: 4Gi
     ipam:
       mode: kubernetes
+    k8s:
+      requireIPv4PodCIDR: true
     operator:
       replicas: 2
+      rollOutPods: true
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
