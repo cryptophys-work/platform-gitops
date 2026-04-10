@@ -146,6 +146,29 @@ patches:
       kind: Deployment
       name: notification-controller
 
+  # Allow kubelet/node-originated health probes to reach Flux controllers.
+  - patch: |
+      apiVersion: networking.k8s.io/v1
+      kind: NetworkPolicy
+      metadata:
+        name: allow-scraping
+      spec:
+        ingress:
+          - from:
+              - namespaceSelector: {}
+            ports:
+              - port: 8080
+                protocol: TCP
+          - from:
+              - ipBlock:
+                  cidr: 10.8.0.0/24
+            ports:
+              - port: 9440
+                protocol: TCP
+    target:
+      kind: NetworkPolicy
+      name: allow-scraping
+
   # Spread image-reflector-controller replicas across different nodes.
   - patch: |
       apiVersion: apps/v1
