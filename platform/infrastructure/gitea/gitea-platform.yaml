@@ -132,7 +132,6 @@ spec:
           HOST: postgres-apps-ha-rw.postgresql-system.svc.cluster.local:5432
           NAME: gitea
           USER: gitea
-          PASSWD: GiteaSecure2026!
         cache:
           ADAPTER: redis
           HOST: redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
@@ -175,6 +174,16 @@ spec:
         value: redis
       - name: GITEA__QUEUE__CONN_STR
         value: redis://gitea-redis.gitops-system.svc.cluster.local:6379/1
+      - name: GITEA__DATABASE__USER
+        valueFrom:
+          secretKeyRef:
+            name: gitea-db-credentials
+            key: username
+      - name: GITEA__DATABASE__PASSWD
+        valueFrom:
+          secretKeyRef:
+            name: gitea-db-credentials
+            key: password
       - name: GITEA__REPOSITORY__MIN_MIRROR_SYNC_INTERVAL
         value: "3m"
       - name: GITEA__REPOSITORY__DEFAULT_MIRROR_SYNC_INTERVAL
