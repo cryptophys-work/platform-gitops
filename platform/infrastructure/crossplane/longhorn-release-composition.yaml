@@ -78,6 +78,7 @@ spec:
                     effect: NoSchedule
                 longhornDriver:
                   nodeSelector:
+                    cryptophys.io/tier: compute
                     nexus-workload-hub: "true"
                   tolerations:
                   - key: cryptophys.io/role
@@ -89,6 +90,7 @@ spec:
                     effect: NoSchedule
                 longhornUI:
                   nodeSelector:
+                    cryptophys.io/tier: compute
                     nexus-workload-hub: "true"
                   tolerations:
                   - key: cryptophys.io/role

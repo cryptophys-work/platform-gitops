@@ -17,6 +17,7 @@ longhornCSI:
 longhornUI:
   replicas: 1
   nodeSelector:
+    cryptophys.io/tier: compute
     nexus-workload-hub: "true"
   tolerations:
     - key: cryptophys.io/role
@@ -43,6 +44,7 @@ longhornManager:
       memory: 768Mi
 longhornDriver:
   nodeSelector:
+    cryptophys.io/tier: compute
     nexus-workload-hub: "true"
   tolerations:
     - key: cryptophys.io/role
