@@ -30,6 +30,33 @@ spec:
                 value:
                   apps-core-target: apps-core
                   workload.cryptophys.work/apps-core: "true"
+          - target:
+              kind: Deployment
+              name: gitops-gitea
+            patch: |
+              - op: add
+                path: /spec/template/spec/initContainers/0
+                value:
+                  name: wait-for-rwx-migration
+                  image: ghcr.io/go-gitea/gitea:1.25.4-rootless
+                  command:
+                    - /bin/sh
+                    - -ec
+                    - |
+                      until [ -f /data/.gitea-rwx-migrated ]; do
+                        echo "waiting for gitea rwx migration marker"
+                        sleep 5
+                      done
+                  resources:
+                    requests:
+                      cpu: 10m
+                      memory: 16Mi
+                    limits:
+                      cpu: 100m
+                      memory: 128Mi
+                  volumeMounts:
+                    - name: data
+                      mountPath: /data
   chart:
     spec:
       chart: gitea
@@ -75,7 +102,8 @@ spec:
           PROVIDER: redis
           PROVIDER_CONFIG: redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
         queue:
-          TYPE: channel
+          TYPE: redis
+          CONN_STR: redis://gitea-redis.gitops-system.svc.cluster.local:6379/1
         server:
           ROOT_URL: https://gitea.cryptophys.work
           DOMAIN: gitea.cryptophys.work
@@ -106,7 +134,9 @@ spec:
       - name: GITEA__SESSION__PROVIDER_CONFIG
         value: redis://gitea-redis.gitops-system.svc.cluster.local:6379/0
       - name: GITEA__QUEUE__TYPE
-        value: channel
+        value: redis
+      - name: GITEA__QUEUE__CONN_STR
+        value: redis://gitea-redis.gitops-system.svc.cluster.local:6379/1
       - name: GITEA__REPOSITORY__MIN_MIRROR_SYNC_INTERVAL
         value: "3m"
       - name: GITEA__REPOSITORY__DEFAULT_MIRROR_SYNC_INTERVAL
@@ -188,11 +218,11 @@ spec:
     persistence:
       enabled: true
       create: false
-      claimName: gitea-shared-storage
+      claimName: gitea-shared-storage-rwx
       size: 50Gi
       storageClass: longhorn
       accessModes:
-        - ReadWriteOnce
+        - ReadWriteMany
     postgresql:
       enabled: false
     postgresql-ha:
