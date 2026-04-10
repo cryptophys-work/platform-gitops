@@ -27,11 +27,11 @@ spec:
       securityContext:
         fsGroup: 1000
       nodeSelector:
-        kubernetes.io/hostname: thalamus-217-76-59-241
+        kubernetes.io/hostname: synapse-161-97-136-251
       tolerations:
         - key: cryptophys.io/pool
           operator: Equal
-          value: platform-ha
+          value: apps-ha
           effect: NoSchedule
       containers:
         - name: migrate
