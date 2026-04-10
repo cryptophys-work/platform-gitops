@@ -25,10 +25,12 @@ spec:
     any:
       - resources:
           kinds:
+            - Deployment
             - Pod
           namespaces:
             - cnpg-system
           names:
+            - cloudnative-pg
             - cloudnative-pg-*
 ---
 apiVersion: kyverno.io/v2
@@ -58,8 +60,10 @@ spec:
     any:
       - resources:
           kinds:
+            - Deployment
             - Pod
           namespaces:
             - cnpg-system
           names:
+            - cloudnative-pg
             - cloudnative-pg-*
