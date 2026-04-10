@@ -36,16 +36,24 @@ spec:
           operator: Exists
           effect: NoExecute
           tolerationSeconds: 300
+        # Allow scheduling on HA infra nodes (nexus, cerebellum, thalamus)
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-            # Prefer worker nodes to avoid control-plane resource pressure
+            # Prefer HA infra nodes for resilience
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: node-role.kubernetes.io/worker
+                  - key: kubernetes.io/hostname
                     operator: In
-                    values: [""]
+                    values:
+                      - nexus-144-91-103-10
+                      - cerebellum-161-97-117-96
+                      - thalamus-217-76-59-241
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
