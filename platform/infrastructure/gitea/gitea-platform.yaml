@@ -8,10 +8,12 @@ spec:
   releaseName: gitops-gitea
   timeout: 30m
   install:
+    disableWait: true
     timeout: 30m
     remediation:
       retries: 3
   upgrade:
+    disableWait: true
     timeout: 30m
     cleanupOnFail: true
     remediation:
@@ -28,7 +30,6 @@ spec:
                 value:
                   apps-core-target: apps-core
                   workload.cryptophys.work/apps-core: "true"
-                  kubernetes.io/hostname: synapse-161-97-136-251
   chart:
     spec:
       chart: gitea
@@ -235,7 +236,6 @@ spec:
         effect: NoSchedule
     nodeSelector:
       workload.cryptophys.work/apps-core: "true"
-      kubernetes.io/hostname: synapse-161-97-136-251
     affinity: {}
     initContainers:
       resources:
