@@ -16,6 +16,7 @@ spec:
         - check-canonical-release-name
     - policyName: cp-security-hardening-v1
       ruleNames:
+        - restrict-pod-security-standard
         - autogen-restrict-pod-security-standard
   match:
     any:
