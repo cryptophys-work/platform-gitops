@@ -4,9 +4,8 @@ resources:
   - gotk-components.yaml
   - gotk-sync.yaml
 patches:
-  # Recovery base: place Flux on the platform-ha worker lane, which is
-  # explicitly reserved for Flux-managed infrastructure by node-labeler and
-  # the mutate-platform-ha-toleration policy.
+  # Recovery base: keep Flux on control-plane nodes so it retains the most
+  # stable path to the Kubernetes API even when worker networking degrades.
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
@@ -21,10 +20,10 @@ patches:
                 requiredDuringSchedulingIgnoredDuringExecution:
                   nodeSelectorTerms:
                     - matchExpressions:
-                        - key: cryptophys.io/platform-ha
+                        - key: cryptophys.io/tier
                           operator: In
                           values:
-                            - "true"
+                            - platform
                 preferredDuringSchedulingIgnoredDuringExecution:
                   - weight: 100
                     preference:
@@ -32,8 +31,13 @@ patches:
                         - key: kubernetes.io/hostname
                           operator: In
                           values:
-                            - cerebellum-161-97-117-96
-                            - thalamus-217-76-59-241
+                            - cortex-178-18-250-39
+                            - cerebrum-157-173-120-200
+                            - corpus-207-180-206-69
+            tolerations:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+                effect: NoSchedule
     target:
       kind: Deployment
 
