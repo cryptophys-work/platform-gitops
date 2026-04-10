@@ -32,20 +32,7 @@ spec:
     replicaCount: 2
     nodeSelector:
       kubernetes.io/os: linux
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: kubernetes.io/os
-              operator: In
-              values:
-              - linux
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-              - thalamus-217-76-59-241
-              - cerebellum-161-97-117-96
+    affinity: {}
     tolerations:
     - key: cryptophys.io/pool
       operator: Equal
@@ -62,20 +49,7 @@ spec:
       replicaCount: 2
       nodeSelector:
         kubernetes.io/os: linux
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: kubernetes.io/os
-                operator: In
-                values:
-                - linux
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                - thalamus-217-76-59-241
-                - cerebellum-161-97-117-96
+      affinity: {}
       tolerations:
       - key: cryptophys.io/pool
         operator: Equal
@@ -92,20 +66,7 @@ spec:
       replicaCount: 2
       nodeSelector:
         kubernetes.io/os: linux
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: kubernetes.io/os
-                operator: In
-                values:
-                - linux
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                - thalamus-217-76-59-241
-                - cerebellum-161-97-117-96
+      affinity: {}
       tolerations:
       - key: cryptophys.io/pool
         operator: Equal
@@ -121,20 +82,7 @@ spec:
     startupapicheck:
       nodeSelector:
         kubernetes.io/os: linux
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: kubernetes.io/os
-                operator: In
-                values:
-                - linux
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                - thalamus-217-76-59-241
-                - cerebellum-161-97-117-96
+      affinity: {}
       tolerations:
       - key: cryptophys.io/pool
         operator: Equal
