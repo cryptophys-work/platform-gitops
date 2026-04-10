@@ -16,28 +16,28 @@ metadata:
       current apps-core-capable node pool.
     cryptophys.work/exception-ticket: "OPS-CNPG-001"
     cryptophys.work/exception-expires-at: "2026-06-30T00:00:00Z"
-  spec:
-    exceptions:
-      - policyName: deny-platform-ha-toleration-outside-platform
-        ruleNames:
-          - autogen-block-platform-ha
-          - block-platform-ha
-      - policyName: cp-security-hardening-v1
-        ruleNames:
-          - restrict-pod-security-standard
-          - autogen-restrict-pod-security-standard
-    match:
-      any:
-      - resources:
-          kinds:
-            - Deployment
-            - ReplicaSet
-            - Pod
-          namespaces:
-            - cnpg-system
-          names:
-            - cloudnative-pg
-            - cloudnative-pg-*
+spec:
+  exceptions:
+    - policyName: deny-platform-ha-toleration-outside-platform
+      ruleNames:
+        - autogen-block-platform-ha
+        - block-platform-ha
+    - policyName: cp-security-hardening-v1
+      ruleNames:
+        - restrict-pod-security-standard
+        - autogen-restrict-pod-security-standard
+  match:
+    any:
+    - resources:
+        kinds:
+          - Deployment
+          - ReplicaSet
+          - Pod
+        namespaces:
+          - cnpg-system
+        names:
+          - cloudnative-pg
+          - cloudnative-pg-*
 ---
 apiVersion: kyverno.io/v2
 kind: PolicyException
@@ -57,25 +57,25 @@ metadata:
       current apps-core-capable node pool.
     cryptophys.work/exception-ticket: "OPS-CNPG-001"
     cryptophys.work/exception-expires-at: "2026-06-30T00:00:00Z"
-  spec:
-    exceptions:
-      - policyName: deny-platform-ha-toleration-outside-platform
-        ruleNames:
-          - autogen-block-platform-ha
-          - block-platform-ha
-      - policyName: cp-security-hardening-v1
-        ruleNames:
-          - restrict-pod-security-standard
-          - autogen-restrict-pod-security-standard
-    match:
-      any:
-      - resources:
-          kinds:
-            - Deployment
-            - ReplicaSet
-            - Pod
-          namespaces:
-            - cnpg-system
-          names:
-            - cloudnative-pg
-            - cloudnative-pg-*
+spec:
+  exceptions:
+    - policyName: deny-platform-ha-toleration-outside-platform
+      ruleNames:
+        - autogen-block-platform-ha
+        - block-platform-ha
+    - policyName: cp-security-hardening-v1
+      ruleNames:
+        - restrict-pod-security-standard
+        - autogen-restrict-pod-security-standard
+  match:
+    any:
+    - resources:
+        kinds:
+          - Deployment
+          - ReplicaSet
+          - Pod
+        namespaces:
+          - cnpg-system
+        names:
+          - cloudnative-pg
+          - cloudnative-pg-*
