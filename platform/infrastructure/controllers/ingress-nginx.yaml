@@ -49,15 +49,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: cryptophys.io/platform-ha
+                  - key: ingress-public.cryptophys.work/enabled
                     operator: In
                     values:
                       - "true"
-              - matchExpressions:
-                  - key: apps-core-target
-                    operator: In
-                    values:
-                      - apps-core
       tolerations:
         - effect: NoSchedule
           key: node-role.kubernetes.io/control-plane
