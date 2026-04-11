@@ -9,6 +9,16 @@ spec:
   - toEntities: [kube-apiserver, host, cluster]
   - toEndpoints:
     - matchLabels:
+        app.kubernetes.io/instance: vault
+        app.kubernetes.io/name: vault
+        component: server
+        io.kubernetes.pod.namespace: vault-system
+    toPorts:
+    - ports:
+      - port: "8200"
+        protocol: TCP
+  - toEndpoints:
+    - matchLabels:
         k8s-app: kube-dns
         kubernetes.io/metadata.name: kube-system
     toPorts:

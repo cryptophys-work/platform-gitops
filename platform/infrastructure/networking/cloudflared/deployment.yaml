@@ -14,7 +14,7 @@ metadata:
     cryptophys.io/managed-by: flux
     cryptophys.io/layer: platform
 spec:
-  replicas: 0
+  replicas: 2
   revisionHistoryLimit: 2
   strategy:
     type: RollingUpdate
