@@ -65,21 +65,12 @@ spec:
     limits:
       cpu: 500m
       memory: 512Mi
-  # Affinity: keep the single Gitea database off the degraded campus storage node
-  # and away from the platform-ha pool blocked by Kyverno for postgresql-system.
+  # Affinity: pin the single Gitea database to the stable platform-ready worker.
   affinity:
     nodeSelector:
-      kubernetes.io/hostname: quanta-194-163-186-222
+      kubernetes.io/hostname: cerebellum-161-97-117-96
     tolerations:
     - effect: NoSchedule
-      key: ray-head
+      key: cryptophys.io/pool
       operator: Equal
-      value: "true"
-    - effect: NoSchedule
-      key: dao-system
-      operator: Equal
-      value: "true"
-    - effect: NoSchedule
-      key: bridge-system
-      operator: Equal
-      value: "true"
+      value: platform-ha
