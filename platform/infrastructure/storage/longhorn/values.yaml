@@ -1,7 +1,7 @@
 USER-SUPPLIED VALUES:
 defaultSettings:
   defaultReplicaCount: 3
-  systemManagedComponentsNodeSelector: ""
+  systemManagedComponentsNodeSelector: "cryptophys.io/platform-ha:true"
 persistence:
   defaultClass: true
   defaultClassReplicaCount: 3

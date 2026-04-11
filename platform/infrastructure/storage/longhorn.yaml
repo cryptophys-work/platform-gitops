@@ -336,13 +336,12 @@ spec:
       defaultClassReplicaCount: 2
     defaultSettings:
       defaultReplicaCount: 2
-      # System-managed components include instance-managers and engine helpers
-      # that must run on the nodes hosting Longhorn replicas, including storage
-      # workers like campus.
-      systemManagedComponentsNodeSelector: ""
-      # Keep replicas off control-plane nodes under memory pressure; Longhorn
-      # managers/CSI may still run there, but data placement should prefer workers.
-      taintToleration: "cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node-role.kubernetes.io/control-plane:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
+      # System-managed components (instance/share/engine helpers) must stay off
+      # control-plane and land on the platform HA worker pool instead.
+      systemManagedComponentsNodeSelector: "cryptophys.io/platform-ha:true"
+      # Managers/CSI DaemonSets can still run on control-plane, but transient
+      # system-managed Longhorn workloads must not tolerate control-plane taints.
+      taintToleration: "cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
       # Fallback reserve for nodes without an explicit per-node disk override.
       storageReservedPercentageForDefaultDisk: 10
       storageOverProvisioningPercentage: 200
