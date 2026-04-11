@@ -177,6 +177,25 @@ spec:
                 operator: Equal
                 value: "true"
                 effect: NoSchedule
+    - name: allow-longhorn-share-manager-platform-ha
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - longhorn-system
+              selector:
+                matchLabels:
+                  longhorn.io/component: share-manager
+      mutate:
+        patchStrategicMerge:
+          spec:
+            tolerations:
+              - key: cryptophys.io/pool
+                operator: Equal
+                value: platform-ha
+                effect: NoSchedule
 ---
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
