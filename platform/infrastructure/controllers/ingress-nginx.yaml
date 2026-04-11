@@ -3,6 +3,8 @@ kind: HelmRelease
 metadata:
   name: ingress-gateway
   namespace: ingress-system
+  annotations:
+    reconcile.fluxcd.io/requestedAt: "2026-04-11T13:49:06Z"
 spec:
   interval: 1h
   chart:
@@ -21,7 +23,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       extraEnvs:
         - name: CRYPTOPHYS_INGRESS_ROLLOUT_AT
-          value: "2026-03-31T14:03:08Z"
+          value: "2026-04-11T13:49:06Z"
       extraArgs:
         default-ssl-certificate: ingress-system/platform-wildcard-tls
         healthz-port: "11054"
