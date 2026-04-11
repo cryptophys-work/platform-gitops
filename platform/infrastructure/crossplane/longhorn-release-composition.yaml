@@ -203,8 +203,6 @@ spec:
       toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.defaultReplicaCount
     - fromFieldPath: spec.defaultReplicaCount
       toFieldPath: spec.forProvider.manifest.spec.values.persistence.defaultClassReplicaCount
-    - fromFieldPath: spec.taintToleration
-      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.taintToleration
     - fromFieldPath: spec.managerResources.requests.cpu
       toFieldPath: spec.forProvider.manifest.spec.values.longhornManager.resources.requests.cpu
     - fromFieldPath: spec.managerResources.requests.memory
