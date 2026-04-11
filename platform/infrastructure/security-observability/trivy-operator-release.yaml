@@ -39,7 +39,13 @@ spec:
           memory: 2Gi    # peak 1394Mi; was 500M (too low!)
     serviceMonitor:
       enabled: true
-    tolerations: []
+    tolerations:
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
+        effect: NoSchedule
+    nodeSelector:
+      workload.cryptophys.work/platform: "true"
     operator:
       # Limit parallel scan bursts so security scans cannot starve Longhorn on a single worker.
       scanJobsConcurrentLimit: 1
@@ -51,7 +57,11 @@ spec:
       infraAssessmentScannerEnabled: false   # disabled: high CPU, low value vs trivy vuln scan
       clusterComplianceEnabled: false         # disabled: no compliance profile configured
     scanJob:
-      tolerations: []
+      tolerations:
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
       nodeSelector:
         workload.cryptophys.work/apps-core: "true"   # pin scan jobs to general workers only
       priorityClassName: cryptophys-batch             # preemptionPolicy: Never — tidak preempt workloads
