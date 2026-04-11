@@ -3,6 +3,9 @@ kind: Kustomization
 resources:
   # Crossplane controller configuration (tolerations, resources, anti-affinity)
   - controller-config.yaml
+  # Provider kubernetes deployment (persistent, GitOps-managed, idempotent)
+  # Persists across reboots and Crossplane controller restarts
+  - provider-kubernetes-deployment.yaml
   # Workload placement abstraction (node selection + tolerations)
   - workload-placement-definition.yaml
   - workload-placement-composition.yaml
