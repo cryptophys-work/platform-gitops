@@ -45,6 +45,10 @@ spec:
         - key: node.cilium.io/agent-not-ready
           operator: Exists
           effect: NoSchedule
+        # Allow scheduling on control-plane nodes as emergency fallback
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -65,6 +69,8 @@ spec:
                       - nexus-144-91-103-10
                       - cerebellum-161-97-117-96
                       - thalamus-217-76-59-241
+                      - cortex-178-18-250-39
+                      - corpus-207-180-206-69
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
