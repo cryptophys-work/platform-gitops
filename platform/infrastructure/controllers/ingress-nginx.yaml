@@ -51,19 +51,19 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: cryptophys.io/platform-ha
                     operator: In
                     values:
-                      - synapse-161-97-136-251
+                      - "true"
+                  - key: cryptophys.io/tier
+                    operator: In
+                    values:
+                      - compute
       tolerations:
         - effect: NoSchedule
           key: cryptophys.io/pool
           operator: Equal
-          value: apps-ha
-        - effect: NoSchedule
-          key: ray-head
-          operator: Equal
-          value: "true"
+          value: platform-ha
         - effect: NoSchedule
           key: node.kubernetes.io/memory-pressure
           operator: Exists
