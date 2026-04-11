@@ -32,6 +32,22 @@ spec:
           automountServiceAccountToken: false
           restartPolicy: OnFailure
           affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: node-role.kubernetes.io/worker
+                        operator: Exists
+                      - key: cryptophys.io/tier
+                        operator: In
+                        values:
+                          - compute
+                      - key: cryptophys.io/platform-ha
+                        operator: In
+                        values:
+                          - "true"
+                      - key: cryptophys.io/role
+                        operator: DoesNotExist
             podAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
                 - labelSelector:
@@ -41,6 +57,11 @@ spec:
                   namespaces:
                     - gitops-system
                   topologyKey: kubernetes.io/hostname
+          tolerations:
+            - key: cryptophys.io/pool
+              operator: Equal
+              value: platform-ha
+              effect: NoSchedule
           securityContext:
             fsGroup: 1000
             runAsGroup: 1000
