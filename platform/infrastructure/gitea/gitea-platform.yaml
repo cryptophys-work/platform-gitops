@@ -33,8 +33,8 @@ spec:
                 value:
                   type: RollingUpdate
                   rollingUpdate:
-                    maxUnavailable: 0
-                    maxSurge: 1
+                    maxUnavailable: 1
+                    maxSurge: 0
               - op: replace
                 path: /spec/template/spec/nodeSelector
                 value:
@@ -196,12 +196,6 @@ spec:
           ALLOWED_HOST_LIST: webhook.cryptophys.work,webhook-receiver.tekton-system.svc.cluster.local,webhook-receiver.tekton-system.svc,localhost,127.0.0.1
           DELIVER_COMMIT_FILE_INFO: "true"
           DELIVER_TIMEOUT: "60"
-        repository:
-          MIN_MIRROR_SYNC_INTERVAL: 3m
-          DEFAULT_MIRROR_SYNC_INTERVAL: 3m
-        mirror:
-          MIN_INTERVAL: 3m
-          DEFAULT_INTERVAL: 3m
     extraEnv:
       - name: GITEA__WEBHOOK__ALLOWED_HOST_LIST
         value: webhook.cryptophys.work,webhook-receiver.tekton-system.svc.cluster.local,webhook-receiver.tekton-system.svc,localhost,127.0.0.1
@@ -231,24 +225,6 @@ spec:
           secretKeyRef:
             name: gitea-db-credentials
             key: password
-      - name: GITEA__REPOSITORY__MIN_MIRROR_SYNC_INTERVAL
-        value: "3m"
-      - name: GITEA__REPOSITORY__DEFAULT_MIRROR_SYNC_INTERVAL
-        value: "3m"
-      - name: GITEA__MIRROR__MIN_INTERVAL
-        value: "3m"
-      - name: GITEA__MIRROR__DEFAULT_INTERVAL
-        value: "3m"
-      - name: GITHUB_MIRROR_USER
-        valueFrom:
-          secretKeyRef:
-            name: gitea-mirror-token
-            key: user
-      - name: GITHUB_MIRROR_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: gitea-mirror-token
-            key: token
       - name: GITEA_ADMIN_BOOTSTRAP_USERNAME
         valueFrom:
           secretKeyRef:
@@ -269,12 +245,6 @@ spec:
               - /bin/sh
               - -c
               - |
-                REPO=/data/git/gitea-repositories/cryptophys-work/apps-gitops.git
-                if [ -d "$REPO" ]; then
-                  git -C "$REPO" remote set-url origin \
-                    "https://${GITHUB_MIRROR_USER}:${GITHUB_MIRROR_TOKEN}@github.com/cryptophys-work/apps-gitops.git"
-                  echo "[mirror-init] remote URL set for apps-gitops" >> /tmp/mirror-init.log
-                fi
                 if [ -n "${GITEA_ADMIN_BOOTSTRAP_USERNAME:-}" ] && [ -n "${GITEA_ADMIN_BOOTSTRAP_PASSWORD:-}" ]; then
                   n=0
                   until gitea admin user change-password \
