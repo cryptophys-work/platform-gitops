@@ -55,7 +55,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: harbor-release-reset-v2
+  name: harbor-release-reset-v3
   namespace: registry-system
   labels:
     cryptophys.io/domain: platform
@@ -74,9 +74,12 @@ spec:
       serviceAccountName: harbor-release-reset
       restartPolicy: Never
       nodeSelector:
-        kubernetes.io/hostname: thalamus-217-76-59-241
+        kubernetes.io/hostname: cortex-178-18-250-39
       tolerations:
         - key: cryptophys.io/pool
+          operator: Exists
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
       securityContext:
@@ -105,14 +108,27 @@ spec:
             - /bin/sh
             - -ec
             - |
+              k() {
+                attempt=1
+                while [ "${attempt}" -le 8 ]; do
+                  if kubectl --request-timeout=15s "$@"; then
+                    return 0
+                  fi
+                  attempt=$((attempt + 1))
+                  sleep 5
+                done
+                return 1
+              }
+
               delete_list() {
                 kind="$1"
                 shift
                 for name in "$@"; do
-                  kubectl -n registry-system delete "${kind}" "${name}" --ignore-not-found=true --wait=false || true
+                  k -n registry-system delete "${kind}" "${name}" --ignore-not-found=true --wait=false || true
                 done
               }
 
+              k -n registry-system delete secret -l owner=helm,name=registry-harbor --ignore-not-found=true --wait=false || true
               delete_list ingress registry-harbor-ingress
               delete_list configmap \
                 registry-harbor-core \
@@ -147,4 +163,3 @@ spec:
               delete_list poddisruptionbudget \
                 registry-harbor-core \
                 registry-harbor-portal
-              kubectl -n registry-system delete secret -l owner=helm,name=registry-harbor --ignore-not-found=true --wait=false || true
