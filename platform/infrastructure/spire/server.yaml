@@ -58,6 +58,8 @@ spec:
                     operator: NotIn
                     values:
                       - campus-212-47-66-101
+                      - thalamus-217-76-59-241
+                      - cerebellum-161-97-117-96
           preferredDuringSchedulingIgnoredDuringExecution:
             # Prefer HA infra nodes for resilience
             - weight: 100
