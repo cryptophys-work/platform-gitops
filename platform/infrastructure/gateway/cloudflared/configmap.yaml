@@ -19,5 +19,5 @@ data:
     no-autoupdate: true
     ingress:
       - hostname: "*.cryptophys.work"
-        service: http://ingress-gateway-ingress-nginx-controller.ingress.svc.cluster.local:80
+        service: http://ingress-gateway-ingress-nginx-controller.ingress-system.svc.cluster.local:80
       - service: http_status:404
