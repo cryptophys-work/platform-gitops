@@ -11,7 +11,7 @@ spec:
   suspend: false
   interval: 1h
   prune: false
-  wait: true
+  wait: false
   timeout: 10m
   path: ./platform/infrastructure/database
   sourceRef:

@@ -47,7 +47,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: cronjob-cleanup-remaining
+  name: cronjob-cleanup-remaining-v2
   namespace: postgresql-system
   labels:
     cryptophys.io/domain: platform
