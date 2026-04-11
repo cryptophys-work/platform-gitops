@@ -118,6 +118,15 @@ patches:
         template:
           spec:
             affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                        - key: kubernetes.io/hostname
+                          operator: In
+                          values:
+                            - nexus-144-91-103-10
+                            - cerebellum-161-97-117-96
               podAntiAffinity:
                 requiredDuringSchedulingIgnoredDuringExecution:
                   - labelSelector:
@@ -133,6 +142,19 @@ patches:
                     app: source-controller
     target:
       kind: Deployment
+      name: source-controller
+
+  # Only route source-controller traffic to serving pods; non-ready replicas were
+  # causing Flux fetches to hit connection-refused endpoints during rollouts.
+  - patch: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: source-controller
+      spec:
+        publishNotReadyAddresses: false
+    target:
+      kind: Service
       name: source-controller
 
   # Spread notification-controller replicas across different nodes.
