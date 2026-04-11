@@ -7,4 +7,3 @@ resources:
   - ingress-hubble-ui.yaml
   - ingress-longhorn-ui.yaml
   - ingress-argocd.yaml
-  # spire-ca-bundle.yaml deferred to 35-spire wave (CronJob uses registry.cryptophys.work/alpine, Harbor not ready yet)
