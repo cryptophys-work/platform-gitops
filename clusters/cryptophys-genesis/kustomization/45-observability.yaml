@@ -18,5 +18,4 @@ spec:
     kind: GitRepository
     name: platform-repo
   dependsOn:
-    - name: 12-storage
     - name: 11-controllers
