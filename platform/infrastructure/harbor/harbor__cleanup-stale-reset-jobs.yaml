@@ -49,7 +49,7 @@ roleRef:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: harbor-reset-job-cleanup
+  name: harbor-reset-job-cleanup-v2
   namespace: registry-system
   labels:
     cryptophys.io/domain: platform
@@ -69,19 +69,31 @@ spec:
     spec:
       serviceAccountName: harbor-reset-job-cleanup
       restartPolicy: OnFailure
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
       tolerations:
         - operator: Exists
       containers:
         - name: cleanup
-          image: bitnami/kubectl:1.32.4
+          image: docker.io/bitnami/kubectl:1.32.4
           imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           command:
             - /bin/sh
             - -ec
             - |
-              kubectl -n registry-system delete job harbor-release-reset-v1 harbor-release-reset-v3 --ignore-not-found=true --wait=true
-              kubectl -n registry-system delete pod -l job-name=harbor-release-reset-v1 --ignore-not-found=true --wait=true
-              kubectl -n registry-system delete pod -l job-name=harbor-release-reset-v3 --ignore-not-found=true --wait=true
+              kubectl -n registry-system patch job harbor-release-reset-v1 --type=merge -p '{"spec":{"suspend":true}}' || true
+              kubectl -n registry-system patch job harbor-release-reset-v3 --type=merge -p '{"spec":{"suspend":true}}' || true
+              kubectl -n registry-system delete pod -l job-name=harbor-release-reset-v1 --ignore-not-found=true --wait=false || true
+              kubectl -n registry-system delete pod -l job-name=harbor-release-reset-v3 --ignore-not-found=true --wait=false || true
+              kubectl -n registry-system delete job harbor-release-reset-v1 harbor-release-reset-v3 --ignore-not-found=true --wait=false || true
           resources:
             requests:
               cpu: 50m
