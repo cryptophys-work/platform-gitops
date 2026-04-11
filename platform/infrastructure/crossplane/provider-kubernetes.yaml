@@ -5,6 +5,6 @@ metadata:
   namespace: crossplane-system
 spec:
   package: xpkg.upbound.io/crossplane-contrib/provider-kubernetes:v0.13.0
-  # Reference ControllerConfig for tolerations and resource management
-  controllerConfigRef:
+  # Reference DeploymentRuntimeConfig for tolerations and resource management
+  runtimeConfigRef:
     name: provider-kubernetes-controller
