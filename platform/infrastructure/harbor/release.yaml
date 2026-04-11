@@ -20,6 +20,10 @@ spec:
     remediation:
       retries: 2
       strategy: uninstall
+  uninstall:
+    disableWait: true
+    deletionPropagation: background
+    timeout: 2m
   chart:
     spec:
       chart: harbor
