@@ -75,3 +75,50 @@ subjects:
   - apiGroup: rbac.authorization.k8s.io
     kind: Group
     name: system:serviceaccounts:crossplane-system
+---
+# ClusterRole for provider-kubernetes API resources (objects, observedobjectcollections, etc.)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: crossplane-provider-kubernetes-resources
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+rules:
+  # Provider-specific Kubernetes API resources
+  - apiGroups:
+      - kubernetes.crossplane.io
+    resources:
+      - objects
+      - objects/status
+      - observedobjectcollections
+      - observedobjectcollections/status
+      - providerconfigs
+      - providerconfigs/status
+      - providerconfigusages
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: crossplane-provider-kubernetes-resources
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: crossplane-provider-kubernetes-resources
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: system:serviceaccounts:crossplane-system
