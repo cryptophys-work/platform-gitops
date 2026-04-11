@@ -65,6 +65,13 @@ spec:
     spec:
       serviceAccountName: cronjob-cleanup-remaining
       restartPolicy: Never
+      nodeSelector:
+        kubernetes.io/hostname: cerebellum-161-97-117-96
+      tolerations:
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -76,6 +83,7 @@ spec:
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
+            privileged: false
             readOnlyRootFilesystem: true
             capabilities:
               drop: ["ALL"]
