@@ -109,12 +109,12 @@ patches:
       kind: Deployment
       metadata:
         name: source-controller
-      spec:
-        strategy:
-          type: RollingUpdate
-          rollingUpdate:
-            maxUnavailable: 0
-            maxSurge: 1
+        spec:
+          strategy:
+            type: RollingUpdate
+            rollingUpdate:
+              maxUnavailable: 1
+              maxSurge: 0
         template:
           spec:
             affinity:
