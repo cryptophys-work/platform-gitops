@@ -71,38 +71,26 @@ spec:
               type: RuntimeDefault
           containers:
             - name: mirror-apps-gitops
-              image: ghcr.io/go-gitea/gitea:1.25.4-rootless
+              image: docker.io/alpine/git@sha256:d453f54c83320412aa89c391b076930bd8569bc1012285e8c68ce2d4435826a3
               imagePullPolicy: IfNotPresent
               env:
                 - name: HOME
                   value: /tmp/home
                 - name: TMPDIR
                   value: /tmp
-                - name: GITHUB_USERNAME
-                  valueFrom:
-                    secretKeyRef:
-                      name: github-repo-auth
-                      key: username
-                - name: GITHUB_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: github-repo-auth
-                      key: password
               command:
                 - /bin/sh
                 - -lc
                 - |
                   set -eu
-                  src_url="https://github.com/cryptophys-work/apps-gitops.git"
-                  served_repo_dir="/data/gitea/repositories/cryptophys-work/apps-gitops.git"
-                  legacy_repo_dir="/data/git/gitea-repositories/cryptophys-work/apps-gitops.git"
+                  src_url="ssh://git@github.com/cryptophys-work/apps-gitops.git"
+                  served_repo_dir="/data/git/gitea-repositories/cryptophys-work/apps-gitops.git"
                   clone_url="http://gitops-gitea-http.gitops-system.svc.cluster.local:3000/cryptophys-work/apps-gitops.git"
                   webhook_url="http://webhook-receiver.tekton-system.svc.cluster.local/hook"
                   old_rev=""
-                  auth_header="$(printf '%s:%s' "${GITHUB_USERNAME}" "${GITHUB_PASSWORD}" | base64 | tr -d '\n')"
-                  git_auth() { git -c "http.extraheader=AUTHORIZATION: Basic ${auth_header}" "$@"; }
+                  export GIT_SSH_COMMAND="ssh -i /github-ssh/identity -o UserKnownHostsFile=/github-ssh/known_hosts -o StrictHostKeyChecking=yes"
+                  git_auth() { GIT_TERMINAL_PROMPT=0 git "$@"; }
                   mkdir -p /tmp/home \
-                    /data/gitea/repositories/cryptophys-work \
                     /data/git/gitea-repositories/cryptophys-work
                   if [ -d "$served_repo_dir" ] && git --git-dir="$served_repo_dir" rev-parse --is-bare-repository >/dev/null 2>&1; then
                     old_rev="$(git --git-dir="$served_repo_dir" rev-parse refs/heads/main 2>/dev/null || true)"
@@ -113,7 +101,7 @@ spec:
                     fi
                     git_auth --git-dir="$served_repo_dir" fetch --prune origin "+refs/*:refs/*"
                   else
-                    tmp_repo="$(mktemp -d /tmp/apps-gitops.XXXXXX.git)"
+                    tmp_repo="$(mktemp -d /tmp/apps-gitops.XXXXXX)"
                     rmdir "$tmp_repo"
                     git_auth clone --mirror "$src_url" "$tmp_repo"
                     rm -rf "$served_repo_dir"
@@ -121,8 +109,6 @@ spec:
                   fi
                   git --git-dir="$served_repo_dir" symbolic-ref HEAD refs/heads/main || true
                   new_rev="$(git --git-dir="$served_repo_dir" rev-parse refs/heads/main)"
-                  rm -rf "$legacy_repo_dir"
-                  git clone --mirror "$served_repo_dir" "$legacy_repo_dir"
                   if [ -n "$old_rev" ] && [ "$old_rev" != "$new_rev" ]; then
                     modified_json="$(
                       git --git-dir="$served_repo_dir" diff --name-only "$old_rev" "$new_rev" \
@@ -132,9 +118,10 @@ spec:
                     cat >/tmp/apps-gitops-webhook.json <<EOF
                   {"ref":"refs/heads/main","after":"${new_rev}","repository":{"name":"apps-gitops","clone_url":"${clone_url}"},"pusher":{"username":"gitea-mirror"},"commits":[{"added":[],"removed":[],"modified":[${modified_json}]}]}
                   EOF
-                    curl -fsS -X POST -H "Content-Type: application/json" \
-                      --data-binary @/tmp/apps-gitops-webhook.json \
-                      "${webhook_url}"
+                    wget -qO- \
+                      --header="Content-Type: application/json" \
+                      --post-file=/tmp/apps-gitops-webhook.json \
+                      "${webhook_url}" >/dev/null
                   fi
               resources:
                 requests:
@@ -157,11 +144,18 @@ spec:
               volumeMounts:
                 - name: data
                   mountPath: /data
+                - name: github-ssh-key
+                  mountPath: /github-ssh
+                  readOnly: true
                 - name: tmp
                   mountPath: /tmp
           volumes:
             - name: data
               persistentVolumeClaim:
                 claimName: gitea-shared-storage-rwx
+            - name: github-ssh-key
+              secret:
+                secretName: github-ssh-key
+                defaultMode: 0400
             - name: tmp
               emptyDir: {}
