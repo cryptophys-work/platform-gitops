@@ -151,7 +151,7 @@ spec:
         name: gitea-charts
         namespace: flux-system
   values:
-    replicaCount: 3
+    replicaCount: 1
     image:
       registry: ghcr.io
       repository: go-gitea/gitea
@@ -250,15 +250,15 @@ spec:
                   until gitea admin user change-password \
                     --username "${GITEA_ADMIN_BOOTSTRAP_USERNAME}" \
                     --password "${GITEA_ADMIN_BOOTSTRAP_PASSWORD}" \
-                    --must-change-password=false >> /tmp/mirror-init.log 2>&1; do
+                    --must-change-password=false >> /tmp/bootstrap-auth.log 2>&1; do
                     n=$((n+1))
                     if [ "$n" -ge 12 ]; then
-                      echo "[bootstrap-auth] failed to normalize ${GITEA_ADMIN_BOOTSTRAP_USERNAME}" >> /tmp/mirror-init.log
+                      echo "[bootstrap-auth] failed to normalize ${GITEA_ADMIN_BOOTSTRAP_USERNAME}" >> /tmp/bootstrap-auth.log
                       exit 1
                     fi
                     sleep 5
                   done
-                  echo "[bootstrap-auth] normalized ${GITEA_ADMIN_BOOTSTRAP_USERNAME}" >> /tmp/mirror-init.log
+                  echo "[bootstrap-auth] normalized ${GITEA_ADMIN_BOOTSTRAP_USERNAME}" >> /tmp/bootstrap-auth.log
                 fi
     ingress:
       enabled: true
