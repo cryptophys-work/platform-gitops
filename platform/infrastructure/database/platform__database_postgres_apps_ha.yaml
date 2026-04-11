@@ -68,7 +68,7 @@ spec:
   # Affinity: pin the single Gitea database to the stable platform-ready worker.
   affinity:
     nodeSelector:
-      kubernetes.io/hostname: cerebellum-161-97-117-96
+      kubernetes.io/hostname: thalamus-217-76-59-241
     tolerations:
     - effect: NoSchedule
       key: cryptophys.io/pool
