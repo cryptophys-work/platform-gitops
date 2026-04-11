@@ -39,13 +39,6 @@ patches:
                 operator: Equal
                 value: "true"
                 effect: NoSchedule
-            containers:
-              - name: manager
-                env:
-                  - name: KUBERNETES_SERVICE_HOST
-                    value: "157.173.120.200"
-                  - name: KUBERNETES_SERVICE_PORT
-                    value: "6443"
     target:
       kind: Deployment
 
