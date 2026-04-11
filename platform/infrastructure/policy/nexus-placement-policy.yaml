@@ -287,6 +287,10 @@ spec:
                       - apps-gateway
                       - navigator
                       - platform-ui
+                      - longhorn-system
+                      - kube-system
+                      - cilium-system
+                      - spire-system
       validate:
         message: >
           Namespace '{{ request.object.metadata.namespace }}' is not allowed to
