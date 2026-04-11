@@ -81,7 +81,6 @@ data:
     trustDomain: cryptophys.work
     spireServerSocketPath: /spire-server/api.sock
     ignoreNamespaces:
-      - kube-system
       - kube-public
       - spire-system
 ---
