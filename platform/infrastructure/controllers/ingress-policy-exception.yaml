@@ -9,21 +9,23 @@ metadata:
     cryptophys.io/reason: "Allow ingress-nginx to use host networking and capabilities"
     cryptophys.io/ticket: "CRYPTOPHYS-2026-INGRESS"
     cryptophys.io/expiry: "2027-01-01"
-spec:
-  exceptions:
-  - policyName: cp-supplychain-registry-v1
-    ruleNames: [restrict-image-registries]
-  - policyName: cp-security-hardening-v1
-    ruleNames: [restrict-pod-security-standard]
-  - policyName: cp-pss-restricted-v1
-    ruleNames: [deny-host-namespaces, deny-capabilities-added]
-  - policyName: cp-standard-resources-limits-v1
-    ruleNames: [require-limits-requests]
-  match:
-    any:
-    - resources:
-        kinds: [Deployment, Pod, ReplicaSet]
-        namespaces: [ingress-system]
-        selector:
-          matchLabels:
-            app.kubernetes.io/name: ingress-nginx
+  spec:
+    exceptions:
+    - policyName: cp-supplychain-registry-v1
+      ruleNames: [restrict-image-registries]
+    - policyName: cp-security-hardening-v1
+      ruleNames: [restrict-pod-security-standard]
+    - policyName: cp-pss-restricted-v1
+      ruleNames: [deny-host-namespaces, deny-capabilities-added]
+    - policyName: deny-apps-ha-toleration-outside-apps
+      ruleNames: [block-apps-ha]
+    - policyName: cp-standard-resources-limits-v1
+      ruleNames: [require-limits-requests]
+    match:
+      any:
+      - resources:
+          kinds: [DaemonSet, Deployment, Pod, ReplicaSet]
+          namespaces: [ingress-system]
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
