@@ -91,6 +91,10 @@ spec:
     spec:
       serviceAccountName: argocd-redis-ha
       tolerations:
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
