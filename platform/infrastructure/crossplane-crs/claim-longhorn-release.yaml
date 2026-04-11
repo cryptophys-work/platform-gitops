@@ -5,7 +5,7 @@ metadata:
   namespace: crossplane-system
 spec:
   defaultReplicaCount: 2
-  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule"
+  taintToleration: "cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule"
   managerResources:
     requests:
       cpu: 200m

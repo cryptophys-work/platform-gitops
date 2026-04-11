@@ -4,6 +4,8 @@ metadata:
   name: cloudflared
   namespace: cloudflare-tunnel
   labels:
+    app.kubernetes.io/instance: cloudflared
+    app.kubernetes.io/managed-by: flux
     app.kubernetes.io/name: cloudflared
     app.kubernetes.io/component: edge-tunnel
     app.kubernetes.io/part-of: cryptophys-edge
@@ -25,6 +27,8 @@ spec:
   template:
     metadata:
       labels:
+        app.kubernetes.io/instance: cloudflared
+        app.kubernetes.io/managed-by: flux
         app.kubernetes.io/name: cloudflared
         app.kubernetes.io/component: edge-tunnel
         app.kubernetes.io/part-of: cryptophys-edge
@@ -39,6 +43,14 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload.cryptophys.work/platform
+                    operator: In
+                    values:
+                      - "true"
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
@@ -47,9 +59,14 @@ spec:
                   matchLabels:
                     app.kubernetes.io/name: cloudflared
                 topologyKey: kubernetes.io/hostname
+      tolerations:
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
       containers:
         - name: cloudflared
-          image: cloudflare/cloudflared:2026.3.0
+          image: docker.io/cloudflare/cloudflared:2026.3.0
           imagePullPolicy: IfNotPresent
           env:
             - name: TUNNEL_ID
@@ -87,6 +104,7 @@ spec:
               memory: 256Mi
           securityContext:
             allowPrivilegeEscalation: false
+            privileged: false
             capabilities:
               drop:
                 - ALL
