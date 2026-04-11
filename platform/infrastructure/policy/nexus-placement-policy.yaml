@@ -9,6 +9,7 @@ metadata:
     policies.kyverno.io/description: >
       Argo-managed application namespaces are allowed onto the apps-ha lane,
       which spans nexus, quanta, and synapse.
+    pod-policies.kyverno.io/autogen-controllers: none
     cryptophys.io/domain: platform
     cryptophys.io/contract: contract.infrastructure.talos_topology.v1
 spec:
@@ -81,6 +82,7 @@ metadata:
     policies.kyverno.io/description: >
       Flux-managed platform namespaces are allowed onto the platform-ha lane,
       which spans nexus, thalamus, and cerebellum.
+    pod-policies.kyverno.io/autogen-controllers: none
     cryptophys.io/domain: platform
     cryptophys.io/contract: contract.infrastructure.talos_topology.v1
 spec:
