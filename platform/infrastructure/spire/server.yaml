@@ -41,6 +41,10 @@ spec:
           operator: Equal
           value: platform-ha
           effect: NoSchedule
+        # Allow scheduling on nodes where Cilium is still initializing (SPIRE must start before Cilium)
+        - key: node.cilium.io/agent-not-ready
+          operator: Exists
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
