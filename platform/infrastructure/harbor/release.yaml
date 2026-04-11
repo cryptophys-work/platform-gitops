@@ -134,7 +134,7 @@ spec:
             patch: |
               - op: replace
                 path: /spec/replicas
-                value: 0
+                value: 1
               - op: replace
                 path: /spec/template/spec/tolerations
                 value:
