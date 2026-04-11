@@ -85,9 +85,11 @@ spec:
           name: kyverno-admission-controller
         patch: |
           - op: add
-            path: /spec/template/spec/nodeSelector/cryptophys.io~1platform-ha
-            value: "true"
-          - op: replace
+            path: /spec/template/spec/nodeSelector
+            value:
+              kubernetes.io/os: linux
+              cryptophys.io/platform-ha: "true"
+          - op: add
             path: /spec/template/spec/tolerations
             value:
               - key: cryptophys.io/pool
@@ -102,9 +104,11 @@ spec:
           name: kyverno-background-controller
         patch: |
           - op: add
-            path: /spec/template/spec/nodeSelector/cryptophys.io~1platform-ha
-            value: "true"
-          - op: replace
+            path: /spec/template/spec/nodeSelector
+            value:
+              kubernetes.io/os: linux
+              cryptophys.io/platform-ha: "true"
+          - op: add
             path: /spec/template/spec/tolerations
             value:
               - key: cryptophys.io/pool
@@ -119,9 +123,11 @@ spec:
           name: kyverno-cleanup-controller
         patch: |
           - op: add
-            path: /spec/template/spec/nodeSelector/cryptophys.io~1platform-ha
-            value: "true"
-          - op: replace
+            path: /spec/template/spec/nodeSelector
+            value:
+              kubernetes.io/os: linux
+              cryptophys.io/platform-ha: "true"
+          - op: add
             path: /spec/template/spec/tolerations
             value:
               - key: cryptophys.io/pool

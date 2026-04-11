@@ -234,6 +234,9 @@ spec:
                       - kueue-system
                       - cloudflare-tunnel
                       - longhorn-system
+                      - cnpg-system
+                      - postgresql-system
+                      - crossplane-system
       validate:
         message: >
           Namespace '{{ request.object.metadata.namespace }}' is not allowed to
