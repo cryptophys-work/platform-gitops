@@ -4368,6 +4368,7 @@ spec:
     port: 80
     protocol: TCP
     targetPort: http
+  publishNotReadyAddresses: true
   selector:
     app: source-controller
   type: ClusterIP
