@@ -47,6 +47,13 @@ spec:
           effect: NoSchedule
       affinity:
         nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values:
+                      - campus-212-47-66-101
           preferredDuringSchedulingIgnoredDuringExecution:
             # Prefer HA infra nodes for resilience
             - weight: 100
