@@ -11,8 +11,10 @@ metadata:
     app.kubernetes.io/part-of: harbor
     cryptophys.io/domain: platform
     cryptophys.io/component: harbor-external-redis
+    cryptophys.io/environment: production
     cryptophys.io/managed-by: flux
     cryptophys.io/layer: platform
+    cryptophys.work/managed-by: aide
 spec:
   selector:
     app.kubernetes.io/name: harbor-external-redis
@@ -34,8 +36,10 @@ metadata:
     app.kubernetes.io/part-of: harbor
     cryptophys.io/domain: platform
     cryptophys.io/component: harbor-external-redis
+    cryptophys.io/environment: production
     cryptophys.io/managed-by: flux
     cryptophys.io/layer: platform
+    cryptophys.work/managed-by: aide
 spec:
   replicas: 1
   selector:
@@ -51,8 +55,10 @@ spec:
         app.kubernetes.io/part-of: harbor
         cryptophys.io/domain: platform
         cryptophys.io/component: harbor-external-redis
+        cryptophys.io/environment: production
         cryptophys.io/managed-by: flux
         cryptophys.io/layer: platform
+        cryptophys.work/managed-by: aide
     spec:
       automountServiceAccountToken: false
       tolerations:
