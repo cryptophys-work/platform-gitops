@@ -33,8 +33,14 @@ spec:
     clustermesh:
       useAPIServer: true
       apiserver:
+        nodeSelector:
+          cryptophys.io/platform-ha: "true"
         tolerations:
-          - key: node-role.kubernetes.io/control-plane
+          - key: cryptophys.io/pool
+            operator: Equal
+            value: platform-ha
+            effect: NoSchedule
+          - key: node.cilium.io/agent-not-ready
             operator: Exists
             effect: NoSchedule
     kubeProxyReplacement: "true"
@@ -82,49 +88,25 @@ spec:
       relay:
         enabled: true
         nodeSelector:
-          workload.cryptophys.work/apps-core: "true"
+          cryptophys.io/platform-ha: "true"
         tolerations:
-          - key: cryptophys.io/role
-            operator: Equal
-            value: llm-inference
-            effect: NoSchedule
           - key: cryptophys.io/pool
-            operator: Exists
+            operator: Equal
+            value: platform-ha
             effect: NoSchedule
-          - key: ray-cluster
-            operator: Exists
-            effect: NoSchedule
-          - key: ray-head
-            operator: Exists
-            effect: NoSchedule
-          - key: bridge-system
-            operator: Exists
-            effect: NoSchedule
-          - key: dao-system
+          - key: node.cilium.io/agent-not-ready
             operator: Exists
             effect: NoSchedule
       ui:
         enabled: true
         nodeSelector:
-          workload.cryptophys.work/apps-core: "true"
+          cryptophys.io/platform-ha: "true"
         tolerations:
-          - key: cryptophys.io/role
-            operator: Equal
-            value: llm-inference
-            effect: NoSchedule
           - key: cryptophys.io/pool
-            operator: Exists
+            operator: Equal
+            value: platform-ha
             effect: NoSchedule
-          - key: ray-cluster
-            operator: Exists
-            effect: NoSchedule
-          - key: ray-head
-            operator: Exists
-            effect: NoSchedule
-          - key: bridge-system
-            operator: Exists
-            effect: NoSchedule
-          - key: dao-system
+          - key: node.cilium.io/agent-not-ready
             operator: Exists
             effect: NoSchedule
     bpf:

@@ -27,14 +27,14 @@ spec:
       alertmanagerSpec:
         replicas: 1
         nodeSelector:
-          workload.cryptophys.work/apps-core: "true"
+          cryptophys.io/platform-ha: "true"
         tolerations:
-          - key: node-role.kubernetes.io/control-plane
-            operator: Exists
-            effect: NoSchedule
-          - key: cryptophys.io/role
+          - key: cryptophys.io/pool
             operator: Equal
-            value: llm-inference
+            value: platform-ha
+            effect: NoSchedule
+          - key: node.cilium.io/agent-not-ready
+            operator: Exists
             effect: NoSchedule
         resources:
           requests:
@@ -51,14 +51,14 @@ spec:
       enabled: true
       replicas: 1
       nodeSelector:
-        workload.cryptophys.work/apps-core: "true"
+        cryptophys.io/platform-ha: "true"
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/role
+        - key: cryptophys.io/pool
           operator: Equal
-          value: llm-inference
+          value: platform-ha
+          effect: NoSchedule
+        - key: node.cilium.io/agent-not-ready
+          operator: Exists
           effect: NoSchedule
       resources:
         requests:
@@ -91,16 +91,16 @@ spec:
       prometheusSpec:
         replicas: 1
         nodeSelector:
-          workload.cryptophys.work/apps-core: "true"
+          cryptophys.io/platform-ha: "true"
         retention: 7d
         retentionSize: 20GiB
         tolerations:
-          - key: node-role.kubernetes.io/control-plane
-            operator: Exists
-            effect: NoSchedule
-          - key: cryptophys.io/role
+          - key: cryptophys.io/pool
             operator: Equal
-            value: llm-inference
+            value: platform-ha
+            effect: NoSchedule
+          - key: node.cilium.io/agent-not-ready
+            operator: Exists
             effect: NoSchedule
         resources:
           requests:
@@ -120,26 +120,26 @@ spec:
                   storage: 20Gi
     prometheusOperator:
       nodeSelector:
-        workload.cryptophys.work/apps-core: "true"
+        cryptophys.io/platform-ha: "true"
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/role
+        - key: cryptophys.io/pool
           operator: Equal
-          value: llm-inference
+          value: platform-ha
+          effect: NoSchedule
+        - key: node.cilium.io/agent-not-ready
+          operator: Exists
           effect: NoSchedule
       admissionWebhooks:
         patch:
           nodeSelector:
-            workload.cryptophys.work/apps-core: "true"
+            cryptophys.io/platform-ha: "true"
           tolerations:
-            - key: node-role.kubernetes.io/control-plane
-              operator: Exists
-              effect: NoSchedule
-            - key: cryptophys.io/role
+            - key: cryptophys.io/pool
               operator: Equal
-              value: llm-inference
+              value: platform-ha
+              effect: NoSchedule
+            - key: node.cilium.io/agent-not-ready
+              operator: Exists
               effect: NoSchedule
       resources:
         requests:
@@ -150,14 +150,14 @@ spec:
           memory: 256Mi
     kube-state-metrics:
       nodeSelector:
-        workload.cryptophys.work/apps-core: "true"
+        cryptophys.io/platform-ha: "true"
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/role
+        - key: cryptophys.io/pool
           operator: Equal
-          value: llm-inference
+          value: platform-ha
+          effect: NoSchedule
+        - key: node.cilium.io/agent-not-ready
+          operator: Exists
           effect: NoSchedule
       resources:
         requests:
