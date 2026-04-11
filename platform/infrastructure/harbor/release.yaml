@@ -25,6 +25,128 @@ spec:
         kind: HelmRepository
         name: goharbor
         namespace: flux-system
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: registry-harbor-core
+            patch: |
+              - op: replace
+                path: /spec/replicas
+                value: 1
+              - op: replace
+                path: /spec/template/spec/tolerations
+                value:
+                  - key: cryptophys.io/pool
+                    operator: Exists
+                    effect: NoSchedule
+              - op: replace
+                path: /spec/template/spec/affinity
+                value:
+                  nodeAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      nodeSelectorTerms:
+                        - matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - thalamus-217-76-59-241
+                                - cerebellum-161-97-117-96
+          - target:
+              kind: Deployment
+              name: registry-harbor-jobservice
+            patch: |
+              - op: replace
+                path: /spec/replicas
+                value: 1
+              - op: replace
+                path: /spec/template/spec/tolerations
+                value:
+                  - key: cryptophys.io/pool
+                    operator: Exists
+                    effect: NoSchedule
+              - op: replace
+                path: /spec/template/spec/affinity
+                value:
+                  nodeAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      nodeSelectorTerms:
+                        - matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - thalamus-217-76-59-241
+                                - cerebellum-161-97-117-96
+          - target:
+              kind: Deployment
+              name: registry-harbor-portal
+            patch: |
+              - op: replace
+                path: /spec/replicas
+                value: 1
+              - op: replace
+                path: /spec/template/spec/tolerations
+                value:
+                  - key: cryptophys.io/pool
+                    operator: Exists
+                    effect: NoSchedule
+              - op: replace
+                path: /spec/template/spec/affinity
+                value:
+                  nodeAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      nodeSelectorTerms:
+                        - matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - thalamus-217-76-59-241
+                                - cerebellum-161-97-117-96
+          - target:
+              kind: Deployment
+              name: registry-harbor-registry
+            patch: |
+              - op: replace
+                path: /spec/template/spec/tolerations
+                value:
+                  - key: cryptophys.io/pool
+                    operator: Exists
+                    effect: NoSchedule
+              - op: replace
+                path: /spec/template/spec/affinity
+                value:
+                  nodeAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      nodeSelectorTerms:
+                        - matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - thalamus-217-76-59-241
+                                - cerebellum-161-97-117-96
+          - target:
+              kind: StatefulSet
+              name: registry-harbor-trivy
+            patch: |
+              - op: replace
+                path: /spec/template/spec/tolerations
+                value:
+                  - key: cryptophys.io/pool
+                    operator: Exists
+                    effect: NoSchedule
+              - op: replace
+                path: /spec/template/spec/affinity
+                value:
+                  nodeAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      nodeSelectorTerms:
+                        - matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - thalamus-217-76-59-241
+                                - cerebellum-161-97-117-96
   values:
     expose:
       type: ingress
