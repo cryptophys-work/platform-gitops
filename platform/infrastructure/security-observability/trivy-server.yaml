@@ -33,6 +33,13 @@ spec:
         app.kubernetes.io/component: trivy-server
         app.kubernetes.io/part-of: security-observability
     spec:
+      tolerations:
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
+      nodeSelector:
+        workload.cryptophys.work/platform: "true"
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
