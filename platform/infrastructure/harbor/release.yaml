@@ -3,6 +3,8 @@ kind: HelmRelease
 metadata:
   name: registry-harbor
   namespace: registry-system
+  annotations:
+    cryptophys.io/reconcile-rev: "harbor-recover-2026-04-11T1456Z"
 spec:
   interval: 30m
   releaseName: registry-harbor
