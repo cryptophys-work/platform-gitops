@@ -120,7 +120,6 @@ spec:
     admissionController:
       createSelfSignedCert: true
       replicas: 2
-      # Increase probe timeouts to prevent crashloops during high load or network latency
       livenessProbe:
         initialDelaySeconds: 30
         periodSeconds: 10
@@ -136,53 +135,20 @@ spec:
           maxSurge: 0
           maxUnavailable: 1
       nodeSelector:
-        kubernetes.io/os: linux
+        cryptophys.io/platform-ha: "true"
       affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: node-role.kubernetes.io/control-plane
-                    operator: Exists
-            - weight: 80
-              preference:
-                matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - cerebellum-161-97-117-96
-                      - quanta-194-163-186-222
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: admission-controller
+              topologyKey: kubernetes.io/hostname
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/role
-          operator: Equal
-          value: llm-inference
-          effect: NoSchedule
-        - key: cryptophys.io/storage-only
-          operator: Exists
-          effect: NoSchedule
         - key: cryptophys.io/pool
-          operator: Exists
-          effect: NoSchedule
-        - key: bridge-system
-          operator: Exists
-          effect: NoSchedule
-        - key: dao-system
-          operator: Exists
-          effect: NoSchedule
-        - key: ray-head
-          operator: Exists
+          operator: Equal
+          value: platform-ha
           effect: NoSchedule
         - key: node.cilium.io/agent-not-ready
-          operator: Exists
-          effect: NoSchedule
-        - key: node.kubernetes.io/unreachable
-          operator: Exists
-          effect: NoSchedule
-        - key: node.kubernetes.io/memory-pressure
           operator: Exists
           effect: NoSchedule
       container:
@@ -206,24 +172,14 @@ spec:
           maxSurge: 0
           maxUnavailable: 1
       nodeSelector:
-        kubernetes.io/os: linux
+        cryptophys.io/platform-ha: "true"
       affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: node-role.kubernetes.io/control-plane
-                    operator: Exists
-            - weight: 80
-              preference:
-                matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - cerebellum-161-97-117-96
-                      - quanta-194-163-186-222
-      # backgroundController uses top-level resources (not container.resources)
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: background-controller
+              topologyKey: kubernetes.io/hostname
       resources:
         requests:
           cpu: "10m"
@@ -232,43 +188,16 @@ spec:
           cpu: "500m"
           memory: "512Mi"
       tolerations:
-        - key: node.kubernetes.io/not-ready
-          operator: Exists
-          effect: NoExecute
-          tolerationSeconds: 300
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/role
-          operator: Equal
-          value: llm-inference
-          effect: NoSchedule
-        - key: cryptophys.io/storage-only
-          operator: Exists
-          effect: NoSchedule
         - key: cryptophys.io/pool
-          operator: Exists
-          effect: NoSchedule
-        - key: bridge-system
-          operator: Exists
-          effect: NoSchedule
-        - key: dao-system
-          operator: Exists
-          effect: NoSchedule
-        - key: ray-head
-          operator: Exists
+          operator: Equal
+          value: platform-ha
           effect: NoSchedule
         - key: node.cilium.io/agent-not-ready
-          operator: Exists
-          effect: NoSchedule
-        - key: node.kubernetes.io/unreachable
           operator: Exists
           effect: NoSchedule
     cleanupController:
       createSelfSignedCert: true
       replicas: 2
-      # extraArgs: only leaderElectionRetryPeriod is supported by cleanup-controller binary
-      # forceFailurePolicyIgnore and leaseDuration/renewDeadline are NOT valid flags here
       extraArgs:
         leaderElectionRetryPeriod: "15s"
       updateStrategy:
@@ -276,8 +205,7 @@ spec:
           maxSurge: 0
           maxUnavailable: 1
       nodeSelector:
-        kubernetes.io/os: linux
-      # cleanupController uses top-level resources (not container.resources)
+        cryptophys.io/platform-ha: "true"
       resources:
         requests:
           cpu: "10m"
@@ -286,56 +214,20 @@ spec:
           cpu: "500m"
           memory: "512Mi"
       tolerations:
-        - key: node.kubernetes.io/not-ready
-          operator: Exists
-          effect: NoExecute
-          tolerationSeconds: 300
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/role
-          operator: Equal
-          value: llm-inference
-          effect: NoSchedule
-        - key: cryptophys.io/storage-only
-          operator: Exists
-          effect: NoSchedule
         - key: cryptophys.io/pool
-          operator: Exists
-          effect: NoSchedule
-        - key: bridge-system
-          operator: Exists
-          effect: NoSchedule
-        - key: dao-system
-          operator: Exists
-          effect: NoSchedule
-        - key: ray-head
-          operator: Exists
+          operator: Equal
+          value: platform-ha
           effect: NoSchedule
         - key: node.cilium.io/agent-not-ready
           operator: Exists
           effect: NoSchedule
-        - key: node.kubernetes.io/unreachable
-          operator: Exists
-          effect: NoSchedule
       affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: node-role.kubernetes.io/control-plane
-                    operator: Exists
-            - weight: 80
-              preference:
-                matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - cerebellum-161-97-117-96
-                      - quanta-194-163-186-222
-      # Increase startup tolerance — medulla (LLM node) is CPU-contended;
-      # cleanup controller needs 3+ minutes to warm up (cache sync + webhook registration)
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: cleanup-controller
+              topologyKey: kubernetes.io/hostname
       startupProbe:
         initialDelaySeconds: 30
         failureThreshold: 50
