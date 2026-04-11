@@ -4,9 +4,6 @@ metadata:
   name: provider-kubernetes-controller
   namespace: crossplane-system
 spec:
-  serviceAccountTemplate:
-    metadata:
-      name: crossplane-provider-kubernetes
   deploymentTemplate:
     spec:
       replicas: 1
@@ -18,7 +15,6 @@ spec:
           labels:
             pkg.crossplane.io/provider: provider-kubernetes
         spec:
-          serviceAccountName: crossplane-provider-kubernetes
           # Resource requests/limits for provider controller
           containers:
           - name: package-manager
