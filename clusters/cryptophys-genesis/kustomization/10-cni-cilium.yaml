@@ -3,6 +3,8 @@ kind: Kustomization
 metadata:
   name: 10-cni-cilium
   namespace: flux-system
+  annotations:
+    reconcile.fluxcd.io/requestedAt: "2026-04-11T13:49:06Z"
 spec:
   interval: 1h
   retryInterval: 2m
