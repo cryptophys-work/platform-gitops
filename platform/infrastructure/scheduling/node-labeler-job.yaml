@@ -240,7 +240,7 @@ spec:
                 --overwrite 2>/dev/null || true
               echo "cerebellum: labelled + tainted (platform-ha)"
 
-              # nexus: shared HA node for both lanes
+              # nexus: shared HA compute hub; do not advertise it as storage
               k label node nexus-144-91-103-10 \
                 node-role.kubernetes.io/worker= \
                 apps-core-target=apps-core \
@@ -250,13 +250,13 @@ spec:
                 cryptophys.io/tier=compute \
                 nexus-tower=true \
                 ray-cluster=true \
-                storage=storage \
                 workload.cryptophys.work/apps-core=true \
                 workload.cryptophys.work/compute=true \
                 workload.cryptophys.work/llm=true \
-                workload.cryptophys.work/storage=true \
                 --overwrite 2>/dev/null || true
               k label node nexus-144-91-103-10 \
+                storage- \
+                workload.cryptophys.work/storage- \
                 cryptophys.io/pool- \
                 --overwrite 2>/dev/null || true
               k taint node nexus-144-91-103-10 \
@@ -265,7 +265,7 @@ spec:
               k taint node nexus-144-91-103-10 \
                 ray-cluster=true:NoSchedule- \
                 --overwrite 2>/dev/null || true
-              echo "nexus: labelled (shared apps-ha + platform-ha, untainted shared peer)"
+              echo "nexus: labelled (shared apps-ha + platform-ha + ray/llm, storage labels removed)"
 
               # campus: drain storage workloads away; keep taint but remove storage attraction labels
               k label node campus-212-47-66-101 \

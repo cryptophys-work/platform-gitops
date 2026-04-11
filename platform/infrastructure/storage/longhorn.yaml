@@ -344,7 +344,7 @@ spec:
       taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
       # Fallback reserve for nodes without an explicit per-node disk override.
       storageReservedPercentageForDefaultDisk: 10
-      storageOverProvisioningPercentage: 200
+      storageOverProvisioningPercentage: 100
       replicaSoftAntiAffinity: true
       replicaAutoBalance: best-effort
       concurrentReplicaRebuildPerNodeLimit: 2
