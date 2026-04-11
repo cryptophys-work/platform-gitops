@@ -8,10 +8,13 @@ spec:
   releaseName: registry-harbor
   timeout: 20m
   install:
+    disableWait: true
     timeout: 20m
     remediation:
       retries: 3
   upgrade:
+    disableWait: true
+    force: true
     timeout: 20m
     cleanupOnFail: true
     remediation:
