@@ -88,12 +88,12 @@ spec:
               requiredDuringSchedulingIgnoredDuringExecution:
                 nodeSelectorTerms:
                 - matchExpressions:
-                  - key: node-role.kubernetes.io/control-plane
-                    operator: DoesNotExist
                   - key: kubernetes.io/hostname
-                    operator: NotIn
+                    operator: In
                     values:
-                    - medulla-82-208-20-242
+                    - nexus-144-91-103-10
+                    - cerebellum-161-97-117-96
+                    - thalamus-217-76-59-241
             # Pod anti-affinity to spread across nodes for HA
             podAntiAffinity:
               preferredDuringSchedulingIgnoredDuringExecution:
