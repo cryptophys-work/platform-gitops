@@ -129,6 +129,17 @@ spec:
                       - kueue-system
                       - cloudflare-tunnel
                       - longhorn-system
+      exclude:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaceSelector:
+                matchExpressions:
+                  - key: kubernetes.io/metadata.name
+                    operator: In
+                    values:
+                      - longhorn-system
       mutate:
         patchStrategicMerge:
           spec:
