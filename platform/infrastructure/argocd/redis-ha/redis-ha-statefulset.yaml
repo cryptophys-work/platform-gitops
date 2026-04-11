@@ -260,4 +260,4 @@ spec:
         resources:
           requests:
             storage: 2Gi
-        storageClassName: longhorn-retain
+        storageClassName: longhorn
