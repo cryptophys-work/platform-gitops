@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - gotk-components.yaml
   - gotk-sync.yaml
+  - flux-rbac-controllers.yaml
 patches:
   # Recovery base: keep Flux inside the approved platform-ha worker lane only.
   - patch: |
