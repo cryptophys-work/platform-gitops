@@ -159,6 +159,9 @@ spec:
           operator: Equal
           value: llm-inference
           effect: NoSchedule
+        - key: cryptophys.io/pool
+          operator: Exists
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -191,6 +194,9 @@ spec:
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
+          effect: NoSchedule
+        - key: cryptophys.io/pool
+          operator: Exists
           effect: NoSchedule
       affinity:
         nodeAffinity:
@@ -229,6 +235,9 @@ spec:
           operator: Equal
           value: llm-inference
           effect: NoSchedule
+        - key: cryptophys.io/pool
+          operator: Exists
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -265,6 +274,9 @@ spec:
           operator: Equal
           value: llm-inference
           effect: NoSchedule
+        - key: cryptophys.io/pool
+          operator: Exists
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -277,8 +289,6 @@ spec:
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
     registry:
-      nodeSelector:
-        kubernetes.io/hostname: cerebellum-161-97-117-96
       registry:
         resources:
           limits:
@@ -300,6 +310,9 @@ spec:
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
+          effect: NoSchedule
+        - key: cryptophys.io/pool
+          operator: Exists
           effect: NoSchedule
       affinity:
         nodeAffinity:
@@ -325,6 +338,9 @@ spec:
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
+          effect: NoSchedule
+        - key: cryptophys.io/pool
+          operator: Exists
           effect: NoSchedule
       affinity:
         nodeAffinity:
