@@ -55,7 +55,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: harbor-release-reset-v1
+  name: harbor-release-reset-v2
   namespace: registry-system
   labels:
     cryptophys.io/domain: platform
@@ -86,7 +86,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: reset
-          image: bitnami/kubectl:1.32.4
+          image: bitnami/kubectl:latest
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
