@@ -66,6 +66,7 @@ metadata:
   name: gitea-redis
   namespace: gitops-system
 spec:
+  publishNotReadyAddresses: true
   selector:
     app: gitea-redis
   ports:
@@ -79,6 +80,7 @@ metadata:
   name: gitops-gitea-valkey-cluster
   namespace: gitops-system
 spec:
+  publishNotReadyAddresses: true
   selector:
     app: gitea-redis
   ports:
@@ -93,6 +95,7 @@ metadata:
   namespace: gitops-system
 spec:
   clusterIP: None
+  publishNotReadyAddresses: true
   selector:
     app: gitea-redis
   ports:
