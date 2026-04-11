@@ -58,10 +58,6 @@ spec:
           - key: bridge-system
             operator: Exists
             effect: NoSchedule
-          # Control plane taint
-          - key: node-role.kubernetes.io/control-plane
-            operator: Exists
-            effect: NoSchedule
           # Memory pressure (temporary)
           - key: node.kubernetes.io/memory-pressure
             operator: Exists
