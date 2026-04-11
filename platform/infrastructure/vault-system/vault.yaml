@@ -39,8 +39,12 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: node-role.kubernetes.io/control-plane
-                    operator: Exists
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - nexus-144-91-103-10
+                      - cerebellum-161-97-117-96
+                      - thalamus-217-76-59-241
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
@@ -50,23 +54,53 @@ spec:
                   component: server
               topologyKey: kubernetes.io/hostname
       tolerations:
+        # Cilium bootstrap taint
+        - key: node.cilium.io/agent-not-ready
+          operator: Exists
+          effect: NoSchedule
+        # Platform HA pool taint
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
+        # Storage-only node taint
+        - key: cryptophys.io/storage-only
+          operator: Exists
+          effect: NoSchedule
+        # LLM inference node taint
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
           effect: NoSchedule
-        - key: node.cilium.io/agent-not-ready
+        # Ray head node taint
+        - key: ray-head
           operator: Exists
           effect: NoSchedule
-        - key: node-role.kubernetes.io/control-plane
+        # DAO system node taint
+        - key: dao-system
           operator: Exists
           effect: NoSchedule
+        # Bridge system node taint
+        - key: bridge-system
+          operator: Exists
+          effect: NoSchedule
+        # Temporary taints
         - key: node.kubernetes.io/memory-pressure
           operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/storage-only
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
+          effect: NoExecute
+          tolerationSeconds: 300
+        - key: node.kubernetes.io/disk-pressure
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 300
+        - key: node.kubernetes.io/pid-pressure
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 300
+        - key: node.kubernetes.io/not-ready
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 300
       dataStorage:
         enabled: true
         size: 10Gi
