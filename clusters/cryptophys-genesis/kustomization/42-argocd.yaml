@@ -10,7 +10,7 @@ metadata:
 spec:
   suspend: false
   interval: 1h
-  prune: false
+  prune: true
   wait: false
   timeout: 30m
   path: ./platform/infrastructure/argocd
