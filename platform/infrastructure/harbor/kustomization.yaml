@@ -6,6 +6,7 @@ resources:
   - harbor__registry-pvc.yaml
   - harbor__registry-pvc-v3.yaml
   - harbor__external-redis.yaml
+  - harbor__cleanup-stale-reset-jobs.yaml
   - release.yaml
   - pdb.yaml
   - servicemonitor-harbor.yaml
