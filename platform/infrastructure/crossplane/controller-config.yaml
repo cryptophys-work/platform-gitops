@@ -1,0 +1,84 @@
+apiVersion: pkg.crossplane.io/v1beta1
+kind: ControllerConfig
+metadata:
+  name: provider-kubernetes-controller
+  namespace: crossplane-system
+spec:
+  # Service account for provider pods
+  serviceAccountName: crossplane-provider-kubernetes
+  # Pod security policy
+  podSecurityPolicy: restricted
+  # Resource requests/limits for provider controller
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  # Tolerate all cluster taints to ensure provider runs everywhere
+  # This makes the provider highly available and persistent across taint changes
+  tolerations:
+  # Cilium bootstrap taint (blocks pod scheduling until Cilium ready)
+  - key: node.cilium.io/agent-not-ready
+    operator: Exists
+    effect: NoSchedule
+  # Platform HA pool taint
+  - key: cryptophys.io/pool
+    operator: Equal
+    value: platform-ha
+    effect: NoSchedule
+  # Storage-only node taint
+  - key: cryptophys.io/storage-only
+    operator: Exists
+    effect: NoSchedule
+  # LLM inference node taint (cerebrum-specific workloads)
+  - key: cryptophys.io/role
+    operator: Equal
+    value: llm-inference
+    effect: NoSchedule
+  # Ray head node taint
+  - key: ray-head
+    operator: Exists
+    effect: NoSchedule
+  # DAO system node taint
+  - key: dao-system
+    operator: Exists
+    effect: NoSchedule
+  # Bridge system node taint
+  - key: bridge-system
+    operator: Exists
+    effect: NoSchedule
+  # Control plane taint
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+  # Memory pressure (temporary)
+  - key: node.kubernetes.io/memory-pressure
+    operator: Exists
+    effect: NoExecute
+  # Disk pressure (temporary)
+  - key: node.kubernetes.io/disk-pressure
+    operator: Exists
+    effect: NoExecute
+  # PID pressure (temporary)
+  - key: node.kubernetes.io/pid-pressure
+    operator: Exists
+    effect: NoExecute
+  # Node not ready
+  - key: node.kubernetes.io/not-ready
+    operator: Exists
+    effect: NoExecute
+  # Pod anti-affinity to spread across nodes for HA
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: pkg.crossplane.io/provider
+              operator: In
+              values:
+              - provider-kubernetes
+          topologyKey: kubernetes.io/hostname
