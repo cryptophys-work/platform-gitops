@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - edge-and-harbor-exceptions.yaml
   - kyverno-release.yaml
+  - nexus-placement-policy.yaml
   - pdbs-critical-services.yaml
   - ../tekton
   # Existing ClusterPolicy resources remain live because the Flux kustomization has prune=false.
