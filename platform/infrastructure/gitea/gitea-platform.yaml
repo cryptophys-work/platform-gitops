@@ -79,6 +79,42 @@ spec:
                       matchLabels:
                         app.kubernetes.io/name: gitea
                         app.kubernetes.io/instance: gitops-gitea
+              - op: replace
+                path: /spec/template/spec/containers/0/readinessProbe
+                value:
+                  httpGet:
+                    path: /api/healthz
+                    port: http
+                    scheme: HTTP
+                  initialDelaySeconds: 60
+                  timeoutSeconds: 5
+                  periodSeconds: 10
+                  successThreshold: 1
+                  failureThreshold: 6
+              - op: replace
+                path: /spec/template/spec/containers/0/livenessProbe
+                value:
+                  httpGet:
+                    path: /api/healthz
+                    port: http
+                    scheme: HTTP
+                  initialDelaySeconds: 120
+                  timeoutSeconds: 5
+                  periodSeconds: 15
+                  successThreshold: 1
+                  failureThreshold: 4
+              - op: add
+                path: /spec/template/spec/containers/0/startupProbe
+                value:
+                  httpGet:
+                    path: /api/healthz
+                    port: http
+                    scheme: HTTP
+                  initialDelaySeconds: 10
+                  timeoutSeconds: 5
+                  periodSeconds: 10
+                  successThreshold: 1
+                  failureThreshold: 30
           - target:
               kind: Deployment
               name: gitops-gitea
