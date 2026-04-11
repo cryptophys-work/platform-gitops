@@ -336,12 +336,12 @@ spec:
       defaultClassReplicaCount: 2
     defaultSettings:
       defaultReplicaCount: 2
-      # System-managed components (instance/share/engine helpers) must stay off
-      # control-plane and land on the platform HA worker pool instead.
-      systemManagedComponentsNodeSelector: "cryptophys.io/platform-ha:true"
-      # Managers/CSI DaemonSets can still run on control-plane, but transient
-      # system-managed Longhorn workloads must not tolerate control-plane taints.
-      taintToleration: "cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
+      # Instance-managers must run on ALL nodes that host volume replicas,
+      # including control-plane nodes. Restricting to platform-ha caused
+      # data stranding on CP nodes (cortex/cerebrum/corpus).
+      systemManagedComponentsNodeSelector: ""
+      # Tolerate all custom taints so IMs can schedule everywhere.
+      taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
       # Fallback reserve for nodes without an explicit per-node disk override.
       storageReservedPercentageForDefaultDisk: 10
       storageOverProvisioningPercentage: 200
