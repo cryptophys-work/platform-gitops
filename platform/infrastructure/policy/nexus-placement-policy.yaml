@@ -127,6 +127,8 @@ spec:
                       - tekton-pipelines-resolvers
                       - tekton-dashboard
                       - kueue-system
+                      - cloudflare-tunnel
+                      - longhorn-system
       mutate:
         patchStrategicMerge:
           spec:
@@ -219,6 +221,8 @@ spec:
                       - tekton-pipelines-resolvers
                       - tekton-dashboard
                       - kueue-system
+                      - cloudflare-tunnel
+                      - longhorn-system
       validate:
         message: >
           Namespace '{{ request.object.metadata.namespace }}' is not allowed to

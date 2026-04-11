@@ -1,0 +1,171 @@
+# Flux controller RBAC — CRBs for source, helm, notification, image-* controllers.
+# gotk-components.yaml only ships cluster-reconciler (kustomize-controller) and
+# crd-controller ClusterRole + CRB.  These additional bindings are required for
+# all other controllers to watch CRDs and install HelmReleases cluster-wide.
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: source-controller-flux-system
+  labels:
+    app.kubernetes.io/instance: flux-system
+    app.kubernetes.io/part-of: flux
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: crd-controller-flux-system
+subjects:
+  - kind: ServiceAccount
+    name: source-controller
+    namespace: flux-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: helm-controller-flux-system
+  labels:
+    app.kubernetes.io/instance: flux-system
+    app.kubernetes.io/part-of: flux
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: helm-controller
+    namespace: flux-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: notification-controller-flux-system
+  labels:
+    app.kubernetes.io/instance: flux-system
+    app.kubernetes.io/part-of: flux
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: crd-controller-flux-system
+subjects:
+  - kind: ServiceAccount
+    name: notification-controller
+    namespace: flux-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: image-reflector-controller-flux-system
+  labels:
+    app.kubernetes.io/instance: flux-system
+    app.kubernetes.io/part-of: flux
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: crd-controller-flux-system
+subjects:
+  - kind: ServiceAccount
+    name: image-reflector-controller
+    namespace: flux-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: image-automation-controller-flux-system
+  labels:
+    app.kubernetes.io/instance: flux-system
+    app.kubernetes.io/part-of: flux
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: crd-controller-flux-system
+subjects:
+  - kind: ServiceAccount
+    name: image-automation-controller
+    namespace: flux-system
+---
+# Leader election Role — coordination.k8s.io/leases full CRUD needed by all controllers.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: flux-leader-election
+  namespace: flux-system
+  labels:
+    app.kubernetes.io/instance: flux-system
+    app.kubernetes.io/part-of: flux
+rules:
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: source-controller-leader-election
+  namespace: flux-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flux-leader-election
+subjects:
+  - kind: ServiceAccount
+    name: source-controller
+    namespace: flux-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: helm-controller-leader-election
+  namespace: flux-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flux-leader-election
+subjects:
+  - kind: ServiceAccount
+    name: helm-controller
+    namespace: flux-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: notification-controller-leader-election
+  namespace: flux-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flux-leader-election
+subjects:
+  - kind: ServiceAccount
+    name: notification-controller
+    namespace: flux-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: image-reflector-leader-election
+  namespace: flux-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flux-leader-election
+subjects:
+  - kind: ServiceAccount
+    name: image-reflector-controller
+    namespace: flux-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: image-automation-leader-election
+  namespace: flux-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flux-leader-election
+subjects:
+  - kind: ServiceAccount
+    name: image-automation-controller
+    namespace: flux-system
