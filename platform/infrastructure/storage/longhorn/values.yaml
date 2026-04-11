@@ -1,7 +1,8 @@
 USER-SUPPLIED VALUES:
 defaultSettings:
   defaultReplicaCount: 3
-  systemManagedComponentsNodeSelector: "cryptophys.io/platform-ha:true"
+  systemManagedComponentsNodeSelector: ""
+  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
 persistence:
   defaultClass: true
   defaultClassReplicaCount: 3
