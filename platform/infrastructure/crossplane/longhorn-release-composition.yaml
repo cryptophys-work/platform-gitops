@@ -42,8 +42,8 @@ spec:
                   defaultClassReplicaCount: 2
                 defaultSettings:
                   defaultReplicaCount: 2
-                  systemManagedComponentsNodeSelector: cryptophys.io/platform-ha:true
-                  taintToleration: cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule
+                  systemManagedComponentsNodeSelector: ""
+                  taintToleration: node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule
                   storageReservedPercentageForDefaultDisk: 10
                   replicaSoftAntiAffinity: true
                   replicaAutoBalance: best-effort
