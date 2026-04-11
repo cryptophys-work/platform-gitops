@@ -14,7 +14,7 @@ metadata:
     cryptophys.io/managed-by: flux
 spec:
   schedule: "*/10 * * * *"
-  suspend: true
+  suspend: false
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 3
@@ -60,13 +60,13 @@ spec:
                 - name: GITHUB_USERNAME
                   valueFrom:
                     secretKeyRef:
-                      name: gitea-mirror-token
-                      key: user
+                      name: github-repo-auth
+                      key: username
                 - name: GITHUB_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: gitea-mirror-token
-                      key: token
+                      name: github-repo-auth
+                      key: password
               command:
                 - /bin/sh
                 - -lc
