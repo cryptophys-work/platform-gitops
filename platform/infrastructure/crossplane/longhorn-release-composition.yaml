@@ -53,7 +53,7 @@ spec:
                   concurrentVolumeBackupRestorePerNodeLimit: 2
                   replicaReplenishmentWaitInterval: 900
                   autoCleanupSystemGeneratedSnapshot: true
-                  storageOverProvisioningPercentage: 200
+                  storageOverProvisioningPercentage: 100
                   autoDeletePodWhenVolumeDetachedUnexpectedly: true
                 longhornManager:
                   resources:
@@ -119,7 +119,8 @@ spec:
                     tolerationSeconds: 300
                 longhornDriver:
                   nodeSelector:
-                    workload.cryptophys.work/storage: "true"
+                    cryptophys.io/tier: compute
+                    nexus-workload-hub: "true"
                   tolerations:
                   # Cilium bootstrap taint
                   - key: node.cilium.io/agent-not-ready
