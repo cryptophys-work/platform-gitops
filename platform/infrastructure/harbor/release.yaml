@@ -127,6 +127,31 @@ spec:
                                 - cerebellum-161-97-117-96
           - target:
               kind: StatefulSet
+              name: registry-harbor-database
+            patch: |
+              - op: replace
+                path: /spec/replicas
+                value: 0
+              - op: replace
+                path: /spec/template/spec/tolerations
+                value:
+                  - key: cryptophys.io/pool
+                    operator: Exists
+                    effect: NoSchedule
+              - op: replace
+                path: /spec/template/spec/affinity
+                value:
+                  nodeAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      nodeSelectorTerms:
+                        - matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - thalamus-217-76-59-241
+                                - cerebellum-161-97-117-96
+          - target:
+              kind: StatefulSet
               name: registry-harbor-trivy
             patch: |
               - op: replace
