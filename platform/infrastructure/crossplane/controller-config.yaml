@@ -82,8 +82,19 @@ spec:
           - key: node.kubernetes.io/not-ready
             operator: Exists
             effect: NoExecute
-          # Pod anti-affinity to spread across nodes for HA
+          # Node affinity: run on worker nodes only (not control planes or medulla)
           affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: DoesNotExist
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values:
+                    - medulla-82-208-20-242
+            # Pod anti-affinity to spread across nodes for HA
             podAntiAffinity:
               preferredDuringSchedulingIgnoredDuringExecution:
               - weight: 100
