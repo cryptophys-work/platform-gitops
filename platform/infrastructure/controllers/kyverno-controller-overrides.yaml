@@ -1,3 +1,7 @@
+# Kyverno controller placement overrides.
+# All three controllers MUST run on platform-HA nodes (cerebellum, thalamus, nexus).
+# This file is applied by kustomize-controller via SSA and WINS over the Helm chart render.
+# Anti-affinity ensures each replica spreads across different platform-HA nodes.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,54 +23,31 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/os: linux
+        cryptophys.io/platform-ha: "true"
       affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: node-role.kubernetes.io/control-plane
-                    operator: Exists
-            - weight: 80
-              preference:
-                matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - cerebellum-161-97-117-96
-                      - quanta-194-163-186-222
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: admission-controller
+                  app.kubernetes.io/instance: kyverno
+              topologyKey: kubernetes.io/hostname
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/role
-          operator: Equal
-          value: llm-inference
-          effect: NoSchedule
-        - key: cryptophys.io/storage-only
-          operator: Exists
-          effect: NoSchedule
         - key: cryptophys.io/pool
-          operator: Exists
-          effect: NoSchedule
-        - key: bridge-system
-          operator: Exists
-          effect: NoSchedule
-        - key: dao-system
-          operator: Exists
-          effect: NoSchedule
-        - key: ray-head
-          operator: Exists
-          effect: NoSchedule
-        - key: ray-cluster
-          operator: Exists
+          operator: Equal
+          value: platform-ha
           effect: NoSchedule
         - key: node.cilium.io/agent-not-ready
           operator: Exists
           effect: NoSchedule
-        - key: node.kubernetes.io/memory-pressure
+        - key: node.kubernetes.io/not-ready
           operator: Exists
-          effect: NoSchedule
+          effect: NoExecute
+          tolerationSeconds: 300
+        - key: node.kubernetes.io/unreachable
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 300
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -89,58 +70,31 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/os: linux
+        cryptophys.io/platform-ha: "true"
       affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: node-role.kubernetes.io/control-plane
-                    operator: Exists
-            - weight: 80
-              preference:
-                matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - cerebellum-161-97-117-96
-                      - quanta-194-163-186-222
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: background-controller
+                  app.kubernetes.io/instance: kyverno
+              topologyKey: kubernetes.io/hostname
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
+        - key: node.cilium.io/agent-not-ready
           operator: Exists
           effect: NoSchedule
         - key: node.kubernetes.io/not-ready
           operator: Exists
           effect: NoExecute
           tolerationSeconds: 300
-        - key: cryptophys.io/role
-          operator: Equal
-          value: llm-inference
-          effect: NoSchedule
-        - key: cryptophys.io/storage-only
+        - key: node.kubernetes.io/unreachable
           operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/pool
-          operator: Exists
-          effect: NoSchedule
-        - key: bridge-system
-          operator: Exists
-          effect: NoSchedule
-        - key: dao-system
-          operator: Exists
-          effect: NoSchedule
-        - key: ray-head
-          operator: Exists
-          effect: NoSchedule
-        - key: ray-cluster
-          operator: Exists
-          effect: NoSchedule
-        - key: node.cilium.io/agent-not-ready
-          operator: Exists
-          effect: NoSchedule
-        - key: node.kubernetes.io/memory-pressure
-          operator: Exists
-          effect: NoSchedule
+          effect: NoExecute
+          tolerationSeconds: 300
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -163,55 +117,28 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/os: linux
+        cryptophys.io/platform-ha: "true"
       affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: node-role.kubernetes.io/control-plane
-                    operator: Exists
-            - weight: 80
-              preference:
-                matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - cerebellum-161-97-117-96
-                      - quanta-194-163-186-222
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: cleanup-controller
+                  app.kubernetes.io/instance: kyverno
+              topologyKey: kubernetes.io/hostname
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
+        - key: node.cilium.io/agent-not-ready
           operator: Exists
           effect: NoSchedule
         - key: node.kubernetes.io/not-ready
           operator: Exists
           effect: NoExecute
           tolerationSeconds: 300
-        - key: cryptophys.io/role
-          operator: Equal
-          value: llm-inference
-          effect: NoSchedule
-        - key: cryptophys.io/storage-only
+        - key: node.kubernetes.io/unreachable
           operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/pool
-          operator: Exists
-          effect: NoSchedule
-        - key: bridge-system
-          operator: Exists
-          effect: NoSchedule
-        - key: dao-system
-          operator: Exists
-          effect: NoSchedule
-        - key: ray-head
-          operator: Exists
-          effect: NoSchedule
-        - key: ray-cluster
-          operator: Exists
-          effect: NoSchedule
-        - key: node.cilium.io/agent-not-ready
-          operator: Exists
-          effect: NoSchedule
-        - key: node.kubernetes.io/memory-pressure
-          operator: Exists
-          effect: NoSchedule
+          effect: NoExecute
+          tolerationSeconds: 300
