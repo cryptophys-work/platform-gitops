@@ -102,12 +102,13 @@ patches:
       kind: Deployment
       metadata:
         name: source-controller
-        spec:
-          strategy:
-            type: RollingUpdate
-            rollingUpdate:
-              maxUnavailable: 1
-              maxSurge: 0
+      spec:
+        replicas: 1
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxUnavailable: 1
+            maxSurge: 0
         template:
           spec:
             affinity:
@@ -120,19 +121,6 @@ patches:
                           values:
                             - nexus-144-91-103-10
                             - cerebellum-161-97-117-96
-              podAntiAffinity:
-                requiredDuringSchedulingIgnoredDuringExecution:
-                  - labelSelector:
-                      matchLabels:
-                        app: source-controller
-                    topologyKey: kubernetes.io/hostname
-            topologySpreadConstraints:
-              - maxSkew: 1
-                topologyKey: kubernetes.io/hostname
-                whenUnsatisfiable: DoNotSchedule
-                labelSelector:
-                  matchLabels:
-                    app: source-controller
     target:
       kind: Deployment
       name: source-controller
