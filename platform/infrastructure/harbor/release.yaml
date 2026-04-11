@@ -182,7 +182,7 @@ spec:
                   release: registry-harbor
               topologyKey: kubernetes.io/hostname
     portal:
-      replicas: 3
+      replicas: 1
       resources:
         limits:
           cpu: 100m
@@ -210,19 +210,21 @@ spec:
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
         podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchLabels:
-                  app: harbor
-                  component: portal
-                  release: registry-harbor
-              topologyKey: kubernetes.io/hostname
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: harbor
+                    component: portal
+                    release: registry-harbor
+                topologyKey: kubernetes.io/hostname
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: DoNotSchedule
+          whenUnsatisfiable: ScheduleAnyway
     core:
-      replicas: 3
+      replicas: 1
       resources:
         limits:
           cpu: 500m
@@ -250,18 +252,21 @@ spec:
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
         podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: kubernetes.io/hostname
-              labelSelector:
-                matchLabels:
-                  app: harbor
-                  component: core
-                  release: registry-harbor
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: harbor
+                    component: core
+                    release: registry-harbor
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: DoNotSchedule
+          whenUnsatisfiable: ScheduleAnyway
     jobservice:
+      replicas: 1
       resources:
         limits:
           cpu: 200m
@@ -326,7 +331,7 @@ spec:
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
     exporter:
-      replicas: 3
+      replicas: 1
       resources:
         limits:
           cpu: 100m
