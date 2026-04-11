@@ -6,11 +6,12 @@ metadata:
   annotations:
     cryptophys.io/domain: platform
     cryptophys.io/managed-by: flux
+    reconcile.fluxcd.io/requestedAt: "2026-04-11T13:00:24Z"
 spec:
   suspend: false
   interval: 1h
   prune: false
-  wait: true
+  wait: false
   timeout: 30m
   path: ./platform/infrastructure/harbor
   sourceRef:
