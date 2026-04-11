@@ -48,15 +48,6 @@ spec:
                           - "true"
                       - key: cryptophys.io/role
                         operator: DoesNotExist
-            podAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchLabels:
-                      app.kubernetes.io/name: gitea
-                      app.kubernetes.io/instance: gitops-gitea
-                  namespaces:
-                    - gitops-system
-                  topologyKey: kubernetes.io/hostname
           tolerations:
             - key: cryptophys.io/pool
               operator: Equal
@@ -78,40 +69,43 @@ spec:
                   value: /tmp/home
                 - name: TMPDIR
                   value: /tmp
+                - name: GITEA_ADMIN_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: gitea-admin-secret
+                      key: username
+                - name: GITEA_ADMIN_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: gitea-admin-secret
+                      key: password
               command:
                 - /bin/sh
                 - -lc
                 - |
                   set -eu
                   src_url="ssh://git@github.com/cryptophys-work/apps-gitops.git"
-                  served_repo_dir="/data/git/gitea-repositories/cryptophys-work/apps-gitops.git"
-                  clone_url="http://gitops-gitea-http.gitops-system.svc.cluster.local:3000/cryptophys-work/apps-gitops.git"
+                  clone_url="http://gitea-http-internal.gitops-system.svc.cluster.local:3000/cryptophys-work/apps-gitops.git"
                   webhook_url="http://webhook-receiver.tekton-system.svc.cluster.local/hook"
                   old_rev=""
                   export GIT_SSH_COMMAND="ssh -i /github-ssh/identity -o UserKnownHostsFile=/github-ssh/known_hosts -o StrictHostKeyChecking=yes"
                   git_auth() { GIT_TERMINAL_PROMPT=0 git "$@"; }
-                  mkdir -p /tmp/home \
-                    /data/git/gitea-repositories/cryptophys-work
-                  if [ -d "$served_repo_dir" ] && git --git-dir="$served_repo_dir" rev-parse --is-bare-repository >/dev/null 2>&1; then
-                    old_rev="$(git --git-dir="$served_repo_dir" rev-parse refs/heads/main 2>/dev/null || true)"
-                    if git --git-dir="$served_repo_dir" remote get-url origin >/dev/null 2>&1; then
-                      git --git-dir="$served_repo_dir" remote set-url origin "$src_url"
-                    else
-                      git --git-dir="$served_repo_dir" remote add origin "$src_url"
-                    fi
-                    git_auth --git-dir="$served_repo_dir" fetch --prune origin "+refs/*:refs/*"
-                  else
-                    tmp_repo="$(mktemp -d /tmp/apps-gitops.XXXXXX)"
-                    rmdir "$tmp_repo"
-                    git_auth clone --mirror "$src_url" "$tmp_repo"
-                    rm -rf "$served_repo_dir"
-                    mv "$tmp_repo" "$served_repo_dir"
-                  fi
-                  git --git-dir="$served_repo_dir" symbolic-ref HEAD refs/heads/main || true
-                  new_rev="$(git --git-dir="$served_repo_dir" rev-parse refs/heads/main)"
+                  mkdir -p /tmp/home
+                  cat >/tmp/home/.netrc <<EOF
+                  machine gitea-http-internal.gitops-system.svc.cluster.local login ${GITEA_ADMIN_USER} password ${GITEA_ADMIN_PASSWORD}
+                  machine gitops-gitea-http.gitops-system.svc.cluster.local login ${GITEA_ADMIN_USER} password ${GITEA_ADMIN_PASSWORD}
+                  EOF
+                  chmod 600 /tmp/home/.netrc
+                  old_rev="$(git ls-remote "$clone_url" refs/heads/main 2>/dev/null | awk '{print $1}')"
+                  tmp_repo="$(mktemp -d /tmp/apps-gitops.XXXXXX)"
+                  rmdir "$tmp_repo"
+                  git_auth clone --mirror "$src_url" "$tmp_repo"
+                  git --git-dir="$tmp_repo" remote add gitea "$clone_url"
+                  git_auth --git-dir="$tmp_repo" push --mirror gitea
+                  new_rev="$(git --git-dir="$tmp_repo" rev-parse refs/heads/main)"
                   if [ -n "$old_rev" ] && [ "$old_rev" != "$new_rev" ]; then
                     modified_json="$(
-                      git --git-dir="$served_repo_dir" diff --name-only "$old_rev" "$new_rev" \
+                      git --git-dir="$tmp_repo" diff --name-only "$old_rev" "$new_rev" \
                         | sed 's/\\/\\\\/g; s/"/\\"/g; s/^/"/; s/$/"/' \
                         | paste -sd, -
                     )"
@@ -142,17 +136,12 @@ spec:
                 seccompProfile:
                   type: RuntimeDefault
               volumeMounts:
-                - name: data
-                  mountPath: /data
                 - name: github-ssh-key
                   mountPath: /github-ssh
                   readOnly: true
                 - name: tmp
                   mountPath: /tmp
           volumes:
-            - name: data
-              persistentVolumeClaim:
-                claimName: gitea-shared-storage-rwx
             - name: github-ssh-key
               secret:
                 secretName: github-ssh-key
