@@ -76,22 +76,25 @@ patches:
       metadata:
         name: kustomize-controller
       spec:
+        replicas: 1
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxUnavailable: 1
+            maxSurge: 0
         template:
           spec:
             affinity:
-              podAntiAffinity:
+              nodeAffinity:
                 requiredDuringSchedulingIgnoredDuringExecution:
-                  - labelSelector:
-                      matchLabels:
-                        app: kustomize-controller
-                    topologyKey: kubernetes.io/hostname
-            topologySpreadConstraints:
-              - maxSkew: 1
-                topologyKey: kubernetes.io/hostname
-                whenUnsatisfiable: DoNotSchedule
-                labelSelector:
-                  matchLabels:
-                    app: kustomize-controller
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                        - key: kubernetes.io/hostname
+                          operator: In
+                          values:
+                            - nexus-144-91-103-10
+                            - cerebellum-161-97-117-96
+                            - thalamus-217-76-59-241
     target:
       kind: Deployment
       name: kustomize-controller
