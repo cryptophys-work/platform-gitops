@@ -39,7 +39,7 @@ spec:
             path: /spec/template/spec/nodeSelector
             value:
               kubernetes.io/os: linux
-              workload.cryptophys.work/platform: "true"
+              cryptophys.io/platform-ha: "true"
           - op: add
             path: /spec/template/spec/tolerations
             value:
@@ -52,7 +52,8 @@ spec:
                 effect: NoExecute
                 tolerationSeconds: 300
               - key: cryptophys.io/pool
-                operator: Exists
+                operator: Equal
+                value: platform-ha
                 effect: NoSchedule
               - key: node.cilium.io/agent-not-ready
                 operator: Exists
@@ -64,16 +65,68 @@ spec:
           - op: add
             path: /spec/replicas
             value: 1
-          - op: add
+          - op: replace
             path: /spec/template/spec/nodeSelector
             value:
               kubernetes.io/os: linux
-              workload.cryptophys.work/platform: "true"
-          - op: add
+              cryptophys.io/platform-ha: "true"
+          - op: replace
             path: /spec/template/spec/tolerations
             value:
               - key: cryptophys.io/pool
+                operator: Equal
+                value: platform-ha
+                effect: NoSchedule
+              - key: node.cilium.io/agent-not-ready
                 operator: Exists
+                effect: NoSchedule
+      - target:
+          kind: Deployment
+          name: kyverno-admission-controller
+        patch: |
+          - op: add
+            path: /spec/template/spec/nodeSelector/cryptophys.io~1platform-ha
+            value: "true"
+          - op: replace
+            path: /spec/template/spec/tolerations
+            value:
+              - key: cryptophys.io/pool
+                operator: Equal
+                value: platform-ha
+                effect: NoSchedule
+              - key: node.cilium.io/agent-not-ready
+                operator: Exists
+                effect: NoSchedule
+      - target:
+          kind: Deployment
+          name: kyverno-background-controller
+        patch: |
+          - op: add
+            path: /spec/template/spec/nodeSelector/cryptophys.io~1platform-ha
+            value: "true"
+          - op: replace
+            path: /spec/template/spec/tolerations
+            value:
+              - key: cryptophys.io/pool
+                operator: Equal
+                value: platform-ha
+                effect: NoSchedule
+              - key: node.cilium.io/agent-not-ready
+                operator: Exists
+                effect: NoSchedule
+      - target:
+          kind: Deployment
+          name: kyverno-cleanup-controller
+        patch: |
+          - op: add
+            path: /spec/template/spec/nodeSelector/cryptophys.io~1platform-ha
+            value: "true"
+          - op: replace
+            path: /spec/template/spec/tolerations
+            value:
+              - key: cryptophys.io/pool
+                operator: Equal
+                value: platform-ha
                 effect: NoSchedule
               - key: node.cilium.io/agent-not-ready
                 operator: Exists
