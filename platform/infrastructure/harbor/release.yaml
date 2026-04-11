@@ -131,7 +131,6 @@ spec:
                     - key: kubernetes.io/hostname
                       operator: In
                       values:
-                        - nexus-144-91-103-10
                         - thalamus-217-76-59-241
                         - cerebellum-161-97-117-96
     redis:
@@ -170,7 +169,6 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - nexus-144-91-103-10
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
         podAntiAffinity:
@@ -206,7 +204,6 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - nexus-144-91-103-10
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
         podAntiAffinity:
@@ -248,7 +245,6 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - nexus-144-91-103-10
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
         podAntiAffinity:
@@ -290,7 +286,6 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - nexus-144-91-103-10
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
     registry:
@@ -327,7 +322,6 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - nexus-144-91-103-10
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
     exporter:
@@ -355,7 +349,6 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - nexus-144-91-103-10
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
         podAntiAffinity:
