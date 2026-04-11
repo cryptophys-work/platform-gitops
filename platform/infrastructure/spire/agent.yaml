@@ -65,11 +65,11 @@ spec:
           args: ["-config", "/run/spire/config/agent.conf"]
           resources:
             limits:
-              cpu: 200m
-              memory: 256Mi
+              cpu: 300m
+              memory: 512Mi
             requests:
               cpu: 50m
-              memory: 64Mi
+              memory: 128Mi
           volumeMounts:
             - name: spire-config
               mountPath: /run/spire/config

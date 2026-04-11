@@ -1,0 +1,27 @@
+---
+# SPIRE Workload Registration for Cilium Agent
+# Enables SPIRE delegated identity API for Cilium mTLS
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: cilium-agent
+  labels:
+    app.kubernetes.io/name: spire
+    app.kubernetes.io/part-of: spire
+    cryptophys.work/domain: identity
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: kube-system
+
+  podSelector:
+    matchLabels:
+      k8s-app: cilium
+
+  autoPopulateDNSNames: true
+  ttl: "1h"
