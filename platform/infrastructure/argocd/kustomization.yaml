@@ -6,6 +6,7 @@ resources:
   - argocd-repo-credentials-eso.yaml
   - argocd-server-secret-eso.yaml
   - argocd__pv_retain_job.yaml
+  - redis-ha
   - storageclass-longhorn-retain.yaml
   - spiffe-helper-config.yaml
   - release.yaml
