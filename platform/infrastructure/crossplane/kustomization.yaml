@@ -1,10 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  # Crossplane controller configuration (tolerations, resources, anti-affinity)
+  - controller-config.yaml
+  # Workload placement abstraction (node selection + tolerations)
   - workload-placement-definition.yaml
   - workload-placement-composition.yaml
+  # Provider configuration (local Kubernetes API access)
   - provider-kubernetes.yaml
   - provider-kubernetes-rbac.yaml
+  # Longhorn release abstraction
   - definition.yaml
   - composition.yaml
   - longhorn-release-definition.yaml

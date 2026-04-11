@@ -64,42 +64,133 @@ spec:
                       cpu: 1000m
                       memory: 2Gi
                   tolerations:
+                  # Control plane taints (DaemonSet must run on control planes)
                   - key: node-role.kubernetes.io/control-plane
                     operator: Exists
                     effect: NoSchedule
                   - key: node-role.kubernetes.io/master
                     operator: Exists
                     effect: NoSchedule
+                  # Cilium bootstrap taint
+                  - key: node.cilium.io/agent-not-ready
+                    operator: Exists
+                    effect: NoSchedule
+                  # Platform HA pool taint
+                  - key: cryptophys.io/pool
+                    operator: Equal
+                    value: platform-ha
+                    effect: NoSchedule
+                  # Storage-only taint
                   - key: cryptophys.io/storage-only
                     operator: Exists
                     effect: NoSchedule
+                  # LLM inference node taint
                   - key: cryptophys.io/role
                     operator: Exists
                     effect: NoSchedule
+                  # Ray head taint
+                  - key: ray-head
+                    operator: Exists
+                    effect: NoSchedule
+                  # DAO system taint
+                  - key: dao-system
+                    operator: Exists
+                    effect: NoSchedule
+                  # Bridge system taint
+                  - key: bridge-system
+                    operator: Exists
+                    effect: NoSchedule
+                  # Temporary taints
+                  - key: node.kubernetes.io/not-ready
+                    operator: Exists
+                    effect: NoExecute
+                    tolerationSeconds: 300
+                  - key: node.kubernetes.io/memory-pressure
+                    operator: Exists
+                    effect: NoExecute
+                    tolerationSeconds: 300
+                  - key: node.kubernetes.io/disk-pressure
+                    operator: Exists
+                    effect: NoExecute
+                    tolerationSeconds: 300
+                  - key: node.kubernetes.io/pid-pressure
+                    operator: Exists
+                    effect: NoExecute
+                    tolerationSeconds: 300
                 longhornDriver:
                   nodeSelector:
-                    cryptophys.io/tier: compute
-                    nexus-workload-hub: "true"
+                    workload.cryptophys.work/storage: "true"
                   tolerations:
+                  # Cilium bootstrap taint
+                  - key: node.cilium.io/agent-not-ready
+                    operator: Exists
+                    effect: NoSchedule
+                  # Platform HA pool taint
+                  - key: cryptophys.io/pool
+                    operator: Equal
+                    value: platform-ha
+                    effect: NoSchedule
+                  # Storage-only taint (for dedicated storage nodes)
+                  - key: cryptophys.io/storage-only
+                    operator: Exists
+                    effect: NoSchedule
+                  # LLM inference node taint
                   - key: cryptophys.io/role
                     operator: Equal
                     value: llm-inference
                     effect: NoSchedule
-                  - key: cryptophys.io/storage-only
+                  # Temporary taints (memory/disk/pid pressure)
+                  - key: node.kubernetes.io/not-ready
                     operator: Exists
-                    effect: NoSchedule
+                    effect: NoExecute
+                    tolerationSeconds: 300
+                  - key: node.kubernetes.io/disk-pressure
+                    operator: Exists
+                    effect: NoExecute
+                    tolerationSeconds: 300
                 longhornUI:
                   nodeSelector:
-                    cryptophys.io/tier: compute
-                    nexus-workload-hub: "true"
+                    workload.cryptophys.work/compute: "true"
                   tolerations:
+                  # Cilium bootstrap taint
+                  - key: node.cilium.io/agent-not-ready
+                    operator: Exists
+                    effect: NoSchedule
+                  # Platform HA pool taint
+                  - key: cryptophys.io/pool
+                    operator: Equal
+                    value: platform-ha
+                    effect: NoSchedule
+                  # Storage-only taint
+                  - key: cryptophys.io/storage-only
+                    operator: Exists
+                    effect: NoSchedule
+                  # LLM inference node taint
                   - key: cryptophys.io/role
                     operator: Equal
                     value: llm-inference
                     effect: NoSchedule
-                  - key: cryptophys.io/storage-only
+                  # Ray head taint
+                  - key: ray-head
                     operator: Exists
                     effect: NoSchedule
+                  # DAO system taint
+                  - key: dao-system
+                    operator: Exists
+                    effect: NoSchedule
+                  # Bridge system taint
+                  - key: bridge-system
+                    operator: Exists
+                    effect: NoSchedule
+                  # Temporary taints
+                  - key: node.kubernetes.io/not-ready
+                    operator: Exists
+                    effect: NoExecute
+                    tolerationSeconds: 300
+                  - key: node.kubernetes.io/disk-pressure
+                    operator: Exists
+                    effect: NoExecute
+                    tolerationSeconds: 300
                 csi:
                   attacherReplicaCount: 2
                   provisionerReplicaCount: 2

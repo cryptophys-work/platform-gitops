@@ -2,5 +2,9 @@ apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
   name: provider-kubernetes
+  namespace: crossplane-system
 spec:
   package: xpkg.upbound.io/crossplane-contrib/provider-kubernetes:v0.13.0
+  # Reference ControllerConfig for tolerations and resource management
+  controllerConfigRef:
+    name: provider-kubernetes-controller

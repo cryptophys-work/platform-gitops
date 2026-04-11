@@ -2,15 +2,19 @@ apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
   name: workload-placement.kubernetes.cryptophys.work
+  namespace: crossplane-system
 spec:
   compositeTypeRef:
     apiVersion: cryptophys.work/v1alpha1
     kind: XWorkloadPlacement
   resources:
-  - name: patch-deployment-selector
+  # Main resource: patches deployment with node selectors and tolerations
+  - name: patch-deployment-placement
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
       kind: Object
+      metadata:
+        name: placement-patch
       spec:
         forProvider:
           manifest:
@@ -22,14 +26,77 @@ spec:
             spec:
               template:
                 spec:
+                  # Default tolerations for all workloads
+                  tolerations:
+                  # Tolerate Cilium bootstrap taint
+                  - key: node.cilium.io/agent-not-ready
+                    operator: Exists
+                    effect: NoSchedule
+                  # Tolerate platform-ha pool taint
+                  - key: cryptophys.io/pool
+                    operator: Equal
+                    value: platform-ha
+                    effect: NoSchedule
+                  # Tolerate storage-only taint
+                  - key: cryptophys.io/storage-only
+                    operator: Exists
+                    effect: NoSchedule
+                  # Tolerate memory pressure (temporary)
+                  - key: node.kubernetes.io/not-ready
+                    operator: Exists
+                    effect: NoExecute
+                    tolerationSeconds: 300
+                  # Tolerate disk pressure (temporary)
+                  - key: node.kubernetes.io/disk-pressure
+                    operator: Exists
+                    effect: NoExecute
+                    tolerationSeconds: 300
         providerConfigRef:
           name: local-kubernetes-provider
     patches:
+    # Target workload metadata
     - fromFieldPath: "spec.targetWorkload.name"
       toFieldPath: "spec.forProvider.manifest.metadata.name"
     - fromFieldPath: "spec.targetWorkload.namespace"
       toFieldPath: "spec.forProvider.manifest.metadata.namespace"
     - fromFieldPath: "spec.targetWorkload.kind"
       toFieldPath: "spec.forProvider.manifest.kind"
+    # Node selection: both old and new label schemes for compatibility
     - fromFieldPath: "spec.placement.tier"
       toFieldPath: "spec.forProvider.manifest.spec.template.spec.nodeSelector[cryptophys.io/tier]"
+    # New workload domain labels (idempotent: only set if tier is worker/compute/storage/platform)
+    - fromFieldPath: "spec.placement.tier"
+      toFieldPath: "spec.forProvider.manifest.spec.template.spec.nodeSelector[workload.cryptophys.work/compute]"
+      transforms:
+      - type: match
+        match:
+          patterns:
+          - type: literal
+            literal: compute
+            result: "true"
+          - type: literal
+            literal: worker
+            result: "true"
+    - fromFieldPath: "spec.placement.tier"
+      toFieldPath: "spec.forProvider.manifest.spec.template.spec.nodeSelector[workload.cryptophys.work/storage]"
+      transforms:
+      - type: match
+        match:
+          patterns:
+          - type: literal
+            literal: storage
+            result: "true"
+    - fromFieldPath: "spec.placement.tier"
+      toFieldPath: "spec.forProvider.manifest.spec.template.spec.nodeSelector[workload.cryptophys.work/platform]"
+      transforms:
+      - type: match
+        match:
+          patterns:
+          - type: literal
+            literal: platform
+            result: "true"
+    # Optional: preferred node affinity for specific hostname placement
+    - fromFieldPath: "spec.placement.preferredNode"
+      toFieldPath: "spec.forProvider.manifest.spec.template.spec.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].preference.matchExpressions[0].values[0]"
+      policy:
+        fromFieldPath: Optional
