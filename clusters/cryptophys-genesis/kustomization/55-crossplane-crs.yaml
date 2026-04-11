@@ -16,5 +16,3 @@ spec:
   sourceRef:
     kind: GitRepository
     name: platform-repo
-  dependsOn:
-    - name: 55-crossplane
