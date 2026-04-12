@@ -4,6 +4,7 @@ resources:
   - gotk-components.yaml
   - gotk-sync.yaml
   - flux-rbac-controllers.yaml
+  - flux__baseline-egress.yaml
 patches:
   # Recovery base: keep Flux inside the approved platform-ha worker lane only.
   - patch: |
