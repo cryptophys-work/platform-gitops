@@ -23,21 +23,8 @@ spec:
               kinds:
                 - Pod
               namespaceSelector:
-                matchExpressions:
-                  - key: kubernetes.io/metadata.name
-                    operator: In
-                    values:
-                      - aide
-                      - cerebrum
-                      - apps-core
-                      - apps-dash
-                      - apps-user
-                      - bridge
-                      - automation
-                      - apps-automation
-                      - apps-gateway
-                      - navigator
-                      - platform-ui
+                matchLabels:
+                  cryptophys.io/pool: apps-ha
       exclude:
         any:
           - resources:
@@ -140,41 +127,8 @@ spec:
               kinds:
                 - Pod
               namespaceSelector:
-                matchExpressions:
-                  - key: kubernetes.io/metadata.name
-                    operator: In
-                    values:
-                      - kube-system
-                      - flux-system
-                      - cnpg-system
-                      - gitops-system
-                      - ingress-system
-                      - registry-system
-                      - kyverno-system
-                      - cert-manager
-                      - metallb-system
-                      - external-secrets
-                      - spire-system
-                      - vault-system
-                      - observability-system
-                      - security-system
-                      - security-observability
-                      - gatekeeper-system
-                      - falco-system
-                      - tetragon-system
-                      - mesh-system
-                      - database
-                      - minio-system
-                      - trustedledger
-                      - image-factory
-                      - orchestrator
-                      - facilitator
-                      - tekton-pipelines
-                      - tekton-pipelines-resolvers
-                      - tekton-dashboard
-                      - kueue-system
-                      - cloudflare-tunnel
-                      - longhorn-system
+                matchLabels:
+                  cryptophys.io/pool: platform-ha
       exclude:
         any:
           - resources:
