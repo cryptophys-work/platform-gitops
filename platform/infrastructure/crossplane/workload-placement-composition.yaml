@@ -100,3 +100,70 @@ spec:
       toFieldPath: "spec.forProvider.manifest.spec.template.spec.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].preference.matchExpressions[0].values[0]"
       policy:
         fromFieldPath: Optional
+
+  # RayService head group placement (in addition to generic Deployment patches)
+  - name: patch-rayservice-head
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      metadata:
+        name: rayservice-head-patch
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: ray.io/v1
+            kind: RayService
+            metadata:
+              name: any
+              namespace: any
+            spec:
+              rayClusterConfig:
+                headGroupSpec:
+                  template:
+                    spec:
+                      nodeSelector: {}
+        providerConfigRef:
+          name: local-kubernetes-provider
+    patches:
+    - fromFieldPath: "spec.targetWorkload.name"
+      toFieldPath: "spec.forProvider.manifest.metadata.name"
+    - fromFieldPath: "spec.targetWorkload.namespace"
+      toFieldPath: "spec.forProvider.manifest.metadata.namespace"
+    - fromFieldPath: "spec.placement.tier"
+      toFieldPath: "spec.forProvider.manifest.spec.rayClusterConfig.headGroupSpec.template.spec.nodeSelector[cryptophys.io/tier]"
+    # Node affinity for preferred node (Ray head)
+    - fromFieldPath: "spec.placement.preferredNode"
+      toFieldPath: "spec.forProvider.manifest.spec.rayClusterConfig.headGroupSpec.template.spec.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].preference.matchExpressions[0].values[0]"
+      policy:
+        fromFieldPath: Optional
+
+  # RayService worker group placement (optional, for scaling hints)
+  - name: patch-rayservice-workers
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      metadata:
+        name: rayservice-worker-patch
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: ray.io/v1
+            kind: RayService
+            metadata:
+              name: any
+              namespace: any
+            spec:
+              rayClusterConfig:
+                workerGroupSpecs:
+                - template:
+                    spec:
+                      nodeSelector: {}
+        providerConfigRef:
+          name: local-kubernetes-provider
+    patches:
+    - fromFieldPath: "spec.targetWorkload.name"
+      toFieldPath: "spec.forProvider.manifest.metadata.name"
+    - fromFieldPath: "spec.targetWorkload.namespace"
+      toFieldPath: "spec.forProvider.manifest.metadata.namespace"
+    - fromFieldPath: "spec.placement.tier"
+      toFieldPath: "spec.forProvider.manifest.spec.rayClusterConfig.workerGroupSpecs[0].template.spec.nodeSelector[cryptophys.io/tier]"

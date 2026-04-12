@@ -27,6 +27,8 @@ spec:
                   kind:
                     type: string
                     default: "Deployment"
+                    enum: ["Deployment", "RayService", "StatefulSet"]
+                    description: "Target workload type (Deployment, RayService, StatefulSet)"
                   name:
                     type: string
                   namespace:

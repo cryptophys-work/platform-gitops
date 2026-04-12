@@ -44,3 +44,51 @@ spec:
   placement:
     tier: compute
     preferredNode: nexus-144-91-103-10
+
+---
+# Ray cluster head placements
+# These pin RayService heads to appropriate ray-head nodes based on their tolerations
+
+apiVersion: cryptophys.work/v1alpha1
+kind: WorkloadPlacement
+metadata:
+  name: aide-mesh-ray-head
+  namespace: crossplane-system
+spec:
+  targetWorkload:
+    kind: RayService
+    name: aide-mesh
+    namespace: aide
+  placement:
+    tier: compute
+    preferredNode: quanta-194-163-186-222
+
+---
+apiVersion: cryptophys.work/v1alpha1
+kind: WorkloadPlacement
+metadata:
+  name: cerebrum-llm-ray-head
+  namespace: crossplane-system
+spec:
+  targetWorkload:
+    kind: RayService
+    name: cerebrum-llm
+    namespace: cqls-compute
+  placement:
+    tier: compute
+    preferredNode: synapse-161-97-136-251
+
+---
+apiVersion: cryptophys.work/v1alpha1
+kind: WorkloadPlacement
+metadata:
+  name: mcp-mesh-ray-head
+  namespace: crossplane-system
+spec:
+  targetWorkload:
+    kind: RayService
+    name: mcp-mesh
+    namespace: apps-core
+  placement:
+    tier: compute
+    preferredNode: quanta-194-163-186-222
