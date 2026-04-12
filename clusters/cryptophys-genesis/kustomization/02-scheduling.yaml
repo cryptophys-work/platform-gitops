@@ -7,7 +7,7 @@ metadata:
     cryptophys.io/domain: platform
     cryptophys.io/layer: platform
     cryptophys.io/managed-by: flux
-    reconcile.fluxcd.io/requestedAt: "2026-04-11T11:42:00Z"
+    reconcile.fluxcd.io/requestedAt: "2026-04-12T00:01:33Z"
 spec:
   suspend: false   # Unsuspend manually after: 01-namespaces applied, iSCSI/Longhorn ready
   interval: 10m
