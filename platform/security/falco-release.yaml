@@ -16,6 +16,21 @@ spec:
         kind: HelmRepository
         name: falcosecurity
         namespace: flux-system
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: DaemonSet
+              name: falco
+            patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: falco
+              spec:
+                updateStrategy:
+                  rollingUpdate:
+                    maxUnavailable: 10
   values:
     driver:
       kind: modern_ebpf

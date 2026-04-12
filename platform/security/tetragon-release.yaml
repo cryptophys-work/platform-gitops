@@ -31,6 +31,9 @@ spec:
               metadata:
                 name: tetragon
               spec:
+                updateStrategy:
+                  rollingUpdate:
+                    maxUnavailable: 10
                 template:
                   spec:
                     affinity: null
