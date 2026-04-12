@@ -4,7 +4,7 @@ metadata:
   name: 10-cni-cilium
   namespace: flux-system
   annotations:
-    reconcile.fluxcd.io/requestedAt: "2026-04-12T00:01:30Z"
+    reconcile.fluxcd.io/requestedAt: "2026-04-12T00:01:33Z"
 spec:
   interval: 1h
   retryInterval: 2m

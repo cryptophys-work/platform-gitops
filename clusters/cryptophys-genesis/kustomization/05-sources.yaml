@@ -6,6 +6,7 @@ metadata:
   annotations:
     cryptophys.io/domain: platform
     cryptophys.io/managed-by: flux
+    reconcile.fluxcd.io/requestedAt: "2026-04-12T00:01:33Z"
 spec:
   suspend: false
   interval: 1h
