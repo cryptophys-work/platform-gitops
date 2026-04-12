@@ -6,8 +6,7 @@ resources:
   - flux-rbac-controllers.yaml
   - flux__baseline-egress.yaml
 patches:
-  # Recovery base: keep Flux on approved compute lanes, but tolerate the taints
-  # currently used by the recovery pool model so controllers always have a home.
+  # Recovery base: keep Flux on approved compute lanes.
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
@@ -31,40 +30,49 @@ patches:
                           values:
                             - cerebellum-161-97-117-96
                             - thalamus-217-76-59-241
-            tolerations:
-              - key: cryptophys.io/pool
-                operator: Equal
-                value: platform-ha
-                effect: NoSchedule
-              - key: cryptophys.io/pool
-                operator: Equal
-                value: apps-ha
-                effect: NoSchedule
-              - key: node.cilium.io/agent-not-ready
-                operator: Exists
-                effect: NoSchedule
-              - key: ray-cluster
-                operator: Equal
-                value: "true"
-                effect: NoSchedule
-              - key: ray-head
-                operator: Equal
-                value: "true"
-                effect: NoSchedule
-              - key: bridge-system
-                operator: Equal
-                value: "true"
-                effect: NoSchedule
-              - key: dao-system
-                operator: Equal
-                value: "true"
-                effect: NoSchedule
-              - key: cryptophys.io/role
-                operator: Equal
-                value: llm-inference
-                effect: NoSchedule
     target:
       kind: Deployment
+
+  # Replace Flux controller tolerations deterministically instead of relying on
+  # strategic-merge list behavior.
+  - patch: |-
+      - op: replace
+        path: /spec/template/spec/tolerations
+        value:
+          - key: cryptophys.io/pool
+            operator: Equal
+            value: platform-ha
+            effect: NoSchedule
+          - key: cryptophys.io/pool
+            operator: Equal
+            value: apps-ha
+            effect: NoSchedule
+          - key: node.cilium.io/agent-not-ready
+            operator: Exists
+            effect: NoSchedule
+          - key: ray-cluster
+            operator: Equal
+            value: "true"
+            effect: NoSchedule
+          - key: ray-head
+            operator: Equal
+            value: "true"
+            effect: NoSchedule
+          - key: bridge-system
+            operator: Equal
+            value: "true"
+            effect: NoSchedule
+          - key: dao-system
+            operator: Equal
+            value: "true"
+            effect: NoSchedule
+          - key: cryptophys.io/role
+            operator: Equal
+            value: llm-inference
+            effect: NoSchedule
+    target:
+      kind: Deployment
+      labelSelector: control-plane=controller
 
   # Spread helm-controller replicas across different nodes.
   - patch: |
