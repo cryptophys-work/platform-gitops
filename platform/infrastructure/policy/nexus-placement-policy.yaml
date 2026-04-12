@@ -153,6 +153,9 @@ spec:
                     values:
                       - ingress-system
                       - longhorn-system
+                      - metallb-system
+                      - falco-system
+                      - tetragon-system
       mutate:
         patchStrategicMerge:
           spec:
