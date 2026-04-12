@@ -63,6 +63,7 @@ spec:
                   - key: app
                     operator: In
                     values:
+                      - dash-nexus
                       - nexus-oauth2-proxy
                       - synapse-oauth2-proxy
           - resources:
