@@ -132,13 +132,15 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - nexus-144-91-103-10
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
       tolerations:
         - key: cryptophys.io/pool
           operator: Equal
           value: platform-ha
+          effect: NoSchedule
+        - key: node.cilium.io/agent-not-ready
+          operator: Exists
           effect: NoSchedule
         - key: ray-cluster
           operator: Equal
