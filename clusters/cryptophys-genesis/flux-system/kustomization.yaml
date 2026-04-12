@@ -154,6 +154,7 @@ patches:
                           operator: In
                           values:
                             - cerebellum-161-97-117-96
+                            - thalamus-217-76-59-241
     target:
       kind: Deployment
       name: source-controller
