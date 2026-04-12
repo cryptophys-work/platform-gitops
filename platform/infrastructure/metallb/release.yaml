@@ -68,7 +68,7 @@ spec:
             template:
               metadata:
                 annotations:
-                  cryptophys.io/daemonset-refresh: "2026-04-12T12:30:00Z"
+                  cryptophys.io/daemonset-refresh: "2026-04-12T12:45:00Z"
               spec:
                 affinity: null
   values:
