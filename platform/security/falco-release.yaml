@@ -31,6 +31,10 @@ spec:
                 updateStrategy:
                   rollingUpdate:
                     maxUnavailable: 10
+                template:
+                  metadata:
+                    annotations:
+                      cryptophys.io/daemonset-refresh: "2026-04-12T12:30:00Z"
   values:
     driver:
       kind: modern_ebpf
