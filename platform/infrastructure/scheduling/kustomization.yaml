@@ -2,6 +2,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - campus-storage-worker.yaml
-  - node-labeler-job.yaml
   - priority-classes.yaml
   - resource-quotas.yaml
