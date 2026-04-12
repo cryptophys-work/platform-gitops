@@ -7,15 +7,6 @@ spec:
   tier: platform
   customLabels:
     cryptophys.io/tier: platform
-  longhornNode:
-    allowScheduling: true
-    evictionRequested: false
-    disks:
-      default-disk-080600000000:
-        path: /var/lib/longhorn/
-        allowScheduling: true
-        storageReserved: 21474836480 # 20GiB
-        evictionRequested: false
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -26,15 +17,6 @@ spec:
   tier: platform
   customLabels:
     cryptophys.io/tier: platform
-  longhornNode:
-    allowScheduling: true
-    evictionRequested: false
-    disks:
-      default-disk-080600000000:
-        path: /var/lib/longhorn/
-        allowScheduling: true
-        storageReserved: 10737418240 # 10GiB
-        evictionRequested: false
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -45,15 +27,6 @@ spec:
   tier: platform
   customLabels:
     cryptophys.io/tier: platform
-  longhornNode:
-    allowScheduling: true
-    evictionRequested: false
-    disks:
-      default-disk-080600000000:
-        path: /var/lib/longhorn/
-        allowScheduling: true
-        storageReserved: 10737418240 # 10GiB
-        evictionRequested: false
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -71,20 +44,6 @@ spec:
     nexus-workload-hub: "true"
     nexus-tower: "true"
     cryptophys.io/role: llm-inference
-  longhornNode:
-    allowScheduling: true
-    evictionRequested: false
-    disks:
-      default-disk-080600000000:
-        path: /var/lib/longhorn/
-        allowScheduling: false
-        storageReserved: 21474836480 # 20GiB
-        evictionRequested: false
-      data-disk-1901e1e1c520:
-        path: /var/mnt/longhorn-data/
-        allowScheduling: true
-        storageReserved: 21474836480 # 20GiB
-        evictionRequested: false
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -104,15 +63,6 @@ spec:
     cryptophys.io/tier: compute
     apps-ha: "true"
     ray-head: "true"
-  longhornNode:
-    allowScheduling: true
-    evictionRequested: false
-    disks:
-      default-disk-080600000000:
-        path: /var/lib/longhorn/
-        allowScheduling: true
-        storageReserved: 21474836480 # 20GiB
-        evictionRequested: false
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -128,15 +78,6 @@ spec:
   customLabels:
     cryptophys.io/tier: compute
     platform-ha: "true"
-  longhornNode:
-    allowScheduling: true
-    evictionRequested: false
-    disks:
-      default-disk-080600000000:
-        path: /var/lib/longhorn/
-        allowScheduling: true
-        storageReserved: 21474836480 # 20GiB
-        evictionRequested: false
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -156,15 +97,6 @@ spec:
     cryptophys.io/tier: compute
     platform-ha: "true"
     ray-head: "true"
-  longhornNode:
-    allowScheduling: true
-    evictionRequested: false
-    disks:
-      default-disk-080600000000:
-        path: /var/lib/longhorn/
-        allowScheduling: true
-        storageReserved: 21474836480 # 20GiB
-        evictionRequested: false
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -188,15 +120,6 @@ spec:
     bridge-system: "true"
     dao-system: "true"
     ray-head: "true"
-  longhornNode:
-    allowScheduling: true
-    evictionRequested: false
-    disks:
-      default-disk-080600000000:
-        path: /var/lib/longhorn/
-        allowScheduling: true
-        storageReserved: 21474836480 # 20GiB
-        evictionRequested: false
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -212,15 +135,6 @@ spec:
   customLabels:
     cryptophys.io/tier: storage
     node-role: storage-worker
-  longhornNode:
-    allowScheduling: false
-    evictionRequested: true
-    disks:
-      default-disk-080600000000:
-        path: /var/lib/longhorn/
-        allowScheduling: false
-        storageReserved: 21474836480 # 20GiB
-        evictionRequested: true
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -236,12 +150,3 @@ spec:
   customLabels:
     cryptophys.io/tier: storage
     node-role: storage-worker
-  longhornNode:
-    allowScheduling: false
-    evictionRequested: true
-    disks:
-      default-disk-080600000000:
-        path: /var/lib/longhorn/
-        allowScheduling: false
-        storageReserved: 17179869184 # 16GiB
-        evictionRequested: true
