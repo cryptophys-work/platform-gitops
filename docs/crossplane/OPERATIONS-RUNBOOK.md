@@ -4,6 +4,103 @@ Quick reference for managing node infrastructure via Crossplane GitOps.
 
 ---
 
+## Health & Monitoring (P0: Cluster API Stability)
+
+### Monitor Crossplane API Health
+
+**Time:** ~5 minutes (ongoing monitoring)
+
+**Context:** Crossplane composition patches depend on cluster API server health. High API latency can cause composition timeouts.
+
+**Symptoms of API Issues:**
+- WorkloadPlacement stuck in "Syncing" (composition patches delayed)
+- ManagedNode stuck in "Syncing" (label/taint updates delayed)
+- Error in Crossplane logs: `context deadline exceeded` or `TLS handshake timeout`
+- kubectl commands timing out: `Unable to connect to the server`
+
+**Check API Health:**
+
+1. **Check API server response time:**
+   ```bash
+   time kubectl api-resources > /dev/null
+   # Good: <500ms
+   # Warning: 500ms-2s
+   # Critical: >2s or timeout
+   ```
+
+2. **Check API server pods:**
+   ```bash
+   kubectl -n kube-system get pod -l component=kube-apiserver -o wide
+   # All should be Running with Ready=1/1
+   ```
+
+3. **Check etcd health:**
+   ```bash
+   kubectl -n kube-system get pod -l component=etcd -o wide
+   # All control-plane etcd pods should be Running
+   ```
+
+4. **Monitor Crossplane composition requests:**
+   ```bash
+   # Check Crossplane logs for rate limit errors
+   kubectl -n crossplane-system logs -f deployment/crossplane \
+     | grep -i "rate\|deadline\|timeout"
+   ```
+
+5. **Check ManagedNode/WorkloadPlacement sync status:**
+   ```bash
+   # Should show SYNCED=True, READY=True
+   kubectl get managednode,workloadplacement -n crossplane-system
+   
+   # If stuck in Syncing, check age and conditions
+   kubectl describe managednode cortex-178-18-250-39 -n crossplane-system | grep -A 10 Conditions
+   ```
+
+**Expected Behavior:**
+- API responses: <500ms typical
+- ManagedNode: SYNCED=True within 30 seconds of claim update
+- WorkloadPlacement: SYNCED=True within 60 seconds (patches applied)
+
+**When API Issues Occur:**
+
+⚠️ **Known Issue (P0):** Cluster-wide API server timeouts occasionally occur during high load.
+- Root cause: Analyzed in `docs/crossplane/P0-API-RATE-LIMIT-ANALYSIS.md`
+- Impact: Only WorkloadPlacement patches delayed; ManagedNode (labels/taints) always recover
+- Mitigation: Monitor and wait for API to stabilize (usually <5 minutes)
+- Workarounds: Manual label/taint patches can bypass composition, but should be avoided
+
+**Recovery Steps:**
+
+1. **Check if issue is widespread (all API calls slow):**
+   ```bash
+   kubectl get pods --all-namespaces | wc -l
+   # Should complete in <10 seconds
+   ```
+
+2. **If API is slow, wait for stability:**
+   ```bash
+   # Monitor until API responds quickly
+   while true; do time kubectl api-resources > /dev/null; done
+   # Press Ctrl+C when response time is <500ms
+   ```
+
+3. **Trigger Crossplane reconciliation once API stable:**
+   ```bash
+   # Force Crossplane to reconcile delayed patches
+   kubectl -n crossplane-system patch xworkloadplacement --all -p '{"metadata":{"annotations":{"reconcile.crossplane.io/trigger":"true"}}}'
+   
+   # Monitor reconciliation
+   kubectl get workloadplacement -n crossplane-system -w
+   # Watch for SYNCED → True
+   ```
+
+**References:**
+- P0 Analysis: `docs/crossplane/P0-API-RATE-LIMIT-ANALYSIS.md`
+- Crossplane Logs: `kubectl -n crossplane-system logs -f deployment/crossplane`
+- Cluster Events: `kubectl get events --all-namespaces --sort-by='.lastTimestamp'`
+
+---
+
 ## Common Operations
 
 ### Add a New Compute Worker Node
