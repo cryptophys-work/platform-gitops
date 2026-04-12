@@ -19,7 +19,7 @@ spec:
   values:
     driver:
       kind: modern_ebpf
-    affinity: {}
+    affinity: null
     # FALCO CORE RESOURCES (DaemonSet)
     resources:
       requests:
