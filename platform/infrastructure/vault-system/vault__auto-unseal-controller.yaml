@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault-auto-unseal-controller
+  namespace: vault-system
+  labels:
+    app.kubernetes.io/name: vault-auto-unseal-controller
+    app.kubernetes.io/component: vault-auto-unseal
+    cryptophys.io/domain: platform
+    cryptophys.io/component: vault-auto-unseal
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vault-auto-unseal-controller
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vault-auto-unseal-controller
+        app.kubernetes.io/component: vault-auto-unseal
+        cryptophys.io/domain: platform
+        cryptophys.io/component: vault-auto-unseal
+        cryptophys.io/managed-by: flux
+        cryptophys.io/layer: platform
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: controller
+          image: hashicorp/vault:1.15.2
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: HOME
+              value: /tmp
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              while true; do
+                for pod in vault-0 vault-1 vault-2; do
+                  export VAULT_ADDR="http://${pod}.vault-internal.vault-system.svc:8200"
+                  status="$(vault status 2>/dev/null || true)"
+                  initialized="$(printf '%s\n' "$status" | awk '/Initialized/ {print $2}')"
+                  sealed="$(printf '%s\n' "$status" | awk '/Sealed/ {print $2}')"
+
+                  if [ "$initialized" = "true" ] && [ "$sealed" = "true" ]; then
+                    echo "unsealing ${pod}"
+                    vault operator unseal "$(cat /keys/key1)" >/dev/null
+                    vault operator unseal "$(cat /keys/key2)" >/dev/null
+                    vault operator unseal "$(cat /keys/key3)" >/dev/null
+                  fi
+                done
+
+                sleep 30
+              done
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: vault-unseal-keys
+              mountPath: /keys
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - nexus-144-91-103-10
+                      - cerebellum-161-97-117-96
+                      - thalamus-217-76-59-241
+      tolerations:
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
+        - key: node.cilium.io/agent-not-ready
+          operator: Exists
+          effect: NoSchedule
+      volumes:
+        - name: vault-unseal-keys
+          secret:
+            secretName: vault-unseal-keys
+        - name: tmp
+          emptyDir: {}
