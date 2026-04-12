@@ -1,6 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  # Node management claims (all 10 cluster nodes)
   - claims-platform-nodes.yaml
+  # Workload placement claims (Deployments + RayServices)
+  - claims-workload-placement.yaml
+  # Longhorn release claim
   - claim-longhorn-release.yaml
+  # Provider configuration
   - provider-config.yaml
