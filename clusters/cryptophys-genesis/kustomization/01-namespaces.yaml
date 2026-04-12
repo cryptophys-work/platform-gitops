@@ -11,6 +11,7 @@ metadata:
 spec:
   suspend: false   # Unsuspend after 00-crds is Applied
   interval: 10m
+  force: true     # Apply label updates to existing namespaces
   prune: false    # Never prune namespaces
   wait: false
   timeout: 5m
