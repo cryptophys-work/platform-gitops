@@ -1,0 +1,36 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: flux-baseline-egress
+  namespace: flux-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: flux
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+spec:
+  endpointSelector: {}
+  egress:
+    - toEntities:
+        - kube-apiserver
+        - host
+        - cluster
+        - world
+    - toServices:
+        - k8sService:
+            namespace: flux-system
+            serviceName: source-controller
+        - k8sService:
+            namespace: flux-system
+            serviceName: notification-controller
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: node-local-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: ANY
