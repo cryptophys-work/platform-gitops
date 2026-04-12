@@ -7,6 +7,13 @@ spec:
   endpointSelector: {}
   egress:
   - toEntities: [kube-apiserver, host, cluster]
+  - toServices:
+    - k8sService:
+        namespace: vault-system
+        serviceName: vault
+    - k8sService:
+        namespace: vault-system
+        serviceName: vault-active
   - toEndpoints:
     - matchLabels:
         app.kubernetes.io/instance: vault
@@ -20,6 +27,9 @@ spec:
   - toEndpoints:
     - matchLabels:
         k8s-app: kube-dns
-        kubernetes.io/metadata.name: kube-system
+        io.kubernetes.pod.namespace: kube-system
+    - matchLabels:
+        k8s-app: node-local-dns
+        io.kubernetes.pod.namespace: kube-system
     toPorts:
     - ports: [{port: "53", protocol: ANY}]
