@@ -17,7 +17,7 @@ spec:
         spec:
           # Resource requests/limits for provider controller
           containers:
-          - name: package-manager
+          - name: package-runtime
             resources:
               requests:
                 cpu: 100m
