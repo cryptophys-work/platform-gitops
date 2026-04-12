@@ -1,0 +1,201 @@
+# ClusterPool-Driven Namespace Labeling
+#
+# This file documents the strategy for integrating ClusterPool definitions with Kyverno policies.
+# Rather than hardcoding namespace lists in policies, we label namespaces with their pool membership
+# and reference those labels in Kyverno policy rules.
+#
+# Pool Membership Labels (to be applied to namespaces):
+# cryptophys.io/pool: apps-ha        (11 namespaces)
+# cryptophys.io/pool: platform-ha    (27 namespaces)
+# cryptophys.io/pool: storage-only   (2 namespaces)
+#
+# This enables:
+# 1. Single source of truth (ClusterPool definition)
+# 2. Dynamic policy matching (no hardcoded lists)
+# 3. Easy onboarding (add namespace → apply label → policy auto-applies)
+
+---
+# Example: Namespace with pool membership label
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aide
+  labels:
+    # ClusterPool membership label (maps to ClusterPool instance)
+    cryptophys.io/pool: apps-ha
+    # Optional: human-readable pool name
+    cryptophys.io/pool-description: "Apps HA workload cluster"
+
+---
+# Strategy for Policy Generation
+#
+# Instead of hardcoding namespaces, Kyverno policies check namespace labels:
+#
+# OLD (hardcoded namespaces):
+# namespaceSelector:
+#   matchExpressions:
+#   - key: kubernetes.io/metadata.name
+#     operator: In
+#     values:
+#     - aide
+#     - cerebrum
+#     - apps-core
+#     - apps-dash
+#     - ...
+#
+# NEW (label-based):
+# namespaceSelector:
+#   matchLabels:
+#     cryptophys.io/pool: apps-ha
+#
+# This is simple, dynamic, and maps directly to ClusterPool definitions.
+
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-pool-tolerations-apps-ha
+  annotations:
+    policies.kyverno.io/title: Mutate Apps HA Pool Tolerations
+    policies.kyverno.io/category: Node Placement
+    cryptophys.io/source: ClusterPool (apps-ha)
+    cryptophys.io/description: >
+      Inject apps-ha pool taint toleration for all namespaces labeled
+      cryptophys.io/pool=apps-ha. Enables dynamic membership without
+      hardcoded namespace lists.
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+  - name: inject-apps-ha-toleration
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          namespaceSelector:
+            matchLabels:
+              # Dynamic: matches all namespaces in this pool
+              cryptophys.io/pool: apps-ha
+    mutate:
+      patchStrategicMerge:
+        spec:
+          tolerations:
+          - key: cryptophys.io/pool
+            operator: Equal
+            value: apps-ha
+            effect: NoSchedule
+
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-pool-tolerations-platform-ha
+  annotations:
+    policies.kyverno.io/title: Mutate Platform HA Pool Tolerations
+    policies.kyverno.io/category: Node Placement
+    cryptophys.io/source: ClusterPool (platform-ha)
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+  - name: inject-platform-ha-toleration
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: platform-ha
+    mutate:
+      patchStrategicMerge:
+        spec:
+          tolerations:
+          - key: cryptophys.io/pool
+            operator: Equal
+            value: platform-ha
+            effect: NoSchedule
+
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: deny-storage-only-pods
+  annotations:
+    policies.kyverno.io/title: Deny Workload Pods in Storage Pool
+    policies.kyverno.io/category: Node Placement
+    cryptophys.io/source: ClusterPool (storage-only)
+    cryptophys.io/severity: high
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+  - name: deny-non-longhorn-in-storage-pool
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: storage-only
+    validate:
+      message: >
+        Storage pool (campus, medulla) is reserved for Longhorn only.
+        Namespace '{{ request.object.metadata.namespace }}' should not have
+        cryptophys.io/pool=storage-only label. Only system services managing
+        persistent storage are allowed.
+      deny:
+        conditions:
+          all:
+          # Block unless pod is system service (longhorn, storage operator, etc.)
+          - key: "{{ request.object.metadata.namespace }}"
+            operator: NotIn
+            value:
+            - longhorn-system
+            - minio-system
+            - velero-system
+
+---
+# Implementation Checklist (for P1):
+#
+# Phase 1a: Label existing namespaces with pool membership
+# [ ] aide → cryptophys.io/pool: apps-ha
+# [ ] cerebrum → cryptophys.io/pool: apps-ha
+# [ ] apps-core → cryptophys.io/pool: apps-ha
+# [ ] ... (11 total for apps-ha)
+# [ ] kube-system → cryptophys.io/pool: platform-ha
+# [ ] flux-system → cryptophys.io/pool: platform-ha
+# [ ] ... (27 total for platform-ha)
+# [ ] longhorn-system → cryptophys.io/pool: storage-only
+# [ ] minio-system → cryptophys.io/pool: storage-only
+#
+# Phase 1b: Create new ClusterPolicy instances (above)
+# [ ] mutate-pool-tolerations-apps-ha
+# [ ] mutate-pool-tolerations-platform-ha
+# [ ] deny-storage-only-pods
+#
+# Phase 1c: Test new policies
+# [ ] Deploy pod in apps-ha namespace → verify toleration injected
+# [ ] Deploy pod in platform-ha namespace → verify toleration injected
+# [ ] Try deploying pod in storage-only namespace → verify denied
+#
+# Phase 1d: Deprecate old hardcoded policies
+# [ ] Keep cp-restriction-policy.yaml (controls control-plane access)
+# [ ] Update nexus-placement-policy.yaml → use labels instead of hardcoded list
+# [ ] Document migration in OPERATIONS-RUNBOOK.md
+
+---
+# Namespace Labeling Strategy
+#
+# Option A: Manual kubectl patch (immediate)
+#   kubectl label namespace aide cryptophys.io/pool=apps-ha
+#
+# Option B: Add labels to Namespace manifests in git (clean)
+#   Edit all namespace YAML files, add label, commit, push
+#
+# Option C: ArgoCD annotation (auto-sync)
+#   Add annotation to namespaces, auto-label during creation
+#
+# RECOMMENDED: Option B (most auditable, git-tracked)
