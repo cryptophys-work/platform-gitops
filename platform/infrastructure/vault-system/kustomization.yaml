@@ -4,4 +4,5 @@ namespace: vault-system
 resources:
   - namespace.yaml
   - vault.yaml
+  - vault__auto-unseal-controller.yaml
   - vault-injector-cert.yaml
