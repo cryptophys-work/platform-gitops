@@ -249,6 +249,15 @@ spec:
                   - key: node.kubernetes.io/memory-pressure
                     operator: Exists
                     effect: NoSchedule
+              - op: replace
+                path: /spec/template/spec/containers/0/resources
+                value:
+                  requests:
+                    cpu: "50m"
+                    memory: "128Mi"
+                  limits:
+                    cpu: "500m"
+                    memory: "512Mi"
           - target:
               kind: DaemonSet
               name: longhorn-manager
@@ -297,7 +306,7 @@ spec:
                     memory: "256Mi"
                   limits:
                     cpu: "1"
-                    memory: "2Gi"
+                    memory: "512Mi"
           - target:
               kind: Deployment
               name: longhorn-driver-deployer
@@ -397,7 +406,7 @@ spec:
           memory: "512Mi"
         limits:
           cpu: "1"
-          memory: "2Gi"      # Keep aligned with Crossplane LonghornRelease claim
+          memory: "512Mi"      # Reduced from 2Gi to enforce LimitRange (512Mi default, 1Gi max per container)
     # ── Driver/UI control components: target nexus workload hub ──
     longhornDriver:
       nodeSelector:
