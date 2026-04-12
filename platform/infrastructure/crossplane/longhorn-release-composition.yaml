@@ -31,43 +31,24 @@ spec:
               postRenderers:
                 - kustomize:
                     patches:
-                      - target:
-                          kind: Deployment
-                          name: csi-attacher
-                        patch: |
-                          - op: replace
-                            path: /spec/template/spec/tolerations
-                            value:
-                              - key: cryptophys.io/storage-only
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/role
-                                operator: Equal
-                                value: llm-inference
-                                effect: NoSchedule
-                              - key: ray-cluster
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: ray-head
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: bridge-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: dao-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.cilium.io/agent-not-ready
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: Exists
-                                effect: NoSchedule
-                          - op: replace
-                            path: /spec/template/spec/affinity
+                       - target:
+                           kind: Deployment
+                           name: csi-attacher
+                         patch: |
+                           - op: replace
+                             path: /spec/template/spec/tolerations
+                             value:
+                               - key: node-role.kubernetes.io/control-plane
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: cryptophys.io/storage-only
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: cryptophys.io/role
+                                 operator: Exists
+                                 effect: NoSchedule
+                           - op: replace
+                             path: /spec/template/spec/affinity
                             value:
                               podAntiAffinity:
                                 preferredDuringSchedulingIgnoredDuringExecution:
@@ -80,43 +61,24 @@ spec:
                                             values:
                                               - csi-attacher
                                       topologyKey: kubernetes.io/hostname
-                      - target:
-                          kind: Deployment
-                          name: csi-provisioner
-                        patch: |
-                          - op: replace
-                            path: /spec/template/spec/tolerations
-                            value:
-                              - key: cryptophys.io/storage-only
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/role
-                                operator: Equal
-                                value: llm-inference
-                                effect: NoSchedule
-                              - key: ray-cluster
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: ray-head
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: bridge-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: dao-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.cilium.io/agent-not-ready
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: Exists
-                                effect: NoSchedule
-                          - op: replace
-                            path: /spec/template/spec/affinity
+                       - target:
+                           kind: Deployment
+                           name: csi-provisioner
+                         patch: |
+                           - op: replace
+                             path: /spec/template/spec/tolerations
+                             value:
+                               - key: node-role.kubernetes.io/control-plane
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: cryptophys.io/storage-only
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: cryptophys.io/role
+                                 operator: Exists
+                                 effect: NoSchedule
+                           - op: replace
+                             path: /spec/template/spec/affinity
                             value:
                               podAntiAffinity:
                                 preferredDuringSchedulingIgnoredDuringExecution:
@@ -129,43 +91,24 @@ spec:
                                             values:
                                               - csi-provisioner
                                       topologyKey: kubernetes.io/hostname
-                      - target:
-                          kind: Deployment
-                          name: csi-resizer
-                        patch: |
-                          - op: replace
-                            path: /spec/template/spec/tolerations
-                            value:
-                              - key: cryptophys.io/storage-only
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/role
-                                operator: Equal
-                                value: llm-inference
-                                effect: NoSchedule
-                              - key: ray-cluster
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: ray-head
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: bridge-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: dao-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.cilium.io/agent-not-ready
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: Exists
-                                effect: NoSchedule
-                          - op: replace
-                            path: /spec/template/spec/affinity
+                       - target:
+                           kind: Deployment
+                           name: csi-resizer
+                         patch: |
+                           - op: replace
+                             path: /spec/template/spec/tolerations
+                             value:
+                               - key: node-role.kubernetes.io/control-plane
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: cryptophys.io/storage-only
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: cryptophys.io/role
+                                 operator: Exists
+                                 effect: NoSchedule
+                           - op: replace
+                             path: /spec/template/spec/affinity
                             value:
                               podAntiAffinity:
                                 preferredDuringSchedulingIgnoredDuringExecution:
@@ -178,43 +121,24 @@ spec:
                                             values:
                                               - csi-resizer
                                       topologyKey: kubernetes.io/hostname
-                      - target:
-                          kind: Deployment
-                          name: csi-snapshotter
-                        patch: |
-                          - op: replace
-                            path: /spec/template/spec/tolerations
-                            value:
-                              - key: cryptophys.io/storage-only
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/role
-                                operator: Equal
-                                value: llm-inference
-                                effect: NoSchedule
-                              - key: ray-cluster
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: ray-head
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: bridge-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: dao-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.cilium.io/agent-not-ready
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: Exists
-                                effect: NoSchedule
-                          - op: replace
-                            path: /spec/template/spec/affinity
+                       - target:
+                           kind: Deployment
+                           name: csi-snapshotter
+                         patch: |
+                           - op: replace
+                             path: /spec/template/spec/tolerations
+                             value:
+                               - key: node-role.kubernetes.io/control-plane
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: cryptophys.io/storage-only
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: cryptophys.io/role
+                                 operator: Exists
+                                 effect: NoSchedule
+                           - op: replace
+                             path: /spec/template/spec/affinity
                             value:
                               podAntiAffinity:
                                 preferredDuringSchedulingIgnoredDuringExecution:
@@ -227,46 +151,24 @@ spec:
                                             values:
                                               - csi-snapshotter
                                       topologyKey: kubernetes.io/hostname
-                      - target:
-                          kind: DaemonSet
-                          name: longhorn-csi-plugin
-                        patch: |
-                          - op: replace
-                            path: /spec/template/spec/tolerations
-                            value:
-                              - key: cryptophys.io/storage-only
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/role
-                                operator: Equal
-                                value: llm-inference
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: ray-cluster
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: ray-head
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: bridge-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: dao-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.cilium.io/agent-not-ready
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.kubernetes.io/memory-pressure
-                                operator: Exists
-                                effect: NoSchedule
-                          - op: replace
-                            path: /spec/template/spec/containers/0/resources
+                       - target:
+                           kind: DaemonSet
+                           name: longhorn-csi-plugin
+                         patch: |
+                           - op: replace
+                             path: /spec/template/spec/tolerations
+                             value:
+                               - key: node-role.kubernetes.io/control-plane
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: cryptophys.io/storage-only
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: cryptophys.io/role
+                                 operator: Exists
+                                 effect: NoSchedule
+                           - op: replace
+                             path: /spec/template/spec/containers/0/resources
                             value:
                               requests:
                                 cpu: "50m"
@@ -274,82 +176,59 @@ spec:
                               limits:
                                 cpu: "500m"
                                 memory: "512Mi"
-                      - target:
-                          kind: DaemonSet
-                          name: longhorn-manager
-                        patch: |
-                          - op: replace
-                            path: /spec/template/spec/tolerations
-                            value:
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node-role.kubernetes.io/master
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/storage-only
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/role
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: ray-cluster
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: ray-head
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: bridge-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: dao-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.cilium.io/agent-not-ready
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.kubernetes.io/memory-pressure
-                                operator: Exists
-                                effect: NoSchedule
-                          - op: replace
-                            path: /spec/template/spec/containers/0/resources
-                            value:
-                              requests:
-                                cpu: "200m"
-                                memory: "256Mi"
-                              limits:
-                                cpu: "500m"
-                                memory: "512Mi"
-                          - op: replace
-                            path: /spec/template/spec/containers/1/resources
-                            value:
-                              requests:
+                       - target:
+                           kind: DaemonSet
+                           name: longhorn-manager
+                         patch: |
+                           - op: replace
+                             path: /spec/template/spec/tolerations
+                             value:
+                               - key: node-role.kubernetes.io/control-plane
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: node-role.kubernetes.io/master
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: cryptophys.io/storage-only
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: cryptophys.io/role
+                                 operator: Exists
+                                 effect: NoSchedule
+                            - op: replace
+                              path: /spec/template/spec/containers/0/resources
+                              value:
+                                requests:
+                                  cpu: "200m"
+                                  memory: "256Mi"
+                                limits:
+                                  cpu: "500m"
+                                  memory: "512Mi"
+                           - op: replace
+                             path: /spec/template/spec/containers/1/resources
+                             value:
+                               requests:
                                 cpu: "50m"
                                 memory: "128Mi"
                               limits:
                                 cpu: "200m"
                                 memory: "256Mi"
-                      - target:
-                          kind: Deployment
-                          name: longhorn-driver-deployer
-                        patch: |
-                          - op: replace
-                            path: /spec/template/spec/nodeSelector
-                            value:
-                              cryptophys.io/tier: compute
-                              nexus-workload-hub: "true"
-                      - target:
-                          kind: Deployment
-                          name: longhorn-ui
-                        patch: |
-                          - op: replace
-                            path: /spec/template/spec/nodeSelector
-                            value:
-                              cryptophys.io/tier: compute
-                              nexus-workload-hub: "true"
+                       - target:
+                           kind: Deployment
+                           name: longhorn-driver-deployer
+                         patch: |
+                           - op: replace
+                             path: /spec/template/spec/nodeSelector
+                             value:
+                               workload.cryptophys.work/compute: "true"
+                       - target:
+                           kind: Deployment
+                           name: longhorn-ui
+                         patch: |
+                           - op: replace
+                             path: /spec/template/spec/nodeSelector
+                             value:
+                               workload.cryptophys.work/compute: "true"
               chart:
                 spec:
                   chart: longhorn
@@ -371,7 +250,7 @@ spec:
                 defaultSettings:
                   defaultReplicaCount: 2
                   systemManagedComponentsNodeSelector: ""
-                  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
+                  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
                   storageReservedPercentageForDefaultDisk: 10
                   storageOverProvisioningPercentage: 50
                   storageMinimalAvailablePercentage: 50
@@ -396,27 +275,6 @@ spec:
                     - key: cryptophys.io/role
                       operator: Exists
                       effect: NoSchedule
-                    - key: ray-cluster
-                      operator: Exists
-                      effect: NoSchedule
-                    - key: ray-head
-                      operator: Exists
-                      effect: NoSchedule
-                    - key: bridge-system
-                      operator: Exists
-                      effect: NoSchedule
-                    - key: dao-system
-                      operator: Exists
-                      effect: NoSchedule
-                    - key: node.cilium.io/agent-not-ready
-                      operator: Exists
-                      effect: NoSchedule
-                    - key: cryptophys.io/pool
-                      operator: Exists
-                      effect: NoSchedule
-                    - key: node.kubernetes.io/memory-pressure
-                      operator: Exists
-                      effect: NoSchedule
                   resources:
                     requests:
                       cpu: "200m"
@@ -426,8 +284,7 @@ spec:
                       memory: "512Mi"
                 longhornDriver:
                   nodeSelector:
-                    cryptophys.io/tier: compute
-                    nexus-workload-hub: "true"
+                    workload.cryptophys.work/compute: "true"
                   tolerations:
                     - key: cryptophys.io/role
                       operator: Equal
@@ -445,8 +302,7 @@ spec:
                       memory: "512Mi"
                 longhornUI:
                   nodeSelector:
-                    cryptophys.io/tier: compute
-                    nexus-workload-hub: "true"
+                    workload.cryptophys.work/compute: "true"
                   tolerations:
                     - key: cryptophys.io/role
                       operator: Equal
@@ -462,27 +318,15 @@ spec:
                   snapshotterReplicaCount: 2
                   longhornCSI:
                     tolerations:
+                      - key: node-role.kubernetes.io/control-plane
+                        operator: Exists
+                        effect: NoSchedule
                       - key: cryptophys.io/storage-only
                         operator: Exists
                         effect: NoSchedule
                       - key: cryptophys.io/role
                         operator: Equal
                         value: llm-inference
-                        effect: NoSchedule
-                      - key: ray-cluster
-                        operator: Exists
-                        effect: NoSchedule
-                      - key: ray-head
-                        operator: Exists
-                        effect: NoSchedule
-                      - key: bridge-system
-                        operator: Exists
-                        effect: NoSchedule
-                      - key: dao-system
-                        operator: Exists
-                        effect: NoSchedule
-                      - key: node-role.kubernetes.io/control-plane
-                        operator: Exists
                         effect: NoSchedule
         providerConfigRef:
           name: local-kubernetes-provider
@@ -491,6 +335,22 @@ spec:
       toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.defaultReplicaCount
     - fromFieldPath: spec.defaultReplicaCount
       toFieldPath: spec.forProvider.manifest.spec.values.persistence.defaultClassReplicaCount
+    - fromFieldPath: spec.taintToleration
+      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.taintToleration
+      policy:
+        fromFieldPath: Optional
+    - fromFieldPath: spec.storageOverProvisioningPercentage
+      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.storageOverProvisioningPercentage
+      policy:
+        fromFieldPath: Optional
+    - fromFieldPath: spec.storageMinimalAvailablePercentage
+      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.storageMinimalAvailablePercentage
+      policy:
+        fromFieldPath: Optional
+    - fromFieldPath: spec.systemManagedComponentsNodeSelector
+      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.systemManagedComponentsNodeSelector
+      policy:
+        fromFieldPath: Optional
     - fromFieldPath: spec.managerResources.requests.cpu
       toFieldPath: spec.forProvider.manifest.spec.values.longhornManager.resources.requests.cpu
     - fromFieldPath: spec.managerResources.requests.memory

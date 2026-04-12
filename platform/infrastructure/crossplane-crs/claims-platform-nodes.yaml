@@ -71,10 +71,6 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: compute
-  taints:
-  - key: cryptophys.io/pool
-    value: apps-ha
-    effect: NoSchedule
   customLabels:
     cryptophys.io/tier: compute
     apps-ha: "true"
@@ -115,13 +111,6 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: compute
-  taints:
-  - key: cryptophys.io/pool
-    value: apps-ha
-    effect: NoSchedule
-  - key: ray-head
-    value: "true"
-    effect: NoSchedule
   customLabels:
     cryptophys.io/tier: compute
     apps-ha: "true"
@@ -148,10 +137,6 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: compute
-  taints:
-  - key: cryptophys.io/pool
-    value: platform-ha
-    effect: NoSchedule
   customLabels:
     cryptophys.io/tier: compute
     platform-ha: "true"
@@ -177,13 +162,6 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: compute
-  taints:
-  - key: cryptophys.io/pool
-    value: platform-ha
-    effect: NoSchedule
-  - key: ray-head
-    value: "true"
-    effect: NoSchedule
   customLabels:
     cryptophys.io/tier: compute
     platform-ha: "true"
@@ -210,16 +188,6 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: compute
-  taints:
-  - key: bridge-system
-    value: "true"
-    effect: NoSchedule
-  - key: dao-system
-    value: "true"
-    effect: NoSchedule
-  - key: ray-head
-    value: "true"
-    effect: NoSchedule
   customLabels:
     cryptophys.io/tier: compute
     bridge-system: "true"
@@ -246,14 +214,17 @@ metadata:
   name: medulla-82-208-20-242
   namespace: crossplane-system
 spec:
-  tier: storage
+  tier: compute
   taints:
-  - key: cryptophys.io/storage-only
-    value: "true"
+  - key: cryptophys.io/role
+    value: llm-inference
     effect: NoSchedule
   customLabels:
-    cryptophys.io/tier: storage
-    node-role: storage-worker
+    cryptophys.io/tier: compute
+    cryptophys.io/role: llm-inference
+    workload.cryptophys.work/apps-core: "true"
+    workload.cryptophys.work/llm: "true"
+    workload.cryptophys.work/compute: "true"
   longhornNode:
     allowScheduling: false
     evictionRequested: true
