@@ -47,5 +47,19 @@ spec:
                 type: object
                 description: "Custom labels to apply to the node."
                 x-kubernetes-preserve-unknown-fields: true
+              longhornNode:
+                type: object
+                description: "Longhorn node configuration for storage management."
+                properties:
+                  allowScheduling:
+                    type: boolean
+                    description: "Allow Longhorn to schedule replicas on this node."
+                  evictionRequested:
+                    type: boolean
+                    description: "Request eviction of Longhorn replicas from this node."
+                  disks:
+                    type: object
+                    description: "Disk configuration (disk ID maps to disk settings)."
+                    x-kubernetes-preserve-unknown-fields: true
             required:
             - tier
