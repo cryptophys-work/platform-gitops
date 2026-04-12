@@ -142,6 +142,7 @@ spec:
                 node-role.kubernetes.io/worker= \
                 cryptophys.io/tier=storage \
                 cryptophys.io/node-role=storage-worker \
+                ingress-public.cryptophys.work/enabled=true \
                 --overwrite
               k label node medulla-82-208-20-242 \
                 apps-core-target- \
