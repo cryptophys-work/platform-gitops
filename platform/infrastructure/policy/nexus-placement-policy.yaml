@@ -48,6 +48,42 @@ spec:
               selector:
                 matchLabels:
                   app.kubernetes.io/name: signal-engine
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - platform-ui
+              selector:
+                matchLabels:
+                  app: headlamp
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - apps-dash
+              selector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - nexus-oauth2-proxy
+                      - synapse-oauth2-proxy
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - apps-core
+              selector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - mcp-github
+                      - mcp-brave-search
+                      - mcp-postgres
+                      - mcp-fetch
+                      - mcp-prometheus
+                      - mcp-crypto
       mutate:
         patchStrategicMerge:
           spec:
