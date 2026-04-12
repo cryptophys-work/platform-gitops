@@ -44,6 +44,11 @@ spec:
     nexus-workload-hub: "true"
     nexus-tower: "true"
     cryptophys.io/role: llm-inference
+    workload.cryptophys.work/apps: "true"
+    workload.cryptophys.work/apps-core: "true"
+    workload.cryptophys.work/apps-user: "true"
+    workload.cryptophys.work/llm: "true"
+    workload.cryptophys.work/compute: "true"
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -63,6 +68,8 @@ spec:
     cryptophys.io/tier: compute
     apps-ha: "true"
     ray-head: "true"
+    workload.cryptophys.work/apps: "true"
+    workload.cryptophys.work/apps-core: "true"
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -78,6 +85,8 @@ spec:
   customLabels:
     cryptophys.io/tier: compute
     platform-ha: "true"
+    workload.cryptophys.work/platform: "true"
+    workload.cryptophys.work/compute: "true"
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -97,6 +106,8 @@ spec:
     cryptophys.io/tier: compute
     platform-ha: "true"
     ray-head: "true"
+    workload.cryptophys.work/compute: "true"
+    workload.cryptophys.work/platform: "true"
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -120,6 +131,8 @@ spec:
     bridge-system: "true"
     dao-system: "true"
     ray-head: "true"
+    workload.cryptophys.work/apps: "true"
+    workload.cryptophys.work/apps-core: "true"
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
