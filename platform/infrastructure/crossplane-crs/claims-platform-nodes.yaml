@@ -5,6 +5,17 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: platform
+  customLabels:
+    cryptophys.io/tier: platform
+  longhornNode:
+    allowScheduling: true
+    evictionRequested: false
+    disks:
+      default-disk-080600000000:
+        path: /var/lib/longhorn/
+        allowScheduling: true
+        storageReserved: 21474836480 # 20GiB
+        evictionRequested: false
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -13,6 +24,17 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: platform
+  customLabels:
+    cryptophys.io/tier: platform
+  longhornNode:
+    allowScheduling: true
+    evictionRequested: false
+    disks:
+      default-disk-080600000000:
+        path: /var/lib/longhorn/
+        allowScheduling: true
+        storageReserved: 10737418240 # 10GiB
+        evictionRequested: false
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -21,3 +43,205 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: platform
+  customLabels:
+    cryptophys.io/tier: platform
+  longhornNode:
+    allowScheduling: true
+    evictionRequested: false
+    disks:
+      default-disk-080600000000:
+        path: /var/lib/longhorn/
+        allowScheduling: true
+        storageReserved: 10737418240 # 10GiB
+        evictionRequested: false
+---
+apiVersion: cryptophys.work/v1alpha1
+kind: ManagedNode
+metadata:
+  name: nexus-144-91-103-10
+  namespace: crossplane-system
+spec:
+  tier: compute
+  taints: []
+  customLabels:
+    cryptophys.io/tier: compute
+    apps-ha: "true"
+    platform-ha: "true"
+    ray-cluster: "true"
+    nexus-workload-hub: "true"
+    nexus-tower: "true"
+    cryptophys.io/role: llm-inference
+  longhornNode:
+    allowScheduling: true
+    evictionRequested: false
+    disks:
+      default-disk-080600000000:
+        path: /var/lib/longhorn/
+        allowScheduling: false
+        storageReserved: 21474836480 # 20GiB
+        evictionRequested: false
+      data-disk-1901e1e1c520:
+        path: /var/mnt/longhorn-data/
+        allowScheduling: true
+        storageReserved: 21474836480 # 20GiB
+        evictionRequested: false
+---
+apiVersion: cryptophys.work/v1alpha1
+kind: ManagedNode
+metadata:
+  name: synapse-161-97-136-251
+  namespace: crossplane-system
+spec:
+  tier: compute
+  taints:
+  - key: cryptophys.io/pool
+    value: apps-ha
+    effect: NoSchedule
+  - key: ray-head
+    value: "true"
+    effect: NoSchedule
+  customLabels:
+    cryptophys.io/tier: compute
+    apps-ha: "true"
+    ray-head: "true"
+  longhornNode:
+    allowScheduling: true
+    evictionRequested: false
+    disks:
+      default-disk-080600000000:
+        path: /var/lib/longhorn/
+        allowScheduling: true
+        storageReserved: 21474836480 # 20GiB
+        evictionRequested: false
+---
+apiVersion: cryptophys.work/v1alpha1
+kind: ManagedNode
+metadata:
+  name: thalamus-217-76-59-241
+  namespace: crossplane-system
+spec:
+  tier: compute
+  taints:
+  - key: cryptophys.io/pool
+    value: platform-ha
+    effect: NoSchedule
+  customLabels:
+    cryptophys.io/tier: compute
+    platform-ha: "true"
+  longhornNode:
+    allowScheduling: true
+    evictionRequested: false
+    disks:
+      default-disk-080600000000:
+        path: /var/lib/longhorn/
+        allowScheduling: true
+        storageReserved: 21474836480 # 20GiB
+        evictionRequested: false
+---
+apiVersion: cryptophys.work/v1alpha1
+kind: ManagedNode
+metadata:
+  name: cerebellum-161-97-117-96
+  namespace: crossplane-system
+spec:
+  tier: compute
+  taints:
+  - key: cryptophys.io/pool
+    value: platform-ha
+    effect: NoSchedule
+  - key: ray-head
+    value: "true"
+    effect: NoSchedule
+  customLabels:
+    cryptophys.io/tier: compute
+    platform-ha: "true"
+    ray-head: "true"
+  longhornNode:
+    allowScheduling: true
+    evictionRequested: false
+    disks:
+      default-disk-080600000000:
+        path: /var/lib/longhorn/
+        allowScheduling: true
+        storageReserved: 21474836480 # 20GiB
+        evictionRequested: false
+---
+apiVersion: cryptophys.work/v1alpha1
+kind: ManagedNode
+metadata:
+  name: quanta-194-163-186-222
+  namespace: crossplane-system
+spec:
+  tier: compute
+  taints:
+  - key: bridge-system
+    value: "true"
+    effect: NoSchedule
+  - key: dao-system
+    value: "true"
+    effect: NoSchedule
+  - key: ray-head
+    value: "true"
+    effect: NoSchedule
+  customLabels:
+    cryptophys.io/tier: compute
+    bridge-system: "true"
+    dao-system: "true"
+    ray-head: "true"
+  longhornNode:
+    allowScheduling: true
+    evictionRequested: false
+    disks:
+      default-disk-080600000000:
+        path: /var/lib/longhorn/
+        allowScheduling: true
+        storageReserved: 21474836480 # 20GiB
+        evictionRequested: false
+---
+apiVersion: cryptophys.work/v1alpha1
+kind: ManagedNode
+metadata:
+  name: medulla-82-208-20-242
+  namespace: crossplane-system
+spec:
+  tier: storage
+  taints:
+  - key: cryptophys.io/storage-only
+    value: "true"
+    effect: NoSchedule
+  customLabels:
+    cryptophys.io/tier: storage
+    node-role: storage-worker
+  longhornNode:
+    allowScheduling: false
+    evictionRequested: true
+    disks:
+      default-disk-080600000000:
+        path: /var/lib/longhorn/
+        allowScheduling: false
+        storageReserved: 21474836480 # 20GiB
+        evictionRequested: true
+---
+apiVersion: cryptophys.work/v1alpha1
+kind: ManagedNode
+metadata:
+  name: campus-212-47-66-101
+  namespace: crossplane-system
+spec:
+  tier: storage
+  taints:
+  - key: cryptophys.io/storage-only
+    value: "true"
+    effect: NoSchedule
+  customLabels:
+    cryptophys.io/tier: storage
+    node-role: storage-worker
+  longhornNode:
+    allowScheduling: false
+    evictionRequested: true
+    disks:
+      default-disk-080600000000:
+        path: /var/lib/longhorn/
+        allowScheduling: false
+        storageReserved: 17179869184 # 16GiB
+        evictionRequested: true

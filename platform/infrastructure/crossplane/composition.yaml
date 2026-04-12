@@ -19,12 +19,64 @@ spec:
             apiVersion: v1
             kind: Node
             metadata:
+              name: ""
               labels:
-                "cryptophys.io/tier": "platform" # Default, will be patched
+                "cryptophys.io/tier": "platform"
+            spec:
+              taints: []
+        providerConfigRef:
+          name: local-kubernetes-provider
+    patches:
+    # Node name from claim name
+    - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+      toFieldPath: "spec.forProvider.manifest.metadata.name"
+    # Tier label
+    - fromFieldPath: "spec.tier"
+      toFieldPath: "spec.forProvider.manifest.metadata.labels[cryptophys.io/tier]"
+    # Custom labels
+    - fromFieldPath: "spec.customLabels"
+      toFieldPath: "spec.forProvider.manifest.metadata.labels"
+      policy:
+        mergeOptions:
+          appendSlice: true
+    # Taints
+    - fromFieldPath: "spec.taints"
+      toFieldPath: "spec.forProvider.manifest.spec.taints"
+      policy:
+        fromFieldPath: Optional
+
+  - name: longhorn-node
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: longhorn.io/v1beta2
+            kind: Node
+            metadata:
+              name: ""
+              namespace: longhorn-system
+            spec:
+              allowScheduling: true
+              evictionRequested: false
+              disks: {}
         providerConfigRef:
           name: local-kubernetes-provider
     patches:
     - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
       toFieldPath: "spec.forProvider.manifest.metadata.name"
-    - fromFieldPath: "spec.tier"
-      toFieldPath: "spec.forProvider.manifest.metadata.labels[cryptophys.io/tier]"
+    - fromFieldPath: "spec.longhornNode.allowScheduling"
+      toFieldPath: "spec.forProvider.manifest.spec.allowScheduling"
+      policy:
+        fromFieldPath: Optional
+    - fromFieldPath: "spec.longhornNode.evictionRequested"
+      toFieldPath: "spec.forProvider.manifest.spec.evictionRequested"
+      policy:
+        fromFieldPath: Optional
+    - fromFieldPath: "spec.longhornNode.disks"
+      toFieldPath: "spec.forProvider.manifest.spec.disks"
+      policy:
+        fromFieldPath: Optional
+        mergeOptions:
+          appendSlice: false
