@@ -25,15 +25,15 @@ spec:
     # ── Per-container defaults — applies to any container that omits resources ──
     - type: Container
       default:
-        memory: "2Gi"    # Default limit — instance-manager gets max 2Gi unless spec overrides
+        memory: "512Mi"   # Default limit — reduced from 2Gi to prevent control-plane OOMKill
         cpu: "1"
       defaultRequest:
-        memory: "256Mi"  # Default request — ensures scheduler sees realistic footprint
+        memory: "256Mi"   # Default request — ensures scheduler sees realistic footprint
         cpu: "50m"
       max:
-        memory: "4Gi"    # Hard cap — no container in longhorn-system may exceed 4Gi
+        memory: "1Gi"     # Hard cap — reduced from 4Gi to fit control-plane capacity (corpus 9.2Gi allocatable)
         cpu: "4"
     # ── Per-pod defaults ──
     - type: Pod
       max:
-        memory: "8Gi"    # One instance-manager pod max = 8Gi (multiple containers)
+        memory: "2Gi"     # One instance-manager pod max = 2Gi (reduced from 8Gi for control-plane stability)
