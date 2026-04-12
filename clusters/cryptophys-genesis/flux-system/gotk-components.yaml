@@ -48,6 +48,12 @@ spec:
     ports:
     - port: 8080
       protocol: TCP
+  - from:
+    - ipBlock:
+        cidr: 10.8.0.0/24
+    ports:
+    - port: 9440
+      protocol: TCP
   podSelector: {}
   policyTypes:
   - Ingress
@@ -4368,7 +4374,7 @@ spec:
     port: 80
     protocol: TCP
     targetPort: http
-  publishNotReadyAddresses: true
+  publishNotReadyAddresses: false
   selector:
     app: source-controller
   type: ClusterIP
@@ -4390,7 +4396,10 @@ spec:
     matchLabels:
       app: source-controller
   strategy:
-    type: Recreate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       annotations:
@@ -4403,6 +4412,16 @@ spec:
         app.kubernetes.io/part-of: flux
         app.kubernetes.io/version: v2.7.5
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - cerebellum-161-97-117-96
+                - thalamus-217-76-59-241
       containers:
       - args:
         - --events-addr=http://notification-controller.$(RUNTIME_NAMESPACE).svc.cluster.local./
@@ -4470,6 +4489,14 @@ spec:
       securityContext:
         fsGroup: 1337
       serviceAccountName: source-controller
+      tolerations:
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
+        effect: NoSchedule
+      - key: node.cilium.io/agent-not-ready
+        operator: Exists
+        effect: NoSchedule
       terminationGracePeriodSeconds: 10
       volumes:
       - emptyDir: {}
@@ -5826,6 +5853,11 @@ spec:
   selector:
     matchLabels:
       app: kustomize-controller
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       annotations:
@@ -5838,6 +5870,16 @@ spec:
         app.kubernetes.io/part-of: flux
         app.kubernetes.io/version: v2.7.5
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - cerebellum-161-97-117-96
+                - thalamus-217-76-59-241
       containers:
       - args:
         - --events-addr=http://notification-controller.$(RUNTIME_NAMESPACE).svc.cluster.local./
@@ -5899,6 +5941,14 @@ spec:
       securityContext:
         fsGroup: 1337
       serviceAccountName: kustomize-controller
+      tolerations:
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
+        effect: NoSchedule
+      - key: node.cilium.io/agent-not-ready
+        operator: Exists
+        effect: NoSchedule
       terminationGracePeriodSeconds: 60
       volumes:
       - emptyDir: {}
@@ -6992,6 +7042,9 @@ spec:
                         Provisional: when the calculation method of the Digest field is changed,
                         this field will be used to distinguish between the old and new methods.
                       type: string
+                    action:
+                      description: Action is the Helm action performed for this snapshot.
+                      type: string
                     appVersion:
                       description: AppVersion is the chart app version of the release object in storage.
                       type: string
@@ -7082,6 +7135,10 @@ spec:
                   state. It is reset after a successful reconciliation.
                 format: int64
                 type: integer
+              inventory:
+                description: Inventory of objects deployed by this release.
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
               lastAttemptedConfigDigest:
                 description: |-
                   LastAttemptedConfigDigest is the digest for the config (better known as
@@ -8475,7 +8532,7 @@ metadata:
   name: helm-controller
   namespace: flux-system
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: helm-controller
@@ -8491,6 +8548,26 @@ spec:
         app.kubernetes.io/part-of: flux
         app.kubernetes.io/version: v2.7.5
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: platform-ha
+                operator: In
+                values:
+                - "true"
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - cerebellum-161-97-117-96
+                - thalamus-217-76-59-241
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: helm-controller
+            topologyKey: kubernetes.io/hostname
       containers:
       - args:
         - --events-addr=http://notification-controller.$(RUNTIME_NAMESPACE).svc.cluster.local./
@@ -8552,7 +8629,22 @@ spec:
       securityContext:
         fsGroup: 1337
       serviceAccountName: helm-controller
+      tolerations:
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
+        effect: NoSchedule
+      - key: node.cilium.io/agent-not-ready
+        operator: Exists
+        effect: NoSchedule
       terminationGracePeriodSeconds: 600
+      topologySpreadConstraints:
+      - labelSelector:
+          matchLabels:
+            app: helm-controller
+        maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
       volumes:
       - emptyDir: {}
         name: temp
@@ -9884,7 +9976,7 @@ metadata:
   name: notification-controller
   namespace: flux-system
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: notification-controller
@@ -9900,6 +9992,26 @@ spec:
         app.kubernetes.io/part-of: flux
         app.kubernetes.io/version: v2.7.5
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: platform-ha
+                operator: In
+                values:
+                - "true"
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - cerebellum-161-97-117-96
+                - thalamus-217-76-59-241
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: notification-controller
+            topologyKey: kubernetes.io/hostname
       containers:
       - args:
         - --watch-all-namespaces=true
@@ -9962,7 +10074,22 @@ spec:
       securityContext:
         fsGroup: 1337
       serviceAccountName: notification-controller
+      tolerations:
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
+        effect: NoSchedule
+      - key: node.cilium.io/agent-not-ready
+        operator: Exists
+        effect: NoSchedule
       terminationGracePeriodSeconds: 10
+      topologySpreadConstraints:
+      - labelSelector:
+          matchLabels:
+            app: notification-controller
+        maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
       volumes:
       - emptyDir: {}
         name: temp
@@ -11172,7 +11299,7 @@ metadata:
   name: image-reflector-controller
   namespace: flux-system
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: image-reflector-controller
@@ -11188,6 +11315,26 @@ spec:
         app.kubernetes.io/part-of: flux
         app.kubernetes.io/version: v2.7.5
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: platform-ha
+                operator: In
+                values:
+                - "true"
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - cerebellum-161-97-117-96
+                - thalamus-217-76-59-241
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: image-reflector-controller
+            topologyKey: kubernetes.io/hostname
       containers:
       - args:
         - --events-addr=http://notification-controller.$(RUNTIME_NAMESPACE).svc.cluster.local./
@@ -11247,7 +11394,22 @@ spec:
       securityContext:
         fsGroup: 1337
       serviceAccountName: image-reflector-controller
+      tolerations:
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
+        effect: NoSchedule
+      - key: node.cilium.io/agent-not-ready
+        operator: Exists
+        effect: NoSchedule
       terminationGracePeriodSeconds: 10
+      topologySpreadConstraints:
+      - labelSelector:
+          matchLabels:
+            app: image-reflector-controller
+        maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
       volumes:
       - emptyDir: {}
         name: temp
@@ -12086,7 +12248,7 @@ metadata:
   name: image-automation-controller
   namespace: flux-system
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: image-automation-controller
@@ -12102,6 +12264,26 @@ spec:
         app.kubernetes.io/part-of: flux
         app.kubernetes.io/version: v2.7.5
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: platform-ha
+                operator: In
+                values:
+                - "true"
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - cerebellum-161-97-117-96
+                - thalamus-217-76-59-241
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: image-automation-controller
+            topologyKey: kubernetes.io/hostname
       containers:
       - args:
         - --events-addr=http://notification-controller.$(RUNTIME_NAMESPACE).svc.cluster.local./
@@ -12159,7 +12341,22 @@ spec:
       securityContext:
         fsGroup: 1337
       serviceAccountName: image-automation-controller
+      tolerations:
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
+        effect: NoSchedule
+      - key: node.cilium.io/agent-not-ready
+        operator: Exists
+        effect: NoSchedule
       terminationGracePeriodSeconds: 10
+      topologySpreadConstraints:
+      - labelSelector:
+          matchLabels:
+            app: image-automation-controller
+        maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
       volumes:
       - emptyDir: {}
         name: temp
