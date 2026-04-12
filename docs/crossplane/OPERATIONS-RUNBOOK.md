@@ -423,6 +423,141 @@ EOF
 
 ---
 
+## Namespace Pool Management (P1: ClusterPool-Kyverno Integration)
+
+### Add a Namespace to a Pool
+
+**Time:** ~5 minutes
+
+**Context:** You're creating a new namespace and need to assign it to a pool (apps-ha, platform-ha, or storage-only).
+
+**Prerequisites:**
+- Namespace manifest exists in git (platform-gitops or apps-gitops)
+- ClusterPool definitions exist in `platform/infrastructure/crossplane/cluster-pools.yaml`
+
+**Steps:**
+
+1. **Edit namespace manifest and add label:**
+   ```yaml
+   apiVersion: v1
+   kind: Namespace
+   metadata:
+     name: my-new-app
+     labels:
+       cryptophys.io/pool: apps-ha  # ← Choose appropriate pool
+   ```
+
+2. **Choose correct pool:**
+   - **apps-ha:** Application workloads (aide, cerebrum, apps-core, etc.)
+   - **platform-ha:** Infrastructure/system workloads (flux, kyverno, vault, etc.)
+   - **storage-only:** Storage-only nodes (longhorn, minio, velero only)
+
+3. **Commit and push:**
+   ```bash
+   git add <namespace-file>
+   git commit -m "chore: assign <namespace> to <pool> pool"
+   git push origin main
+   ```
+
+4. **Verify Kyverno policies applied:**
+   ```bash
+   # Deploy test pod in new namespace
+   kubectl apply -f - <<EOF
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: test-pool-label
+   spec:
+     containers:
+     - name: test
+       image: nginx:1.27-alpine
+   EOF
+
+   # Check if pool toleration was injected
+   kubectl get pod test-pool-label -n my-new-app -o yaml | grep -A 5 tolerations
+   # Expected: cryptophys.io/pool: <pool-name> toleration should be present
+
+   # Cleanup
+   kubectl delete pod test-pool-label -n my-new-app
+   ```
+
+5. **Update ClusterPool (if group-adding multiple namespaces):**
+   ```bash
+   # Edit platform/infrastructure/crossplane/cluster-pools.yaml
+   # Add namespace to spec.namespaces list for appropriate pool
+   
+   # Example:
+   # ---
+   # apiVersion: cryptophys.work/v1alpha1
+   # kind: ClusterPool
+   # metadata:
+   #   name: apps-ha
+   # spec:
+   #   namespaces:
+   #   - aide
+   #   - cerebrum
+   #   - my-new-app  # ← Added
+   ```
+
+**Benefits:**
+- No manual policy editing required
+- Kyverno auto-applies tolerations based on namespace label
+- Audit trail in git
+- Policies apply within seconds of namespace creation
+
+**Related Files:**
+- ClusterPool definitions: `platform/infrastructure/crossplane/cluster-pools.yaml`
+- Kyverno policies: `platform/infrastructure/policy/cluster-pool-toleration-injection.yaml`
+- Namespace manifests: `platform-gitops/platform/infrastructure/namespaces/` or scattered in `apps-gitops/apps/`
+
+---
+
+### Troubleshoot Namespace Pool Label Issues
+
+**Problem:** Pods in namespace not receiving pool-specific toleration.
+
+**Diagnosis:**
+
+1. **Verify namespace label:**
+   ```bash
+   kubectl get ns <namespace> -o yaml | grep -A 2 labels
+   # Should show: cryptophys.io/pool: <pool-name>
+   ```
+
+2. **Verify Kyverno policies exist:**
+   ```bash
+   kubectl get clusterpolicy | grep -E "mutate-pool|deny-storage"
+   # Should show:
+   # - mutate-pool-tolerations-apps-ha
+   # - mutate-pool-tolerations-platform-ha
+   # - deny-storage-only-pods
+   ```
+
+3. **Check policy targets namespace:**
+   ```bash
+   kubectl get clusterpolicy mutate-pool-tolerations-apps-ha -o yaml | grep -A 10 "namespaceSelector"
+   # Should show: matchLabels: cryptophys.io/pool: apps-ha
+   ```
+
+4. **Verify pod has toleration:**
+   ```bash
+   kubectl get pod <pod-name> -n <namespace> -o yaml | grep -B 2 -A 2 "cryptophys.io/pool"
+   # If empty, pod was created BEFORE policy — recreate it:
+   kubectl delete pod <pod-name> -n <namespace>
+   # (Parent Deployment/StatefulSet will respawn with new toleration)
+   ```
+
+**Common Causes & Fixes:**
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Toleration not injected | Namespace missing `cryptophys.io/pool` label | Add label to namespace manifest, commit, push, wait 10s for Flux |
+| Policy not ready | Kyverno webhook unavailable | Check: `kubectl -n kyverno-system get pod` all Running, check webhook endpoints: `kubectl get validatingwebhookconfigurations` |
+| Pod still pending | Node missing taint toleration (old node) | Check node: `kubectl get node <name> -o jsonpath='{.spec.taints}'` should match pod toleration |
+| Dual tolerations | Both old and new policies active | Expected during migration, not harmful. Delete old hardcoded policies once new label-based ones stable |
+
+---
+
 ## Troubleshooting
 
 ### ManagedNode stuck in "Syncing" state

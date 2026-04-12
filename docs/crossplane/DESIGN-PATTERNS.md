@@ -552,6 +552,158 @@ spec:
 
 ---
 
+## Pattern 10: ClusterPool-Driven Kyverno Policy Generation
+
+### Design
+
+ClusterPool definitions drive namespace labels, which drive Kyverno policies:
+
+```
+ClusterPool (spec.namespaces list)
+   ↓ (defines membership)
+Namespace Labels (cryptophys.io/pool: {pool-name})
+   ↓ (matched by policies)
+Kyverno Policies (namespaceSelector matches labels)
+   ↓ (injects/restricts)
+Pod Tolerations / Pod Restrictions
+```
+
+**Example Flow:**
+
+1. **ClusterPool defines pool membership:**
+   ```yaml
+   apiVersion: cryptophys.work/v1alpha1
+   kind: ClusterPool
+   metadata:
+     name: apps-ha
+   spec:
+     nodes:
+     - synapse-161-97-136-251
+     - nexus-144-91-103-10
+     namespaces:  # ← Source of truth
+     - aide
+     - cerebrum
+     - apps-core
+     - apps-dash
+   ```
+
+2. **Namespace manifests include pool label:**
+   ```yaml
+   apiVersion: v1
+   kind: Namespace
+   metadata:
+     name: aide
+     labels:
+       cryptophys.io/pool: apps-ha  # ← Driven by ClusterPool
+   ```
+
+3. **Kyverno policies match on label (not hardcoded lists):**
+   ```yaml
+   apiVersion: kyverno.io/v1
+   kind: ClusterPolicy
+   metadata:
+     name: mutate-pool-tolerations-apps-ha
+   spec:
+     rules:
+     - match:
+         resources:
+           namespaceSelector:
+             matchLabels:
+               cryptophys.io/pool: apps-ha  # ← Dynamic matching
+       mutate:
+         patchStrategicMerge:
+           spec:
+             tolerations:
+             - key: cryptophys.io/pool
+               value: apps-ha
+   ```
+
+4. **Result: Pod tolerations auto-injected:**
+   ```bash
+   kubectl get pod <any-pod> -n aide -o yaml | grep tolerations
+   # Shows: cryptophys.io/pool: apps-ha toleration
+   ```
+
+### Rationale
+
+**Single Source of Truth:** ClusterPool is the only place pool membership is defined
+- Add namespace to pool: update ClusterPool + label namespace manifest
+- Remove: edit ClusterPool, update namespace label
+
+**Dynamic:** Adding namespace to pool = label it → Kyverno auto-applies
+- No policy edits required
+- Policies apply within seconds
+
+**Audit Trail:** All pool membership decisions tracked in git
+- Changes visible in git log
+- Reversible via git revert
+- Compliance-friendly (who changed what, when, why)
+
+**No Duplication:** Policies read labels, not hardcoded lists
+- Prevents divergence between ClusterPool and policies
+- Reduces merge conflicts
+- Easier to maintain long-term
+
+### Trade-offs
+
+**Pros:**
+- Simplifies policy maintenance (one source, not three separate lists)
+- Eliminates hardcoded namespace lists (30+ namespaces no longer scattered)
+- Easy onboarding (label namespace → done)
+- Dynamic (changes reflect immediately)
+
+**Cons:**
+- Requires discipline: namespace labels must match ClusterPool (no divergence)
+- Debugging: need to check both ClusterPool and namespace labels
+- Initial migration effort (label 40+ existing namespaces)
+
+### Implementation (Completed: Phase 1)
+
+**Phase 1a:** ✅ Labeled 44 namespaces with cryptophys.io/pool
+- All existing namespaces now have correct pool labels
+- Audit trail in git commits
+
+**Phase 1b:** ✅ Created label-based Kyverno policies
+- mutate-pool-tolerations-apps-ha
+- mutate-pool-tolerations-platform-ha
+- deny-storage-only-pods
+- All use matchLabels instead of hardcoded namespace lists
+
+**Phase 1c:** ⏳ Testing (partial - API timeouts)
+- ✅ apps-ha toleration injection verified working
+- ⏳ Platform-ha and storage-only tests pending (API stability)
+
+**Phase 1d:** ✅ Refactored existing policies
+- nexus-placement-policy.yaml mutate rules now use labels
+- Removed 50+ lines of hardcoded namespace lists
+- Old deny policies kept as secondary defense layer
+
+**Phase 1e:** ✅ Updated documentation
+- OPERATIONS-RUNBOOK.md: added namespace pool management procedures
+- DESIGN-PATTERNS.md: this pattern
+- AUDIT-INVENTORY.md: updated Kyverno section
+
+### When to Use
+
+- Whenever policy rules apply per-pool (taints, node placement, resource limits)
+- Ideal for: Toleration injection, namespace isolation, workload affinity
+- Not suitable for: Arbitrary policy logic that spans pools
+
+### Related Patterns
+
+- **Pattern 1:** Node Tiers with Exclusive Taints (what the pools map to)
+- **Pattern 3:** Workload-Specific Taints & Tolerations (used together)
+- **Pattern 8:** ClusterPool-Driven Node Provisioning (complementary)
+
+### Links
+
+- ClusterPool definitions: `platform/infrastructure/crossplane/cluster-pools.yaml`
+- Kyverno policies: `platform/infrastructure/policy/cluster-pool-*.yaml`
+- Namespace manifests: `platform-gitops/platform/infrastructure/namespaces/`
+- Operations guide: [Namespace Pool Management](OPERATIONS-RUNBOOK.md#namespace-pool-management-p1-clusterpool-kyverno-integration)
+
+---
+
 ## Future Enhancements
 
 ### 1. Auto-Generated Kyverno Policies from ClusterPool
