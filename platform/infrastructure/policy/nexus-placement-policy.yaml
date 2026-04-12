@@ -38,6 +38,16 @@ spec:
                       - apps-gateway
                       - navigator
                       - platform-ui
+      exclude:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - apps-user
+              selector:
+                matchLabels:
+                  app.kubernetes.io/name: signal-engine
       mutate:
         patchStrategicMerge:
           spec:
