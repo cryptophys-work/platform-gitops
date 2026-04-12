@@ -72,20 +72,6 @@ spec:
       frr:
         enabled: false
       tolerateMaster: true
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: cryptophys.io/platform-ha
-                    operator: In
-                    values:
-                      - "true"
-              - matchExpressions:
-                  - key: apps-core-target
-                    operator: In
-                    values:
-                      - apps-core
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
@@ -112,5 +98,8 @@ spec:
           operator: Exists
           effect: NoSchedule
         - key: cryptophys.io/role
+          operator: Exists
+          effect: NoSchedule
+        - key: node.kubernetes.io/memory-pressure
           operator: Exists
           effect: NoSchedule
