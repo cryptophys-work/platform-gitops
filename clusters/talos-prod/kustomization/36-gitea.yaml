@@ -3,6 +3,8 @@ kind: Kustomization
 metadata:
   name: 36-gitea
   namespace: flux-system
+  annotations:
+    reconcile.fluxcd.io/requestedAt: "2026-04-12T01:35:38Z"
 spec:
   interval: 1h
   wait: false
