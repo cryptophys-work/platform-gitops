@@ -3,14 +3,17 @@ kind: Kustomization
 resources:
   # Crossplane controller configuration (tolerations, resources, anti-affinity)
   - controller-config.yaml
+  # Node management (labels, taints, tier assignment)
+  - definition.yaml
+  - composition.yaml
   # Workload placement abstraction (node selection + tolerations)
   - workload-placement-definition.yaml
   - workload-placement-composition.yaml
+  # Cluster pool definitions (unified pool management)
+  - cluster-pools.yaml
   # Provider configuration (local Kubernetes API access)
   - provider-kubernetes.yaml
   - provider-kubernetes-rbac.yaml
   # Longhorn release abstraction
-  - definition.yaml
-  - composition.yaml
   - longhorn-release-definition.yaml
   - longhorn-release-composition.yaml
