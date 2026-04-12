@@ -52,6 +52,9 @@ spec:
         operator: Equal
         value: platform-ha
       - effect: NoSchedule
+        key: node.cilium.io/agent-not-ready
+        operator: Exists
+      - effect: NoSchedule
         key: ray-cluster
         operator: Equal
         value: "true"
