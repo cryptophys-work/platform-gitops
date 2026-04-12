@@ -26,27 +26,15 @@ spec:
             spec:
               template:
                 spec:
-                  # Default tolerations for all workloads
+                  # Keep only short-lived node-state tolerations by default.
+                  # Dedicated pools and bootstrap taints must be opt-in per workload.
                   tolerations:
-                  # Tolerate Cilium bootstrap taint
-                  - key: node.cilium.io/agent-not-ready
-                    operator: Exists
-                    effect: NoSchedule
-                  # Tolerate platform-ha pool taint
-                  - key: cryptophys.io/pool
-                    operator: Equal
-                    value: platform-ha
-                    effect: NoSchedule
-                  # Tolerate storage-only taint
-                  - key: cryptophys.io/storage-only
-                    operator: Exists
-                    effect: NoSchedule
-                  # Tolerate memory pressure (temporary)
+                  # Tolerate not-ready briefly during node transitions
                   - key: node.kubernetes.io/not-ready
                     operator: Exists
                     effect: NoExecute
                     tolerationSeconds: 300
-                  # Tolerate disk pressure (temporary)
+                  # Tolerate disk pressure briefly during recovery churn
                   - key: node.kubernetes.io/disk-pressure
                     operator: Exists
                     effect: NoExecute
