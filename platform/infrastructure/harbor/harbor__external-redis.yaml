@@ -74,11 +74,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: registry-system
                     operator: In
                     values:
-                      - thalamus-217-76-59-241
-                      - cerebellum-161-97-117-96
+                      - "true"
       securityContext:
         fsGroup: 999
       containers:
