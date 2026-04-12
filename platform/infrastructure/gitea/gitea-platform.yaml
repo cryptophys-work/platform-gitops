@@ -293,11 +293,11 @@ spec:
       enabled: false
     resources:
       requests:
-        cpu: 10m
-        memory: 32Mi
+        cpu: 250m
+        memory: 512Mi
       limits:
-        cpu: 1000m     # increased from 600m for 280MB repo with concurrent git ops
-        memory: 1Gi    # increased from 768Mi
+        cpu: 2000m     # give git-upload-pack headroom during concurrent Argo repo scans
+        memory: 2Gi    # prevent helper git processes from being killed under repo-server load
     tolerations:
       - key: cryptophys.io/pool
         operator: Equal
