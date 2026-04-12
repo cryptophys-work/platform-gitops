@@ -12,7 +12,7 @@ metadata:
     cryptophys.io/managed-by: flux
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 2Gi

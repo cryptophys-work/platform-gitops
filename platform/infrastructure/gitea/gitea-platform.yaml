@@ -27,7 +27,7 @@ spec:
             patch: |
               - op: replace
                 path: /spec/replicas
-                value: 1
+                value: 3
               - op: replace
                 path: /spec/strategy
                 value:
@@ -280,7 +280,7 @@ spec:
       size: 2Gi
       storageClass: longhorn
       accessModes:
-        - ReadWriteOnce
+        - ReadWriteMany
     postgresql:
       enabled: false
     postgresql-ha:
