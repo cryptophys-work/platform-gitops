@@ -10,7 +10,7 @@ metadata:
     cryptophys.io/anti-regression: "true"
 spec:
   interval: 1h
-  timeout: 15m
+  timeout: 30m
   suspend: false
   postRenderers:
     - kustomize:
@@ -335,10 +335,10 @@ spec:
         namespace: flux-system
   install:
     remediation:
-      retries: 3
+      retries: 5
   upgrade:
     remediation:
-      retries: 3
+      retries: 5
   values:
     persistence:
       defaultClass: true
