@@ -277,7 +277,7 @@ spec:
       enabled: true
       create: false
       claimName: gitea-shared-storage-rwx
-      size: 50Gi
+      size: 2Gi
       storageClass: longhorn
       accessModes:
         - ReadWriteMany
