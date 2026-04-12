@@ -67,6 +67,7 @@ spec:
           operator: Exists
           effect: NoSchedule
     speaker:
+      affinity: {}
       excludeInterfaces:
         enabled: true
       frr:
