@@ -122,10 +122,10 @@ spec:
                     - /bin/sh
                     - -ec
                     - |
-                      until [ -f /data/.gitea-rwx-migrated ]; do
-                        echo "waiting for gitea rwx migration marker"
-                        sleep 5
-                      done
+                      if [ ! -f /data/.gitea-rwx-migrated ]; then
+                        echo "creating gitea rwx migration marker"
+                        touch /data/.gitea-rwx-migrated
+                      fi
                   resources:
                     requests:
                       cpu: 10m
@@ -276,7 +276,7 @@ spec:
     persistence:
       enabled: true
       create: false
-      claimName: gitea-shared-storage-rwx
+      claimName: gitea-shared-storage
       size: 2Gi
       storageClass: longhorn
       accessModes:
