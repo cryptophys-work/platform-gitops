@@ -228,7 +228,7 @@ spec:
           jobLog:
             existingClaim: registry-harbor-jobservice
             storageClass: longhorn-harbor-retain
-            size: 5Gi
+            size: 1Gi
         database:
           existingClaim: database-data-registry-harbor-database-0
           storageClass: longhorn-harbor-retain
