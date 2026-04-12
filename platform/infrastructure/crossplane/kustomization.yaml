@@ -9,7 +9,8 @@ resources:
   # Workload placement abstraction (node selection + tolerations)
   - workload-placement-definition.yaml
   - workload-placement-composition.yaml
-  # Cluster pool definitions (unified pool management)
+  # Cluster pool CRD and instances (unified pool management)
+  - cluster-pool-definition.yaml
   - cluster-pools.yaml
   # Provider configuration (local Kubernetes API access)
   - provider-kubernetes.yaml
