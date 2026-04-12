@@ -15,10 +15,6 @@ data:
       trust_bundle_path = "/run/spire/bundle/bundle.crt"
       trust_domain = "cryptophys.work"
     }
-    authorized_delegates {
-      spiffe_id = "spiffe://cryptophys.work/ns/kube-system/sa/cilium"
-      downstream_spiffe_ids = ["spiffe://cryptophys.work/*"]
-    }
     plugins {
       NodeAttestor "k8s_psat" {
         plugin_data {

@@ -12,6 +12,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: apps
+    cryptophys.io/pool: apps-ha
   name: apps-core
 ---
 apiVersion: v1
@@ -20,6 +21,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: apps
+    cryptophys.io/pool: apps-ha
   name: apps-dash
 ---
 apiVersion: v1
@@ -27,6 +29,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/pool: platform-ha
   name: cert-manager
 ---
 apiVersion: v1
@@ -35,6 +38,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: platform
+    cryptophys.io/pool: platform-ha
   name: external-secrets
 ---
 apiVersion: v1
@@ -42,6 +46,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/pool: platform-ha
   name: gatekeeper-system
 ---
 apiVersion: v1
@@ -50,6 +55,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: platform
+    cryptophys.io/pool: platform-ha
   name: gitops-system
 ---
 apiVersion: v1
@@ -61,6 +67,7 @@ metadata:
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
+    cryptophys.io/pool: platform-ha
 ---
 apiVersion: v1
 kind: Namespace
@@ -68,6 +75,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: platform
+    cryptophys.io/pool: platform-ha
   name: kyverno-system
 ---
 apiVersion: v1
@@ -79,6 +87,7 @@ metadata:
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
+    cryptophys.io/pool: storage-only
 ---
 apiVersion: v1
 kind: Namespace
@@ -89,6 +98,7 @@ metadata:
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
+    cryptophys.io/pool: platform-ha
 ---
 apiVersion: v1
 kind: Namespace
@@ -100,6 +110,7 @@ metadata:
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
+    cryptophys.io/pool: platform-ha
 ---
 apiVersion: v1
 kind: Namespace
@@ -107,6 +118,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: platform
+    cryptophys.io/pool: platform-ha
   name: postgresql-system
 ---
 apiVersion: v1
@@ -115,6 +127,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: platform
+    cryptophys.io/pool: platform-ha
   name: registry-system
 ---
 apiVersion: v1
@@ -126,6 +139,7 @@ metadata:
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
+    cryptophys.io/pool: platform-ha
 ---
 apiVersion: v1
 kind: Namespace
@@ -133,6 +147,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: platform
+    cryptophys.io/pool: platform-ha
   name: vault-system
 ---
 apiVersion: v1
@@ -140,6 +155,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/pool: storage-only
   name: minio-system
 ---
 apiVersion: v1
@@ -147,6 +163,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/pool: storage-only
   name: velero-system
 ---
 apiVersion: v1
@@ -155,6 +172,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: platform
+    cryptophys.io/pool: platform-ha
   name: security-system
 ---
 apiVersion: v1
@@ -162,6 +180,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/pool: platform-ha
   name: crossplane-system
 ---
 apiVersion: v1
@@ -173,6 +192,7 @@ metadata:
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
+    cryptophys.io/pool: platform-ha
 ---
 apiVersion: v1
 kind: Namespace
@@ -183,6 +203,7 @@ metadata:
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
+    cryptophys.io/pool: platform-ha
 ---
 apiVersion: v1
 kind: Namespace
@@ -193,12 +214,14 @@ metadata:
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
+    cryptophys.io/pool: platform-ha
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/pool: platform-ha
   name: envoy-gateway-system
 ---
 apiVersion: v1
@@ -208,7 +231,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: cerebrum
-
+    cryptophys.io/pool: apps-ha
 ---
 apiVersion: v1
 kind: Namespace
@@ -229,6 +252,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/pool: apps-ha
   name: apps-gateway
 ---
 apiVersion: v1
@@ -238,6 +262,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: aide
+    cryptophys.io/pool: apps-ha
 ---
 apiVersion: v1
 kind: Namespace
@@ -246,6 +271,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: navigator
+    cryptophys.io/pool: apps-ha
 ---
 apiVersion: v1
 kind: Namespace
@@ -254,6 +280,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: dao
+    cryptophys.io/pool: platform-ha
 ---
 apiVersion: v1
 kind: Namespace
@@ -278,6 +305,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: automation
+    cryptophys.io/pool: apps-ha
 ---
 apiVersion: v1
 kind: Namespace

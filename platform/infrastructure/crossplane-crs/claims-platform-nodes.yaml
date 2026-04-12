@@ -35,11 +35,13 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: compute
-  taints: []
+  taints:
+  - key: cryptophys.io/pool
+    value: apps-ha
+    effect: NoSchedule
   customLabels:
     cryptophys.io/tier: compute
     apps-ha: "true"
-    platform-ha: "true"
     ray-cluster: "true"
     nexus-workload-hub: "true"
     nexus-tower: "true"
