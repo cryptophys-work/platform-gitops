@@ -3,6 +3,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: apps
   name: apps-system
 ---
 apiVersion: v1
@@ -10,6 +11,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: apps
   name: apps-core
 ---
 apiVersion: v1
@@ -17,6 +19,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: apps
   name: apps-dash
 ---
 apiVersion: v1
@@ -31,6 +34,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: platform
   name: external-secrets
 ---
 apiVersion: v1
@@ -45,6 +49,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: platform
   name: gitops-system
 ---
 apiVersion: v1
@@ -62,6 +67,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: platform
   name: kyverno-system
 ---
 apiVersion: v1
@@ -90,6 +96,7 @@ metadata:
   name: observability-system
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: platform
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
@@ -99,6 +106,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: platform
   name: postgresql-system
 ---
 apiVersion: v1
@@ -106,6 +114,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: platform
   name: registry-system
 ---
 apiVersion: v1
@@ -123,6 +132,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: platform
   name: vault-system
 ---
 apiVersion: v1
@@ -144,6 +154,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: platform
   name: security-system
 ---
 apiVersion: v1
