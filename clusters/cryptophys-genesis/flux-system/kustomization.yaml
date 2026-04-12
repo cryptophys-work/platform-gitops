@@ -6,7 +6,8 @@ resources:
   - flux-rbac-controllers.yaml
   - flux__baseline-egress.yaml
 patches:
-  # Recovery base: keep Flux inside the approved platform-ha worker lane only.
+  # Recovery base: keep Flux on approved compute lanes, but tolerate the taints
+  # currently used by the recovery pool model so controllers always have a home.
   - patch: |
       apiVersion: apps/v1
       kind: Deployment
@@ -21,7 +22,7 @@ patches:
                 requiredDuringSchedulingIgnoredDuringExecution:
                   nodeSelectorTerms:
                     - matchExpressions:
-                        - key: cryptophys.io/platform-ha
+                        - key: platform-ha
                           operator: In
                           values:
                             - "true"
@@ -35,12 +36,32 @@ patches:
                 operator: Equal
                 value: platform-ha
                 effect: NoSchedule
+              - key: cryptophys.io/pool
+                operator: Equal
+                value: apps-ha
+                effect: NoSchedule
               - key: node.cilium.io/agent-not-ready
                 operator: Exists
                 effect: NoSchedule
               - key: ray-cluster
                 operator: Equal
                 value: "true"
+                effect: NoSchedule
+              - key: ray-head
+                operator: Equal
+                value: "true"
+                effect: NoSchedule
+              - key: bridge-system
+                operator: Equal
+                value: "true"
+                effect: NoSchedule
+              - key: dao-system
+                operator: Equal
+                value: "true"
+                effect: NoSchedule
+              - key: cryptophys.io/role
+                operator: Equal
+                value: llm-inference
                 effect: NoSchedule
     target:
       kind: Deployment
