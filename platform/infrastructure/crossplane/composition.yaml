@@ -44,3 +44,51 @@ spec:
       toFieldPath: "spec.forProvider.manifest.spec.taints"
       policy:
         fromFieldPath: Optional
+  - name: longhorn-node
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: longhorn.io/v1beta2
+            kind: Node
+            metadata:
+              name: ""
+              namespace: longhorn-system
+              labels:
+                cryptophys.io/domain: platform
+                cryptophys.io/managed-by: crossplane
+                cryptophys.io/layer: platform
+            spec:
+              allowScheduling: true
+              evictionRequested: false
+              disks: {}
+        providerConfigRef:
+          name: local-kubernetes-provider
+    patches:
+    # Node name
+    - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+      toFieldPath: "spec.forProvider.manifest.metadata.name"
+    # Component label
+    - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+      toFieldPath: "spec.forProvider.manifest.metadata.labels[cryptophys.io/component]"
+      transforms:
+      - type: string
+        string:
+          fmt: "longhorn-node-%s"
+    # Longhorn node allowScheduling
+    - fromFieldPath: "spec.longhornNode.allowScheduling"
+      toFieldPath: "spec.forProvider.manifest.spec.allowScheduling"
+      policy:
+        fromFieldPath: Optional
+    # Longhorn node evictionRequested
+    - fromFieldPath: "spec.longhornNode.evictionRequested"
+      toFieldPath: "spec.forProvider.manifest.spec.evictionRequested"
+      policy:
+        fromFieldPath: Optional
+    # Longhorn node disks
+    - fromFieldPath: "spec.longhornNode.disks"
+      toFieldPath: "spec.forProvider.manifest.spec.disks"
+      policy:
+        fromFieldPath: Optional
