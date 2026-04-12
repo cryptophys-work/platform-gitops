@@ -1,0 +1,76 @@
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
+metadata:
+  name: provider-kubernetes-controller
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+spec:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  tolerations:
+  - key: node.cilium.io/agent-not-ready
+    operator: Exists
+    effect: NoSchedule
+  - key: cryptophys.io/pool
+    operator: Equal
+    value: platform-ha
+    effect: NoSchedule
+  - key: cryptophys.io/storage-only
+    operator: Exists
+    effect: NoSchedule
+  - key: cryptophys.io/role
+    operator: Equal
+    value: llm-inference
+    effect: NoSchedule
+  - key: ray-head
+    operator: Exists
+    effect: NoSchedule
+  - key: dao-system
+    operator: Exists
+    effect: NoSchedule
+  - key: bridge-system
+    operator: Exists
+    effect: NoSchedule
+  - key: node.kubernetes.io/memory-pressure
+    operator: Exists
+    effect: NoExecute
+  - key: node.kubernetes.io/disk-pressure
+    operator: Exists
+    effect: NoExecute
+  - key: node.kubernetes.io/pid-pressure
+    operator: Exists
+    effect: NoExecute
+  - key: node.kubernetes.io/not-ready
+    operator: Exists
+    effect: NoExecute
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - nexus-144-91-103-10
+            - cerebellum-161-97-117-96
+            - thalamus-217-76-59-241
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: pkg.crossplane.io/provider
+              operator: In
+              values:
+              - provider-kubernetes
+          topologyKey: kubernetes.io/hostname
