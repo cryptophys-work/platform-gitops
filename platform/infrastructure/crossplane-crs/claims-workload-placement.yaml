@@ -1,0 +1,46 @@
+# WorkloadPlacement claims for cerebrum and Ray cluster head pods
+# These ensure workloads are pinned to appropriate nodes via Crossplane patches
+
+apiVersion: cryptophys.work/v1alpha1
+kind: WorkloadPlacement
+metadata:
+  name: cerebrum-core
+  namespace: crossplane-system
+spec:
+  targetWorkload:
+    kind: Deployment
+    name: cerebrum-core
+    namespace: cerebrum
+  placement:
+    tier: compute
+    preferredNode: nexus-144-91-103-10
+
+---
+apiVersion: cryptophys.work/v1alpha1
+kind: WorkloadPlacement
+metadata:
+  name: cerebrum-llm
+  namespace: crossplane-system
+spec:
+  targetWorkload:
+    kind: Deployment
+    name: cerebrum-llm
+    namespace: cerebrum
+  placement:
+    tier: compute
+    preferredNode: nexus-144-91-103-10
+
+---
+apiVersion: cryptophys.work/v1alpha1
+kind: WorkloadPlacement
+metadata:
+  name: cerebrum-ollama
+  namespace: crossplane-system
+spec:
+  targetWorkload:
+    kind: Deployment
+    name: cerebrum-ollama
+    namespace: cerebrum
+  placement:
+    tier: compute
+    preferredNode: nexus-144-91-103-10
