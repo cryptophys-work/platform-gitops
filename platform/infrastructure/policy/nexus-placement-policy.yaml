@@ -141,6 +141,7 @@ spec:
                   - key: kubernetes.io/metadata.name
                     operator: In
                     values:
+                      - ingress-system
                       - longhorn-system
       mutate:
         patchStrategicMerge:
