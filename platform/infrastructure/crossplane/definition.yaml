@@ -23,9 +23,55 @@ spec:
             properties:
               tier:
                 type: string
-                description: "The tier of the node (e.g., platform, worker, storage)."
+                description: "The tier of the node (e.g., platform, compute, storage)."
               resourceLimitMultiplier:
                 type: number
                 description: "Multiplier for resource limits (e.g., 0.65 for 65%)."
+              taints:
+                type: array
+                description: "Node taints to apply."
+                items:
+                  type: object
+                  properties:
+                    key:
+                      type: string
+                    value:
+                      type: string
+                    effect:
+                      type: string
+                      enum: [NoSchedule, NoExecute, PreferNoSchedule]
+                  required:
+                  - key
+                  - effect
+              customLabels:
+                type: object
+                description: "Custom labels to apply to the node."
+                x-kubernetes-preserve-unknown-fields: true
+              longhornNode:
+                type: object
+                description: "Longhorn node configuration."
+                properties:
+                  allowScheduling:
+                    type: boolean
+                  evictionRequested:
+                    type: boolean
+                  disks:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        path:
+                          type: string
+                        allowScheduling:
+                          type: boolean
+                        storageReserved:
+                          type: integer
+                        evictionRequested:
+                          type: boolean
+                      required:
+                      - name
+                      - path
             required:
             - tier
