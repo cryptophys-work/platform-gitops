@@ -6,8 +6,6 @@ resources:
   # Node management (labels, taints, tier assignment)
   - definition.yaml
   - composition.yaml
-  # Claims that instantiate node/workload/Longhorn abstractions
-  - ../crossplane-crs
   # Workload placement abstraction (node selection + tolerations)
   - workload-placement-definition.yaml
   - workload-placement-composition.yaml
