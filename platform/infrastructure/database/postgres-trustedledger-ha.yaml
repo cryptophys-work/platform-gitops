@@ -17,7 +17,7 @@ spec:
   superuserSecret:
     name: postgres-superuser-secret
   storage:
-    size: 1Gi
+    size: 10Gi
     storageClass: longhorn
   nodeMaintenanceWindow:
     inProgress: false
