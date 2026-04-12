@@ -56,12 +56,12 @@ spec:
                   evictionRequested:
                     type: boolean
                   disks:
-                    type: array
-                    items:
+                    type: object
+                    description: "Longhorn disks by name (map)."
+                    x-kubernetes-preserve-unknown-fields: true
+                    additionalProperties:
                       type: object
                       properties:
-                        name:
-                          type: string
                         path:
                           type: string
                         allowScheduling:
@@ -71,7 +71,6 @@ spec:
                         evictionRequested:
                           type: boolean
                       required:
-                      - name
                       - path
             required:
             - tier
