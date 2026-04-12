@@ -23,7 +23,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       extraEnvs:
         - name: CRYPTOPHYS_INGRESS_ROLLOUT_AT
-          value: "2026-04-11T13:49:06Z"
+          value: "2026-04-12T09:25:00Z"
       extraArgs:
         default-ssl-certificate: ingress-system/platform-wildcard-tls
         healthz-port: "11054"
