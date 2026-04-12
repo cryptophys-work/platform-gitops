@@ -19,6 +19,21 @@ spec:
         kind: HelmRepository
         name: cilium
         namespace: flux-system
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: DaemonSet
+              name: tetragon
+            patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: tetragon
+              spec:
+                template:
+                  spec:
+                    affinity: null
   values:
     affinity: null
     tolerations:

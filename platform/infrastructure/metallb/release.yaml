@@ -53,6 +53,18 @@ spec:
           - op: replace
             path: /webhooks/6/failurePolicy
             value: Ignore
+      - target:
+          kind: DaemonSet
+          name: platform-metallb-speaker
+        patch: |
+          apiVersion: apps/v1
+          kind: DaemonSet
+          metadata:
+            name: platform-metallb-speaker
+          spec:
+            template:
+              spec:
+                affinity: null
   values:
     crds:
       enabled: true
