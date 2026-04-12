@@ -62,6 +62,9 @@ spec:
           metadata:
             name: platform-metallb-speaker
           spec:
+            updateStrategy:
+              rollingUpdate:
+                maxUnavailable: 10
             template:
               spec:
                 affinity: null
