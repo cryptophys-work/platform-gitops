@@ -6,6 +6,7 @@ resources:
   - kyverno-controller-overrides.yaml
   - cert-manager/
   - external-secrets.yaml
+  - external-secrets/network-policy.yaml
   - ingress-nginx.yaml
   - ingress-nginx-network-policy.yaml
   - metrics-server.yaml

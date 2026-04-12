@@ -3,4 +3,5 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: platform
   name: vault-system
