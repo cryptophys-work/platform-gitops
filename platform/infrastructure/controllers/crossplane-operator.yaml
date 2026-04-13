@@ -78,22 +78,16 @@ spec:
                           operator: NotIn
                           values:
                             - nexus-144-91-103-10
-          - op: add
-            path: /spec/template/spec/hostNetwork
-            value: true
-          - op: add
-            path: /spec/template/spec/dnsPolicy
-            value: ClusterFirstWithHostNet
       - target:
           kind: Deployment
           name: crossplane-rbac-manager
         patch: |
-          - op: add
+          - op: replace
             path: /spec/template/spec/nodeSelector
             value:
               kubernetes.io/os: linux
               workload.cryptophys.work/apps-core: "true"
-          - op: add
+          - op: replace
             path: /spec/template/spec/tolerations
             value:
               - key: cryptophys.io/role
@@ -113,7 +107,7 @@ spec:
                 operator: Equal
                 value: apps-ha
                 effect: NoSchedule
-          - op: add
+          - op: replace
             path: /spec/template/spec/affinity
             value:
               nodeAffinity:
