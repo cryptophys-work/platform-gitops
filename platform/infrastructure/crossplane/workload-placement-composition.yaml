@@ -88,6 +88,13 @@ spec:
       toFieldPath: "spec.forProvider.manifest.spec.template.spec.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].preference.matchExpressions[0].values[0]"
       policy:
         fromFieldPath: Optional
+    # Optional: additional tolerations for pool-specific or role-specific taints
+    - fromFieldPath: "spec.placement.tolerations"
+      toFieldPath: "spec.forProvider.manifest.spec.template.spec.tolerations"
+      policy:
+        fromFieldPath: Optional
+        mergeOptions:
+          appendSlice: true
 
   # RayService head group placement (in addition to generic Deployment patches)
   - name: patch-rayservice-head
@@ -124,6 +131,13 @@ spec:
       toFieldPath: "spec.forProvider.manifest.spec.rayClusterConfig.headGroupSpec.template.spec.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].preference.matchExpressions[0].values[0]"
       policy:
         fromFieldPath: Optional
+    # Optional: additional tolerations for Ray head group
+    - fromFieldPath: "spec.placement.tolerations"
+      toFieldPath: "spec.forProvider.manifest.spec.rayClusterConfig.headGroupSpec.template.spec.tolerations"
+      policy:
+        fromFieldPath: Optional
+        mergeOptions:
+          appendSlice: true
 
   # RayService worker group placement (optional, for scaling hints)
   - name: patch-rayservice-workers
@@ -155,3 +169,10 @@ spec:
       toFieldPath: "spec.forProvider.manifest.metadata.namespace"
     - fromFieldPath: "spec.placement.tier"
       toFieldPath: "spec.forProvider.manifest.spec.rayClusterConfig.workerGroupSpecs[0].template.spec.nodeSelector[cryptophys.io/tier]"
+    # Optional: additional tolerations for Ray worker groups
+    - fromFieldPath: "spec.placement.tolerations"
+      toFieldPath: "spec.forProvider.manifest.spec.rayClusterConfig.workerGroupSpecs[0].template.spec.tolerations"
+      policy:
+        fromFieldPath: Optional
+        mergeOptions:
+          appendSlice: true
