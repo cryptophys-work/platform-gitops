@@ -46,7 +46,6 @@ spec:
             path: /spec/template/spec/nodeSelector
             value:
               kubernetes.io/os: linux
-              workload.cryptophys.work/apps-core: "true"
           - op: replace
             path: /spec/template/spec/tolerations
             value:
@@ -86,7 +85,6 @@ spec:
             path: /spec/template/spec/nodeSelector
             value:
               kubernetes.io/os: linux
-              workload.cryptophys.work/apps-core: "true"
           - op: replace
             path: /spec/template/spec/tolerations
             value:
@@ -123,7 +121,6 @@ spec:
     deploymentStrategy: RollingUpdate
     nodeSelector:
       kubernetes.io/os: linux
-      workload.cryptophys.work/apps-core: "true"
     tolerations:
       - key: cryptophys.io/role
         operator: Equal
