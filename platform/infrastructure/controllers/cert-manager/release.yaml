@@ -53,6 +53,9 @@ spec:
       operator: Equal
       value: platform-ha
       effect: NoSchedule
+    - key: node.cilium.io/agent-not-ready
+      operator: Exists
+      effect: NoSchedule
     resources:
       requests:
         cpu: 10m
@@ -84,6 +87,9 @@ spec:
       - key: cryptophys.io/pool
         operator: Equal
         value: platform-ha
+        effect: NoSchedule
+      - key: node.cilium.io/agent-not-ready
+        operator: Exists
         effect: NoSchedule
       resources:
         requests:
@@ -117,6 +123,9 @@ spec:
         operator: Equal
         value: platform-ha
         effect: NoSchedule
+      - key: node.cilium.io/agent-not-ready
+        operator: Exists
+        effect: NoSchedule
       resources:
         requests:
           cpu: 10m
@@ -147,6 +156,9 @@ spec:
       - key: cryptophys.io/pool
         operator: Equal
         value: platform-ha
+        effect: NoSchedule
+      - key: node.cilium.io/agent-not-ready
+        operator: Exists
         effect: NoSchedule
       resources:
         requests:
