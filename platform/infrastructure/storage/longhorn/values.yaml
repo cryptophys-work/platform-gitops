@@ -36,6 +36,35 @@ longhornUI:
       cpu: 100m
       memory: 256Mi
 longhornManager:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+    - key: cryptophys.io/storage-only
+      operator: Exists
+      effect: NoSchedule
+    - key: cryptophys.io/role
+      operator: Exists
+      effect: NoSchedule
+    - key: cryptophys.io/pool
+      operator: Equal
+      value: platform-ha
+      effect: NoSchedule
+    - key: ray-cluster
+      operator: Exists
+      effect: NoSchedule
+    - key: ray-head
+      operator: Exists
+      effect: NoSchedule
+    - key: bridge-system
+      operator: Exists
+      effect: NoSchedule
+    - key: dao-system
+      operator: Exists
+      effect: NoSchedule
+    - key: node.kubernetes.io/memory-pressure
+      operator: Exists
+      effect: NoSchedule
   resources:
     requests:
       cpu: 100m

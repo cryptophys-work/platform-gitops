@@ -161,15 +161,34 @@ spec:
                               - key: node-role.kubernetes.io/control-plane
                                 operator: Exists
                                 effect: NoSchedule
-                              - key: cryptophys.io/storage-only
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/role
-                                operator: Exists
-                                effect: NoSchedule
-                          - op: replace
-                            path: /spec/template/spec/containers/0/resources
-                            value:
+                               - key: cryptophys.io/storage-only
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: cryptophys.io/role
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: cryptophys.io/pool
+                                 operator: Equal
+                                 value: platform-ha
+                                 effect: NoSchedule
+                               - key: ray-cluster
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: ray-head
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: bridge-system
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: dao-system
+                                 operator: Exists
+                                 effect: NoSchedule
+                               - key: node.kubernetes.io/memory-pressure
+                                 operator: Exists
+                                 effect: NoSchedule
+                           - op: replace
+                             path: /spec/template/spec/containers/0/resources
+                             value:
                               requests:
                                 cpu: "50m"
                                 memory: "128Mi"
@@ -250,7 +269,7 @@ spec:
                 defaultSettings:
                   defaultReplicaCount: 2
                   systemManagedComponentsNodeSelector: ""
-                  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
+                  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
                   storageReservedPercentageForDefaultDisk: 10
                   storageOverProvisioningPercentage: 50
                   storageMinimalAvailablePercentage: 50
@@ -273,6 +292,25 @@ spec:
                       operator: Exists
                       effect: NoSchedule
                     - key: cryptophys.io/role
+                      operator: Exists
+                      effect: NoSchedule
+                    - key: cryptophys.io/pool
+                      operator: Equal
+                      value: platform-ha
+                      effect: NoSchedule
+                    - key: ray-cluster
+                      operator: Exists
+                      effect: NoSchedule
+                    - key: ray-head
+                      operator: Exists
+                      effect: NoSchedule
+                    - key: bridge-system
+                      operator: Exists
+                      effect: NoSchedule
+                    - key: dao-system
+                      operator: Exists
+                      effect: NoSchedule
+                    - key: node.kubernetes.io/memory-pressure
                       operator: Exists
                       effect: NoSchedule
                   resources:
