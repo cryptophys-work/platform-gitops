@@ -1,0 +1,80 @@
+# ClusterPool claims must be applied after the ClusterPool XRD is established.
+
+apiVersion: cryptophys.work/v1alpha1
+kind: ClusterPool
+metadata:
+  name: apps-ha
+  namespace: crossplane-system
+spec:
+  description: "Apps HA workload pool"
+  nodes:
+    - synapse-161-97-136-251
+    - nexus-144-91-103-10
+  namespaces:
+    - aide
+    - cerebrum
+    - apps-core
+    - apps-dash
+    - apps-user
+    - bridge
+    - automation
+    - apps-automation
+    - apps-gateway
+    - navigator
+    - platform-ui
+---
+apiVersion: cryptophys.work/v1alpha1
+kind: ClusterPool
+metadata:
+  name: platform-ha
+  namespace: crossplane-system
+spec:
+  description: "Platform HA infrastructure pool"
+  nodes:
+    - thalamus-217-76-59-241
+    - cerebellum-161-97-117-96
+    - cortex-178-18-250-39
+    - cerebrum-157-173-120-200
+    - corpus-207-180-206-69
+  namespaces:
+    - kube-system
+    - flux-system
+    - cert-manager
+    - ingress-system
+    - vault-system
+    - spire-system
+    - kyverno-system
+    - gatekeeper-system
+    - falco-system
+    - tetragon-system
+    - longhorn-system
+    - cilium-system
+    - metallb-system
+    - mesh-system
+    - observability-system
+    - security-observability
+    - monitoring-core
+    - trustedledger
+    - dao-governance
+    - cqls-compute
+    - kueue-system
+    - crossplane-system
+    - postgresql-system
+    - gitops-system
+    - registry-system
+    - tekton-system
+    - tekton-pipelines
+    - tekton-chains
+    - image-factory
+---
+apiVersion: cryptophys.work/v1alpha1
+kind: ClusterPool
+metadata:
+  name: storage-only
+  namespace: crossplane-system
+spec:
+  description: "Storage-dedicated nodes"
+  nodes:
+    - campus-212-47-66-101
+    - medulla-82-208-20-242
+  namespaces: []
