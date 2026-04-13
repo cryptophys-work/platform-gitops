@@ -6,7 +6,7 @@ metadata:
 spec:
   defaultReplicaCount: 2
   taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
-  storageOverProvisioningPercentage: 250
+  storageOverProvisioningPercentage: 200
   storageMinimalAvailablePercentage: 15
   systemManagedComponentsNodeSelector: ""
   managerResources:
