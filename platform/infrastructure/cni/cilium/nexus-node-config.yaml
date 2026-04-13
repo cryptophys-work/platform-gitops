@@ -8,9 +8,9 @@ spec:
     matchLabels:
       kubernetes.io/hostname: nexus-144-91-103-10
   defaults:
-    # nexus has 264GB RAM; at the global ratio of 0.005 Cilium allocates ~1.26GB
-    # for BPF maps alone, pushing the agent past its 4Gi limit (OOMKilled 53+x).
-    # Other nodes have ≤32GB so the same ratio costs only ~60-160MB there.
-    # Disabling dynamic sizing here lets policyMapMax/bpf-policy-map-max (65536)
-    # remain the explicit cap while eliminating the per-node RAM-scaled overhead.
-    bpf-map-dynamic-size-ratio: "0.0005"
+    # Nexus is the highest-density worker and its cilium-agent is still OOMKilled
+    # under the previous per-node override. Shrink dynamic map sizing further and
+    # lower the per-node policy-map ceiling so the agent can actually become Ready
+    # and clear node.cilium.io/agent-not-ready on this node.
+    bpf-map-dynamic-size-ratio: "0.0001"
+    bpf-policy-map-max: "16384"
