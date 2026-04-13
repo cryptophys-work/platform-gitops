@@ -52,7 +52,6 @@ spec:
     extraConfig:
       enable-host-reachable-services: "true"
       enable-source-ip-verification: "false"
-      enable-svc-source-range-check: "false"
     externalIPs:
       enabled: true
     nodePort:
