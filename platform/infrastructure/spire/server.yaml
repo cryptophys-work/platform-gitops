@@ -27,6 +27,7 @@ spec:
       serviceAccountName: spire-server
       nodeSelector:
         kubernetes.io/os: linux
+        cryptophys.io/platform-ha: "true"
       tolerations:
         - key: node.kubernetes.io/not-ready
           operator: Exists
@@ -55,24 +56,20 @@ spec:
             nodeSelectorTerms:
               - matchExpressions:
                   - key: kubernetes.io/hostname
-                    operator: NotIn
+                    operator: In
                     values:
-                      - campus-212-47-66-101
                       - thalamus-217-76-59-241
                       - cerebellum-161-97-117-96
           preferredDuringSchedulingIgnoredDuringExecution:
-            # Prefer HA infra nodes for resilience
+            # Keep the server on the stable platform-ha workers; avoid nexus for stateful SPIRE data.
             - weight: 100
               preference:
                 matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - nexus-144-91-103-10
                       - cerebellum-161-97-117-96
                       - thalamus-217-76-59-241
-                      - cortex-178-18-250-39
-                      - corpus-207-180-206-69
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
