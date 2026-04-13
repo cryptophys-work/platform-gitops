@@ -1,0 +1,70 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: clusterpool.kyverno.cryptophys.work
+  labels:
+    tier: platform
+spec:
+  compositeTypeRef:
+    apiVersion: cryptophys.work/v1alpha1
+    kind: XClusterPool
+  resources:
+  - name: kyverno-pool-policy
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: kyverno.io/v1
+            kind: ClusterPolicy
+            metadata:
+              name: ""
+              annotations:
+                policies.kyverno.io/category: "Node Placement"
+                policies.kyverno.io/severity: "medium"
+                cryptophys.io/managed-by: crossplane
+                cryptophys.io/component: cluster-pool-policy
+            spec:
+              validationFailureAction: audit
+              background: true
+              rules:
+              - name: ""
+                match:
+                  any:
+                  - resources:
+                      kinds: [Pod]
+                      namespaceSelector:
+                        matchLabels:
+                          cryptophys.io/pool: ""
+                mutate:
+                  patchStrategicMerge:
+                    spec:
+                      tolerations:
+                      - key: cryptophys.io/pool
+                        operator: Equal
+                        value: ""
+                        effect: NoSchedule
+        providerConfigRef:
+          name: local-kubernetes-provider
+    patches:
+    # Policy name: "mutate-pool-tolerations-<pool-name>"
+    - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+      toFieldPath: "spec.forProvider.manifest.metadata.name"
+      transforms:
+      - type: string
+        string:
+          fmt: "mutate-pool-tolerations-%s"
+    # Rule name: "inject-<pool-name>-toleration"
+    - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+      toFieldPath: "spec.forProvider.manifest.spec.rules[0].name"
+      transforms:
+      - type: string
+        string:
+          fmt: "inject-%s-toleration"
+    # namespaceSelector label value → pool name
+    - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+      toFieldPath: "spec.forProvider.manifest.spec.rules[0].match.any[0].resources.namespaceSelector.matchLabels[cryptophys.io/pool]"
+    # toleration value → pool name
+    - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+      toFieldPath: "spec.forProvider.manifest.spec.rules[0].mutate.patchStrategicMerge.spec.tolerations[0].value"

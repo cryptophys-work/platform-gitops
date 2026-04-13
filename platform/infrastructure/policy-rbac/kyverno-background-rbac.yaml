@@ -78,3 +78,42 @@ subjects:
 - kind: ServiceAccount
   name: kyverno-background-controller
   namespace: kyverno-system
+---
+# RBAC: Grant kyverno background-controller permission to mutate RayService objects
+# when mutateExisting policies target them directly.
+# Required for ClusterPolicy/mutate-rayservice-tolerations-* policies.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kyverno:background-controller:rayservices
+  labels:
+    app.kubernetes.io/component: background-controller
+    app.kubernetes.io/part-of: kyverno
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+  annotations:
+    cryptophys.io/contract: contract.platform.policy.v1
+rules:
+- apiGroups: [ray.io]
+  resources: [rayservices]
+  verbs: [get, list, watch, update, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kyverno:background-controller:rayservices
+  labels:
+    app.kubernetes.io/component: background-controller
+    app.kubernetes.io/part-of: kyverno
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+  annotations:
+    cryptophys.io/contract: contract.platform.policy.v1
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kyverno:background-controller:rayservices
+subjects:
+- kind: ServiceAccount
+  name: kyverno-background-controller
+  namespace: kyverno-system

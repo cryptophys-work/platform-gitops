@@ -3,8 +3,8 @@ kind: Kustomization
 resources:
   - edge-and-harbor-exceptions.yaml
   - kyverno-release.yaml
-  - cluster-pool-toleration-injection.yaml
   - cluster-pool-workload-restrictions.yaml
+  - rayservice-pool-toleration-injection.yaml
   - nexus-placement-policy.yaml
   - pdbs-critical-services.yaml
   - ../tekton

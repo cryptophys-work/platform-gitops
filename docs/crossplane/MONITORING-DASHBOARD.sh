@@ -45,8 +45,8 @@ print_cilium_status() {
   echo "┌─ CILIUM/CNI STATUS ────────────────────────────────────────────────┐"
 
   # Count Cilium pod status
-  local cilium_ready=$(kubectl get daemonset -n cilium-system cilium -o json 2>/dev/null | jq '.status.numberReady // 0')
-  local cilium_desired=$(kubectl get daemonset -n cilium-system cilium -o json 2>/dev/null | jq '.status.desiredNumberScheduled // 0')
+  local cilium_ready=$(kubectl get daemonset -n kube-system cilium -o json 2>/dev/null | jq '.status.numberReady // 0')
+  local cilium_desired=$(kubectl get daemonset -n kube-system cilium -o json 2>/dev/null | jq '.status.desiredNumberScheduled // 0')
 
   if [ -z "$cilium_ready" ]; then
     echo "│ ❌ Cannot query Cilium status"
@@ -56,14 +56,14 @@ print_cilium_status() {
     echo "│ ${status} Cilium Agent Pods: ${cilium_ready}/${cilium_desired}"
 
     # Check for CrashLoopBackOff
-    local crashloops=$(kubectl get pod -n cilium-system -l k8s-app=cilium --field-selector=status.phase!=Running 2>/dev/null | tail -n +2 | wc -l)
+    local crashloops=$(kubectl get pod -n kube-system -l k8s-app=cilium --field-selector=status.phase!=Running 2>/dev/null | tail -n +2 | wc -l)
     if [ "$crashloops" -gt 0 ]; then
       echo "│ ⚠️  CrashLoopBackOff pods: ${crashloops}"
     fi
 
     # Check Cilium operator
-    local operator_ready=$(kubectl get deployment -n cilium-system cilium-operator -o json 2>/dev/null | jq '.status.readyReplicas // 0')
-    local operator_desired=$(kubectl get deployment -n cilium-system cilium-operator -o json 2>/dev/null | jq '.spec.replicas // 0')
+    local operator_ready=$(kubectl get deployment -n kube-system cilium-operator -o json 2>/dev/null | jq '.status.readyReplicas // 0')
+    local operator_desired=$(kubectl get deployment -n kube-system cilium-operator -o json 2>/dev/null | jq '.spec.replicas // 0')
     local operator_status="✓"
     [ "$operator_ready" -lt "$operator_desired" ] && operator_status="✗"
     echo "│ ${operator_status} Cilium Operator: ${operator_ready}/${operator_desired}"

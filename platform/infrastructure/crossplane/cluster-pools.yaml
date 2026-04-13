@@ -5,6 +5,7 @@ apiVersion: cryptophys.work/v1alpha1
 kind: ClusterPool
 metadata:
   name: apps-ha
+  namespace: crossplane-system
 spec:
   description: "Apps HA workload pool"
   nodes:
@@ -27,6 +28,7 @@ apiVersion: cryptophys.work/v1alpha1
 kind: ClusterPool
 metadata:
   name: platform-ha
+  namespace: crossplane-system
 spec:
   description: "Platform HA infrastructure pool"
   nodes:
@@ -70,6 +72,7 @@ apiVersion: cryptophys.work/v1alpha1
 kind: ClusterPool
 metadata:
   name: storage-only
+  namespace: crossplane-system
 spec:
   description: "Storage-dedicated nodes"
   nodes:

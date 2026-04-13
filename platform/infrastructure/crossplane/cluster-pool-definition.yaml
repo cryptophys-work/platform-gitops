@@ -1,18 +1,23 @@
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
 metadata:
-  name: clusterpools.cryptophys.work
+  name: xclusterpools.cryptophys.work
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
 spec:
   group: cryptophys.work
   names:
+    kind: XClusterPool
+    plural: xclusterpools
+  claimNames:
     kind: ClusterPool
     plural: clusterpools
-    singular: clusterpool
-  scope: Cluster
   versions:
   - name: v1alpha1
     served: true
-    storage: true
+    referenceable: true
     schema:
       openAPIV3Schema:
         type: object
