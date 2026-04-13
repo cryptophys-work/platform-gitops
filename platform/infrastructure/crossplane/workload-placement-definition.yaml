@@ -45,6 +45,22 @@ spec:
                   preferredNode:
                     type: string
                     description: "Specific hostname if mandatory"
+                  tolerations:
+                    type: array
+                    description: "Additional tolerations to inject into the workload spec"
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        operator:
+                          type: string
+                          enum: ["Equal", "Exists"]
+                        value:
+                          type: string
+                        effect:
+                          type: string
+                          enum: ["NoSchedule", "NoExecute", "PreferNoSchedule"]
                 required:
                 - tier
             required:
