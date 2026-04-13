@@ -1,0 +1,137 @@
+---
+# RayService Pool Toleration Injection
+#
+# These policies inject pool-specific taints tolerations into RayService head and worker groups
+# based on the namespace's cryptophys.io/pool label.
+#
+# Structure:
+# - Rule 1: Inject toleration into headGroupSpec (all RayServices in pool)
+# - Rule 2: Inject tolerations into each workerGroupSpec via foreach+anchor
+#
+# Benefits:
+# - Dynamic: namespaces labeled with cryptophys.io/pool auto-get tolerations
+# - Scalable: works for any number of worker groups via anchor
+# - Auditable: all pool membership in ClusterPool CRD
+
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-rayservice-tolerations-apps-ha
+  namespace: kyverno-system
+  annotations:
+    policies.kyverno.io/title: "Mutate RayService Apps-HA Tolerations"
+    policies.kyverno.io/category: "Node Placement"
+    policies.kyverno.io/severity: "medium"
+    cryptophys.io/source: "ClusterPool (apps-ha)"
+    cryptophys.io/description: >
+      Inject apps-ha pool taint toleration into RayService head and worker groups
+      for all namespaces labeled cryptophys.io/pool=apps-ha.
+spec:
+  validationFailureAction: audit
+  background: true
+  rules:
+  - name: inject-apps-ha-head-toleration
+    match:
+      any:
+      - resources:
+          kinds: [RayService]
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: apps-ha
+    mutate:
+      patchStrategicMerge:
+        spec:
+          rayClusterConfig:
+            headGroupSpec:
+              template:
+                spec:
+                  tolerations:
+                  - key: cryptophys.io/pool
+                    operator: Equal
+                    value: apps-ha
+                    effect: NoSchedule
+  - name: inject-apps-ha-worker-tolerations
+    match:
+      any:
+      - resources:
+          kinds: [RayService]
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: apps-ha
+    mutate:
+      foreach:
+      - list: "request.object.spec.rayClusterConfig.workerGroupSpecs"
+        patchStrategicMerge:
+          spec:
+            rayClusterConfig:
+              workerGroupSpecs:
+              - <(groupName): "{{ element.groupName }}"
+                template:
+                  spec:
+                    tolerations:
+                    - key: cryptophys.io/pool
+                      operator: Equal
+                      value: apps-ha
+                      effect: NoSchedule
+
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-rayservice-tolerations-platform-ha
+  namespace: kyverno-system
+  annotations:
+    policies.kyverno.io/title: "Mutate RayService Platform-HA Tolerations"
+    policies.kyverno.io/category: "Node Placement"
+    policies.kyverno.io/severity: "medium"
+    cryptophys.io/source: "ClusterPool (platform-ha)"
+    cryptophys.io/description: >
+      Inject platform-ha pool taint toleration into RayService head and worker groups
+      for all namespaces labeled cryptophys.io/pool=platform-ha.
+spec:
+  validationFailureAction: audit
+  background: true
+  rules:
+  - name: inject-platform-ha-head-toleration
+    match:
+      any:
+      - resources:
+          kinds: [RayService]
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: platform-ha
+    mutate:
+      patchStrategicMerge:
+        spec:
+          rayClusterConfig:
+            headGroupSpec:
+              template:
+                spec:
+                  tolerations:
+                  - key: cryptophys.io/pool
+                    operator: Equal
+                    value: platform-ha
+                    effect: NoSchedule
+  - name: inject-platform-ha-worker-tolerations
+    match:
+      any:
+      - resources:
+          kinds: [RayService]
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: platform-ha
+    mutate:
+      foreach:
+      - list: "request.object.spec.rayClusterConfig.workerGroupSpecs"
+        patchStrategicMerge:
+          spec:
+            rayClusterConfig:
+              workerGroupSpecs:
+              - <(groupName): "{{ element.groupName }}"
+                template:
+                  spec:
+                    tolerations:
+                    - key: cryptophys.io/pool
+                      operator: Equal
+                      value: platform-ha
+                      effect: NoSchedule
