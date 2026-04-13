@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crossplane-rbac-manager
+  namespace: crossplane-system
+spec:
+  selector:
+    matchLabels:
+      app: crossplane-rbac-manager
+      release: crossplane
+  template:
+    metadata:
+      labels:
+        app: crossplane-rbac-manager
+        release: crossplane
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      tolerations:
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
+        - key: ray-head
+          operator: Exists
+          effect: NoSchedule
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - thalamus-217-76-59-241
+                      - cerebellum-161-97-117-96
