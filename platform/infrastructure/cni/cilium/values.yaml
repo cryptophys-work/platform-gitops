@@ -30,7 +30,7 @@ encryption:
   nodeEncryption: true
 priorityClassName: system-node-critical
 bpf:
-  policyMapMax: 65536
+  policyMapMax: 262144
   mapDynamicSizeRatio: 0.005
 resources:
   requests:
