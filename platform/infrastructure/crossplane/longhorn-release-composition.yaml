@@ -44,15 +44,16 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: cryptophys.io/storage-only
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/role
+                              - key: daemonset
                                 operator: Exists
                                 effect: NoSchedule
                               - key: cryptophys.io/pool
                                 operator: Equal
                                 value: platform-ha
+                                effect: NoSchedule
+                              - key: cryptophys.io/pool
+                                operator: Equal
+                                value: apps-ha
                                 effect: NoSchedule
                               - key: ray-head
                                 operator: Exists
@@ -78,15 +79,16 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: cryptophys.io/storage-only
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/role
+                              - key: daemonset
                                 operator: Exists
                                 effect: NoSchedule
                               - key: cryptophys.io/pool
                                 operator: Equal
                                 value: platform-ha
+                                effect: NoSchedule
+                              - key: cryptophys.io/pool
+                                operator: Equal
+                                value: apps-ha
                                 effect: NoSchedule
                               - key: ray-head
                                 operator: Exists
@@ -112,15 +114,16 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: cryptophys.io/storage-only
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/role
+                              - key: daemonset
                                 operator: Exists
                                 effect: NoSchedule
                               - key: cryptophys.io/pool
                                 operator: Equal
                                 value: platform-ha
+                                effect: NoSchedule
+                              - key: cryptophys.io/pool
+                                operator: Equal
+                                value: apps-ha
                                 effect: NoSchedule
                               - key: ray-head
                                 operator: Exists
@@ -146,15 +149,16 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: cryptophys.io/storage-only
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/role
+                              - key: daemonset
                                 operator: Exists
                                 effect: NoSchedule
                               - key: cryptophys.io/pool
                                 operator: Equal
                                 value: platform-ha
+                                effect: NoSchedule
+                              - key: cryptophys.io/pool
+                                operator: Equal
+                                value: apps-ha
                                 effect: NoSchedule
                               - key: ray-head
                                 operator: Exists
@@ -343,6 +347,8 @@ spec:
                 remediation:
                   retries: 5
                 values:
+                  defaultSettings:
+                    taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;daemonset:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
                   persistence:
                     defaultClass: true
                     defaultClassReplicaCount: 2
@@ -385,11 +391,7 @@ spec:
                   nodeSelector:
                     workload.cryptophys.work/compute: "true"
                   tolerations:
-                    - key: cryptophys.io/role
-                      operator: Equal
-                      value: llm-inference
-                      effect: NoSchedule
-                    - key: cryptophys.io/storage-only
+                    - key: daemonset
                       operator: Exists
                       effect: NoSchedule
                   resources:
@@ -403,11 +405,7 @@ spec:
                   nodeSelector:
                     workload.cryptophys.work/compute: "true"
                   tolerations:
-                    - key: cryptophys.io/role
-                      operator: Equal
-                      value: llm-inference
-                      effect: NoSchedule
-                    - key: cryptophys.io/storage-only
+                    - key: daemonset
                       operator: Exists
                       effect: NoSchedule
                   csi:
