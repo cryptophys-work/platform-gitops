@@ -29,12 +29,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: kubernetes.io/hostname
+              - key: platform-ha
                 operator: In
                 values:
-                - nexus-144-91-103-10
-                - thalamus-217-76-59-241
-                - cerebellum-161-97-117-96
+                - "true"
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
@@ -54,6 +52,10 @@ spec:
       - effect: NoSchedule
         key: node.cilium.io/agent-not-ready
         operator: Exists
+      - effect: NoSchedule
+        key: ray-head
+        operator: Equal
+        value: "true"
       - effect: NoSchedule
         key: ray-cluster
         operator: Equal
