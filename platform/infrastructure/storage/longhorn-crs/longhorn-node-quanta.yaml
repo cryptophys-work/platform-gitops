@@ -9,6 +9,7 @@ metadata:
     cryptophys.io/managed-by: flux
     cryptophys.io/layer: platform
 spec:
+  name: quanta-194-163-186-222
   allowScheduling: true
   disks:
     default-disk-080600000000:

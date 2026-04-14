@@ -30,25 +30,25 @@ spec:
       any:
       - resources:
           kinds: [Namespace]
-        selector:
-          matchLabels:
-            cryptophys.io/pool: "?*"  # Any pool label present
+          selector:
+            matchLabels:
+              cryptophys.io/pool: "?*"  # Any pool label present
     generate:
       kind: Role
-      name: pool-{{ request.object.metadata.labels['cryptophys.io/pool'] }}-reader
+      name: pool-{{ request.object.metadata.labels.\"cryptophys.io/pool\" }}-reader
       namespace: "{{ request.object.metadata.name }}"
       data:
         apiVersion: rbac.authorization.k8s.io/v1
         kind: Role
         metadata:
-          name: pool-{{ request.object.metadata.labels['cryptophys.io/pool'] }}-reader
+          name: pool-{{ request.object.metadata.labels.\"cryptophys.io/pool\" }}-reader
           namespace: "{{ request.object.metadata.name }}"
           labels:
-            cryptophys.io/pool: "{{ request.object.metadata.labels['cryptophys.io/pool'] }}"
+            cryptophys.io/pool: "{{ request.object.metadata.labels.\"cryptophys.io/pool\" }}"
             cryptophys.io/generated-by: kyverno
           annotations:
             cryptophys.io/generated-by: kyverno
-            cryptophys.io/pool: "{{ request.object.metadata.labels['cryptophys.io/pool'] }}"
+            cryptophys.io/pool: "{{ request.object.metadata.labels.\"cryptophys.io/pool\" }}"
         rules:
         - apiGroups: [""]
           resources: [pods, pods/log]

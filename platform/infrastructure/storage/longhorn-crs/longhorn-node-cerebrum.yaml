@@ -9,6 +9,7 @@ metadata:
     cryptophys.io/managed-by: flux
     cryptophys.io/layer: platform
 spec:
+  name: cerebrum-157-173-120-200
   allowScheduling: true
   disks:
     default-disk-080600000000:

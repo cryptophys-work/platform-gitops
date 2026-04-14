@@ -9,6 +9,7 @@ metadata:
     cryptophys.io/managed-by: flux
     cryptophys.io/layer: platform
 spec:
+  name: nexus-144-91-103-10
   allowScheduling: true
   disks:
     default-disk-080600000000:

@@ -9,6 +9,7 @@ metadata:
     cryptophys.io/managed-by: flux
     cryptophys.io/layer: platform
 spec:
+  name: thalamus-217-76-59-241
   allowScheduling: true
   disks:
     default-disk-080600000000:

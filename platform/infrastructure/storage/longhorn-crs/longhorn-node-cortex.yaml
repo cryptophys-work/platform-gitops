@@ -9,6 +9,7 @@ metadata:
     cryptophys.io/managed-by: flux
     cryptophys.io/layer: platform
 spec:
+  name: cortex-178-18-250-39
   allowScheduling: true
   disks:
     default-disk-080600000000:
