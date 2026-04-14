@@ -101,12 +101,12 @@ spec:
       volumes:
         - name: trivy-db
           persistentVolumeClaim:
-            claimName: trivy-server-cache
+            claimName: trivy-server-cache-v2
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: trivy-server-cache
+  name: trivy-server-cache-v2
   namespace: security-system
   annotations:
     cryptophys.io/domain: platform
