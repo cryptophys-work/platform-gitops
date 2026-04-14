@@ -21,7 +21,7 @@ data:
     storage-minimal-available-percentage: "15"
     storage-reserved-percentage-for-default-disk: "10"
     default-replica-count: "2"
-    taint-toleration: "cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule"
+    taint-toleration: "node-role.kubernetes.io/control-plane:NoSchedule;daemonset:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
     system-managed-components-node-selector: ""
     priority-class: "longhorn-critical"
     auto-delete-pod-when-volume-detached-unexpectedly: true
