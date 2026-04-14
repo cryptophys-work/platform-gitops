@@ -8,9 +8,7 @@ spec:
     matchLabels:
       kubernetes.io/hostname: nexus-144-91-103-10
   defaults:
-    # Nexus is the highest-density worker and its cilium-agent is still OOMKilled
-    # under the previous per-node override. Shrink dynamic map sizing further and
-    # lower the per-node policy-map ceiling so the agent can actually become Ready
-    # and clear node.cilium.io/agent-not-ready on this node.
-    bpf-map-dynamic-size-ratio: "0.0001"
-    bpf-policy-map-max: "16384"
+    # Nexus is the highest-density worker. Keep the per-node override smaller than
+    # the cluster default, but raise it enough to avoid local policy-map exhaustion.
+    bpf-map-dynamic-size-ratio: "0.0002"
+    bpf-policy-map-max: "32768"
