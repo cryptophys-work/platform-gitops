@@ -9,6 +9,7 @@ metadata:
     cryptophys.io/managed-by: flux
     cryptophys.io/layer: platform
 spec:
+  name: medulla-82-208-20-242
   allowScheduling: false
   disks:
     default-disk-080600000000:
