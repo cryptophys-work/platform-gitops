@@ -18,3 +18,7 @@ Every active runbook MUST include:
 ## Break-Glass Requirements
 - Define role-based authorization to execute break-glass operations.
 - Record who executed each privileged action and when.
+
+## Validation runbooks
+
+- [Platform GitOps local validation](./platform-gitops-validation.md) — Kustomize rendering, optional `kubectl` dry-run, and troubleshooting for `clusters/` and `platform/` changes.
