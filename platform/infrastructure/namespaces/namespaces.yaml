@@ -40,15 +40,6 @@ metadata:
     cryptophys.io/domain: platform
     cryptophys.io/pool: platform-ha
   name: external-secrets
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/pool: platform-ha
-  name: gatekeeper-system
----
 apiVersion: v1
 kind: Namespace
 metadata:
