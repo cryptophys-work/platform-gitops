@@ -725,9 +725,21 @@ kubectl describe pod <name> -n <ns>
            effect: NoSchedule
    ```
 
-4. **Or use WorkloadPlacement to auto-add tolerations:**
+4. **Use WorkloadPlacement to explicitly inject tolerations (P4-1):**
    ```bash
-   # (Planned: WorkloadPlacement will auto-inject common tolerations)
+   # WorkloadPlacement auto-injects tolerations into target Deployments/RayServices.
+   # Add tolerations to the claim spec under placement.tolerations[].
+   
+   kubectl edit workloadplacement <name> -n crossplane-system
+   
+   # Add this block to spec.placement if not already present:
+   #   tolerations:
+   #   - key: cryptophys.io/role
+   #     operator: Equal
+   #     value: llm-inference
+   #     effect: NoSchedule
+   
+   # Composition patches will apply them to pod specs on Deployment + RayService head/workers.
    ```
 
 ---
