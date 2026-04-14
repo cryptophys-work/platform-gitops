@@ -24,7 +24,12 @@ spec:
   values:
     mode: standalone
     replicas: 1
-    # Fix permissions for /data directory as root before starting MinIO as user 1000
+    # Hardcoded fix for Talos storage permissions
+    podSecurityContext:
+      fsGroup: 1000
+      fsGroupChangePolicy: Always
+      runAsUser: 1000
+      runAsGroup: 1000
     initContainers:
       - name: fix-permissions
         image: busybox:latest
