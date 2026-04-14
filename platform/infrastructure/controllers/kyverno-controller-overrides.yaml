@@ -21,8 +21,6 @@ spec:
         app.kubernetes.io/instance: kyverno
         app.kubernetes.io/part-of: kyverno
     spec:
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
       nodeSelector:
         kubernetes.io/os: linux
         cryptophys.io/platform-ha: "true"
