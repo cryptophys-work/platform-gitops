@@ -19,17 +19,6 @@ spec:
     nodeSelector:
       kubernetes.io/os: linux
       workload.cryptophys.work/platform: "true"
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: In
-                  values:
-                    - nexus-144-91-103-10
-                    - cerebellum-161-97-117-96
-                    - thalamus-217-76-59-241
     tolerations:
       - key: cryptophys.io/pool
         operator: Equal
@@ -43,17 +32,6 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/platform: "true"
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - nexus-144-91-103-10
-                      - cerebellum-161-97-117-96
-                      - thalamus-217-76-59-241
       tolerations:
         - key: cryptophys.io/pool
           operator: Equal
@@ -66,17 +44,6 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/platform: "true"
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - nexus-144-91-103-10
-                      - cerebellum-161-97-117-96
-                      - thalamus-217-76-59-241
       tolerations:
         - key: cryptophys.io/pool
           operator: Equal
