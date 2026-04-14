@@ -40,6 +40,5 @@ resources:
   - kustomization/50-backup-crs.yaml
   - kustomization/55-crossplane.yaml
   - kustomization/55-crossplane-crs.yaml
-  - kustomization/56-longhorn-crs.yaml
   - kustomization/60-ray.yaml
   - kustomization/90-gateway.yaml
