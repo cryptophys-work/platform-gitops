@@ -167,10 +167,7 @@ spec:
                               - key: node-role.kubernetes.io/control-plane
                                 operator: Exists
                                 effect: NoSchedule
-                              - key: cryptophys.io/storage-only
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/role
+                              - key: daemonset
                                 operator: Exists
                                 effect: NoSchedule
                               - key: cryptophys.io/pool
@@ -214,10 +211,7 @@ spec:
                               - key: node-role.kubernetes.io/master
                                 operator: Exists
                                 effect: NoSchedule
-                              - key: cryptophys.io/storage-only
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/role
+                              - key: daemonset
                                 operator: Exists
                                 effect: NoSchedule
                               - key: cryptophys.io/pool
@@ -295,7 +289,7 @@ spec:
                 defaultSettings:
                   defaultReplicaCount: 2
                   systemManagedComponentsNodeSelector: ""
-                  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
+                  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;daemonset=true:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
                   storageReservedPercentageForDefaultDisk: 10
                   storageOverProvisioningPercentage: 50
                   storageMinimalAvailablePercentage: 50
@@ -315,10 +309,7 @@ spec:
                     - key: node-role.kubernetes.io/control-plane
                       operator: Exists
                       effect: NoSchedule
-                    - key: cryptophys.io/storage-only
-                      operator: Exists
-                      effect: NoSchedule
-                    - key: cryptophys.io/role
+                    - key: daemonset
                       operator: Exists
                       effect: NoSchedule
                     - key: cryptophys.io/pool
@@ -386,12 +377,8 @@ spec:
                       - key: node-role.kubernetes.io/control-plane
                         operator: Exists
                         effect: NoSchedule
-                      - key: cryptophys.io/storage-only
+                      - key: daemonset
                         operator: Exists
-                        effect: NoSchedule
-                      - key: cryptophys.io/role
-                        operator: Equal
-                        value: llm-inference
                         effect: NoSchedule
         providerConfigRef:
           name: local-kubernetes-provider

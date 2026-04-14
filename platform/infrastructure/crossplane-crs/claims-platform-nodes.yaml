@@ -216,8 +216,8 @@ metadata:
 spec:
   tier: compute
   taints:
-  - key: cryptophys.io/role
-    value: llm-inference
+  - key: daemonset
+    value: "true"
     effect: NoSchedule
   customLabels:
     cryptophys.io/tier: compute
@@ -246,7 +246,7 @@ metadata:
 spec:
   tier: storage
   taints:
-  - key: cryptophys.io/storage-only
+  - key: daemonset
     value: "true"
     effect: NoSchedule
   customLabels:
