@@ -9,6 +9,7 @@ resources:
   - longhorn-node-medulla.yaml
   - longhorn-node-nexus.yaml
   - longhorn-node-quanta.yaml
+  - longhorn-recurringjob-transient-snapshot-delete.yaml
   - longhorn-node-synapse.yaml
   - longhorn-node-thalamus.yaml
   - longhorn-setting-deleting-confirmation.yaml

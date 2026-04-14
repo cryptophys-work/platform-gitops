@@ -1,0 +1,19 @@
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: transient-snapshot-delete
+  namespace: longhorn-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: longhorn
+    cryptophys.io/layer: platform
+    cryptophys.io/managed-by: flux
+spec:
+  cron: "0 */2 * * *"
+  task: snapshot-delete
+  retain: 2
+  concurrency: 1
+  groups:
+    - transient
+  labels: {}
+  parameters: {}

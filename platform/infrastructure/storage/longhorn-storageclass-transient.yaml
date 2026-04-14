@@ -1,0 +1,25 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-transient
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: longhorn
+    cryptophys.io/layer: platform
+    cryptophys.io/managed-by: flux
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "2"
+  staleReplicaTimeout: "30"
+  fromBackup: ""
+  fsType: "ext4"
+  migratable: "false"
+  recurringJobSelector: '[{"name":"transient-snapshot-delete","isGroup":false}]'
+  dataLocality: "best-effort"
+  unmapMarkSnapChainRemoved: "ignored"
+  disableRevisionCounter: "true"
+  dataEngine: "v1"
+  backupTargetName: "default"

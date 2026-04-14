@@ -17,8 +17,8 @@ data:
   default-setting.yaml: |-
     replica-soft-anti-affinity: true
     replica-auto-balance: "best-effort"
-    storage-over-provisioning-percentage: "50"
-    storage-minimal-available-percentage: "50"
+    storage-over-provisioning-percentage: "150"
+    storage-minimal-available-percentage: "15"
     storage-reserved-percentage-for-default-disk: "10"
     default-replica-count: "2"
     taint-toleration: "node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
@@ -28,6 +28,9 @@ data:
     replica-replenishment-wait-interval: "900"
     concurrent-replica-rebuild-per-node-limit: "2"
     concurrent-volume-backup-restore-per-node-limit: "2"
+    guaranteed-instance-manager-cpu: "0.25"
+    recurring-job-max-retention: "2"
+    auto-cleanup-recurring-job-backup-snapshot: true
     disable-revision-counter: "{\"v1\":\"true\"}"
     auto-cleanup-system-generated-snapshot: true
     deleting-confirmation-flag: true
