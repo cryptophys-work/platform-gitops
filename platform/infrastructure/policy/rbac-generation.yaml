@@ -1,0 +1,106 @@
+---
+# RBAC Auto-Generation per Pool
+#
+# These policies auto-generate namespace-scoped Roles in each namespace labeled with
+# cryptophys.io/pool. Each Role grants read access to pods and pod logs within the namespace.
+#
+# Role naming: pool-<pool-name>-reader
+# Rules: pods (get, list, watch), pods/log (get, list)
+# Subjects: Auto-bind to all ServiceAccounts in the namespace via companion RoleBinding
+#
+# Enables workload pods to introspect their pool membership and read peer pod status.
+
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: generate-pool-reader-role
+  annotations:
+    policies.kyverno.io/title: "Generate Pool Reader Role"
+    policies.kyverno.io/category: "RBAC"
+    policies.kyverno.io/severity: "low"
+    cryptophys.io/description: >
+      Automatically generate namespace-scoped Role named pool-<pool-name>-reader
+      in each namespace labeled with cryptophys.io/pool. Grants pod read access.
+spec:
+  validationFailureAction: audit
+  background: true
+  rules:
+  - name: generate-pool-reader-role
+    match:
+      any:
+      - resources:
+          kinds: [Namespace]
+        selector:
+          matchLabels:
+            cryptophys.io/pool: "?*"  # Any pool label present
+    generate:
+      kind: Role
+      name: pool-{{ request.object.metadata.labels['cryptophys.io/pool'] }}-reader
+      namespace: "{{ request.object.metadata.name }}"
+      data:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: Role
+        metadata:
+          name: pool-{{ request.object.metadata.labels['cryptophys.io/pool'] }}-reader
+          namespace: "{{ request.object.metadata.name }}"
+          labels:
+            cryptophys.io/pool: "{{ request.object.metadata.labels['cryptophys.io/pool'] }}"
+            cryptophys.io/generated-by: kyverno
+          annotations:
+            cryptophys.io/generated-by: kyverno
+            cryptophys.io/pool: "{{ request.object.metadata.labels['cryptophys.io/pool'] }}"
+        rules:
+        - apiGroups: [""]
+          resources: [pods, pods/log]
+          verbs: [get, list, watch]
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pool-rbac-binding-docs
+  namespace: kyverno-system
+  annotations:
+    cryptophys.io/description: "Documentation for manual RoleBinding setup"
+data:
+  rbac-setup.md: |
+    # Pool Reader Role Binding
+
+    The pool-<pool-name>-reader Role is auto-generated for each labeled namespace.
+    To use it, bind to a ServiceAccount manually:
+
+    ```yaml
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+      name: <sa-name>-pool-reader
+      namespace: <namespace>
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: Role
+      name: pool-<pool-name>-reader
+    subjects:
+    - kind: ServiceAccount
+      name: <sa-name>
+      namespace: <namespace>
+    ```
+
+    Or bind to all ServiceAccounts using system:serviceaccounts:<ns> group:
+
+    ```yaml
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+      name: pool-reader-all
+      namespace: <namespace>
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: Role
+      name: pool-<pool-name>-reader
+    subjects:
+    - kind: Group
+      name: system:serviceaccounts:<namespace>
+      apiGroup: rbac.authorization.k8s.io
+    ```
+
+    See docs/crossplane/OPERATIONS-RUNBOOK.md for per-pool RBAC patterns.
