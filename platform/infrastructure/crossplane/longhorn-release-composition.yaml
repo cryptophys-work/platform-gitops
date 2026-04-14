@@ -306,6 +306,7 @@ spec:
                   replicaReplenishmentWaitInterval: 900
                   autoCleanupSystemGeneratedSnapshot: true
                   autoDeletePodWhenVolumeDetachedUnexpectedly: true
+                  deletingConfirmationFlag: true
                   orphanAutoDeletion: true
                   orphanResourceAutoDeletion: replica-data;instance
                   orphanResourceAutoDeletionGracePeriod: 1200
