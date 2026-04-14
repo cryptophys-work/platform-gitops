@@ -78,10 +78,17 @@ spec:
       nodeSelector:
         workload.cryptophys.work/apps-core: "true"
       tolerations:
-        - key: cryptophys.io/role
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: apps-ha
+          effect: NoSchedule
+        - key: ray-head
           operator: Exists
           effect: NoSchedule
-        - key: cryptophys.io/storage-only
+        - key: bridge-system
+          operator: Exists
+          effect: NoSchedule
+        - key: dao-system
           operator: Exists
           effect: NoSchedule
     speaker:
