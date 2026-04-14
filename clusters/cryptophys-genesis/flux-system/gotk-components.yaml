@@ -4403,6 +4403,7 @@ spec:
   template:
     metadata:
       annotations:
+        cryptophys.io/kustomize-rollout: "2026-04-14T16:50:00Z"
         prometheus.io/port: "8080"
         prometheus.io/scrape: "true"
       labels:
