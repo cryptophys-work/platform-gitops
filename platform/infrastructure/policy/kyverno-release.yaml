@@ -178,7 +178,7 @@ spec:
         - "[velero.io/*,*,*]"
     admissionController:
       createSelfSignedCert: true
-      replicas: 2
+      replicas: 3
       livenessProbe:
         initialDelaySeconds: 30
         periodSeconds: 10
