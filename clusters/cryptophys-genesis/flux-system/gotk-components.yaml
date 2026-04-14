@@ -4391,7 +4391,7 @@ metadata:
   name: source-controller
   namespace: flux-system
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: source-controller
@@ -4417,11 +4417,16 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: kubernetes.io/hostname
+              - key: platform-ha
                 operator: In
                 values:
-                - cerebellum-161-97-117-96
-                - thalamus-217-76-59-241
+                - "true"
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: source-controller
+            topologyKey: kubernetes.io/hostname
       containers:
       - args:
         - --events-addr=http://notification-controller.$(RUNTIME_NAMESPACE).svc.cluster.local./
@@ -4498,6 +4503,13 @@ spec:
         operator: Exists
         effect: NoSchedule
       terminationGracePeriodSeconds: 10
+      topologySpreadConstraints:
+      - labelSelector:
+          matchLabels:
+            app: source-controller
+        maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
       volumes:
       - emptyDir: {}
         name: data
