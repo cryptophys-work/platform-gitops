@@ -68,3 +68,27 @@ spec:
     # toleration value → pool name
     - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
       toFieldPath: "spec.forProvider.manifest.spec.rules[0].mutate.patchStrategicMerge.spec.tolerations[0].value"
+  - name: pool-namespace-object
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: v1
+            kind: Namespace
+            metadata:
+              name: ""
+              labels:
+                cryptophys.io/pool: ""
+                cryptophys.io/synced-by: crossplane
+                cryptophys.io/managed-by: flux
+        providerConfigRef:
+          name: local-kubernetes-provider
+    patches:
+    # Namespace name matches pool name (for reference/audit)
+    - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+      toFieldPath: "spec.forProvider.manifest.metadata.name"
+    # Pool label value matches pool name
+    - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+      toFieldPath: "spec.forProvider.manifest.metadata.labels[cryptophys.io/pool]"
