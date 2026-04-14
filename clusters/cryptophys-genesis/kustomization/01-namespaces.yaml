@@ -14,7 +14,7 @@ spec:
   force: true     # Apply label updates to existing namespaces
   prune: false    # Never prune namespaces
   wait: false
-  timeout: 5m
+  timeout: 15m
   path: ./platform/infrastructure/namespaces
   sourceRef:
     kind: GitRepository
