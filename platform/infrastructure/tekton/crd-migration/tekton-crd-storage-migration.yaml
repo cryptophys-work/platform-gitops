@@ -61,7 +61,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: tekton-crd-storage-migration-v7
+  name: tekton-crd-storage-migration-v8
   namespace: tekton-pipelines
   labels:
     app.kubernetes.io/name: tekton-crd-migrator
