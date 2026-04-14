@@ -87,7 +87,7 @@ metadata:
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
-    cryptophys.io/pool: storage-only
+    cryptophys.io/daemonset: "true"
 ---
 apiVersion: v1
 kind: Namespace
@@ -155,7 +155,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
-    cryptophys.io/pool: storage-only
+    cryptophys.io/daemonset: "true"
   name: minio-system
 ---
 apiVersion: v1
@@ -163,7 +163,7 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
-    cryptophys.io/pool: storage-only
+    cryptophys.io/pool: platform-ha
   name: velero-system
 ---
 apiVersion: v1
