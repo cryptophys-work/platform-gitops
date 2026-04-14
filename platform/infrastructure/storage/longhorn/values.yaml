@@ -2,7 +2,7 @@ USER-SUPPLIED VALUES:
 defaultSettings:
   defaultReplicaCount: 3
   systemManagedComponentsNodeSelector: ""
-  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;cryptophys.io/storage-only=true:NoSchedule;cryptophys.io/role=llm-inference:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
+  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;daemonset=true:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
 persistence:
   defaultClass: true
   defaultClassReplicaCount: 3
@@ -11,7 +11,7 @@ csi:
   kubeletRootDir: /var/lib/kubelet
 longhornCSI:
   tolerations:
-    - key: cryptophys.io/storage-only
+    - key: daemonset
       operator: Exists
       effect: NoSchedule
 # Optimized resource requests based on actual usage audit (2026-03-19)
@@ -21,11 +21,7 @@ longhornUI:
     cryptophys.io/tier: compute
     nexus-workload-hub: "true"
   tolerations:
-    - key: cryptophys.io/role
-      operator: Equal
-      value: llm-inference
-      effect: NoSchedule
-    - key: cryptophys.io/storage-only
+    - key: daemonset
       operator: Exists
       effect: NoSchedule
   resources:
@@ -40,10 +36,7 @@ longhornManager:
     - key: node-role.kubernetes.io/control-plane
       operator: Exists
       effect: NoSchedule
-    - key: cryptophys.io/storage-only
-      operator: Exists
-      effect: NoSchedule
-    - key: cryptophys.io/role
+    - key: daemonset
       operator: Exists
       effect: NoSchedule
     - key: cryptophys.io/pool
@@ -77,11 +70,7 @@ longhornDriver:
     cryptophys.io/tier: compute
     nexus-workload-hub: "true"
   tolerations:
-    - key: cryptophys.io/role
-      operator: Equal
-      value: llm-inference
-      effect: NoSchedule
-    - key: cryptophys.io/storage-only
+    - key: daemonset
       operator: Exists
       effect: NoSchedule
   resources:
