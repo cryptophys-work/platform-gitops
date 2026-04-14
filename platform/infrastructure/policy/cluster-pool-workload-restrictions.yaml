@@ -1,57 +1,9 @@
----
-# ClusterPool-Driven Workload Restrictions
+# DEPRECATED: storage-only workload restriction policy removed (2026-04-14)
+# Replaced by daemonset=true:NoSchedule taint model
 #
-# This policy prevents general workload pods from running in the storage-only pool.
-# Only system services managing persistent storage (longhorn, minio, velero) are allowed.
+# New approach:
+# - Campus and medulla nodes have daemonset=true:NoSchedule taint
+# - Only pods with daemonset=true toleration can schedule there
+# - No policy needed; taint enforcement is automatic
 #
-# Rationale:
-# - storage-only pool nodes are optimized for storage (campus, medulla)
-# - Reserved for Longhorn replicas, MinIO buckets, Velero backups
-# - Prevent noisy workloads from degrading storage I/O
-
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
-  name: deny-storage-only-pods
-  namespace: kyverno-system
-  annotations:
-    policies.kyverno.io/title: "Deny Workload Pods in Storage Pool"
-    policies.kyverno.io/category: "Node Placement"
-    policies.kyverno.io/severity: "high"
-    cryptophys.io/source: "ClusterPool (storage-only)"
-    cryptophys.io/description: >
-      Block general workload pods from running in storage-only pool.
-      Only system services (longhorn, minio, velero) are allowed.
-spec:
-  validationFailureAction: audit
-  background: true
-  rules:
-  - name: deny-non-storage-pods
-    match:
-      any:
-      - resources:
-          kinds:
-          - Pod
-          namespaceSelector:
-            matchLabels:
-              cryptophys.io/pool: storage-only
-    validate:
-      message: >
-        Storage pool (campus, medulla) is reserved for Longhorn, MinIO, and Velero only.
-        Namespace '{{ request.object.metadata.namespace }}' has cryptophys.io/pool=storage-only label
-        which limits this pool to system storage services. Workload pods cannot run in this pool.
-
-        Allowed namespaces:
-        - longhorn-system (Longhorn volume replicas)
-        - minio-system (MinIO object storage)
-        - velero-system (Velero backup storage)
-      deny:
-        conditions:
-          all:
-          # Block unless namespace is one of the storage system namespaces
-          - key: "{{ request.object.metadata.namespace }}"
-            operator: NotIn
-            value:
-            - longhorn-system
-            - minio-system
-            - velero-system
+# See: /root/.claude/plans/storage-only-deprecation.md

@@ -67,15 +67,9 @@ spec:
     - tekton-pipelines
     - tekton-chains
     - image-factory
----
-apiVersion: cryptophys.work/v1alpha1
-kind: ClusterPool
-metadata:
-  name: storage-only
-  namespace: crossplane-system
-spec:
-  description: "Storage-dedicated nodes"
-  nodes:
-    - campus-212-47-66-101
-    - medulla-82-208-20-242
-  namespaces: []  # No workload pods allowed
+# DEPRECATED: storage-only pool removed (2026-04-14)
+# Replaced with daemonset=true:NoSchedule taint model
+# Campus and medulla nodes now use daemonset=true taint
+# All DaemonSet workloads (Longhorn, Minio, etc.) tolerate daemonset=true
+#
+# For context, see: /root/.claude/plans/storage-only-deprecation.md

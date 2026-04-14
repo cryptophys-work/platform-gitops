@@ -152,73 +152,7 @@ spec:
             matchLabels:
               app.kubernetes.io/name: "{{ request.object.metadata.labels['app.kubernetes.io/name'] }}"
 
----
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
-  name: generate-pdb-storage-only
-  annotations:
-    policies.kyverno.io/title: "Generate PodDisruptionBudget (Storage-Only Tier)"
-    policies.kyverno.io/category: "Resilience"
-    policies.kyverno.io/severity: "medium"
-    cryptophys.io/source: "ClusterPool (storage-only)"
-    cryptophys.io/description: >
-      Automatically generate PodDisruptionBudgets for storage-only workloads requiring
-      minAvailable=1 to protect against data loss during pod disruptions.
-spec:
-  validationFailureAction: audit
-  background: true
-  rules:
-  - name: generate-pdb-storage-only-deployments
-    match:
-      any:
-      - resources:
-          kinds: [Deployment]
-          namespaceSelector:
-            matchLabels:
-              cryptophys.io/pool: storage-only
-    generate:
-      kind: PodDisruptionBudget
-      name: pdb-{{ request.object.metadata.name }}
-      namespace: "{{ request.object.metadata.namespace }}"
-      data:
-        apiVersion: policy/v1
-        kind: PodDisruptionBudget
-        metadata:
-          name: pdb-{{ request.object.metadata.name }}
-          namespace: "{{ request.object.metadata.namespace }}"
-          annotations:
-            cryptophys.io/generated-by: kyverno
-            cryptophys.io/pool: storage-only
-        spec:
-          minAvailable: 1
-          selector:
-            matchLabels:
-              app.kubernetes.io/name: "{{ request.object.metadata.labels['app.kubernetes.io/name'] }}"
-
-  - name: generate-pdb-storage-only-statefulsets
-    match:
-      any:
-      - resources:
-          kinds: [StatefulSet]
-          namespaceSelector:
-            matchLabels:
-              cryptophys.io/pool: storage-only
-    generate:
-      kind: PodDisruptionBudget
-      name: pdb-{{ request.object.metadata.name }}
-      namespace: "{{ request.object.metadata.namespace }}"
-      data:
-        apiVersion: policy/v1
-        kind: PodDisruptionBudget
-        metadata:
-          name: pdb-{{ request.object.metadata.name }}
-          namespace: "{{ request.object.metadata.namespace }}"
-          annotations:
-            cryptophys.io/generated-by: kyverno
-            cryptophys.io/pool: storage-only
-        spec:
-          minAvailable: 1
-          selector:
-            matchLabels:
-              app.kubernetes.io/name: "{{ request.object.metadata.labels['app.kubernetes.io/name'] }}"
+# DEPRECATED: storage-only PDB policy removed (2026-04-14)
+# Replaced by daemonset=true taint model
+# DaemonSets (Longhorn, Minio) no longer need pool-based PDB generation
+# See: /root/.claude/plans/storage-only-deprecation.md
