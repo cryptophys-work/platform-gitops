@@ -12,6 +12,12 @@ spec:
       apiVersion: kubernetes.crossplane.io/v1alpha1
       kind: Object
       spec:
+        deletionPolicy: Orphan
+        managementPolicies:
+          - Observe
+          - Create
+          - Update
+          - LateInitialize
         forProvider:
           manifest:
             apiVersion: helm.toolkit.fluxcd.io/v2
@@ -161,34 +167,34 @@ spec:
                               - key: node-role.kubernetes.io/control-plane
                                 operator: Exists
                                 effect: NoSchedule
-                               - key: cryptophys.io/storage-only
-                                 operator: Exists
-                                 effect: NoSchedule
-                               - key: cryptophys.io/role
-                                 operator: Exists
-                                 effect: NoSchedule
-                               - key: cryptophys.io/pool
-                                 operator: Equal
-                                 value: platform-ha
-                                 effect: NoSchedule
-                               - key: ray-cluster
-                                 operator: Exists
-                                 effect: NoSchedule
-                               - key: ray-head
-                                 operator: Exists
-                                 effect: NoSchedule
-                               - key: bridge-system
-                                 operator: Exists
-                                 effect: NoSchedule
-                               - key: dao-system
-                                 operator: Exists
-                                 effect: NoSchedule
-                               - key: node.kubernetes.io/memory-pressure
-                                 operator: Exists
-                                 effect: NoSchedule
-                           - op: replace
-                             path: /spec/template/spec/containers/0/resources
-                             value:
+                              - key: cryptophys.io/storage-only
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: cryptophys.io/role
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: cryptophys.io/pool
+                                operator: Equal
+                                value: platform-ha
+                                effect: NoSchedule
+                              - key: ray-cluster
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: ray-head
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: bridge-system
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: dao-system
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: node.kubernetes.io/memory-pressure
+                                operator: Exists
+                                effect: NoSchedule
+                          - op: replace
+                            path: /spec/template/spec/containers/0/resources
+                            value:
                               requests:
                                 cpu: "50m"
                                 memory: "128Mi"
@@ -260,6 +266,7 @@ spec:
                 remediation:
                   retries: 5
               upgrade:
+                preserveValues: false
                 remediation:
                   retries: 5
               values:
