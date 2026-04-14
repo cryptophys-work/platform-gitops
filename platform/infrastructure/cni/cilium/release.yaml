@@ -81,10 +81,10 @@ spec:
           agentSocketPath: /run/spire/sockets/agent/agent.sock
           adminSocketPath: /run/spire/sockets/admin.sock
     mtu: 1370
-    # Pin Cilium to the stable external control-plane endpoint instead of node-local KubePrism.
-    # This avoids amplifying failures when one control-plane node's local API path is unhealthy.
-    k8sServiceHost: api.cryptophys.work
-    k8sServicePort: 6443
+    # Use Talos KubePrism local HA proxy on every node instead of an external control-plane endpoint.
+    # Cluster-internal networking must not depend on api.cryptophys.work.
+    k8sServiceHost: 127.0.0.1
+    k8sServicePort: 7445
     extraEnv:
       - name: CRYPTOPHYS_CILIUM_ROLLOUT_AT
         value: "2026-04-10T07:45:31Z"
