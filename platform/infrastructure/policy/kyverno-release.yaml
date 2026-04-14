@@ -215,6 +215,7 @@ spec:
           exceptionNamespace: "kyverno-system"
           forceFailurePolicyIgnore: "true"
           maxAdmissionReports: "200"
+          webhookTimeout: "30"
         resources:
           requests:
             cpu: "100m"
