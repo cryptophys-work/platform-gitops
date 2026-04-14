@@ -151,6 +151,29 @@ spec:
                 operator: Equal
                 value: platform-ha
                 effect: NoSchedule
+    - name: allow-tekton-migrator-ray-head
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - tekton-pipelines
+              selector:
+                matchLabels:
+                  app.kubernetes.io/name: tekton-crd-migrator
+      mutate:
+        patchStrategicMerge:
+          spec:
+            tolerations:
+              - key: cryptophys.io/pool
+                operator: Equal
+                value: platform-ha
+                effect: NoSchedule
+              - key: ray-head
+                operator: Equal
+                value: "true"
+                effect: NoSchedule
     - name: allow-qdrant-ray-cluster
       match:
         any:
