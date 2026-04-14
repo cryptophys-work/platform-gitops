@@ -4421,6 +4421,10 @@ spec:
                 operator: In
                 values:
                 - "true"
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values:
+                - nexus-144-91-103-10
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
@@ -5895,6 +5899,10 @@ spec:
                 operator: In
                 values:
                 - "true"
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values:
+                - nexus-144-91-103-10
       containers:
       - args:
         - --events-addr=http://notification-controller.$(RUNTIME_NAMESPACE).svc.cluster.local./
@@ -8576,6 +8584,10 @@ spec:
                 operator: In
                 values:
                 - "true"
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values:
+                - nexus-144-91-103-10
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
@@ -10019,6 +10031,10 @@ spec:
                 operator: In
                 values:
                 - "true"
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values:
+                - nexus-144-91-103-10
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
