@@ -61,7 +61,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: tekton-crd-storage-migration-v3
+  name: tekton-crd-storage-migration-v4
   namespace: tekton-pipelines
   labels:
     app.kubernetes.io/name: tekton-crd-migrator
@@ -85,7 +85,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: migrate
-          image: registry.cryptophys.work/docker-proxy/bitnami/kubectl@sha256:a0fa7201b97239cdbcb2777465710201c7eb5676ffa646ec8466b417bf479196
+          image: docker.io/bitnami/kubectl@sha256:a0fa7201b97239cdbcb2777465710201c7eb5676ffa646ec8466b417bf479196
           command: ["/bin/sh", "-exc"]
           args:
             - |
