@@ -350,11 +350,6 @@ spec:
                           name: longhorn-ui
                         patch: |
                           - op: replace
-                            path: /spec/template/spec/nodeSelector
-                            value:
-                              cryptophys.io/tier: compute
-                              nexus-workload-hub: "true"
-                          - op: replace
                             path: /spec/template/spec/tolerations
                             value:
                               - key: daemonset
@@ -452,9 +447,6 @@ spec:
                       cpu: "500m"
                       memory: "512Mi"
                 longhornUI:
-                  nodeSelector:
-                    cryptophys.io/tier: compute
-                    nexus-workload-hub: "true"
                   tolerations:
                     - key: daemonset
                       operator: Exists
