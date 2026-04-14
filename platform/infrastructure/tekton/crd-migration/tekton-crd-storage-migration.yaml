@@ -61,7 +61,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: tekton-crd-storage-migration-v5
+  name: tekton-crd-storage-migration-v6
   namespace: tekton-pipelines
   labels:
     app.kubernetes.io/name: tekton-crd-migrator
@@ -89,6 +89,10 @@ spec:
         - key: cryptophys.io/pool
           operator: Equal
           value: platform-ha
+          effect: NoSchedule
+        - key: ray-head
+          operator: Equal
+          value: "true"
           effect: NoSchedule
       containers:
         - name: migrate
