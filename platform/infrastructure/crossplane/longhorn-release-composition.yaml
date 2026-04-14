@@ -177,15 +177,24 @@ spec:
                           kind: DaemonSet
                           name: longhorn-csi-plugin
                         patch: |
+                          - op: remove
+                            path: /spec/template/spec/affinity
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
                               - key: daemonset
                                 operator: Exists
                                 effect: NoSchedule
+                              - key: node-role.kubernetes.io/control-plane
+                                operator: Exists
+                                effect: NoSchedule
                               - key: cryptophys.io/pool
                                 operator: Equal
                                 value: platform-ha
+                                effect: NoSchedule
+                              - key: cryptophys.io/pool
+                                operator: Equal
+                                value: apps-ha
                                 effect: NoSchedule
                               - key: ray-cluster
                                 operator: Exists
@@ -212,15 +221,24 @@ spec:
                           kind: DaemonSet
                           name: longhorn-manager
                         patch: |
+                          - op: remove
+                            path: /spec/template/spec/affinity
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
                               - key: daemonset
                                 operator: Exists
                                 effect: NoSchedule
+                              - key: node-role.kubernetes.io/control-plane
+                                operator: Exists
+                                effect: NoSchedule
                               - key: cryptophys.io/pool
                                 operator: Equal
                                 value: platform-ha
+                                effect: NoSchedule
+                              - key: cryptophys.io/pool
+                                operator: Equal
+                                value: apps-ha
                                 effect: NoSchedule
                               - key: ray-cluster
                                 operator: Exists
@@ -287,34 +305,41 @@ spec:
                   persistence:
                     defaultClass: true
                     defaultClassReplicaCount: 2
-                longhornManager:
-                  tolerations:
-                    - key: daemonset
-                      operator: Exists
-                      effect: NoSchedule
-                    - key: cryptophys.io/pool
-                      operator: Equal
-                      value: platform-ha
-                      effect: NoSchedule
-                    - key: ray-cluster
-                      operator: Exists
-                      effect: NoSchedule
-                    - key: ray-head
-                      operator: Exists
-                      effect: NoSchedule
-                    - key: bridge-system
-                      operator: Exists
-                      effect: NoSchedule
-                    - key: dao-system
-                      operator: Exists
-                      effect: NoSchedule
-                  resources:
-                    requests:
-                      cpu: "200m"
-                      memory: "512Mi"
-                    limits:
-                      cpu: "1"
-                      memory: "512Mi"
+                  longhornManager:
+                    tolerations:
+                      - key: daemonset
+                        operator: Exists
+                        effect: NoSchedule
+                      - key: node-role.kubernetes.io/control-plane
+                        operator: Exists
+                        effect: NoSchedule
+                      - key: cryptophys.io/pool
+                        operator: Equal
+                        value: platform-ha
+                        effect: NoSchedule
+                      - key: cryptophys.io/pool
+                        operator: Equal
+                        value: apps-ha
+                        effect: NoSchedule
+                      - key: ray-cluster
+                        operator: Exists
+                        effect: NoSchedule
+                      - key: ray-head
+                        operator: Exists
+                        effect: NoSchedule
+                      - key: bridge-system
+                        operator: Exists
+                        effect: NoSchedule
+                      - key: dao-system
+                        operator: Exists
+                        effect: NoSchedule
+                    resources:
+                      requests:
+                        cpu: "200m"
+                        memory: "512Mi"
+                      limits:
+                        cpu: "1"
+                        memory: "512Mi"
                 longhornDriver:
                   nodeSelector:
                     workload.cryptophys.work/compute: "true"
@@ -344,16 +369,39 @@ spec:
                     - key: cryptophys.io/storage-only
                       operator: Exists
                       effect: NoSchedule
-                csi:
-                  attacherReplicaCount: 2
-                  provisionerReplicaCount: 2
-                  resizerReplicaCount: 2
-                  snapshotterReplicaCount: 2
-                  longhornCSI:
-                    tolerations:
-                      - key: daemonset
-                        operator: Exists
-                        effect: NoSchedule
+                  csi:
+                    attacherReplicaCount: 2
+                    provisionerReplicaCount: 2
+                    resizerReplicaCount: 2
+                    snapshotterReplicaCount: 2
+                    longhornCSI:
+                      tolerations:
+                        - key: daemonset
+                          operator: Exists
+                          effect: NoSchedule
+                        - key: node-role.kubernetes.io/control-plane
+                          operator: Exists
+                          effect: NoSchedule
+                        - key: cryptophys.io/pool
+                          operator: Equal
+                          value: platform-ha
+                          effect: NoSchedule
+                        - key: cryptophys.io/pool
+                          operator: Equal
+                          value: apps-ha
+                          effect: NoSchedule
+                        - key: ray-cluster
+                          operator: Exists
+                          effect: NoSchedule
+                        - key: ray-head
+                          operator: Exists
+                          effect: NoSchedule
+                        - key: bridge-system
+                          operator: Exists
+                          effect: NoSchedule
+                        - key: dao-system
+                          operator: Exists
+                          effect: NoSchedule
         providerConfigRef:
           name: local-kubernetes-provider
     patches:
