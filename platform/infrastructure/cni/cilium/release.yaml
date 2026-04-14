@@ -46,12 +46,10 @@ spec:
     kubeProxyReplacement: "true"
     hostServices:
       enabled: true
-      protocols:
-        - tcp
-        - udp
-    extraConfig:
-      enable-host-reachable-services: "true"
-      enable-source-ip-verification: "false"
+    socketLB:
+      enabled: true
+      hostNamespaceOnly: true
+    extraConfig: null
     externalIPs:
       enabled: true
     nodePort:
