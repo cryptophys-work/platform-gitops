@@ -1,0 +1,11 @@
+apiVersion: longhorn.io/v1beta2
+kind: Setting
+metadata:
+  name: deleting-confirmation-flag
+  namespace: longhorn-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: longhorn
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+value: "true"
