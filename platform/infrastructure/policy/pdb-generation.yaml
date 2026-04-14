@@ -36,6 +36,7 @@ spec:
             matchLabels:
               cryptophys.io/pool: apps-ha
     generate:
+      apiVersion: policy/v1
       kind: PodDisruptionBudget
       name: pdb-{{ request.object.metadata.name }}
       namespace: "{{ request.object.metadata.namespace }}"
@@ -63,6 +64,7 @@ spec:
             matchLabels:
               cryptophys.io/pool: apps-ha
     generate:
+      apiVersion: policy/v1
       kind: PodDisruptionBudget
       name: pdb-{{ request.object.metadata.name }}
       namespace: "{{ request.object.metadata.namespace }}"
@@ -107,6 +109,7 @@ spec:
             matchLabels:
               cryptophys.io/pool: platform-ha
     generate:
+      apiVersion: policy/v1
       kind: PodDisruptionBudget
       name: pdb-{{ request.object.metadata.name }}
       namespace: "{{ request.object.metadata.namespace }}"
@@ -134,6 +137,7 @@ spec:
             matchLabels:
               cryptophys.io/pool: platform-ha
     generate:
+      apiVersion: policy/v1
       kind: PodDisruptionBudget
       name: pdb-{{ request.object.metadata.name }}
       namespace: "{{ request.object.metadata.namespace }}"
