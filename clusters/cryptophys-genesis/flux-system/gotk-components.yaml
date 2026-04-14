@@ -4403,7 +4403,7 @@ spec:
   template:
     metadata:
       annotations:
-        cryptophys.io/source-rollout: "2026-04-14T16:55:00Z"
+        cryptophys.io/source-rollout: "2026-04-14T17:15:00Z"
         prometheus.io/port: "8080"
         prometheus.io/scrape: "true"
       labels:
@@ -4418,14 +4418,12 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: platform-ha
-                operator: In
-                values:
-                - "true"
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - thalamus-217-76-59-241
+                - cortex-178-18-250-39
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
@@ -4503,6 +4501,9 @@ spec:
       - key: cryptophys.io/pool
         operator: Equal
         value: platform-ha
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
         effect: NoSchedule
       - key: node.cilium.io/agent-not-ready
         operator: Exists
