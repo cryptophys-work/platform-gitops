@@ -290,7 +290,7 @@ spec:
                 defaultSettings:
                   defaultReplicaCount: 2
                   systemManagedComponentsNodeSelector: ""
-                  taintToleration: "daemonset=true:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule"
+                  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;daemonset:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
                   storageReservedPercentageForDefaultDisk: 10
                   storageOverProvisioningPercentage: 150
                   storageMinimalAvailablePercentage: 15
