@@ -38,6 +38,16 @@ spec:
                 minimum: 1
                 maximum: 95
                 default: 50
+              concurrentReplicaRebuildPerNodeLimit:
+                type: integer
+                minimum: 1
+                maximum: 10
+                default: 2
+              guaranteedInstanceManagerCPU:
+                type: number
+                minimum: 0
+                maximum: 4
+                default: 0.25
               systemManagedComponentsNodeSelector:
                 type: string
                 default: ""

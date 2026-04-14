@@ -291,14 +291,17 @@ spec:
                   systemManagedComponentsNodeSelector: ""
                   taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;daemonset=true:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
                   storageReservedPercentageForDefaultDisk: 10
-                  storageOverProvisioningPercentage: 50
-                  storageMinimalAvailablePercentage: 50
+                  storageOverProvisioningPercentage: 150
+                  storageMinimalAvailablePercentage: 15
                   replicaSoftAntiAffinity: true
                   replicaAutoBalance: best-effort
                   concurrentReplicaRebuildPerNodeLimit: 2
                   concurrentVolumeBackupRestorePerNodeLimit: 2
+                  guaranteedInstanceManagerCPU: 0.25
+                  recurringJobMaxRetention: 2
                   replicaReplenishmentWaitInterval: 900
                   autoCleanupSystemGeneratedSnapshot: true
+                  autoCleanupRecurringJobBackupSnapshot: true
                   autoDeletePodWhenVolumeDetachedUnexpectedly: true
                   deletingConfirmationFlag: true
                   orphanAutoDeletion: true
@@ -397,6 +400,14 @@ spec:
         fromFieldPath: Optional
     - fromFieldPath: spec.storageMinimalAvailablePercentage
       toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.storageMinimalAvailablePercentage
+      policy:
+        fromFieldPath: Optional
+    - fromFieldPath: spec.concurrentReplicaRebuildPerNodeLimit
+      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.concurrentReplicaRebuildPerNodeLimit
+      policy:
+        fromFieldPath: Optional
+    - fromFieldPath: spec.guaranteedInstanceManagerCPU
+      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.guaranteedInstanceManagerCPU
       policy:
         fromFieldPath: Optional
     - fromFieldPath: spec.systemManagedComponentsNodeSelector
