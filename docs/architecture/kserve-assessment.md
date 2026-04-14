@@ -239,6 +239,7 @@ Belum ada model registry (MLflow, BentoML, Seldon) untuk track versi model.
 
 Label namespace `model-serving`:
 ```yaml
+app.kubernetes.io/created-by: aide
 cryptophys.io/domain: cerebrum
 cryptophys.io/pool: apps-ha  # atau node pool khusus jika ada GPU
 ```
