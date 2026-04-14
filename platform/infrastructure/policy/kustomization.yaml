@@ -6,6 +6,8 @@ resources:
   - kyverno-release.yaml
   - cluster-pool-workload-restrictions.yaml
   - rayservice-pool-toleration-injection.yaml
+  - pdb-generation.yaml
+  - rbac-generation.yaml
   - nexus-placement-policy.yaml
   - pdbs-critical-services.yaml
   - ../tekton

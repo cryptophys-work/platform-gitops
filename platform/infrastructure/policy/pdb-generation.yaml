@@ -1,0 +1,224 @@
+---
+# PodDisruptionBudget Auto-Generation per Pool
+#
+# These policies auto-generate PodDisruptionBudgets for Deployments and StatefulSets
+# based on the namespace's cryptophys.io/pool label.
+#
+# Tiers:
+# - apps-ha: minAvailable=2 (high availability, spread requirement)
+# - platform-ha: minAvailable=1 (platform services, single replica minimum)
+# - storage-only: minAvailable=1 (storage services, disruption sensitive)
+#
+# Policy uses Kyverno generate rules to create PDB for each workload automatically.
+
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: generate-pdb-apps-ha
+  annotations:
+    policies.kyverno.io/title: "Generate PodDisruptionBudget (Apps-HA Tier)"
+    policies.kyverno.io/category: "Resilience"
+    policies.kyverno.io/severity: "medium"
+    cryptophys.io/source: "ClusterPool (apps-ha)"
+    cryptophys.io/description: >
+      Automatically generate PodDisruptionBudgets for apps-ha workloads requiring
+      minAvailable=2 to ensure at least 2 replicas survive pod disruptions.
+spec:
+  validationFailureAction: audit
+  background: true
+  rules:
+  - name: generate-pdb-apps-ha-deployments
+    match:
+      any:
+      - resources:
+          kinds: [Deployment]
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: apps-ha
+    generate:
+      kind: PodDisruptionBudget
+      name: pdb-{{ request.object.metadata.name }}
+      namespace: "{{ request.object.metadata.namespace }}"
+      data:
+        apiVersion: policy/v1
+        kind: PodDisruptionBudget
+        metadata:
+          name: pdb-{{ request.object.metadata.name }}
+          namespace: "{{ request.object.metadata.namespace }}"
+          annotations:
+            cryptophys.io/generated-by: kyverno
+            cryptophys.io/pool: apps-ha
+        spec:
+          minAvailable: 2
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: "{{ request.object.metadata.labels['app.kubernetes.io/name'] }}"
+
+  - name: generate-pdb-apps-ha-statefulsets
+    match:
+      any:
+      - resources:
+          kinds: [StatefulSet]
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: apps-ha
+    generate:
+      kind: PodDisruptionBudget
+      name: pdb-{{ request.object.metadata.name }}
+      namespace: "{{ request.object.metadata.namespace }}"
+      data:
+        apiVersion: policy/v1
+        kind: PodDisruptionBudget
+        metadata:
+          name: pdb-{{ request.object.metadata.name }}
+          namespace: "{{ request.object.metadata.namespace }}"
+          annotations:
+            cryptophys.io/generated-by: kyverno
+            cryptophys.io/pool: apps-ha
+        spec:
+          minAvailable: 2
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: "{{ request.object.metadata.labels['app.kubernetes.io/name'] }}"
+
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: generate-pdb-platform-ha
+  annotations:
+    policies.kyverno.io/title: "Generate PodDisruptionBudget (Platform-HA Tier)"
+    policies.kyverno.io/category: "Resilience"
+    policies.kyverno.io/severity: "medium"
+    cryptophys.io/source: "ClusterPool (platform-ha)"
+    cryptophys.io/description: >
+      Automatically generate PodDisruptionBudgets for platform-ha workloads requiring
+      minAvailable=1 to ensure at least 1 replica survives pod disruptions.
+spec:
+  validationFailureAction: audit
+  background: true
+  rules:
+  - name: generate-pdb-platform-ha-deployments
+    match:
+      any:
+      - resources:
+          kinds: [Deployment]
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: platform-ha
+    generate:
+      kind: PodDisruptionBudget
+      name: pdb-{{ request.object.metadata.name }}
+      namespace: "{{ request.object.metadata.namespace }}"
+      data:
+        apiVersion: policy/v1
+        kind: PodDisruptionBudget
+        metadata:
+          name: pdb-{{ request.object.metadata.name }}
+          namespace: "{{ request.object.metadata.namespace }}"
+          annotations:
+            cryptophys.io/generated-by: kyverno
+            cryptophys.io/pool: platform-ha
+        spec:
+          minAvailable: 1
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: "{{ request.object.metadata.labels['app.kubernetes.io/name'] }}"
+
+  - name: generate-pdb-platform-ha-statefulsets
+    match:
+      any:
+      - resources:
+          kinds: [StatefulSet]
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: platform-ha
+    generate:
+      kind: PodDisruptionBudget
+      name: pdb-{{ request.object.metadata.name }}
+      namespace: "{{ request.object.metadata.namespace }}"
+      data:
+        apiVersion: policy/v1
+        kind: PodDisruptionBudget
+        metadata:
+          name: pdb-{{ request.object.metadata.name }}
+          namespace: "{{ request.object.metadata.namespace }}"
+          annotations:
+            cryptophys.io/generated-by: kyverno
+            cryptophys.io/pool: platform-ha
+        spec:
+          minAvailable: 1
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: "{{ request.object.metadata.labels['app.kubernetes.io/name'] }}"
+
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: generate-pdb-storage-only
+  annotations:
+    policies.kyverno.io/title: "Generate PodDisruptionBudget (Storage-Only Tier)"
+    policies.kyverno.io/category: "Resilience"
+    policies.kyverno.io/severity: "medium"
+    cryptophys.io/source: "ClusterPool (storage-only)"
+    cryptophys.io/description: >
+      Automatically generate PodDisruptionBudgets for storage-only workloads requiring
+      minAvailable=1 to protect against data loss during pod disruptions.
+spec:
+  validationFailureAction: audit
+  background: true
+  rules:
+  - name: generate-pdb-storage-only-deployments
+    match:
+      any:
+      - resources:
+          kinds: [Deployment]
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: storage-only
+    generate:
+      kind: PodDisruptionBudget
+      name: pdb-{{ request.object.metadata.name }}
+      namespace: "{{ request.object.metadata.namespace }}"
+      data:
+        apiVersion: policy/v1
+        kind: PodDisruptionBudget
+        metadata:
+          name: pdb-{{ request.object.metadata.name }}
+          namespace: "{{ request.object.metadata.namespace }}"
+          annotations:
+            cryptophys.io/generated-by: kyverno
+            cryptophys.io/pool: storage-only
+        spec:
+          minAvailable: 1
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: "{{ request.object.metadata.labels['app.kubernetes.io/name'] }}"
+
+  - name: generate-pdb-storage-only-statefulsets
+    match:
+      any:
+      - resources:
+          kinds: [StatefulSet]
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: storage-only
+    generate:
+      kind: PodDisruptionBudget
+      name: pdb-{{ request.object.metadata.name }}
+      namespace: "{{ request.object.metadata.namespace }}"
+      data:
+        apiVersion: policy/v1
+        kind: PodDisruptionBudget
+        metadata:
+          name: pdb-{{ request.object.metadata.name }}
+          namespace: "{{ request.object.metadata.namespace }}"
+          annotations:
+            cryptophys.io/generated-by: kyverno
+            cryptophys.io/pool: storage-only
+        spec:
+          minAvailable: 1
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: "{{ request.object.metadata.labels['app.kubernetes.io/name'] }}"
