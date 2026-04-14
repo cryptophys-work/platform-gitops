@@ -61,7 +61,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: tekton-crd-storage-migration-v8
+  name: tekton-crd-storage-migration-v9
   namespace: tekton-pipelines
   labels:
     app.kubernetes.io/name: tekton-crd-migrator
@@ -96,7 +96,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: migrate
-          image: docker.io/bitnami/kubectl@sha256:a0fa7201b97239cdbcb2777465710201c7eb5676ffa646ec8466b417bf479196
+          image: docker.io/alpine/k8s@sha256:bd01dae02676ce4cab62fc744e43443eee5bf660054e94d3496d23bfc35d384e
           command: ["/bin/sh", "-exc"]
           args:
             - |
