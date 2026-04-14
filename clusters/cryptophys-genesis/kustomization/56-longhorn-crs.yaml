@@ -1,0 +1,21 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 56-longhorn-crs
+  namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+spec:
+  suspend: false
+  interval: 1h
+  prune: false
+  wait: false
+  timeout: 20m
+  path: ./platform/infrastructure/storage/longhorn-crs
+  sourceRef:
+    kind: GitRepository
+    name: platform-repo
+  dependsOn:
+    - name: 12-storage
+    - name: 55-crossplane-crs

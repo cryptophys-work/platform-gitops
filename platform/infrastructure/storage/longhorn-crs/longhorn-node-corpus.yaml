@@ -1,0 +1,22 @@
+apiVersion: longhorn.io/v1beta2
+kind: Node
+metadata:
+  name: corpus-207-180-206-69
+  namespace: longhorn-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: longhorn-node-corpus
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+spec:
+  allowScheduling: true
+  disks:
+    default-disk-080600000000:
+      allowScheduling: true
+      diskDriver: ""
+      diskType: filesystem
+      evictionRequested: false
+      path: /var/lib/longhorn/
+      storageReserved: 10737418240
+      tags: []
+  evictionRequested: false
