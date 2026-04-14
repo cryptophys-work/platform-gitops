@@ -61,7 +61,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: tekton-crd-storage-migration-v4
+  name: tekton-crd-storage-migration-v5
   namespace: tekton-pipelines
   labels:
     app.kubernetes.io/name: tekton-crd-migrator
@@ -83,6 +83,13 @@ spec:
     spec:
       serviceAccountName: tekton-crd-migrator
       restartPolicy: OnFailure
+      nodeSelector:
+        kubernetes.io/hostname: cerebellum-161-97-117-96
+      tolerations:
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
       containers:
         - name: migrate
           image: docker.io/bitnami/kubectl@sha256:a0fa7201b97239cdbcb2777465710201c7eb5676ffa646ec8466b417bf479196
