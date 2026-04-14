@@ -271,7 +271,7 @@ ClusterQueue (Kueue)
 ```
 clusters/cryptophys-genesis/kustomization/
 ├── 00-crds.yaml           # Tambahkan KServe CRDs
-├── 62-kserve.yaml         # KServe controller (baru)
+├── 62-kserve.yaml         # Flux Kustomization untuk KServe controller
 └── 63-kserve-crs.yaml     # InferenceService pertama (baru)
 ```
 
