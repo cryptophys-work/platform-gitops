@@ -38,7 +38,10 @@ stderr_file="$(mktemp)"
 trap 'rm -f "${stderr_file}"' EXIT
 
 while IFS= read -r target || [[ -n "${target}" ]]; do
-  [[ -z "${target//[[:space:]]/}" ]] && continue
+  # Normalize whitespace and allow comments in validation-targets.txt.
+  target="$(printf '%s' "${target}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+  [[ -z "${target}" ]] && continue
+  [[ "${target}" =~ ^# ]] && continue
   echo "[validate] ${target}"
   if kustomize build "${ROOT_DIR}/${target}" >/dev/null 2>"${stderr_file}"; then
     echo "[pass] ${target}"

@@ -1,3 +1,4 @@
+# Kustomize roots validated locally and in CI.
 clusters/talos-prod
 clusters/cryptophys-genesis
 platform/infrastructure
