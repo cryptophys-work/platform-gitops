@@ -52,7 +52,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: retain
-          image: bitnami/kubectl:latest
+          image: bitnami/kubectl:1.31.4
           command:
             - /bin/sh
             - -c

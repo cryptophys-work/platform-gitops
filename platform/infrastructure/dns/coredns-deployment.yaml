@@ -43,23 +43,7 @@ spec:
                 - kube-dns
             topologyKey: "kubernetes.io/hostname"
       tolerations:
-      - key: CriticalAddonsOnly
-        operator: Exists
-      - effect: NoSchedule
-        key: cryptophys.io/pool
-        operator: Equal
-        value: platform-ha
-      - effect: NoSchedule
-        key: node.cilium.io/agent-not-ready
-        operator: Exists
-      - effect: NoSchedule
-        key: ray-head
-        operator: Equal
-        value: "true"
-      - effect: NoSchedule
-        key: ray-cluster
-        operator: Equal
-        value: "true"
+      - operator: Exists
       containers:
       - args:
         - -conf

@@ -1,3 +1,4 @@
 clusters/talos-prod
 clusters/cryptophys-genesis
+platform/infrastructure
 platform/security

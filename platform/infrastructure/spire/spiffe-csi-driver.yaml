@@ -55,30 +55,7 @@ spec:
       hostNetwork: true
       hostPID: true
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/storage-only
-          operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/role
-          operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/pool
-          operator: Exists
-          effect: NoSchedule
-        - key: ray-head
-          operator: Exists
-          effect: NoSchedule
-        - key: ray-cluster
-          operator: Exists
-          effect: NoSchedule
-        - key: bridge-system
-          operator: Exists
-          effect: NoSchedule
-        - key: dao-system
-          operator: Exists
-          effect: NoSchedule
+        - operator: Exists
       nodeSelector:
         kubernetes.io/os: linux
       containers:
