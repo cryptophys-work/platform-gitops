@@ -22,6 +22,7 @@ spec:
       retries: 3
   upgrade:
     disableWait: true
+    preserveValues: false
     remediation:
       retries: 3
   values:
@@ -49,7 +50,7 @@ spec:
     socketLB:
       enabled: true
       hostNamespaceOnly: true
-    extraConfig: null
+    extraConfig: {}
     externalIPs:
       enabled: true
     nodePort:
@@ -67,6 +68,7 @@ spec:
       enabled: true
       type: wireguard
       nodeEncryption: true
+    svcSourceRangeCheck: false
     # Mutual authentication via SPIRE — makes SPIFFE/SVID fundamental
     authentication:
       mutual:
