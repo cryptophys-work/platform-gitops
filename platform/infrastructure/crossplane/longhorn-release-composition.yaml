@@ -304,7 +304,8 @@ spec:
                           - op: replace
                             path: /spec/template/spec/nodeSelector
                             value:
-                              workload.cryptophys.work/compute: "true"
+                              cryptophys.io/tier: compute
+                              nexus-workload-hub: "true"
                           - op: add
                             path: /spec/template/spec/tolerations
                             value:
@@ -348,6 +349,11 @@ spec:
                           kind: Deployment
                           name: longhorn-ui
                         patch: |
+                          - op: replace
+                            path: /spec/template/spec/nodeSelector
+                            value:
+                              cryptophys.io/tier: compute
+                              nexus-workload-hub: "true"
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
@@ -432,7 +438,8 @@ spec:
                         memory: "512Mi"
                 longhornDriver:
                   nodeSelector:
-                    workload.cryptophys.work/compute: "true"
+                    cryptophys.io/tier: compute
+                    nexus-workload-hub: "true"
                   tolerations:
                     - key: daemonset
                       operator: Exists
@@ -445,6 +452,9 @@ spec:
                       cpu: "500m"
                       memory: "512Mi"
                 longhornUI:
+                  nodeSelector:
+                    cryptophys.io/tier: compute
+                    nexus-workload-hub: "true"
                   tolerations:
                     - key: daemonset
                       operator: Exists
