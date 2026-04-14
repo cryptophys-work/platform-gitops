@@ -5,6 +5,8 @@ metadata:
   namespace: external-secrets
 spec:
   interval: 1h
+  upgrade:
+    preserveValues: false
   chart:
     spec:
       chart: external-secrets
@@ -19,6 +21,8 @@ spec:
     nodeSelector:
       kubernetes.io/os: linux
       workload.cryptophys.work/platform: "true"
+    affinity:
+      nodeAffinity: null
     tolerations:
       - key: cryptophys.io/pool
         operator: Equal
@@ -32,6 +36,8 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/platform: "true"
+      affinity:
+        nodeAffinity: null
       tolerations:
         - key: cryptophys.io/pool
           operator: Equal
@@ -44,6 +50,8 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/platform: "true"
+      affinity:
+        nodeAffinity: null
       tolerations:
         - key: cryptophys.io/pool
           operator: Equal
