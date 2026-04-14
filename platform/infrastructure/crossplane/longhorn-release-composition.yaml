@@ -177,8 +177,9 @@ spec:
                           kind: DaemonSet
                           name: longhorn-csi-plugin
                         patch: |
-                          - op: remove
+                          - op: add
                             path: /spec/template/spec/affinity
+                            value: {}
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
@@ -221,8 +222,9 @@ spec:
                           kind: DaemonSet
                           name: longhorn-manager
                         patch: |
-                          - op: remove
+                          - op: add
                             path: /spec/template/spec/affinity
+                            value: {}
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
@@ -278,6 +280,45 @@ spec:
                             path: /spec/template/spec/nodeSelector
                             value:
                               workload.cryptophys.work/compute: "true"
+                          - op: add
+                            path: /spec/template/spec/tolerations
+                            value:
+                              - key: cryptophys.io/role
+                                operator: Equal
+                                value: llm-inference
+                                effect: NoSchedule
+                              - key: cryptophys.io/storage-only
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: cryptophys.io/pool
+                                operator: Equal
+                                value: platform-ha
+                                effect: NoSchedule
+                              - key: cryptophys.io/pool
+                                operator: Equal
+                                value: apps-ha
+                                effect: NoSchedule
+                              - key: ray-head
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: ray-cluster
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: bridge-system
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: dao-system
+                                operator: Exists
+                                effect: NoSchedule
+                          - op: add
+                            path: /spec/template/spec/containers/0/resources
+                            value:
+                              requests:
+                                cpu: "50m"
+                                memory: "256Mi"
+                              limits:
+                                cpu: "1"
+                                memory: "512Mi"
                       - target:
                           kind: Deployment
                           name: longhorn-ui
