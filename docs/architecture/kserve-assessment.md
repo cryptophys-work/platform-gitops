@@ -8,7 +8,7 @@
 
 ## Ringkasan Eksekutif
 
-KServe adalah platform serving model ML berbasis Kubernetes yang layak dipertimbangkan untuk cryptophys. Platform saat ini sudah memiliki fondasi AI/ML yang kuat (Ray, Kueue, MinIO, Harbor, Vault, SPIRE), sehingga KServe dapat diintegrasikan tanpa memulai dari nol. Namun, ada beberapa keputusan arsitektur penting—terutama soal mode deployment (RawDeployment vs Serverless)—yang perlu diputuskan sebelum implementasi dimulai.
+KServe adalah platform serving model ML berbasis Kubernetes yang layak dipertimbangkan untuk Cryptophys. Platform saat ini sudah memiliki fondasi AI/ML yang kuat (Ray, Kueue, MinIO, Harbor, Vault, SPIRE), sehingga KServe dapat diintegrasikan tanpa memulai dari nol. Namun, ada beberapa keputusan arsitektur penting—terutama soal mode deployment (RawDeployment vs Serverless)—yang perlu diputuskan sebelum implementasi dimulai.
 
 **Rekomendasi utama:** Gunakan KServe dalam **RawDeployment mode** untuk menghindari dependensi Knative yang belum ada di platform.
 
