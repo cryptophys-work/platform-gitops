@@ -17,6 +17,7 @@ parameters:
   fromBackup: ""
   fsType: "ext4"
   migratable: "false"
+  recurringJobSelector: '[{"name":"transient-snapshot-delete","isGroup":false}]'
   dataLocality: "best-effort"
   unmapMarkSnapChainRemoved: "ignored"
   disableRevisionCounter: "true"
