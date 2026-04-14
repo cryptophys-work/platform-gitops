@@ -44,13 +44,17 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: Exists
-                                effect: NoSchedule
                               - key: cryptophys.io/storage-only
                                 operator: Exists
                                 effect: NoSchedule
                               - key: cryptophys.io/role
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: cryptophys.io/pool
+                                operator: Equal
+                                value: platform-ha
+                                effect: NoSchedule
+                              - key: ray-head
                                 operator: Exists
                                 effect: NoSchedule
                           - op: replace
@@ -74,13 +78,17 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: Exists
-                                effect: NoSchedule
                               - key: cryptophys.io/storage-only
                                 operator: Exists
                                 effect: NoSchedule
                               - key: cryptophys.io/role
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: cryptophys.io/pool
+                                operator: Equal
+                                value: platform-ha
+                                effect: NoSchedule
+                              - key: ray-head
                                 operator: Exists
                                 effect: NoSchedule
                           - op: replace
@@ -104,13 +112,17 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: Exists
-                                effect: NoSchedule
                               - key: cryptophys.io/storage-only
                                 operator: Exists
                                 effect: NoSchedule
                               - key: cryptophys.io/role
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: cryptophys.io/pool
+                                operator: Equal
+                                value: platform-ha
+                                effect: NoSchedule
+                              - key: ray-head
                                 operator: Exists
                                 effect: NoSchedule
                           - op: replace
@@ -134,13 +146,17 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: Exists
-                                effect: NoSchedule
                               - key: cryptophys.io/storage-only
                                 operator: Exists
                                 effect: NoSchedule
                               - key: cryptophys.io/role
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: cryptophys.io/pool
+                                operator: Equal
+                                value: platform-ha
+                                effect: NoSchedule
+                              - key: ray-head
                                 operator: Exists
                                 effect: NoSchedule
                           - op: replace
@@ -164,9 +180,6 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: Exists
-                                effect: NoSchedule
                               - key: daemonset
                                 operator: Exists
                                 effect: NoSchedule
@@ -184,9 +197,6 @@ spec:
                                 operator: Exists
                                 effect: NoSchedule
                               - key: dao-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.kubernetes.io/memory-pressure
                                 operator: Exists
                                 effect: NoSchedule
                           - op: replace
@@ -205,12 +215,6 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node-role.kubernetes.io/master
-                                operator: Exists
-                                effect: NoSchedule
                               - key: daemonset
                                 operator: Exists
                                 effect: NoSchedule
@@ -228,9 +232,6 @@ spec:
                                 operator: Exists
                                 effect: NoSchedule
                               - key: dao-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.kubernetes.io/memory-pressure
                                 operator: Exists
                                 effect: NoSchedule
                           - op: replace
@@ -289,7 +290,7 @@ spec:
                 defaultSettings:
                   defaultReplicaCount: 2
                   systemManagedComponentsNodeSelector: ""
-                  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;daemonset=true:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
+                  taintToleration: "daemonset=true:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule"
                   storageReservedPercentageForDefaultDisk: 10
                   storageOverProvisioningPercentage: 150
                   storageMinimalAvailablePercentage: 15
@@ -309,9 +310,6 @@ spec:
                   orphanResourceAutoDeletionGracePeriod: 1200
                 longhornManager:
                   tolerations:
-                    - key: node-role.kubernetes.io/control-plane
-                      operator: Exists
-                      effect: NoSchedule
                     - key: daemonset
                       operator: Exists
                       effect: NoSchedule
@@ -329,9 +327,6 @@ spec:
                       operator: Exists
                       effect: NoSchedule
                     - key: dao-system
-                      operator: Exists
-                      effect: NoSchedule
-                    - key: node.kubernetes.io/memory-pressure
                       operator: Exists
                       effect: NoSchedule
                   resources:
@@ -377,9 +372,6 @@ spec:
                   snapshotterReplicaCount: 2
                   longhornCSI:
                     tolerations:
-                      - key: node-role.kubernetes.io/control-plane
-                        operator: Exists
-                        effect: NoSchedule
                       - key: daemonset
                         operator: Exists
                         effect: NoSchedule
