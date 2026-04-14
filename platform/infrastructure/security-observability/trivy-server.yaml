@@ -3,7 +3,8 @@
 # Dikelola Flux (platform-gitops), independen dari ArgoCD/Tekton
 # - trivy-operator pakai mode ClientServer (tidak spawn scan job per pod)
 # - Tekton security-inspector task pakai --server client mode
-# - DB persisted di Longhorn PVC (survive pod restart, warmup sekali)
+# - DB persisted di dedicated single-replica PVC karena ini cache rebuildable;
+#   jangan sampai volume faulted lama memblokir seluruh stage security-observability.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -64,7 +65,7 @@ spec:
             - name: TRIVY_DB_REPOSITORY
               value: mirror.gcr.io/aquasec/trivy-db
             # DB auto-update interval: 24h (upstream default). CronJob tidak dipakai karena
-            # PVC trivy-server-db adalah ReadWriteOnce — tidak bisa di-mount lintas pod/node.
+            # PVC cache ini ReadWriteOnce — tidak bisa di-mount lintas pod/node.
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -100,12 +101,12 @@ spec:
       volumes:
         - name: trivy-db
           persistentVolumeClaim:
-            claimName: trivy-server-db
+            claimName: trivy-server-cache
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: trivy-server-db
+  name: trivy-server-cache
   namespace: security-system
   annotations:
     cryptophys.io/domain: platform
@@ -114,7 +115,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: longhorn
+  storageClassName: longhorn-single
   resources:
     requests:
       storage: 2Gi
