@@ -5865,7 +5865,7 @@ metadata:
   name: kustomize-controller
   namespace: flux-system
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: kustomize-controller
@@ -5895,6 +5895,12 @@ spec:
                 operator: In
                 values:
                 - "true"
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: kustomize-controller
+            topologyKey: kubernetes.io/hostname
       containers:
       - args:
         - --events-addr=http://notification-controller.$(RUNTIME_NAMESPACE).svc.cluster.local./
@@ -5969,6 +5975,13 @@ spec:
         value: "true"
         effect: NoSchedule
       terminationGracePeriodSeconds: 60
+      topologySpreadConstraints:
+      - labelSelector:
+          matchLabels:
+            app: kustomize-controller
+        maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
       volumes:
       - emptyDir: {}
         name: temp
