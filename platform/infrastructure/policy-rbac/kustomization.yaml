@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - kyverno-cleanup-rbac.yaml
   - kyverno-background-rbac.yaml
+  - kyverno-admission-discovery-rbac.yaml
