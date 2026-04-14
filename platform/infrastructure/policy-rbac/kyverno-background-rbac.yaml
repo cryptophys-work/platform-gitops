@@ -38,6 +38,44 @@ subjects:
   name: kyverno-background-controller
   namespace: kyverno-system
 ---
+# RBAC: Grant kyverno background-controller permission to generate namespace Roles
+# Required for ClusterPolicy/generate-pool-reader-role.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kyverno:background-controller:roles
+  labels:
+    app.kubernetes.io/component: background-controller
+    app.kubernetes.io/part-of: kyverno
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+  annotations:
+    cryptophys.io/contract: contract.platform.policy.v1
+rules:
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["roles"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kyverno:background-controller:roles
+  labels:
+    app.kubernetes.io/component: background-controller
+    app.kubernetes.io/part-of: kyverno
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+  annotations:
+    cryptophys.io/contract: contract.platform.policy.v1
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kyverno:background-controller:roles
+subjects:
+- kind: ServiceAccount
+  name: kyverno-background-controller
+  namespace: kyverno-system
+---
 # RBAC: Grant kyverno background-controller permission to generate PodDisruptionBudgets
 # Required for ClusterPolicy/generate-pdb-apps-ha and generate-pdb-platform-ha.
 apiVersion: rbac.authorization.k8s.io/v1
