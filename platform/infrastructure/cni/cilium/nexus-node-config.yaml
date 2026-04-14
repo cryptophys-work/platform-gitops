@@ -9,7 +9,6 @@ spec:
       kubernetes.io/hostname: nexus-144-91-103-10
   defaults:
     # Nexus is the highest-density worker (220 max-pods, kube-proxy replacement,
-    # WireGuard) and exhausts per-endpoint policy maps at the cluster-wide ceiling.
-    # Raise to Cilium maximum (262144) to support full pod density and high policy counts.
-    bpf-map-dynamic-size-ratio: "0.005"
+    # WireGuard). Match cluster Helm bpf.mapDynamicSizeRatio so BPF maps scale with RAM.
+    bpf-map-dynamic-size-ratio: "0.08"
     bpf-policy-map-max: "262144"

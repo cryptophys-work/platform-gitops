@@ -117,7 +117,7 @@ spec:
             effect: NoSchedule
     bpf:
       policyMapMax: 262144
-      mapDynamicSizeRatio: 0.005
+      mapDynamicSizeRatio: 0.08
     resources:
       requests:
         cpu: 100m
