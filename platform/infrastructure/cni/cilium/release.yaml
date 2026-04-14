@@ -116,7 +116,7 @@ spec:
             operator: Exists
             effect: NoSchedule
     bpf:
-      policyMapMax: 65536
+      policyMapMax: 262144
       mapDynamicSizeRatio: 0.005
     resources:
       requests:
