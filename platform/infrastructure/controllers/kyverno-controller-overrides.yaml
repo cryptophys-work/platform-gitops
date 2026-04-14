@@ -27,15 +27,6 @@ spec:
         kubernetes.io/os: linux
         cryptophys.io/platform-ha: "true"
       affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - cerebellum-161-97-117-96
-                      - thalamus-217-76-59-241
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
@@ -47,6 +38,9 @@ spec:
         - key: cryptophys.io/pool
           operator: Equal
           value: platform-ha
+          effect: NoSchedule
+        - key: ray-head
+          operator: Exists
           effect: NoSchedule
         - key: node.cilium.io/agent-not-ready
           operator: Exists
@@ -83,15 +77,6 @@ spec:
         kubernetes.io/os: linux
         cryptophys.io/platform-ha: "true"
       affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - cerebellum-161-97-117-96
-                      - thalamus-217-76-59-241
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
@@ -103,6 +88,9 @@ spec:
         - key: cryptophys.io/pool
           operator: Equal
           value: platform-ha
+          effect: NoSchedule
+        - key: ray-head
+          operator: Exists
           effect: NoSchedule
         - key: node.cilium.io/agent-not-ready
           operator: Exists
@@ -139,15 +127,6 @@ spec:
         kubernetes.io/os: linux
         cryptophys.io/platform-ha: "true"
       affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - cerebellum-161-97-117-96
-                      - thalamus-217-76-59-241
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
@@ -159,6 +138,9 @@ spec:
         - key: cryptophys.io/pool
           operator: Equal
           value: platform-ha
+          effect: NoSchedule
+        - key: ray-head
+          operator: Exists
           effect: NoSchedule
         - key: node.cilium.io/agent-not-ready
           operator: Exists

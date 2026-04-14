@@ -13,6 +13,7 @@ spec:
     timeout: 8m
     crds: CreateReplace
   upgrade:
+    preserveValues: false
     timeout: 8m
     crds: CreateReplace
   chart:
@@ -33,16 +34,11 @@ spec:
       operator: Equal
       value: platform-ha
       effect: NoSchedule
+    - key: ray-head
+      operator: Exists
+      effect: NoSchedule
     affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-              - thalamus-217-76-59-241
-              - cerebellum-161-97-117-96
+      nodeAffinity: null
     resources:
       requests:
         cpu: 100m
