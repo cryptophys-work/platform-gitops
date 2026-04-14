@@ -16,12 +16,9 @@ k8sServicePort: 7445
 kubeProxyReplacement: true
 hostServices:
   enabled: true
-  protocols:
-    - tcp
-    - udp
-extraConfig:
-  enable-host-reachable-services: "true"
-  enable-source-ip-verification: "false"
+socketLB:
+  enabled: true
+  hostNamespaceOnly: true
 operator:
   replicas: 2
   priorityClassName: system-cluster-critical
