@@ -4403,7 +4403,7 @@ spec:
   template:
     metadata:
       annotations:
-        cryptophys.io/kustomize-rollout: "2026-04-14T16:50:00Z"
+        cryptophys.io/source-rollout: "2026-04-14T16:55:00Z"
         prometheus.io/port: "8080"
         prometheus.io/scrape: "true"
       labels:
@@ -4425,7 +4425,6 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - nexus-144-91-103-10
                 - thalamus-217-76-59-241
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
