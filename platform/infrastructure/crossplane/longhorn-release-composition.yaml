@@ -349,9 +349,31 @@ spec:
                           name: longhorn-ui
                         patch: |
                           - op: replace
-                            path: /spec/template/spec/nodeSelector
+                            path: /spec/template/spec/tolerations
                             value:
-                              workload.cryptophys.work/compute: "true"
+                              - key: daemonset
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: cryptophys.io/pool
+                                operator: Equal
+                                value: platform-ha
+                                effect: NoSchedule
+                              - key: cryptophys.io/pool
+                                operator: Equal
+                                value: apps-ha
+                                effect: NoSchedule
+                              - key: ray-head
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: ray-cluster
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: bridge-system
+                                operator: Exists
+                                effect: NoSchedule
+                              - key: dao-system
+                                operator: Exists
+                                effect: NoSchedule
               chart:
                 spec:
                   chart: longhorn
@@ -423,10 +445,28 @@ spec:
                       cpu: "500m"
                       memory: "512Mi"
                 longhornUI:
-                  nodeSelector:
-                    workload.cryptophys.work/compute: "true"
                   tolerations:
                     - key: daemonset
+                      operator: Exists
+                      effect: NoSchedule
+                    - key: cryptophys.io/pool
+                      operator: Equal
+                      value: platform-ha
+                      effect: NoSchedule
+                    - key: cryptophys.io/pool
+                      operator: Equal
+                      value: apps-ha
+                      effect: NoSchedule
+                    - key: ray-head
+                      operator: Exists
+                      effect: NoSchedule
+                    - key: ray-cluster
+                      operator: Exists
+                      effect: NoSchedule
+                    - key: bridge-system
+                      operator: Exists
+                      effect: NoSchedule
+                    - key: dao-system
                       operator: Exists
                       effect: NoSchedule
                   csi:
