@@ -22,43 +22,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       serviceAccountName: spire-agent
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/storage-only
-          operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/role
-          operator: Exists
-          effect: NoSchedule
-        - key: cryptophys.io/pool
-          operator: Exists
-          effect: NoSchedule
-        - key: ray-head
-          operator: Exists
-          effect: NoSchedule
-        - key: ray-cluster
-          operator: Exists
-          effect: NoSchedule
-        - key: bridge-system
-          operator: Exists
-          effect: NoSchedule
-        - key: dao-system
-          operator: Exists
-          effect: NoSchedule
-        # Break Cilium ↔ SPIRE chicken-and-egg: agent uses hostNetwork
-        - key: node.cilium.io/agent-not-ready
-          operator: Exists
-          effect: NoSchedule
-        - key: node.kubernetes.io/not-ready
-          operator: Exists
-          effect: NoSchedule
-        - key: node.kubernetes.io/unreachable
-          operator: Exists
-          effect: NoExecute
-        - key: node.kubernetes.io/unschedulable
-          operator: Exists
-          effect: NoSchedule
+        - operator: Exists
       nodeSelector:
         kubernetes.io/os: linux
       containers:

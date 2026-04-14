@@ -15,5 +15,4 @@ resources:
   - security-observability
   - policy-reporter
   - kueue
-  - tekton
 

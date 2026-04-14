@@ -48,42 +48,7 @@ spec:
         cpu: 500m
         memory: 768Mi
     tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
-      - key: cryptophys.io/storage-only
-        operator: Exists
-        effect: NoSchedule
-      - key: cryptophys.io/role
-        operator: Exists
-        effect: NoSchedule
-      - key: cryptophys.io/pool
-        operator: Exists
-        effect: NoSchedule
-      - key: ray-head
-        operator: Exists
-        effect: NoSchedule
-      - key: bridge-system
-        operator: Exists
-        effect: NoSchedule
-      - key: dao-system
-        operator: Exists
-        effect: NoSchedule
-      - key: ray-cluster
-        operator: Exists
-        effect: NoSchedule
-      - key: node.kubernetes.io/memory-pressure
-        operator: Exists
-        effect: NoSchedule
-      - key: node.kubernetes.io/unreachable
-        operator: Exists
-        effect: NoSchedule
-      - key: node.kubernetes.io/unreachable
-        operator: Exists
-        effect: NoExecute
-      - key: node.cilium.io/agent-not-ready
-        operator: Exists
-        effect: NoSchedule
+      - operator: Exists
     falcosidekick:
       enabled: true
       webui:
