@@ -76,6 +76,47 @@ subjects:
     kind: Group
     name: system:serviceaccounts:crossplane-system
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: crossplane-provider-kubernetes-longhorn-node-editor
+  namespace: longhorn-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+rules:
+  - apiGroups:
+      - longhorn.io
+    resources:
+      - nodes
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: crossplane-provider-kubernetes-longhorn-node-editor
+  namespace: longhorn-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: crossplane-provider-kubernetes-longhorn-node-editor
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: system:serviceaccounts:crossplane-system
+---
 # ClusterRole for provider-kubernetes API resources (objects, observedobjectcollections, etc.)
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
