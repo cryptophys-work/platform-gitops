@@ -283,31 +283,10 @@ spec:
                 preserveValues: false
                 remediation:
                   retries: 5
-              values:
-                persistence:
-                  defaultClass: true
-                  defaultClassReplicaCount: 2
-                defaultSettings:
-                  defaultReplicaCount: 2
-                  systemManagedComponentsNodeSelector: ""
-                  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;daemonset:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
-                  storageReservedPercentageForDefaultDisk: 10
-                  storageOverProvisioningPercentage: 150
-                  storageMinimalAvailablePercentage: 15
-                  replicaSoftAntiAffinity: true
-                  replicaAutoBalance: best-effort
-                  concurrentReplicaRebuildPerNodeLimit: 2
-                  concurrentVolumeBackupRestorePerNodeLimit: 2
-                  guaranteedInstanceManagerCPU: 0.25
-                  recurringJobMaxRetention: 2
-                  replicaReplenishmentWaitInterval: 900
-                  autoCleanupSystemGeneratedSnapshot: true
-                  autoCleanupRecurringJobBackupSnapshot: true
-                  autoDeletePodWhenVolumeDetachedUnexpectedly: true
-                  deletingConfirmationFlag: true
-                  orphanAutoDeletion: true
-                  orphanResourceAutoDeletion: replica-data;instance
-                  orphanResourceAutoDeletionGracePeriod: 1200
+                values:
+                  persistence:
+                    defaultClass: true
+                    defaultClassReplicaCount: 2
                 longhornManager:
                   tolerations:
                     - key: daemonset
@@ -379,33 +358,7 @@ spec:
           name: local-kubernetes-provider
     patches:
     - fromFieldPath: spec.defaultReplicaCount
-      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.defaultReplicaCount
-    - fromFieldPath: spec.defaultReplicaCount
       toFieldPath: spec.forProvider.manifest.spec.values.persistence.defaultClassReplicaCount
-    - fromFieldPath: spec.taintToleration
-      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.taintToleration
-      policy:
-        fromFieldPath: Optional
-    - fromFieldPath: spec.storageOverProvisioningPercentage
-      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.storageOverProvisioningPercentage
-      policy:
-        fromFieldPath: Optional
-    - fromFieldPath: spec.storageMinimalAvailablePercentage
-      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.storageMinimalAvailablePercentage
-      policy:
-        fromFieldPath: Optional
-    - fromFieldPath: spec.concurrentReplicaRebuildPerNodeLimit
-      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.concurrentReplicaRebuildPerNodeLimit
-      policy:
-        fromFieldPath: Optional
-    - fromFieldPath: spec.guaranteedInstanceManagerCPU
-      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.guaranteedInstanceManagerCPU
-      policy:
-        fromFieldPath: Optional
-    - fromFieldPath: spec.systemManagedComponentsNodeSelector
-      toFieldPath: spec.forProvider.manifest.spec.values.defaultSettings.systemManagedComponentsNodeSelector
-      policy:
-        fromFieldPath: Optional
     - fromFieldPath: spec.managerResources.requests.cpu
       toFieldPath: spec.forProvider.manifest.spec.values.longhornManager.resources.requests.cpu
     - fromFieldPath: spec.managerResources.requests.memory
