@@ -14,7 +14,6 @@ metadata:
     cryptophys.io/ssot: "true"
 spec:
   type: ClusterIP
-  publishNotReadyAddresses: true
   selector:
     app.kubernetes.io/name: gitea
   ports:
