@@ -252,6 +252,7 @@ spec:
                       - flux-system
                       - gitops-system
                       - ingress-system
+                      - envoy-gateway-system
                       - registry-system
                       - kyverno-system
                       - cert-manager
@@ -282,6 +283,7 @@ spec:
                       - cnpg-system
                       - postgresql-system
                       - crossplane-system
+                      - cqls-compute
       validate:
         message: >
           Namespace '{{ request.object.metadata.namespace }}' is not allowed to
