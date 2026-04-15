@@ -74,6 +74,10 @@ spec:
           - key: node.kubernetes.io/not-ready
             operator: Exists
             effect: NoExecute
+          # Node unreachable (temporary; auto-added by kubelet)
+          - key: node.kubernetes.io/unreachable
+            operator: Exists
+            effect: NoSchedule
           # Node affinity: run on worker nodes only (not control planes or medulla)
           affinity:
             nodeAffinity:
