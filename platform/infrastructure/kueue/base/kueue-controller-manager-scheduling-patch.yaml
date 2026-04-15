@@ -10,13 +10,16 @@ metadata:
 spec:
   template:
     spec:
-      tolerations:
-        - key: cryptophys.io/pool
-          operator: Equal
-          value: platform-ha
-          effect: NoSchedule
       affinity:
         nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: accepts-platform-workloads
+                    operator: In
+                    values:
+                      - "true"
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
@@ -24,13 +27,10 @@ spec:
                     operator: In
                     values:
                       - linux
-                  - key: node-role.kubernetes.io/worker
-                    operator: Exists
-                  - key: kubernetes.io/hostname
+                  - key: workload.cryptophys.work/platform
                     operator: In
                     values:
-                      - thalamus-217-76-59-241
-                      - cerebellum-161-97-117-96
+                      - "true"
       containers:
         - name: manager
           resources:

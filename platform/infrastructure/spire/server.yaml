@@ -27,7 +27,7 @@ spec:
       serviceAccountName: spire-server
       nodeSelector:
         kubernetes.io/os: linux
-        cryptophys.io/platform-ha: "true"
+        workload.cryptophys.work/platform: "true"
       tolerations:
         - key: node.kubernetes.io/not-ready
           operator: Exists
@@ -37,17 +37,8 @@ spec:
           operator: Exists
           effect: NoExecute
           tolerationSeconds: 300
-        # Allow scheduling on HA infra nodes (nexus, cerebellum, thalamus)
-        - key: cryptophys.io/pool
-          operator: Equal
-          value: platform-ha
-          effect: NoSchedule
         # Allow scheduling on nodes where Cilium is still initializing (SPIRE must start before Cilium)
         - key: node.cilium.io/agent-not-ready
-          operator: Exists
-          effect: NoSchedule
-        # Allow scheduling on control-plane nodes as emergency fallback
-        - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
       affinity:
@@ -55,21 +46,18 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: workload.cryptophys.work/platform
                     operator: In
                     values:
-                      - thalamus-217-76-59-241
-                      - cerebellum-161-97-117-96
+                      - "true"
           preferredDuringSchedulingIgnoredDuringExecution:
-            # Keep the server on the stable platform-ha workers; avoid nexus for stateful SPIRE data.
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: accepts-platform-workloads
                     operator: In
                     values:
-                      - cerebellum-161-97-117-96
-                      - thalamus-217-76-59-241
+                      - "true"
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
