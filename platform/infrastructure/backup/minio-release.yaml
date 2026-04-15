@@ -8,10 +8,12 @@ spec:
   timeout: 20m
   install:
     timeout: 20m
+    disableWait: true
     remediation:
       retries: 3
   upgrade:
     timeout: 20m
+    disableWait: true
     remediation:
       retries: 3
   chart:
