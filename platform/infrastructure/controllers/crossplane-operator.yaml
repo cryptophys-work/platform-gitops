@@ -70,13 +70,21 @@ spec:
             path: /spec/template/spec/affinity
             value:
               nodeAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    preference:
+                      matchExpressions:
+                        - key: accepts-platform-workloads
+                          operator: In
+                          values:
+                            - "true"
                 requiredDuringSchedulingIgnoredDuringExecution:
                   nodeSelectorTerms:
                     - matchExpressions:
-                        - key: kubernetes.io/hostname
+                        - key: workload.cryptophys.work/platform
                           operator: In
                           values:
-                            - nexus-144-91-103-10
+                            - "true"
       - target:
           kind: Deployment
           name: crossplane-rbac-manager
@@ -109,13 +117,21 @@ spec:
             path: /spec/template/spec/affinity
             value:
               nodeAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    preference:
+                      matchExpressions:
+                        - key: accepts-platform-workloads
+                          operator: In
+                          values:
+                            - "true"
                 requiredDuringSchedulingIgnoredDuringExecution:
                   nodeSelectorTerms:
                     - matchExpressions:
-                        - key: kubernetes.io/hostname
-                          operator: NotIn
+                        - key: workload.cryptophys.work/platform
+                          operator: In
                           values:
-                            - nexus-144-91-103-10
+                            - "true"
   values:
     replicas: 1
     deploymentStrategy: RollingUpdate
@@ -131,15 +147,21 @@ spec:
         effect: NoSchedule
     affinity:
       nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+            - key: accepts-platform-workloads
+              operator: In
+              values:
+              - "true"
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
           - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: NotIn
+            - key: workload.cryptophys.work/platform
+              operator: In
               values:
-              - thalamus-217-76-59-241
-              - cerebellum-161-97-117-96
-              - synapse-161-97-136-251
+              - "true"
     resources:
       requests:
         cpu: 10m

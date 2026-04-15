@@ -26,10 +26,18 @@ spec:
           effect: NoSchedule
       affinity:
         nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: accepts-platform-workloads
+                    operator: In
+                    values:
+                      - "true"
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: workload.cryptophys.work/platform
                     operator: In
                     values:
-                      - nexus-144-91-103-10
+                      - "true"
