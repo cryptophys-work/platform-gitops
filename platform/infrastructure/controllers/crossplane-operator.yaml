@@ -74,9 +74,9 @@ spec:
                   nodeSelectorTerms:
                     - matchExpressions:
                         - key: kubernetes.io/hostname
-                          operator: NotIn
+                          operator: In
                           values:
-                            - nexus-144-91-103-10
+                            - cerebellum-161-97-117-96
       - target:
           kind: Deployment
           name: crossplane-rbac-manager
