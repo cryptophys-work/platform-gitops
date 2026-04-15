@@ -48,7 +48,6 @@ spec:
                       - gatekeeper-system
                       - security-system
                       - facilitator
-                      - facilitator
                       - envoy-gateway-system
                       - tetragon-system
                       - falco-system
@@ -107,7 +106,6 @@ spec:
                       - gitops-system
                       - gatekeeper-system
                       - security-system
-                      - facilitator
                       - facilitator
                       - envoy-gateway-system
                       - tetragon-system

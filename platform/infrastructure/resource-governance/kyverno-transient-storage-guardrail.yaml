@@ -8,6 +8,7 @@ metadata:
     cryptophys.io/managed-by: flux
     cryptophys.io/anti-regression: "true"
     policies.kyverno.io/title: Cap transient worker PVCs
+    policies.kyverno.io/severity: high
     policies.kyverno.io/description: >
       PVCs labeled cryptophys.io/storage-profile=transient-worker are intended for
       non-persistent scratch/cache/source workloads. Keep them on longhorn-single

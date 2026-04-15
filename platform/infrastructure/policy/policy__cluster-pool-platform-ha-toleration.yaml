@@ -6,6 +6,9 @@ metadata:
     policies.kyverno.io/title: Mutate Platform HA Pool Tolerations
     policies.kyverno.io/category: Node Placement
     policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >
+      Inject platform-ha toleration for pods in namespaces labeled
+      cryptophys.io/pool=platform-ha.
     cryptophys.io/source: ClusterPool (platform-ha)
     cryptophys.io/component: cluster-pool-policy
     cryptophys.io/managed-by: crossplane
