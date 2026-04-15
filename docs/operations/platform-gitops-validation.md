@@ -69,6 +69,63 @@ Inspect a single Flux `Kustomization` name if needed:
 kustomize build "${CLUSTER_ROOT}" | rg -n "name: 00-crds" -n
 ```
 
+### 2a. Validate cluster stage ordering metadata
+
+Before deep rendering checks, ensure stage declarations in `clusters/*/kustomization.yaml` stay numerically non-decreasing to avoid drift and operator confusion:
+
+```bash
+bash hack/lint-cluster-stage-order.sh
+```
+
+**Checkpoint:** Script exits `0` and prints `success: cluster stage ordering is consistent`.
+
+### 2b. Validate Kyverno policy list hygiene
+
+Detect duplicate entries in Kyverno `ClusterPolicy` list fields (for example `values`, `namespaces`, `names`) to avoid hidden policy drift:
+
+```bash
+python3 hack/lint-kyverno-policy-lists.py
+```
+
+**Checkpoint:** Script exits `0` and prints `success: kyverno policy list values are unique`.
+
+### 2c. Validate Kyverno policy annotation completeness
+
+Enforce minimum metadata quality for Kyverno `ClusterPolicy` objects:
+
+- required title: `policies.kyverno.io/title`
+- required severity: `policies.kyverno.io/severity` or `cryptophys.io/severity`
+- required description: `policies.kyverno.io/description` or `cryptophys.io/description`
+
+```bash
+python3 hack/lint-kyverno-policy-annotations.py
+```
+
+**Checkpoint:** Script exits `0` and prints `success: kyverno policy annotations are complete`.
+
+### 2d. Validate Kyverno policy behavior explicitness
+
+Ensure every Kyverno `ClusterPolicy` explicitly declares behavior controls:
+
+- `spec.validationFailureAction` in `{Audit, Enforce}` (case-insensitive),
+- `spec.background` as a boolean.
+
+```bash
+python3 hack/lint-kyverno-policy-behavior.py
+```
+
+**Checkpoint:** Script exits `0` and prints `success: kyverno policy behavior fields are explicit and valid`.
+
+### 2e. Generate Kyverno compliance matrix report
+
+Generate a current inventory report for policy metadata and behavior:
+
+```bash
+python3 hack/report-kyverno-policy-compliance.py
+```
+
+**Checkpoint:** Report file is updated at `docs/operations/kyverno-policy-compliance-matrix.md`.
+
 ### 3. Render every `spec.path` referenced by Flux `Kustomization` objects
 
 Flux `Kustomization` resources under `${CLUSTER_ROOT}/kustomization/` declare `spec.path` relative to the repository root (as seen by the Flux `GitRepository` checkout). Build each distinct path.
@@ -125,6 +182,11 @@ Record in the PR or change record:
 
 | Checkpoint | Command / action | Pass criteria |
 |------------|------------------|---------------|
+| C0 | `bash hack/lint-cluster-stage-order.sh` | No stage order regression in cluster kustomization roots |
+| C0a | `python3 hack/lint-kyverno-policy-lists.py` | No duplicate entries in Kyverno policy lists |
+| C0b | `python3 hack/lint-kyverno-policy-annotations.py` | Required Kyverno policy metadata is present |
+| C0c | `python3 hack/lint-kyverno-policy-behavior.py` | Required Kyverno behavior fields are explicit and valid |
+| C0d | `python3 hack/report-kyverno-policy-compliance.py` | Compliance matrix report regenerated |
 | C1 | `kustomize build "${CLUSTER_ROOT}"` | Exit `0`, YAML renders |
 | C2 | Loop over `spec.path` builds (section 3) | All paths exit `0` |
 | C3 | Optional `kubectl apply --dry-run=server -f -` | No unexpected validation errors for the chosen context |

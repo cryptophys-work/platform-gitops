@@ -14,7 +14,7 @@
 - `10-controllers.yaml` -> `platform/infrastructure/controllers`
 - `10-database.yaml` -> `platform/infrastructure/database`
 - `12-certificates.yaml` -> `platform/infrastructure/certificates`
-- `15-dns-core.yaml` -> `platform/infrastructure/dns-core`
+- `15-dns-core.yaml` -> `platform/infrastructure/dns`
 - `15-security-runtime.yaml`, `15-security-runtime-crs.yaml` -> `platform/security` and runtime CRs
 - `17-metallb.yaml` -> `platform/infrastructure/metallb`
 - `18-networking.yaml` -> `platform/infrastructure/networking`
