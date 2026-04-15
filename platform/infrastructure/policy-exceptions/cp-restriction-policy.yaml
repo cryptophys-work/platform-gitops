@@ -1,23 +1,19 @@
 ---
-# ClusterPolicy: Deny CP toleration for non-platform namespaces
-# Enforces that only platform-gitops managed workloads can tolerate control-plane taint.
-# Non-platform namespaces are blocked from scheduling on CP nodes.
+# ClusterPolicy: Deny control-plane toleration except kube-system and DaemonSet pods
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: deny-cp-toleration-non-platform
   annotations:
-    policies.kyverno.io/title: Deny CP Toleration for Non-Platform Workloads
+    policies.kyverno.io/title: Deny CP Toleration Outside kube-system and DaemonSet
     policies.kyverno.io/category: Node Placement
     policies.kyverno.io/severity: high
     policies.kyverno.io/description: >
-      Control plane nodes are reserved for platform-gitops managed workloads only.
-      Application, AI, storage, and user namespaces MUST NOT tolerate the
-      control-plane taint. This policy is in Audit mode — violations are reported
-      but not blocked. Set failurePolicy and validationFailureAction to Enforce
-      after migration is complete.
+      Control-plane nodes are reserved for kube-system and node-level daemons only.
+      Any non-DaemonSet workload outside kube-system MUST NOT tolerate
+      node-role.kubernetes.io/control-plane taint.
 spec:
-  validationFailureAction: Audit
+  validationFailureAction: Enforce
   background: true
   rules:
     - name: check-cp-toleration
@@ -26,32 +22,18 @@ spec:
           - resources:
               kinds:
                 - Pod
-              namespaceSelector:
-                matchExpressions:
-                  - key: kubernetes.io/metadata.name
-                    operator: NotIn
-                    values:
-                      # Platform namespaces allowed to tolerate CP taint
-                      - kube-system
-                      - flux-system
-                      - longhorn-system
-                      - kyverno-system
-                      - cert-manager
-                      - metallb-system
-                      - ingress-system
-                      - spire-system
-                      - vault-system
-                      - external-secrets
-                      - observability-system
-                      - registry-system
-                      - gitops-system
-                      - gatekeeper-system
+      preconditions:
+        all:
+          - key: "{{ request.object.metadata.namespace || '' }}"
+            operator: NotEquals
+            value: kube-system
+          - key: "{{ request.object.metadata.ownerReferences[0].kind || '' }}"
+            operator: NotEquals
+            value: DaemonSet
       validate:
         message: >
-          Namespace '{{ request.object.metadata.namespace }}' is not a platform namespace
-          and MUST NOT use control-plane toleration. Remove the toleration:
-          key=node-role.kubernetes.io/control-plane from this workload.
-          See: https://docs.cryptophys.work/node-topology
+          Only kube-system or DaemonSet pods may tolerate control-plane taints.
+          Remove toleration key=node-role.kubernetes.io/control-plane.
         deny:
           conditions:
             any:
@@ -59,20 +41,20 @@ spec:
                 operator: Equals
                 value: true
 ---
-# ClusterPolicy: Deny CP nodeSelector for non-platform namespaces
+# ClusterPolicy: Deny direct control-plane node selectors except kube-system and DaemonSet pods
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: deny-cp-nodeselector-non-platform
   annotations:
-    policies.kyverno.io/title: Deny CP NodeSelector for Non-Platform Workloads
+    policies.kyverno.io/title: Deny CP NodeSelector Outside kube-system and DaemonSet
     policies.kyverno.io/category: Node Placement
     policies.kyverno.io/severity: high
     policies.kyverno.io/description: >
-      Pods in non-platform namespaces must not use cryptophys.io/tier=platform
-      as nodeSelector, as this would pin them to control plane nodes.
+      Any non-DaemonSet workload outside kube-system must not target
+      control-plane labels in nodeSelector.
 spec:
-  validationFailureAction: Audit
+  validationFailureAction: Enforce
   background: true
   rules:
     - name: check-cp-nodeselector
@@ -81,34 +63,27 @@ spec:
           - resources:
               kinds:
                 - Pod
-              namespaceSelector:
-                matchExpressions:
-                  - key: kubernetes.io/metadata.name
-                    operator: NotIn
-                    values:
-                      - kube-system
-                      - flux-system
-                      - longhorn-system
-                      - kyverno-system
-                      - cert-manager
-                      - metallb-system
-                      - ingress-system
-                      - spire-system
-                      - vault-system
-                      - external-secrets
-                      - observability-system
-                      - registry-system
-                      - gitops-system
-                      - gatekeeper-system
+      preconditions:
+        all:
+          - key: "{{ request.object.metadata.namespace || '' }}"
+            operator: NotEquals
+            value: kube-system
+          - key: "{{ request.object.metadata.ownerReferences[0].kind || '' }}"
+            operator: NotEquals
+            value: DaemonSet
       validate:
         message: >
-          Namespace '{{ request.object.metadata.namespace }}' is not a platform namespace.
-          nodeSelector 'cryptophys.io/tier: platform' is reserved for CP nodes only.
-          Use 'cryptophys.io/tier: application', 'workload.cryptophys.work/apps-core: true',
-          'workload.cryptophys.work/ai-engine: true', etc. instead.
+          Only kube-system or DaemonSet pods may target control-plane nodes.
+          Remove nodeSelector using control-plane labels.
         deny:
           conditions:
             any:
+              - key: "{{ request.object.spec.nodeSelector.\"node-role.kubernetes.io/control-plane\" || '' }}"
+                operator: NotEquals
+                value: ""
+              - key: "{{ request.object.spec.nodeSelector.\"node-role.kubernetes.io/master\" || '' }}"
+                operator: NotEquals
+                value: ""
               - key: "{{ request.object.spec.nodeSelector.\"cryptophys.io/tier\" || '' }}"
                 operator: Equals
                 value: platform

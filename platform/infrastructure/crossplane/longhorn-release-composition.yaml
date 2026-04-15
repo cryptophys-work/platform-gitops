@@ -190,9 +190,6 @@ spec:
                               - key: daemonset
                                 operator: Exists
                                 effect: NoSchedule
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: Exists
-                                effect: NoSchedule
                               - key: cryptophys.io/pool
                                 operator: Equal
                                 value: platform-ha
@@ -211,9 +208,6 @@ spec:
                                 operator: Exists
                                 effect: NoSchedule
                               - key: dao-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.kubernetes.io/memory-pressure
                                 operator: Exists
                                 effect: NoSchedule
                               - key: node.kubernetes.io/disk-pressure
@@ -256,9 +250,6 @@ spec:
                               - key: daemonset
                                 operator: Exists
                                 effect: NoSchedule
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: Exists
-                                effect: NoSchedule
                               - key: cryptophys.io/pool
                                 operator: Equal
                                 value: platform-ha
@@ -280,9 +271,6 @@ spec:
                                 operator: Exists
                                 effect: NoSchedule
                               - key: node.cilium.io/agent-not-ready
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.kubernetes.io/memory-pressure
                                 operator: Exists
                                 effect: NoSchedule
                               - key: node.kubernetes.io/disk-pressure
@@ -336,9 +324,6 @@ spec:
                               - key: cryptophys.io/role
                                 operator: Equal
                                 value: llm-inference
-                                effect: NoSchedule
-                              - key: cryptophys.io/storage-only
-                                operator: Exists
                                 effect: NoSchedule
                               - key: cryptophys.io/pool
                                 operator: Equal
@@ -416,16 +401,13 @@ spec:
                   retries: 5
                 values:
                   defaultSettings:
-                    taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;daemonset:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
+                    taintToleration: "daemonset:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule"
                   persistence:
                     defaultClass: true
                     defaultClassReplicaCount: 2
                   longhornManager:
                     tolerations:
                       - key: daemonset
-                        operator: Exists
-                        effect: NoSchedule
-                      - key: node-role.kubernetes.io/control-plane
                         operator: Exists
                         effect: NoSchedule
                       - key: cryptophys.io/pool
@@ -503,9 +485,6 @@ spec:
                     longhornCSI:
                       tolerations:
                         - key: daemonset
-                          operator: Exists
-                          effect: NoSchedule
-                        - key: node-role.kubernetes.io/control-plane
                           operator: Exists
                           effect: NoSchedule
                         - key: cryptophys.io/pool

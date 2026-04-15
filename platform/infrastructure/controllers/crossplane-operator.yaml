@@ -142,9 +142,6 @@ spec:
         operator: Equal
         value: llm-inference
         effect: NoSchedule
-      - key: cryptophys.io/storage-only
-        operator: Exists
-        effect: NoSchedule
     affinity:
       nodeAffinity:
         preferredDuringSchedulingIgnoredDuringExecution:

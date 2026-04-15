@@ -24,9 +24,6 @@ spec:
     operator: Equal
     value: platform-ha
     effect: NoSchedule
-  - key: cryptophys.io/storage-only
-    operator: Exists
-    effect: NoSchedule
   - key: cryptophys.io/role
     operator: Equal
     value: llm-inference

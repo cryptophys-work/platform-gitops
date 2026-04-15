@@ -2,16 +2,38 @@ USER-SUPPLIED VALUES:
 defaultSettings:
   defaultReplicaCount: 3
   systemManagedComponentsNodeSelector: ""
-  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;daemonset:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule"
+  taintToleration: "daemonset:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule"
 persistence:
   defaultClass: true
   defaultClassReplicaCount: 3
-# Allow CSI plugin to run on campus (cryptophys.io/storage-only taint)
+# Allow CSI plugin on storage lane nodes.
 csi:
   kubeletRootDir: /var/lib/kubelet
 longhornCSI:
   tolerations:
-    - operator: Exists
+    - key: daemonset
+      operator: Exists
+      effect: NoSchedule
+    - key: cryptophys.io/pool
+      operator: Equal
+      value: platform-ha
+      effect: NoSchedule
+    - key: cryptophys.io/pool
+      operator: Equal
+      value: apps-ha
+      effect: NoSchedule
+    - key: ray-cluster
+      operator: Exists
+      effect: NoSchedule
+    - key: ray-head
+      operator: Exists
+      effect: NoSchedule
+    - key: bridge-system
+      operator: Exists
+      effect: NoSchedule
+    - key: dao-system
+      operator: Exists
+      effect: NoSchedule
 # Optimized resource requests based on actual usage audit (2026-03-19)
 longhornUI:
   replicas: 1
@@ -29,7 +51,29 @@ longhornUI:
       memory: 256Mi
 longhornManager:
   tolerations:
-    - operator: Exists
+    - key: daemonset
+      operator: Exists
+      effect: NoSchedule
+    - key: cryptophys.io/pool
+      operator: Equal
+      value: platform-ha
+      effect: NoSchedule
+    - key: cryptophys.io/pool
+      operator: Equal
+      value: apps-ha
+      effect: NoSchedule
+    - key: ray-cluster
+      operator: Exists
+      effect: NoSchedule
+    - key: ray-head
+      operator: Exists
+      effect: NoSchedule
+    - key: bridge-system
+      operator: Exists
+      effect: NoSchedule
+    - key: dao-system
+      operator: Exists
+      effect: NoSchedule
   resources:
     requests:
       cpu: 100m

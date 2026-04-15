@@ -1,0 +1,123 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-nexus-hpc-toleration
+  annotations:
+    policies.kyverno.io/title: Mutate Nexus HPC Toleration
+    policies.kyverno.io/category: Node Placement
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >
+      Inject nexus-hpc taint toleration for workloads running in namespaces
+      labeled with cryptophys.io/node-class=nexus-hpc.
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: inject-nexus-hpc-toleration
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaceSelector:
+                matchLabels:
+                  cryptophys.io/node-class: nexus-hpc
+      preconditions:
+        all:
+          - key: "{{ request.object.spec.tolerations[?key=='cryptophys.io/node-class' && value=='nexus-hpc'] | length(@) }}"
+            operator: Equals
+            value: 0
+      mutate:
+        patchStrategicMerge:
+          spec:
+            tolerations:
+              - key: cryptophys.io/node-class
+                operator: Equal
+                value: nexus-hpc
+                effect: NoSchedule
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: deny-hostname-selector-in-nexus-hpc
+  annotations:
+    policies.kyverno.io/title: Deny Hostname Selector In Nexus HPC Namespaces
+    policies.kyverno.io/category: Node Placement
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >
+      Prevent hardcoded kubernetes.io/hostname selectors for workloads in
+      nexus-hpc namespaces. Use cryptophys.io/node-class=nexus-hpc instead.
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: block-hostname-node-selector
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaceSelector:
+                matchLabels:
+                  cryptophys.io/node-class: nexus-hpc
+      validate:
+        message: >
+          Hardcoded nodeSelector kubernetes.io/hostname is not allowed in
+          nexus-hpc namespaces. Use cryptophys.io/node-class=nexus-hpc.
+        deny:
+          conditions:
+            any:
+              - key: "{{ request.object.spec.nodeSelector.\"kubernetes.io/hostname\" || '' }}"
+                operator: NotEquals
+                value: ""
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: validate-nexus-hpc-placement
+  annotations:
+    policies.kyverno.io/title: Validate Nexus HPC Placement
+    policies.kyverno.io/category: Node Placement
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >
+      Require workloads in nexus-hpc namespaces to explicitly target
+      cryptophys.io/node-class=nexus-hpc using nodeSelector or required
+      nodeAffinity.
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: require-nexus-hpc-selector-or-required-affinity
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaceSelector:
+                matchLabels:
+                  cryptophys.io/node-class: nexus-hpc
+      validate:
+        message: >
+          Workloads in nexus-hpc namespaces must target
+          cryptophys.io/node-class=nexus-hpc via nodeSelector or required
+          nodeAffinity.
+        anyPattern:
+          - spec:
+              nodeSelector:
+                cryptophys.io/node-class: nexus-hpc
+          - spec:
+              affinity:
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                      - matchExpressions:
+                          - key: cryptophys.io/node-class
+                            operator: In
+                            values:
+                              - nexus-hpc

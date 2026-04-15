@@ -20,7 +20,13 @@ spec:
       repository: quay.io/kuberay/operator
       tag: v1.5.1
       pullPolicy: IfNotPresent
-    tolerations: []
+    nodeSelector:
+      cryptophys.io/node-class: nexus-hpc
+    tolerations:
+      - key: cryptophys.io/node-class
+        operator: Equal
+        value: nexus-hpc
+        effect: NoSchedule
     resources:
       requests:
         cpu: 500m
@@ -30,15 +36,6 @@ spec:
         memory: 768Mi
     batchScheduler:
       enabled: false
-    affinity:
-      nodeAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            preference:
-              matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: NotIn
-                  values:
-                    - synapse-161-97-136-251
+    affinity: {}
     leaderElectionEnabled: false
     useKubernetesProxy: true

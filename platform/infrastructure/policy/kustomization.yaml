@@ -7,6 +7,7 @@ resources:
   - policy__cluster-pool-platform-ha-toleration.yaml
   - cluster-pool-workload-restrictions.yaml
   - rayservice-pool-toleration-injection.yaml
+  - nexus-hpc-placement-policy.yaml
   - pdb-generation.yaml
   - rbac-generation.yaml
   - nexus-placement-policy.yaml

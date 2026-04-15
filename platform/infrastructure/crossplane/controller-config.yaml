@@ -37,10 +37,6 @@ spec:
             operator: Equal
             value: platform-ha
             effect: NoSchedule
-          # Storage-only node taint
-          - key: cryptophys.io/storage-only
-            operator: Exists
-            effect: NoSchedule
           # LLM inference node taint (cerebrum-specific workloads)
           - key: cryptophys.io/role
             operator: Equal

@@ -31,14 +31,15 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: kubernetes.io/hostname
+              - key: cryptophys.io/node-class
                 operator: In
                 values:
-                - synapse-161-97-136-251
-              - key: nexus-tower
-                operator: NotIn
-                values:
-                - "true"
+                - nexus-hpc
+      tolerations:
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
       resources:
         limits: { cpu: "1", memory: "2G" }
         requests: { cpu: "500m", memory: "1G" }
@@ -59,11 +60,15 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: nexus-tower
+              - key: cryptophys.io/node-class
                 operator: In
                 values:
-                - "true"
+                - nexus-hpc
       tolerations:
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
         - key: "cryptophys.io/ai-workload"
           operator: "Exists"
           effect: "NoSchedule"
@@ -82,10 +87,15 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: nexus-tower
+              - key: cryptophys.io/node-class
                 operator: In
                 values:
-                - "true"
+                - nexus-hpc
+      tolerations:
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
       resources:
         limits: { cpu: "1", memory: "2Gi" }
         requests: { cpu: "500m", memory: "1Gi" }
