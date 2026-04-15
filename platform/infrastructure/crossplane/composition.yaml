@@ -61,6 +61,7 @@ spec:
                 cryptophys.io/managed-by: crossplane
                 cryptophys.io/layer: platform
             spec:
+              name: ""
               allowScheduling: true
               evictionRequested: false
               disks: {}
@@ -77,6 +78,9 @@ spec:
       - type: string
         string:
           fmt: "longhorn-node-%s"
+    # Longhorn node name
+    - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+      toFieldPath: "spec.forProvider.manifest.spec.name"
     # Longhorn node allowScheduling
     - fromFieldPath: "spec.longhornNode.allowScheduling"
       toFieldPath: "spec.forProvider.manifest.spec.allowScheduling"
