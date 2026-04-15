@@ -53,9 +53,6 @@ spec:
                 operator: Equal
                 value: llm-inference
                 effect: NoSchedule
-              - key: node-role.kubernetes.io/control-plane
-                operator: Exists
-                effect: NoSchedule
               - key: bridge-system
                 operator: Exists
                 effect: NoSchedule
@@ -79,7 +76,7 @@ spec:
                         - key: kubernetes.io/hostname
                           operator: In
                           values:
-                            - cerebrum-157-173-120-200
+                            - nexus-144-91-103-10
       - target:
           kind: Deployment
           name: crossplane-rbac-manager

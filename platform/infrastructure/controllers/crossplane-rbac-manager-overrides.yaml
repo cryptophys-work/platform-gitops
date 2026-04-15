@@ -17,8 +17,9 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
           effect: NoSchedule
         - key: ray-head
           operator: Exists
@@ -31,4 +32,4 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - cerebrum-157-173-120-200
+                      - nexus-144-91-103-10
