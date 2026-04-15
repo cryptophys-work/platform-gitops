@@ -34,18 +34,24 @@ spec:
         limits: { cpu: 300m, memory: 256Mi }
       nodeSelector:
         kubernetes.io/os: linux
+        workload.cryptophys.work/platform: "true"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: workload.cryptophys.work/platform
                     operator: In
                     values:
-                      - quanta-194-163-186-222
-                      - nexus-144-91-103-10
-                      - cerebellum-161-97-117-96
-                      - thalamus-217-76-59-241
+                      - "true"
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: accepts-platform-workloads
+                    operator: In
+                    values:
+                      - "true"
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
@@ -149,17 +155,26 @@ spec:
         rollingUpdate:
           maxSurge: 0
           maxUnavailable: 1
+      nodeSelector:
+        kubernetes.io/os: linux
+        workload.cryptophys.work/platform: "true"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: workload.cryptophys.work/platform
                     operator: In
                     values:
-                      - nexus-144-91-103-10
-                      - thalamus-217-76-59-241
-                      - cerebellum-161-97-117-96
+                      - "true"
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: accepts-platform-workloads
+                    operator: In
+                    values:
+                      - "true"
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
