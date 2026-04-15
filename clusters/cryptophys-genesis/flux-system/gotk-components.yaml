@@ -5972,10 +5972,6 @@ spec:
         fsGroup: 1337
       serviceAccountName: kustomize-controller
       tolerations:
-      - key: cryptophys.io/pool
-        operator: Equal
-        value: platform-ha
-        effect: NoSchedule
       - key: node.cilium.io/agent-not-ready
         operator: Exists
         effect: NoSchedule
@@ -8674,10 +8670,6 @@ spec:
         fsGroup: 1337
       serviceAccountName: helm-controller
       tolerations:
-      - key: cryptophys.io/pool
-        operator: Equal
-        value: platform-ha
-        effect: NoSchedule
       - key: node.cilium.io/agent-not-ready
         operator: Exists
         effect: NoSchedule

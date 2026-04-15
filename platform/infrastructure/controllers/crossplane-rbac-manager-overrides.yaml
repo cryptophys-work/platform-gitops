@@ -17,10 +17,6 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
       tolerations:
-        - key: cryptophys.io/pool
-          operator: Equal
-          value: platform-ha
-          effect: NoSchedule
         - key: ray-head
           operator: Exists
           effect: NoSchedule
