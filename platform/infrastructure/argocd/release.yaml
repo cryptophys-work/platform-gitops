@@ -204,10 +204,10 @@ spec:
           cpu: 2000m
           memory: 4Gi
     server:
-      # Three replicas require three distinct hostnames (required anti-affinity) on the
-      # nexus/thalamus/cerebellum pool; when a node is tainted (e.g. cilium-not-ready) the
-      # third replica cannot schedule. Two replicas match PDB expectations on two healthy nodes.
-      replicas: 2
+      # Required hostname pool (nexus/thalamus/cerebellum) + required pod anti-affinity means at
+      # most one pod per node. When fewer than two of those nodes are Ready (e.g. NotReady workers),
+      # only one replica can schedule; raise back to 2 when at least two pool nodes are Ready.
+      replicas: 1
       nodeSelector: {}
       deploymentStrategy:
         type: RollingUpdate
@@ -251,7 +251,7 @@ spec:
           cpu: 250m
           memory: 256Mi
     repoServer:
-      replicas: 2
+      replicas: 1
       nodeSelector: {}
       deploymentStrategy:
         type: RollingUpdate
