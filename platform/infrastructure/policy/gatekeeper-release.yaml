@@ -31,13 +31,7 @@ spec:
               kind: Deployment
               metadata:
                 name: any
-              spec:
-                template:
-                  spec:
-                    tolerations:
-                      - key: "node-role.kubernetes.io/control-plane"
-                        operator: "Exists"
-                        effect: "NoSchedule"
+              spec: {}
           - target:
               kind: Job
             patch: |
@@ -45,13 +39,7 @@ spec:
               kind: Job
               metadata:
                 name: any
-              spec:
-                template:
-                  spec:
-                    tolerations:
-                      - key: "node-role.kubernetes.io/control-plane"
-                        operator: "Exists"
-                        effect: "NoSchedule"
+              spec: {}
   values:
     replicas: 1
     crds:

@@ -20,9 +20,6 @@ spec:
       kubernetes.io/os: linux
       workload.cryptophys.work/apps-core: "true"
     tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
       - key: cryptophys.io/role
         operator: Equal
         value: llm-inference
@@ -33,9 +30,6 @@ spec:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
@@ -46,9 +40,6 @@ spec:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
@@ -58,9 +49,6 @@ spec:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
