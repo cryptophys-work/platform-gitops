@@ -5,7 +5,10 @@ metadata:
   namespace: external-secrets
 spec:
   interval: 1h
+  install:
+    disableWait: true
   upgrade:
+    disableWait: true
     preserveValues: false
   chart:
     spec:
