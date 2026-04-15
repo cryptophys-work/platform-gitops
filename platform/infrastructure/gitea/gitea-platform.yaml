@@ -56,12 +56,18 @@ spec:
                     requiredDuringSchedulingIgnoredDuringExecution:
                       nodeSelectorTerms:
                         - matchExpressions:
-                            - key: kubernetes.io/hostname
+                            - key: workload.cryptophys.work/platform
                               operator: In
                               values:
-                                - nexus-144-91-103-10
-                                - cerebellum-161-97-117-96
-                                - thalamus-217-76-59-241
+                                - "true"
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 100
+                        preference:
+                          matchExpressions:
+                            - key: accepts-platform-workloads
+                              operator: In
+                              values:
+                                - "true"
                   podAntiAffinity:
                     requiredDuringSchedulingIgnoredDuringExecution:
                       - labelSelector:
@@ -316,12 +322,18 @@ spec:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
             - matchExpressions:
-                - key: kubernetes.io/hostname
+                - key: workload.cryptophys.work/platform
                   operator: In
                   values:
-                    - nexus-144-91-103-10
-                    - cerebellum-161-97-117-96
-                    - thalamus-217-76-59-241
+                    - "true"
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+                - key: accepts-platform-workloads
+                  operator: In
+                  values:
+                    - "true"
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
