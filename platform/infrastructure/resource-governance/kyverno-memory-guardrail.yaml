@@ -19,11 +19,14 @@ metadata:
     cryptophys.io/managed-by: flux
     cryptophys.io/anti-regression: "true"
     policies.kyverno.io/title: Auto-generate LimitRange per namespace
+    policies.kyverno.io/severity: medium
     policies.kyverno.io/description: >
       Every new namespace automatically receives a LimitRange that enforces
       default memory/CPU limits on all containers. Prevents unbounded memory
       growth from pods without explicit resource limits.
 spec:
+  validationFailureAction: Audit
+  background: true
   rules:
     - name: generate-default-limitrange
       match:
@@ -92,10 +95,13 @@ metadata:
     cryptophys.io/component: resource-governance
     cryptophys.io/managed-by: flux
     policies.kyverno.io/title: Inject default memory limits if missing
+    policies.kyverno.io/severity: medium
     policies.kyverno.io/description: >
       Mutates Pod specs at admission to add memory limits/requests when absent.
       Deterministic: same input always produces same output.
 spec:
+  validationFailureAction: Audit
+  background: true
   rules:
     - name: add-memory-limit-if-missing
       match:
@@ -157,6 +163,7 @@ metadata:
     cryptophys.io/component: resource-governance
     cryptophys.io/managed-by: flux
     policies.kyverno.io/title: Audit pods requesting excessive memory
+    policies.kyverno.io/severity: low
     policies.kyverno.io/description: >
       Audit-only policy that flags pods requesting more than 4Gi memory.
       Generates PolicyReport without blocking deployments. Use for visibility.

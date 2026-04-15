@@ -32,6 +32,7 @@ metadata:
     cryptophys.io/anti-regression: "true"
     cryptophys.io/layer: platform
 spec:
+  validationFailureAction: Audit
   background: true
   rules:
     - name: enforce-pinned-images

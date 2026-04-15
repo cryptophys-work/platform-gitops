@@ -58,6 +58,10 @@ metadata:
   annotations:
     policies.kyverno.io/title: Mutate Apps HA Pool Tolerations
     policies.kyverno.io/category: Node Placement
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >
+      Inject apps-ha pool taint toleration for namespaces labeled
+      cryptophys.io/pool=apps-ha.
     cryptophys.io/source: ClusterPool (apps-ha)
     cryptophys.io/description: >
       Inject apps-ha pool taint toleration for all namespaces labeled
@@ -94,6 +98,10 @@ metadata:
   annotations:
     policies.kyverno.io/title: Mutate Platform HA Pool Tolerations
     policies.kyverno.io/category: Node Placement
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >
+      Inject platform-ha pool taint toleration for namespaces labeled
+      cryptophys.io/pool=platform-ha.
     cryptophys.io/source: ClusterPool (platform-ha)
 spec:
   validationFailureAction: Audit
@@ -148,6 +156,10 @@ metadata:
   annotations:
     policies.kyverno.io/title: Deny Workload Pods in Storage Pool
     policies.kyverno.io/category: Node Placement
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >
+      Prevent non-storage workloads from running in namespaces labeled
+      cryptophys.io/pool=storage-only.
     cryptophys.io/source: ClusterPool (storage-only)
     cryptophys.io/severity: high
 spec:
