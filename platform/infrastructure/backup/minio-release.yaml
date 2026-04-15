@@ -83,15 +83,12 @@ spec:
       storageClass: longhorn
       size: 50Gi
     nodeSelector:
-      kubernetes.io/hostname: nexus-144-91-103-10
+      workload.cryptophys.work/platform: "true"
+      accepts-platform-workloads: "true"
     tolerations:
       - key: ray-cluster
         operator: Equal
         value: "true"
-        effect: NoSchedule
-      - key: cryptophys.io/pool
-        operator: Equal
-        value: platform-ha
         effect: NoSchedule
       - key: node.cilium.io/agent-not-ready
         operator: Exists
