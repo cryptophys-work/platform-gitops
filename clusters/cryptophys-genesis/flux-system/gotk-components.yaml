@@ -8677,6 +8677,20 @@ spec:
         operator: Equal
         value: "true"
         effect: NoSchedule
+      # Workers carrying platform workloads use mixed taints (nexus-hpc, platform-ha, daemonset, etc.).
+      # Without these, a fresh helm-controller pod cannot schedule after the old pod is deleted.
+      - key: cryptophys.io/node-class
+        operator: Equal
+        value: nexus-hpc
+        effect: NoSchedule
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
+        effect: NoSchedule
+      - key: daemonset
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
       terminationGracePeriodSeconds: 600
       topologySpreadConstraints:
       - labelSelector:
