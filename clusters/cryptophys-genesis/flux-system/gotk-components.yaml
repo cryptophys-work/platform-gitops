@@ -5892,14 +5892,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: platform-ha
-                operator: In
-                values:
-                - "true"
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - cerebellum-161-97-117-96
+                - cerebrum-157-173-120-200
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
@@ -5968,9 +5964,8 @@ spec:
         fsGroup: 1337
       serviceAccountName: kustomize-controller
       tolerations:
-      - key: cryptophys.io/pool
-        operator: Equal
-        value: platform-ha
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
         effect: NoSchedule
       - key: node.cilium.io/agent-not-ready
         operator: Exists
@@ -8590,14 +8585,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: platform-ha
-                operator: In
-                values:
-                - "true"
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - cerebellum-161-97-117-96
+                - cerebrum-157-173-120-200
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
@@ -8666,9 +8657,8 @@ spec:
         fsGroup: 1337
       serviceAccountName: helm-controller
       tolerations:
-      - key: cryptophys.io/pool
-        operator: Equal
-        value: platform-ha
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
         effect: NoSchedule
       - key: node.cilium.io/agent-not-ready
         operator: Exists
