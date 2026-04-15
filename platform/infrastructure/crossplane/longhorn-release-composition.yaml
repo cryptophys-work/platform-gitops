@@ -183,13 +183,7 @@ spec:
                         patch: |
                           - op: add
                             path: /spec/template/spec/affinity
-                            value:
-                              nodeAffinity:
-                                requiredDuringSchedulingIgnoredDuringExecution:
-                                  nodeSelectorTerms:
-                                  - matchExpressions:
-                                    - key: node-role.kubernetes.io/control-plane
-                                      operator: DoesNotExist
+                            value: {}
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
@@ -255,13 +249,7 @@ spec:
                         patch: |
                           - op: add
                             path: /spec/template/spec/affinity
-                            value:
-                              nodeAffinity:
-                                requiredDuringSchedulingIgnoredDuringExecution:
-                                  nodeSelectorTerms:
-                                  - matchExpressions:
-                                    - key: node-role.kubernetes.io/control-plane
-                                      operator: DoesNotExist
+                            value: {}
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
