@@ -33,6 +33,18 @@ if [[ ! -f "${TARGET_FILE}" ]]; then
   exit 2
 fi
 
+echo "[validate] cluster stage ordering"
+"${SCRIPT_DIR}/lint-cluster-stage-order.sh"
+
+echo "[validate] kyverno policy list uniqueness"
+"${SCRIPT_DIR}/lint-kyverno-policy-lists.py"
+
+echo "[validate] kyverno policy annotation completeness"
+"${SCRIPT_DIR}/lint-kyverno-policy-annotations.py"
+
+echo "[validate] kyverno policy behavior explicitness"
+"${SCRIPT_DIR}/lint-kyverno-policy-behavior.py"
+
 failures=0
 stderr_file="$(mktemp)"
 trap 'rm -f "${stderr_file}"' EXIT

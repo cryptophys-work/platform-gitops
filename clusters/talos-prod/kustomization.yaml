@@ -6,16 +6,16 @@ resources:
   - kustomization/02-scheduling.yaml
   - kustomization/05-sources.yaml
   - kustomization/10-controllers.yaml
-  - kustomization/12-certificates.yaml
   - kustomization/10-database.yaml
+  - kustomization/12-certificates.yaml
   - kustomization/15-dns-core.yaml
+  - kustomization/15-security-runtime.yaml
+  - kustomization/15-security-runtime-crs.yaml
   - kustomization/17-metallb.yaml
   - kustomization/18-networking.yaml
   - kustomization/20-policy.yaml
   - kustomization/21-policy-ssot.yaml
   - kustomization/22-policy-reporter.yaml
-  - kustomization/15-security-runtime.yaml
-  - kustomization/15-security-runtime-crs.yaml
   - kustomization/30-storage.yaml
   - kustomization/31-vault.yaml
   - kustomization/32-spire.yaml
