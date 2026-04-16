@@ -44,12 +44,12 @@ spec:
     mutate:
       patchesJson6902: |-
         - op: add
-          path: /spec/tolerations
+          path: /spec/tolerations/-
           value:
-            - key: cryptophys.io/pool
-              operator: Equal
-              value: platform-ha
-              effect: NoSchedule
+            key: cryptophys.io/pool
+            operator: Equal
+            value: platform-ha
+            effect: NoSchedule
   - name: append-platform-ha-toleration
     match:
       any:
