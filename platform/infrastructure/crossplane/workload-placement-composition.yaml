@@ -29,15 +29,6 @@ spec:
                   # Keep only short-lived node-state tolerations by default.
                   # Dedicated pools and bootstrap taints must be opt-in per workload.
                   tolerations:
-                  # Guardian roles for Picoclaw monitoring
-                  - key: cplane-guardian
-                    operator: Equal
-                    value: "true"
-                    effect: NoSchedule
-                  - key: worker-guardian
-                    operator: Equal
-                    value: "true"
-                    effect: NoSchedule
                   # Tolerate not-ready briefly during node transitions
                   - key: node.kubernetes.io/not-ready
                     operator: Exists
@@ -127,15 +118,7 @@ spec:
                     spec:
                       nodeSelector: {}
                       tolerations:
-                      - key: cplane-guardian
-                        operator: Equal
-                        value: "true"
-                        effect: NoSchedule
-                      - key: worker-guardian
-                        operator: Equal
-                        value: "true"
-                        effect: NoSchedule
-        providerConfigRef:
+                      - key: node.kubernetes.io/not-ready
           name: local-kubernetes-provider
     patches:
     - fromFieldPath: "spec.targetWorkload.name"
@@ -179,15 +162,7 @@ spec:
                     spec:
                       nodeSelector: {}
                       tolerations:
-                      - key: cplane-guardian
-                        operator: Equal
-                        value: "true"
-                        effect: NoSchedule
-                      - key: worker-guardian
-                        operator: Equal
-                        value: "true"
-                        effect: NoSchedule
-        providerConfigRef:
+                      - key: node.kubernetes.io/not-ready
           name: local-kubernetes-provider
     patches:
     - fromFieldPath: "spec.targetWorkload.name"

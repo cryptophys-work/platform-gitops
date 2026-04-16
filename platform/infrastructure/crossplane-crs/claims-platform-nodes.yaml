@@ -5,12 +5,10 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: control-plane
-  taints:
-  - key: cplane-guardian
-    value: "true"
-    effect: NoSchedule
+  taints: []
   customLabels:
     cryptophys.io/tier: control-plane
+    cryptophys.io/guardian: "true"
   longhornNode:
     allowScheduling: true
     evictionRequested: false
@@ -31,12 +29,10 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: control-plane
-  taints:
-  - key: cplane-guardian
-    value: "true"
-    effect: NoSchedule
+  taints: []
   customLabels:
     cryptophys.io/tier: control-plane
+    cryptophys.io/guardian: "true"
   longhornNode:
     allowScheduling: true
     evictionRequested: false
@@ -57,12 +53,10 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: control-plane
-  taints:
-  - key: cplane-guardian
-    value: "true"
-    effect: NoSchedule
+  taints: []
   customLabels:
     cryptophys.io/tier: control-plane
+    cryptophys.io/guardian: "true"
   longhornNode:
     allowScheduling: true
     evictionRequested: false
@@ -87,12 +81,10 @@ spec:
   - key: cryptophys.io/node-class
     value: nexus-hpc
     effect: NoSchedule
-  - key: worker-guardian
-    value: "true"
-    effect: NoSchedule
   customLabels:
     cryptophys.io/tier: apps
     cryptophys.io/node-class: nexus-hpc
+    cryptophys.io/guardian: "true"
     workload.cryptophys.work/platform: "true"
     workload.cryptophys.work/apps: "true"
     apps-ha: "true"
@@ -133,9 +125,6 @@ metadata:
 spec:
   tier: apps
   taints:
-  - key: worker-guardian
-    value: "true"
-    effect: NoSchedule
   - key: cryptophys.io/pool
     value: apps-ha
     effect: NoSchedule
@@ -144,6 +133,7 @@ spec:
     effect: NoSchedule
   customLabels:
     cryptophys.io/tier: apps
+    cryptophys.io/guardian: "true"
     apps-ha: "true"
     ray-head: "true"
     workload.cryptophys.work/apps: "true"
@@ -169,14 +159,12 @@ metadata:
 spec:
   tier: platform
   taints:
-  - key: worker-guardian
-    value: "true"
-    effect: NoSchedule
   - key: cryptophys.io/pool
     value: platform-ha
     effect: NoSchedule
   customLabels:
     cryptophys.io/tier: platform
+    cryptophys.io/guardian: "true"
     platform-ha: "true"
     workload.cryptophys.work/platform: "true"
     workload.cryptophys.work/compute: "true"
@@ -201,9 +189,6 @@ metadata:
 spec:
   tier: platform
   taints:
-  - key: worker-guardian
-    value: "true"
-    effect: NoSchedule
   - key: cryptophys.io/pool
     value: platform-ha
     effect: NoSchedule
@@ -212,6 +197,7 @@ spec:
     effect: NoSchedule
   customLabels:
     cryptophys.io/tier: platform
+    cryptophys.io/guardian: "true"
     platform-ha: "true"
     ray-head: "true"
     workload.cryptophys.work/compute: "true"
@@ -237,9 +223,6 @@ metadata:
 spec:
   tier: apps
   taints:
-  - key: worker-guardian
-    value: "true"
-    effect: NoSchedule
   - key: bridge-system
     value: "true"
     effect: NoSchedule
@@ -251,6 +234,7 @@ spec:
     effect: NoSchedule
   customLabels:
     cryptophys.io/tier: apps
+    cryptophys.io/guardian: "true"
     bridge-system: "true"
     dao-system: "true"
     ray-head: "true"
@@ -276,10 +260,7 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: deprecated
-  taints:
-  - key: worker-guardian
-    value: "true"
-    effect: NoSchedule
+  taints: []
   customLabels:
     cryptophys.io/tier: deprecated
     cryptophys.io/status: dismantle
@@ -304,10 +285,7 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: deprecated
-  taints:
-  - key: worker-guardian
-    value: "true"
-    effect: NoSchedule
+  taints: []
   customLabels:
     cryptophys.io/tier: deprecated
     cryptophys.io/status: dismantle
