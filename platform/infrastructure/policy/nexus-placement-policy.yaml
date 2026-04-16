@@ -68,14 +68,89 @@ spec:
                       - mcp-fetch
                       - mcp-prometheus
                       - mcp-crypto
+      preconditions:
+        all:
+          - key: "{{ request.object.spec.tolerations || '' }}"
+            operator: Equals
+            value: ""
       mutate:
-        patchStrategicMerge:
-          spec:
-            tolerations:
+        patchesJson6902: |-
+          - op: add
+            path: /spec/tolerations
+            value:
               - key: cryptophys.io/pool
                 operator: Equal
                 value: apps-ha
                 effect: NoSchedule
+    - name: append-apps-ha
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaceSelector:
+                matchLabels:
+                  cryptophys.io/pool: apps-ha
+      exclude:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - apps-user
+              selector:
+                matchLabels:
+                  app.kubernetes.io/name: signal-engine
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - platform-ui
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - apps-dash
+              selector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - nexus-oauth2-proxy
+                      - synapse-oauth2-proxy
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - apps-core
+              selector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - mcp-github
+                      - mcp-brave-search
+                      - mcp-postgres
+                      - mcp-fetch
+                      - mcp-prometheus
+                      - mcp-crypto
+      preconditions:
+        all:
+          - key: "{{ request.object.spec.tolerations || '' }}"
+            operator: NotEquals
+            value: ""
+          - key: "{{ request.object.spec.tolerations[?key=='cryptophys.io/pool' && value=='apps-ha'] | length(@) }}"
+            operator: Equals
+            value: 0
+      mutate:
+        patchesJson6902: |-
+          - op: add
+            path: /spec/tolerations/-
+            value:
+              key: cryptophys.io/pool
+              operator: Equal
+              value: apps-ha
+              effect: NoSchedule
     - name: allow-cerebrum-ray-cluster
       match:
         any:
