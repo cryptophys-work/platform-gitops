@@ -4,7 +4,7 @@ metadata:
   name: cortex-178-18-250-39
   namespace: crossplane-system
 spec:
-  tier: platform
+  tier: control-plane
   taints:
   - key: daemonset
     value: "true"
@@ -13,7 +13,7 @@ spec:
     value: "true"
     effect: NoSchedule
   customLabels:
-    cryptophys.io/tier: platform
+    cryptophys.io/tier: control-plane
   longhornNode:
     allowScheduling: true
     evictionRequested: false
@@ -33,7 +33,7 @@ metadata:
   name: cerebrum-157-173-120-200
   namespace: crossplane-system
 spec:
-  tier: platform
+  tier: control-plane
   taints:
   - key: daemonset
     value: "true"
@@ -42,7 +42,7 @@ spec:
     value: "true"
     effect: NoSchedule
   customLabels:
-    cryptophys.io/tier: platform
+    cryptophys.io/tier: control-plane
   longhornNode:
     allowScheduling: true
     evictionRequested: false
@@ -62,7 +62,7 @@ metadata:
   name: corpus-207-180-206-69
   namespace: crossplane-system
 spec:
-  tier: platform
+  tier: control-plane
   taints:
   - key: daemonset
     value: "true"
@@ -71,7 +71,7 @@ spec:
     value: "true"
     effect: NoSchedule
   customLabels:
-    cryptophys.io/tier: platform
+    cryptophys.io/tier: control-plane
   longhornNode:
     allowScheduling: true
     evictionRequested: false
@@ -91,7 +91,7 @@ metadata:
   name: nexus-144-91-103-10
   namespace: crossplane-system
 spec:
-  tier: compute
+  tier: platform
   taints:
   - key: cryptophys.io/node-class
     value: nexus-hpc
@@ -103,7 +103,7 @@ spec:
     value: "true"
     effect: NoSchedule
   customLabels:
-    cryptophys.io/tier: compute
+    cryptophys.io/tier: platform
     cryptophys.io/node-class: nexus-hpc
     apps-ha: "true"
     ray-cluster: "true"
@@ -115,6 +115,7 @@ spec:
     workload.cryptophys.work/apps-user: "true"
     workload.cryptophys.work/llm: "true"
     workload.cryptophys.work/compute: "true"
+    workload.cryptophys.work/platform: "true"
   longhornNode:
     allowScheduling: true
     evictionRequested: false
@@ -181,7 +182,7 @@ metadata:
   name: thalamus-217-76-59-241
   namespace: crossplane-system
 spec:
-  tier: compute
+  tier: platform
   taints:
   - key: daemonset
     value: "true"
@@ -193,7 +194,7 @@ spec:
     value: platform-ha
     effect: NoSchedule
   customLabels:
-    cryptophys.io/tier: compute
+    cryptophys.io/tier: platform
     platform-ha: "true"
     workload.cryptophys.work/platform: "true"
     workload.cryptophys.work/compute: "true"
@@ -216,7 +217,7 @@ metadata:
   name: cerebellum-161-97-117-96
   namespace: crossplane-system
 spec:
-  tier: compute
+  tier: platform
   taints:
   - key: daemonset
     value: "true"
@@ -231,7 +232,7 @@ spec:
     value: "true"
     effect: NoSchedule
   customLabels:
-    cryptophys.io/tier: compute
+    cryptophys.io/tier: platform
     platform-ha: "true"
     ray-head: "true"
     workload.cryptophys.work/compute: "true"
