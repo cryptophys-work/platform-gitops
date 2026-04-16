@@ -72,10 +72,10 @@ spec:
       resources:
         requests:
           cpu: 150m
-          memory: 192Mi
+          memory: 256Mi
         limits:
-          cpu: 150m
-          memory: 192Mi
+          cpu: 500m
+          memory: 512Mi
       extraVolumeMounts:
         - name: tracefs
           mountPath: /sys/kernel/tracing  # Talos tracefs: pre-mounted at this path on host
