@@ -295,10 +295,12 @@ spec:
                       name: longhorn
                       namespace: flux-system
                 install:
+                  crds: CreateReplace
                   replace: true
                   remediation:
                     retries: 5
                 upgrade:
+                  crds: CreateReplace
                   preserveValues: false
                   remediation:
                     retries: 5
