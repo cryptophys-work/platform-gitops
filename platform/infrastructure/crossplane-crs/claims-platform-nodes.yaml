@@ -105,17 +105,17 @@ spec:
   customLabels:
     cryptophys.io/tier: apps
     cryptophys.io/node-class: nexus-hpc
+    workload.cryptophys.work/platform: "true"
+    workload.cryptophys.work/apps: "true"
     apps-ha: "true"
     ray-cluster: "true"
     nexus-workload-hub: "true"
     nexus-tower: "true"
     cryptophys.io/role: llm-inference
-    workload.cryptophys.work/apps: "true"
     workload.cryptophys.work/apps-core: "true"
     workload.cryptophys.work/apps-user: "true"
     workload.cryptophys.work/llm: "true"
     workload.cryptophys.work/compute: "true"
-    workload.cryptophys.work/platform: "true"
   longhornNode:
     allowScheduling: true
     evictionRequested: false
