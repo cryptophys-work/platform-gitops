@@ -17,7 +17,7 @@ spec:
   validationFailureAction: Audit
   background: true
   rules:
-  - name: init-apps-ha-toleration
+  - name: inject-apps-ha-toleration
     match:
       any:
       - resources:
