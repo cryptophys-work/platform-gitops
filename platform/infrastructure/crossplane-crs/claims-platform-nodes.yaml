@@ -91,7 +91,7 @@ metadata:
   name: nexus-144-91-103-10
   namespace: crossplane-system
 spec:
-  tier: platform
+  tier: apps
   taints:
   - key: cryptophys.io/node-class
     value: nexus-hpc
@@ -103,7 +103,7 @@ spec:
     value: "true"
     effect: NoSchedule
   customLabels:
-    cryptophys.io/tier: platform
+    cryptophys.io/tier: apps
     cryptophys.io/node-class: nexus-hpc
     apps-ha: "true"
     ray-cluster: "true"
@@ -143,7 +143,7 @@ metadata:
   name: synapse-161-97-136-251
   namespace: crossplane-system
 spec:
-  tier: compute
+  tier: apps
   taints:
   - key: daemonset
     value: "true"
@@ -158,7 +158,7 @@ spec:
     value: "true"
     effect: NoSchedule
   customLabels:
-    cryptophys.io/tier: compute
+    cryptophys.io/tier: apps
     apps-ha: "true"
     ray-head: "true"
     workload.cryptophys.work/apps: "true"
@@ -256,7 +256,7 @@ metadata:
   name: quanta-194-163-186-222
   namespace: crossplane-system
 spec:
-  tier: compute
+  tier: apps
   taints:
   - key: daemonset
     value: "true"
@@ -274,7 +274,7 @@ spec:
     value: "true"
     effect: NoSchedule
   customLabels:
-    cryptophys.io/tier: compute
+    cryptophys.io/tier: apps
     bridge-system: "true"
     dao-system: "true"
     ray-head: "true"
