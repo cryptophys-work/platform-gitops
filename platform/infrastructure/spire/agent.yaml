@@ -21,8 +21,6 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       serviceAccountName: spire-agent
-      tolerations:
-        - operator: Exists
       nodeSelector:
         kubernetes.io/os: linux
       containers:

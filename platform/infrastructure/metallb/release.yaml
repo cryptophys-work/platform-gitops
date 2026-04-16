@@ -75,16 +75,11 @@ spec:
     controller:
       nodeSelector:
         kubernetes.io/os: linux
-      tolerations:
-        - operator: Exists
     speaker:
       nodeSelector:
         kubernetes.io/os: linux
-      affinity: null
       excludeInterfaces:
         enabled: true
       frr:
         enabled: false
       tolerateMaster: true
-      tolerations:
-        - operator: Exists

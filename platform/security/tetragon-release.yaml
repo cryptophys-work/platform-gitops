@@ -61,8 +61,6 @@ spec:
   values:
     nodeSelector:
       kubernetes.io/os: linux
-    tolerations:
-      - operator: Exists
     extraVolumes:
       - name: tracefs
         hostPath:

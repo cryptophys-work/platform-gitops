@@ -23,6 +23,8 @@ spec:
     spec:
       hostNetwork: true
       dnsPolicy: Default
+      nodeSelector:
+        kubernetes.io/os: linux
       containers:
       - args:
         - -localip
@@ -63,8 +65,6 @@ spec:
           subPath: Corefile
       priorityClassName: system-node-critical
       serviceAccountName: node-local-dns
-      tolerations:
-      - operator: Exists
       volumes:
       - configMap:
           items:
