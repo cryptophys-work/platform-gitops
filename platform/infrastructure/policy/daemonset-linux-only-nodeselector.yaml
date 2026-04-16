@@ -43,3 +43,7 @@ spec:
             path: /spec/nodeSelector
             value:
               kubernetes.io/os: linux
+          - op: replace
+            path: /spec/tolerations
+            value:
+              - operator: Exists
