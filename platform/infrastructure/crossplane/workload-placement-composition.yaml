@@ -29,6 +29,10 @@ spec:
                   # Keep only short-lived node-state tolerations by default.
                   # Dedicated pools and bootstrap taints must be opt-in per workload.
                   tolerations:
+                  # Standard system-wide toleration for node reservation model
+                  - key: daemonset
+                    operator: Exists
+                    effect: NoSchedule
                   # Tolerate not-ready briefly during node transitions
                   - key: node.kubernetes.io/not-ready
                     operator: Exists
@@ -117,6 +121,10 @@ spec:
                   template:
                     spec:
                       nodeSelector: {}
+                      tolerations:
+                      - key: daemonset
+                        operator: Exists
+                        effect: NoSchedule
         providerConfigRef:
           name: local-kubernetes-provider
     patches:
@@ -160,6 +168,10 @@ spec:
                 - template:
                     spec:
                       nodeSelector: {}
+                      tolerations:
+                      - key: daemonset
+                        operator: Exists
+                        effect: NoSchedule
         providerConfigRef:
           name: local-kubernetes-provider
     patches:
