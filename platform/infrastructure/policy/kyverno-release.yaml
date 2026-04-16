@@ -218,7 +218,8 @@ spec:
         - "[velero.io/*,*,*]"
     admissionController:
       createSelfSignedCert: true
-      replicas: 2
+      # Single replica while platform-ha pool is reduced (cordoned nodes + required pod anti-affinity).
+      replicas: 1
       livenessProbe:
         initialDelaySeconds: 30
         periodSeconds: 10
