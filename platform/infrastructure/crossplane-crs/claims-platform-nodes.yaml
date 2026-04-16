@@ -101,7 +101,7 @@ spec:
     evictionRequested: false
     disks:
       default-disk-080600000000:
-        allowScheduling: false
+        allowScheduling: true
         diskDriver: ""
         diskType: filesystem
         evictionRequested: false
