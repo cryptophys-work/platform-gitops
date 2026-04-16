@@ -4,6 +4,7 @@ resources:
   - edge-and-harbor-exceptions.yaml
   - crossplane-system-exceptions.yaml
   - kyverno-release.yaml
+  - daemonset-linux-only-nodeselector.yaml
   - policy__cluster-pool-apps-ha-toleration.yaml
   - policy__cluster-pool-platform-ha-toleration.yaml
   - cluster-pool-workload-restrictions.yaml
