@@ -39,7 +39,8 @@ spec:
                     annotations:
                       cryptophys.io/daemonset-refresh: "2026-04-12T13:15:00Z"
                   spec:
-                    affinity: null
+                    nodeSelector:
+                      kubernetes.io/os: linux
                     containers:
                       - name: export-stdout
                         resources:
@@ -58,7 +59,8 @@ spec:
                             cpu: 150m
                             memory: 192Mi
   values:
-    affinity: null
+    nodeSelector:
+      kubernetes.io/os: linux
     tolerations:
       - operator: Exists
     extraVolumes:

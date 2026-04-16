@@ -69,33 +69,17 @@ spec:
               metadata:
                 annotations:
                   cryptophys.io/daemonset-refresh: "2026-04-16T10:45:00Z"
-              spec:
-                nodeSelector:
-                  kubernetes.io/os: linux
-                affinity: null
-                tolerations:
-                  - operator: Exists
   values:
     crds:
       enabled: true
     controller:
       nodeSelector:
-        workload.cryptophys.work/apps-core: "true"
+        kubernetes.io/os: linux
       tolerations:
-        - key: cryptophys.io/pool
-          operator: Equal
-          value: apps-ha
-          effect: NoSchedule
-        - key: ray-head
-          operator: Exists
-          effect: NoSchedule
-        - key: bridge-system
-          operator: Exists
-          effect: NoSchedule
-        - key: dao-system
-          operator: Exists
-          effect: NoSchedule
+        - operator: Exists
     speaker:
+      nodeSelector:
+        kubernetes.io/os: linux
       affinity: null
       excludeInterfaces:
         enabled: true

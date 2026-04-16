@@ -38,7 +38,8 @@ spec:
   values:
     driver:
       kind: modern_ebpf
-    affinity: null
+    nodeSelector:
+      kubernetes.io/os: linux
     # FALCO CORE RESOURCES (DaemonSet)
     resources:
       requests:
@@ -47,8 +48,6 @@ spec:
       limits:
         cpu: 500m
         memory: 768Mi
-    tolerations:
-      - operator: Exists
     falcosidekick:
       enabled: true
       webui:
