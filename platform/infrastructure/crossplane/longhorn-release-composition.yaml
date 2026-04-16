@@ -137,51 +137,7 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: daemonset
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: platform-ha
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: apps-ha
-                                effect: NoSchedule
-                              - key: cryptophys.io/node-class
-                                operator: Equal
-                                value: nexus-hpc
-                                effect: NoSchedule
-                              - key: ray-cluster
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: ray-head
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: bridge-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: dao-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.kubernetes.io/disk-pressure
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.kubernetes.io/pid-pressure
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.kubernetes.io/unschedulable
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.kubernetes.io/unreachable
-                                operator: Exists
-                                effect: NoExecute
-                              - key: node.kubernetes.io/not-ready
-                                operator: Exists
-                                effect: NoExecute
-                              - key: node.kubernetes.io/network-unavailable
-                                operator: Exists
-                                effect: NoSchedule
+                              - operator: Exists
                           - op: replace
                             path: /spec/template/spec/containers/0/resources
                             value:
@@ -201,50 +157,7 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: daemonset
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: platform-ha
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: apps-ha
-                                effect: NoSchedule
-                              - key: ray-cluster
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: ray-head
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: bridge-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: dao-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.cilium.io/agent-not-ready
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.kubernetes.io/disk-pressure
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.kubernetes.io/pid-pressure
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.kubernetes.io/unschedulable
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.kubernetes.io/unreachable
-                                operator: Exists
-                                effect: NoExecute
-                              - key: node.kubernetes.io/not-ready
-                                operator: Exists
-                                effect: NoExecute
-                              - key: node.kubernetes.io/network-unavailable
-                                operator: Exists
-                                effect: NoSchedule
+                              - operator: Exists
                           - op: replace
                             path: /spec/template/spec/containers/0/resources
                             value:
@@ -270,23 +183,7 @@ spec:
                           - op: add
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: daemonset
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: platform-ha
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: apps-ha
-                                effect: NoSchedule
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: node.kubernetes.io/unschedulable
-                                operator: Exists
-                                effect: NoSchedule
+                              - operator: Exists
                           - op: add
                             path: /spec/template/spec/containers/0/resources
                             value:
@@ -304,15 +201,6 @@ spec:
                             path: /spec/template/spec/tolerations
                             value:
                               - operator: Exists
-                              - key: ray-cluster
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: bridge-system
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: dao-system
-                                operator: Exists
-                                effect: NoSchedule
               chart:
                 spec:
                   chart: longhorn
