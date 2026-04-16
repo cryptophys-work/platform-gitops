@@ -65,12 +65,16 @@ spec:
     limits:
       cpu: 500m
       memory: 512Mi
-  # Affinity: pin the single Gitea database to the stable platform-ready worker.
+  # Keep the singleton Gitea database on platform workers without hardcoding a node.
   affinity:
     nodeSelector:
-      kubernetes.io/hostname: thalamus-217-76-59-241
+      workload.cryptophys.work/platform: "true"
     tolerations:
     - effect: NoSchedule
       key: cryptophys.io/pool
       operator: Equal
       value: platform-ha
+    - effect: NoSchedule
+      key: cryptophys.io/node-class
+      operator: Equal
+      value: nexus-hpc
