@@ -413,6 +413,7 @@ spec:
                       - kube-system
                       - cilium-system
                       - spire-system
+                      - metallb-system
       validate:
         message: >
           Namespace '{{ request.object.metadata.namespace }}' is not allowed to

@@ -9,7 +9,7 @@ metadata:
 spec:
   suspend: false
   interval: 1h
-  prune: true
+  prune: false
   wait: false
   timeout: 10m
   path: ./platform/infrastructure/metallb
