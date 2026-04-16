@@ -72,12 +72,9 @@ spec:
   values:
     crds:
       enabled: true
-    controller:
-      nodeSelector:
-        kubernetes.io/os: linux
+    # Chart templates already set nodeSelector.kubernetes.io/os=linux for controller
+    # and speaker; do not repeat it here or Helm renders duplicate keys and post-render fails.
     speaker:
-      nodeSelector:
-        kubernetes.io/os: linux
       excludeInterfaces:
         enabled: true
       frr:
