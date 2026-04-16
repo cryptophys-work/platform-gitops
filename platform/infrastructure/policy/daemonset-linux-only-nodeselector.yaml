@@ -27,15 +27,12 @@ spec:
                       - ingress-system
                       - tetragon-system
       mutate:
-        patchesJson6902: |-
-          - op: replace
-            path: /spec/template/spec/affinity
-            value: {}
-          - op: replace
-            path: /spec/template/spec/nodeSelector
-            value:
-              kubernetes.io/os: linux
-          - op: replace
-            path: /spec/template/spec/tolerations
-            value:
-              - operator: Exists
+        patchStrategicMerge:
+          spec:
+            template:
+              spec:
+                affinity: {}
+                nodeSelector:
+                  kubernetes.io/os: linux
+                tolerations:
+                  - operator: Exists
