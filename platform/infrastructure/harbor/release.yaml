@@ -12,11 +12,11 @@ spec:
     remediation:
       retries: 3
   upgrade:
+    force: true
     timeout: 20m
-    cleanupOnFail: true
+    cleanupOnFail: false
     remediation:
-      retries: 2
-      strategy: uninstall
+      retries: 3
   chart:
     spec:
       chart: harbor
