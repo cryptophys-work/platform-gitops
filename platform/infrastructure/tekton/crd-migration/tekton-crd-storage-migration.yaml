@@ -84,15 +84,23 @@ spec:
       serviceAccountName: tekton-crd-migrator
       restartPolicy: OnFailure
       nodeSelector:
-        kubernetes.io/hostname: cerebellum-161-97-117-96
+        kubernetes.io/os: linux
+        cryptophys.io/platform-ha: "true"
       tolerations:
         - key: cryptophys.io/pool
           operator: Equal
           value: platform-ha
           effect: NoSchedule
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
         - key: ray-head
           operator: Equal
           value: "true"
+          effect: NoSchedule
+        - key: node.cilium.io/agent-not-ready
+          operator: Exists
           effect: NoSchedule
       containers:
         - name: migrate
