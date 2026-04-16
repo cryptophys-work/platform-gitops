@@ -69,22 +69,27 @@ spec:
             template:
               metadata:
                 annotations:
-                  cryptophys.io/daemonset-refresh: "2026-04-16T19:15:00Z"
+                  cryptophys.io/daemonset-refresh: "2026-04-16T19:25:00Z"
   values:
     crds:
       enabled: true
-    # Chart templates inject kubernetes.io/os=linux for controller and speaker; never
-    # repeat that key under values or Helm renders duplicate YAML keys (post-render fails).
-    # Keep full placement here so SSA replaces stale merged values in the HelmRelease.
+    # Chart hardcodes nodeSelector.kubernetes.io/os=linux (quoted key) and merges
+    # .Values.*.nodeSelector via toYaml. If values also set kubernetes.io/os (even from Helm
+    # merge drift), the rendered manifest contains two os keys and strict YAML unmarshal fails.
+    # Pin placement with affinity only — do not set controller/speaker nodeSelector here.
     controller:
-      nodeSelector:
-        workload.cryptophys.work/apps-core: "true"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload.cryptophys.work/apps-core
+                    operator: In
+                    values:
+                      - "true"
       tolerations:
         - operator: Exists
     speaker:
-      # Null clears the key in Helm's merged values (empty {} can be ignored); required so the
-      # chart's hardcoded kubernetes.io/os is not duplicated by a stale merged value.
-      nodeSelector: null
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
