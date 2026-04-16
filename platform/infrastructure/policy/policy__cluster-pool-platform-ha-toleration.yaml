@@ -36,9 +36,11 @@ spec:
               app.kubernetes.io/name: tekton-crd-migrator
     preconditions:
       all:
-      - key: "{{ request.object.spec.tolerations || '' }}"
+      # Only inject (and potentially replace) tolerations when the pod has no tolerations at all.
+      # Using length(@) avoids Kyverno/JMESPath string-coercion edge cases on non-empty lists.
+      - key: "{{ request.object.spec.tolerations || [] | length(@) }}"
         operator: Equals
-        value: ""
+        value: 0
     mutate:
       patchesJson6902: |-
         - op: add
