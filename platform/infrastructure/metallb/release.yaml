@@ -71,6 +71,8 @@ spec:
                   cryptophys.io/daemonset-refresh: "2026-04-12T12:45:00Z"
               spec:
                 affinity: null
+                tolerations:
+                  - operator: Exists
   values:
     crds:
       enabled: true
