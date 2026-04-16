@@ -61,6 +61,14 @@ spec:
   values:
     nodeSelector:
       kubernetes.io/os: linux
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      - key: cryptophys.io/node-class
+        operator: Equal
+        value: nexus-hpc
+        effect: NoSchedule
     extraVolumes:
       - name: tracefs
         hostPath:
