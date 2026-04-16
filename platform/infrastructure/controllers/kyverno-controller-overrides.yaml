@@ -33,6 +33,17 @@ spec:
                   app.kubernetes.io/instance: kyverno
               topologyKey: kubernetes.io/hostname
       tolerations:
+        - key: daemonset
+          operator: Exists
+          effect: NoSchedule
+        - key: cplane-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
+        - key: worker-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
         - key: cryptophys.io/pool
           operator: Equal
           value: platform-ha
@@ -83,6 +94,17 @@ spec:
                   app.kubernetes.io/instance: kyverno
               topologyKey: kubernetes.io/hostname
       tolerations:
+        - key: daemonset
+          operator: Exists
+          effect: NoSchedule
+        - key: cplane-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
+        - key: worker-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
         - key: cryptophys.io/pool
           operator: Equal
           value: platform-ha
@@ -133,6 +155,17 @@ spec:
                   app.kubernetes.io/instance: kyverno
               topologyKey: kubernetes.io/hostname
       tolerations:
+        - key: daemonset
+          operator: Exists
+          effect: NoSchedule
+        - key: cplane-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
+        - key: worker-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
         - key: cryptophys.io/pool
           operator: Equal
           value: platform-ha

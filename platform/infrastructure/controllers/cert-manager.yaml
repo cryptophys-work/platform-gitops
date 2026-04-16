@@ -20,6 +20,17 @@ spec:
       kubernetes.io/os: linux
       workload.cryptophys.work/apps-core: "true"
     tolerations:
+      - key: daemonset
+        operator: Exists
+        effect: NoSchedule
+      - key: cplane-guardian
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+      - key: worker-guardian
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
       - key: cryptophys.io/role
         operator: Equal
         value: llm-inference
@@ -30,6 +41,17 @@ spec:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
       tolerations:
+        - key: daemonset
+          operator: Exists
+          effect: NoSchedule
+        - key: cplane-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
+        - key: worker-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
@@ -40,6 +62,17 @@ spec:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
       tolerations:
+        - key: daemonset
+          operator: Exists
+          effect: NoSchedule
+        - key: cplane-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
+        - key: worker-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
@@ -49,6 +82,17 @@ spec:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
       tolerations:
+        - key: daemonset
+          operator: Exists
+          effect: NoSchedule
+        - key: cplane-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
+        - key: worker-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference

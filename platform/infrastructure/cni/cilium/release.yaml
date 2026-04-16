@@ -37,6 +37,17 @@ spec:
         nodeSelector:
           cryptophys.io/platform-ha: "true"
         tolerations:
+          - key: daemonset
+            operator: Exists
+            effect: NoSchedule
+          - key: cplane-guardian
+            operator: Equal
+            value: "true"
+            effect: NoSchedule
+          - key: worker-guardian
+            operator: Equal
+            value: "true"
+            effect: NoSchedule
           - key: cryptophys.io/pool
             operator: Equal
             value: platform-ha
@@ -96,6 +107,17 @@ spec:
         nodeSelector:
           cryptophys.io/platform-ha: "true"
         tolerations:
+          - key: daemonset
+            operator: Exists
+            effect: NoSchedule
+          - key: cplane-guardian
+            operator: Equal
+            value: "true"
+            effect: NoSchedule
+          - key: worker-guardian
+            operator: Equal
+            value: "true"
+            effect: NoSchedule
           - key: cryptophys.io/pool
             operator: Equal
             value: platform-ha
@@ -108,6 +130,17 @@ spec:
         nodeSelector:
           cryptophys.io/platform-ha: "true"
         tolerations:
+          - key: daemonset
+            operator: Exists
+            effect: NoSchedule
+          - key: cplane-guardian
+            operator: Equal
+            value: "true"
+            effect: NoSchedule
+          - key: worker-guardian
+            operator: Equal
+            value: "true"
+            effect: NoSchedule
           - key: cryptophys.io/pool
             operator: Equal
             value: platform-ha
@@ -151,6 +184,17 @@ spec:
                     values:
                       - "true"
       tolerations:
+        - key: daemonset
+          operator: Exists
+          effect: NoSchedule
+        - key: cplane-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
+        - key: worker-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
         - key: cryptophys.io/pool
           operator: Equal
           value: platform-ha
