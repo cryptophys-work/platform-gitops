@@ -13,6 +13,17 @@ webhooks:
     failurePolicy: Ignore
   - name: mpod.kb.io
     failurePolicy: Ignore
+    # Exclude metallb-system: Kueue pod mutation can drop chart tolerations; Kyverno then
+    # injects only platform-ha and the controller stays Pending on tainted workers.
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: NotIn
+          values:
+            - kube-system
+            - kueue-system
+            - apps-user
+            - metallb-system
   - name: mdeployment.kb.io
     failurePolicy: Ignore
   - name: mjobset.kb.io
