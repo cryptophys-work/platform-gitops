@@ -14,7 +14,7 @@ spec:
   chart:
     spec:
       chart: tetragon
-      version: "1.6.0" # Upgraded from 0.11.0 — v1.x works without tracefs/debugfs on Talos
+      version: "1.6.0"
       sourceRef:
         kind: HelmRepository
         name: cilium
@@ -37,7 +37,7 @@ spec:
                 template:
                   metadata:
                     annotations:
-                      cryptophys.io/daemonset-refresh: "2026-04-12T13:15:00Z"
+                      cryptophys.io/daemonset-refresh: "2026-04-16T14:45:00Z"
                   spec:
                     nodeSelector:
                       kubernetes.io/os: linux
@@ -54,21 +54,15 @@ spec:
                         resources:
                           requests:
                             cpu: 150m
-                            memory: 192Mi
+                            memory: 512Mi
                           limits:
-                            cpu: 150m
-                            memory: 192Mi
+                            cpu: 500m
+                            memory: 512Mi
   values:
     nodeSelector:
       kubernetes.io/os: linux
     tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
-      - key: cryptophys.io/node-class
-        operator: Equal
-        value: nexus-hpc
-        effect: NoSchedule
+      - operator: Exists
     extraVolumes:
       - name: tracefs
         hostPath:
@@ -86,11 +80,9 @@ spec:
           memory: 512Mi
       extraVolumeMounts:
         - name: tracefs
-          mountPath: /sys/kernel/tracing  # Talos tracefs: pre-mounted at this path on host
+          mountPath: /sys/kernel/tracing
       export:
-        # Export events to Loki for correlation
         stdout: false
         json:
           enabled: true
           path: "/var/run/cilium/tetragon/tetragon.log"
-    # Assuming a sidecar or Fluentd will pick up this log
