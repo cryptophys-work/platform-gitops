@@ -38,6 +38,10 @@ spec:
               - op: replace
                 path: /spec/template/spec/tolerations
                 value:
+                  - key: cryptophys.io/node-class
+                    operator: Equal
+                    value: nexus-hpc
+                    effect: NoSchedule
                   - key: cryptophys.io/pool
                     operator: Exists
                     effect: NoSchedule
@@ -62,6 +66,10 @@ spec:
               - op: replace
                 path: /spec/template/spec/tolerations
                 value:
+                  - key: cryptophys.io/node-class
+                    operator: Equal
+                    value: nexus-hpc
+                    effect: NoSchedule
                   - key: cryptophys.io/pool
                     operator: Exists
                     effect: NoSchedule
@@ -86,6 +94,10 @@ spec:
               - op: replace
                 path: /spec/template/spec/tolerations
                 value:
+                  - key: cryptophys.io/node-class
+                    operator: Equal
+                    value: nexus-hpc
+                    effect: NoSchedule
                   - key: cryptophys.io/pool
                     operator: Exists
                     effect: NoSchedule
@@ -107,6 +119,10 @@ spec:
               - op: replace
                 path: /spec/template/spec/tolerations
                 value:
+                  - key: cryptophys.io/node-class
+                    operator: Equal
+                    value: nexus-hpc
+                    effect: NoSchedule
                   - key: cryptophys.io/pool
                     operator: Exists
                     effect: NoSchedule
@@ -131,6 +147,10 @@ spec:
               - op: replace
                 path: /spec/template/spec/tolerations
                 value:
+                  - key: cryptophys.io/node-class
+                    operator: Equal
+                    value: nexus-hpc
+                    effect: NoSchedule
                   - key: cryptophys.io/pool
                     operator: Exists
                     effect: NoSchedule
@@ -152,6 +172,10 @@ spec:
               - op: replace
                 path: /spec/template/spec/tolerations
                 value:
+                  - key: cryptophys.io/node-class
+                    operator: Equal
+                    value: nexus-hpc
+                    effect: NoSchedule
                   - key: cryptophys.io/pool
                     operator: Exists
                     effect: NoSchedule
@@ -202,18 +226,15 @@ spec:
           size: 50Gi
         jobservice:
           jobLog:
-            existingClaim: registry-harbor-jobservice
             storageClass: longhorn-harbor-retain
             size: 1Gi
         database:
-          existingClaim: database-data-registry-harbor-database-0
           storageClass: longhorn-harbor-retain
           size: 20Gi
         redis:
           storageClass: longhorn
           size: 5Gi
         trivy:
-          existingClaim: data-registry-harbor-trivy-0
           storageClass: longhorn-harbor-retain
           size: 20Gi
     updateStrategy:
@@ -260,6 +281,10 @@ spec:
             cpu: 100m
             memory: 128Mi
         tolerations:
+          - key: cryptophys.io/node-class
+            operator: Equal
+            value: nexus-hpc
+            effect: NoSchedule
           - key: cryptophys.io/role
             operator: Equal
             value: llm-inference
@@ -297,6 +322,10 @@ spec:
           cpu: 50m
           memory: 64Mi
       tolerations:
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
@@ -331,6 +360,10 @@ spec:
           cpu: 10m
           memory: 32Mi
       tolerations:
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
@@ -371,6 +404,10 @@ spec:
           cpu: 100m
           memory: 256Mi
       tolerations:
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
@@ -411,6 +448,10 @@ spec:
           cpu: 50m
           memory: 128Mi
       tolerations:
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
@@ -446,6 +487,10 @@ spec:
             cpu: 50m
             memory: 64Mi
       tolerations:
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
@@ -472,6 +517,10 @@ spec:
           cpu: 10m
           memory: 32Mi
       tolerations:
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference

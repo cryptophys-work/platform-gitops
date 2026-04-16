@@ -62,6 +62,10 @@ spec:
     spec:
       automountServiceAccountToken: false
       tolerations:
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
