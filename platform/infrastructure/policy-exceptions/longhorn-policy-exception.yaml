@@ -2,7 +2,7 @@ apiVersion: kyverno.io/v2
 kind: PolicyException
 metadata:
   name: longhorn-system-exception
-  namespace: longhorn-system
+  namespace: kyverno-system
 spec:
   exceptions:
     - policyName: deny-cp-toleration-non-platform

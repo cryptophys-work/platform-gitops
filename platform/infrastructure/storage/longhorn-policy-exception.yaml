@@ -2,9 +2,17 @@ apiVersion: kyverno.io/v2
 kind: PolicyException
 metadata:
   name: longhorn-system-exception
-  namespace: longhorn-system
+  namespace: kyverno-system
 spec:
   exceptions:
+    - policyName: deny-cp-toleration-non-platform
+      ruleNames:
+        - check-cp-toleration
+        - autogen-check-cp-toleration
+    - policyName: deny-cp-nodeselector-non-platform
+      ruleNames:
+        - check-cp-nodeselector
+        - autogen-check-cp-nodeselector
     - policyName: cp-pss-restricted-v1
       ruleNames:
         - autogen-deny-privileged-containers
