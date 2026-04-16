@@ -25,6 +25,8 @@ spec:
       dnsPolicy: Default
       nodeSelector:
         kubernetes.io/os: linux
+      tolerations:
+        - operator: Exists
       containers:
       - args:
         - -localip
