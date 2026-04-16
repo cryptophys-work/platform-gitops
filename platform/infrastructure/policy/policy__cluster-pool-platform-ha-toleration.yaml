@@ -12,11 +12,12 @@ metadata:
     cryptophys.io/source: ClusterPool (platform-ha)
     cryptophys.io/component: cluster-pool-policy
     cryptophys.io/managed-by: crossplane
+    pod-policies.kyverno.io/autogen-controllers: none
 spec:
   validationFailureAction: Audit
   background: true
   rules:
-  - name: inject-platform-ha-toleration
+  - name: init-platform-ha-toleration
     match:
       any:
       - resources:
@@ -25,8 +26,6 @@ spec:
           namespaceSelector:
             matchLabels:
               cryptophys.io/pool: platform-ha
-    # Tekton CRD migrator Jobs declare full platform-ha pool tolerations (nexus-hpc, cilium, …).
-    # Strategic merge here would replace that list with only pool — do not touch those Pods.
     exclude:
       any:
       - resources:
@@ -35,11 +34,51 @@ spec:
           selector:
             matchLabels:
               app.kubernetes.io/name: tekton-crd-migrator
+    preconditions:
+      all:
+      - key: "{{ request.object.spec.tolerations || '' }}"
+        operator: Equals
+        value: ""
     mutate:
-      patchStrategicMerge:
-        spec:
-          tolerations:
-          - key: cryptophys.io/pool
+      patchesJson6902: |-
+        - op: add
+          path: /spec/tolerations
+          value:
+            - key: cryptophys.io/pool
+              operator: Equal
+              value: platform-ha
+              effect: NoSchedule
+  - name: append-platform-ha-toleration
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: platform-ha
+    exclude:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: tekton-crd-migrator
+    preconditions:
+      all:
+      - key: "{{ request.object.spec.tolerations || '' }}"
+        operator: NotEquals
+        value: ""
+      - key: "{{ request.object.spec.tolerations[?key=='cryptophys.io/pool' && value=='platform-ha'] | length(@) }}"
+        operator: Equals
+        value: 0
+    mutate:
+      patchesJson6902: |-
+        - op: add
+          path: /spec/tolerations/-
+          value:
+            key: cryptophys.io/pool
             operator: Equal
             value: platform-ha
             effect: NoSchedule
