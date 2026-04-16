@@ -81,6 +81,9 @@ spec:
       tolerations:
         - operator: Exists
     speaker:
+      # Explicit empty map overrides Helm's three-way merge with the prior release; otherwise
+      # kubernetes.io/os from the old release re-merges and the chart adds it again (duplicate keys).
+      nodeSelector: {}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
