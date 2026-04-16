@@ -6,9 +6,6 @@ metadata:
 spec:
   tier: control-plane
   taints:
-  - key: daemonset
-    value: "true"
-    effect: NoSchedule
   - key: cplane-guardian
     value: "true"
     effect: NoSchedule
@@ -35,9 +32,6 @@ metadata:
 spec:
   tier: control-plane
   taints:
-  - key: daemonset
-    value: "true"
-    effect: NoSchedule
   - key: cplane-guardian
     value: "true"
     effect: NoSchedule
@@ -64,9 +58,6 @@ metadata:
 spec:
   tier: control-plane
   taints:
-  - key: daemonset
-    value: "true"
-    effect: NoSchedule
   - key: cplane-guardian
     value: "true"
     effect: NoSchedule
@@ -95,9 +86,6 @@ spec:
   taints:
   - key: cryptophys.io/node-class
     value: nexus-hpc
-    effect: NoSchedule
-  - key: daemonset
-    value: "true"
     effect: NoSchedule
   - key: worker-guardian
     value: "true"
@@ -145,9 +133,6 @@ metadata:
 spec:
   tier: apps
   taints:
-  - key: daemonset
-    value: "true"
-    effect: NoSchedule
   - key: worker-guardian
     value: "true"
     effect: NoSchedule
@@ -184,9 +169,6 @@ metadata:
 spec:
   tier: platform
   taints:
-  - key: daemonset
-    value: "true"
-    effect: NoSchedule
   - key: worker-guardian
     value: "true"
     effect: NoSchedule
@@ -219,9 +201,6 @@ metadata:
 spec:
   tier: platform
   taints:
-  - key: daemonset
-    value: "true"
-    effect: NoSchedule
   - key: worker-guardian
     value: "true"
     effect: NoSchedule
@@ -258,9 +237,6 @@ metadata:
 spec:
   tier: apps
   taints:
-  - key: daemonset
-    value: "true"
-    effect: NoSchedule
   - key: worker-guardian
     value: "true"
     effect: NoSchedule
@@ -301,9 +277,6 @@ metadata:
 spec:
   tier: deprecated
   taints:
-  - key: daemonset
-    value: "true"
-    effect: NoSchedule
   - key: worker-guardian
     value: "true"
     effect: NoSchedule
@@ -332,9 +305,6 @@ metadata:
 spec:
   tier: deprecated
   taints:
-  - key: daemonset
-    value: "true"
-    effect: NoSchedule
   - key: worker-guardian
     value: "true"
     effect: NoSchedule

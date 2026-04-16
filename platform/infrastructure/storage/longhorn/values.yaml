@@ -1,45 +1,20 @@
 USER-SUPPLIED VALUES:
 defaultSettings:
-  defaultReplicaCount: 3
-  systemManagedComponentsNodeSelector: ""
-  taintToleration: "daemonset:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule"
+  defaultReplicaCount: 2
+  systemManagedComponentsNodeSelector: "kubernetes.io/os: linux"
+  taintToleration: "*"
 persistence:
   defaultClass: true
-  defaultClassReplicaCount: 3
-# Allow CSI plugin on storage lane nodes.
+  defaultClassReplicaCount: 2
 csi:
   kubeletRootDir: /var/lib/kubelet
 longhornCSI:
   tolerations:
-    - key: daemonset
-      operator: Exists
-      effect: NoSchedule
-    - key: cryptophys.io/pool
-      operator: Equal
-      value: platform-ha
-      effect: NoSchedule
-    - key: cryptophys.io/pool
-      operator: Equal
-      value: apps-ha
-      effect: NoSchedule
-    - key: ray-cluster
-      operator: Exists
-      effect: NoSchedule
-    - key: ray-head
-      operator: Exists
-      effect: NoSchedule
-    - key: bridge-system
-      operator: Exists
-      effect: NoSchedule
-    - key: dao-system
-      operator: Exists
-      effect: NoSchedule
-# Optimized resource requests based on actual usage audit (2026-03-19)
+    - operator: Exists
 longhornUI:
-  replicas: 1
+  replicas: 2
   nodeSelector:
-    cryptophys.io/tier: compute
-    nexus-workload-hub: "true"
+    kubernetes.io/os: linux
   tolerations:
     - operator: Exists
   resources:
@@ -51,29 +26,7 @@ longhornUI:
       memory: 256Mi
 longhornManager:
   tolerations:
-    - key: daemonset
-      operator: Exists
-      effect: NoSchedule
-    - key: cryptophys.io/pool
-      operator: Equal
-      value: platform-ha
-      effect: NoSchedule
-    - key: cryptophys.io/pool
-      operator: Equal
-      value: apps-ha
-      effect: NoSchedule
-    - key: ray-cluster
-      operator: Exists
-      effect: NoSchedule
-    - key: ray-head
-      operator: Exists
-      effect: NoSchedule
-    - key: bridge-system
-      operator: Exists
-      effect: NoSchedule
-    - key: dao-system
-      operator: Exists
-      effect: NoSchedule
+    - operator: Exists
   resources:
     requests:
       cpu: 100m
@@ -83,12 +36,9 @@ longhornManager:
       memory: 768Mi
 longhornDriver:
   nodeSelector:
-    cryptophys.io/tier: compute
-    nexus-workload-hub: "true"
+    kubernetes.io/os: linux
   tolerations:
-    - key: daemonset
-      operator: Exists
-      effect: NoSchedule
+    - operator: Exists
   resources:
     requests:
       cpu: 50m

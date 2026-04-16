@@ -29,10 +29,6 @@ spec:
                   # Keep only short-lived node-state tolerations by default.
                   # Dedicated pools and bootstrap taints must be opt-in per workload.
                   tolerations:
-                  # Standard system-wide toleration for node reservation model
-                  - key: daemonset
-                    operator: Exists
-                    effect: NoSchedule
                   # Guardian roles for Picoclaw monitoring
                   - key: cplane-guardian
                     operator: Equal
@@ -131,9 +127,6 @@ spec:
                     spec:
                       nodeSelector: {}
                       tolerations:
-                      - key: daemonset
-                        operator: Exists
-                        effect: NoSchedule
                       - key: cplane-guardian
                         operator: Equal
                         value: "true"
@@ -186,9 +179,6 @@ spec:
                     spec:
                       nodeSelector: {}
                       tolerations:
-                      - key: daemonset
-                        operator: Exists
-                        effect: NoSchedule
                       - key: cplane-guardian
                         operator: Equal
                         value: "true"
