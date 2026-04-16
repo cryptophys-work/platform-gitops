@@ -76,8 +76,10 @@ spec:
     # Chart hardcodes nodeSelector.kubernetes.io/os=linux (quoted key) and merges
     # .Values.*.nodeSelector via toYaml. If values also set kubernetes.io/os (even from Helm
     # merge drift), the rendered manifest contains two os keys and strict YAML unmarshal fails.
-    # Pin placement with affinity only — do not set controller/speaker nodeSelector here.
+    # Explicit null clears stale merged nodeSelector maps from Helm history (otherwise
+    # kubernetes.io/os is merged with the chart's hardcoded os key and YAML unmarshal fails).
     controller:
+      nodeSelector: null
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -90,6 +92,7 @@ spec:
       tolerations:
         - operator: Exists
     speaker:
+      nodeSelector: null
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
