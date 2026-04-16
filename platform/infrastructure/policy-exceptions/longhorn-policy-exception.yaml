@@ -5,6 +5,14 @@ metadata:
   namespace: longhorn-system
 spec:
   exceptions:
+    - policyName: deny-cp-toleration-non-platform
+      ruleNames:
+        - check-cp-toleration
+        - autogen-check-cp-toleration
+    - policyName: deny-cp-nodeselector-non-platform
+      ruleNames:
+        - check-cp-nodeselector
+        - autogen-check-cp-nodeselector
     - policyName: cp-pss-restricted-v1
       ruleNames:
         - autogen-deny-privileged-containers
