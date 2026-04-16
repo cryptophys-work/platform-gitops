@@ -4,6 +4,8 @@ metadata:
   name: longhorn-ui
   namespace: longhorn-system
   annotations:
+    nginx.ingress.kubernetes.io/auth-url: http://headlamp-oauth2-proxy.platform-ui.svc.cluster.local:4180/oauth2/auth
+    nginx.ingress.kubernetes.io/auth-signin: https://headlamp.cryptophys.work/oauth2/start?rd=$scheme://$best_http_host$escaped_request_uri
     nginx.ingress.kubernetes.io/backend-protocol: HTTP
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
