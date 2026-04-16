@@ -12,6 +12,7 @@ resources:
   - kustomization/15-security-runtime.yaml
   - kustomization/15-security-runtime-crs.yaml
   - kustomization/17-metallb.yaml
+  - kustomization/17-metallb-config.yaml
   - kustomization/18-networking.yaml
   - kustomization/20-policy.yaml
   - kustomization/21-policy-ssot.yaml

@@ -1,18 +1,16 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 18-networking
+  name: 17-metallb-config
   namespace: flux-system
 spec:
   interval: 1h
-  wait: true
-  timeout: 10m
-  path: ./platform/infrastructure/networking
   prune: false
+  wait: true
+  timeout: 5m
+  path: ./platform/infrastructure/metallb-config
   sourceRef:
     kind: GitRepository
     name: platform-repo
   dependsOn:
-    - name: 10-controllers
     - name: 17-metallb
-    - name: 17-metallb-config
