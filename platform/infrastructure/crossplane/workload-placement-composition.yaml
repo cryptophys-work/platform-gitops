@@ -33,6 +33,15 @@ spec:
                   - key: daemonset
                     operator: Exists
                     effect: NoSchedule
+                  # Guardian roles for Picoclaw monitoring
+                  - key: cplane-guardian
+                    operator: Equal
+                    value: "true"
+                    effect: NoSchedule
+                  - key: worker-guardian
+                    operator: Equal
+                    value: "true"
+                    effect: NoSchedule
                   # Tolerate not-ready briefly during node transitions
                   - key: node.kubernetes.io/not-ready
                     operator: Exists
@@ -125,6 +134,14 @@ spec:
                       - key: daemonset
                         operator: Exists
                         effect: NoSchedule
+                      - key: cplane-guardian
+                        operator: Equal
+                        value: "true"
+                        effect: NoSchedule
+                      - key: worker-guardian
+                        operator: Equal
+                        value: "true"
+                        effect: NoSchedule
         providerConfigRef:
           name: local-kubernetes-provider
     patches:
@@ -171,6 +188,14 @@ spec:
                       tolerations:
                       - key: daemonset
                         operator: Exists
+                        effect: NoSchedule
+                      - key: cplane-guardian
+                        operator: Equal
+                        value: "true"
+                        effect: NoSchedule
+                      - key: worker-guardian
+                        operator: Equal
+                        value: "true"
                         effect: NoSchedule
         providerConfigRef:
           name: local-kubernetes-provider
