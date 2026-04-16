@@ -5,6 +5,7 @@ kind: ClusterPolicy
 metadata:
   name: deny-cp-toleration-non-platform
   annotations:
+    pod-policies.kyverno.io/autogen-controllers: none
     policies.kyverno.io/title: Deny CP Toleration Outside kube-system and DaemonSet
     policies.kyverno.io/category: Node Placement
     policies.kyverno.io/severity: high
