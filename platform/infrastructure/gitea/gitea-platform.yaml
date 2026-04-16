@@ -122,6 +122,22 @@ spec:
                   periodSeconds: 10
                   successThreshold: 1
                   failureThreshold: 30
+              - op: add
+                path: /spec/template/spec/containers/0/env/-
+                value:
+                  name: GITEA__DATABASE__USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: gitea-db-credentials
+                      key: username
+              - op: add
+                path: /spec/template/spec/containers/0/env/-
+                value:
+                  name: GITEA__DATABASE__PASSWD
+                  valueFrom:
+                    secretKeyRef:
+                      name: gitea-db-credentials
+                      key: password
           - target:
               kind: Deployment
               name: gitops-gitea
@@ -149,6 +165,38 @@ spec:
                   volumeMounts:
                     - name: data
                       mountPath: /data
+              - op: add
+                path: /spec/template/spec/initContainers/2/env/-
+                value:
+                  name: GITEA__DATABASE__USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: gitea-db-credentials
+                      key: username
+              - op: add
+                path: /spec/template/spec/initContainers/2/env/-
+                value:
+                  name: GITEA__DATABASE__PASSWD
+                  valueFrom:
+                    secretKeyRef:
+                      name: gitea-db-credentials
+                      key: password
+              - op: add
+                path: /spec/template/spec/initContainers/3/env/-
+                value:
+                  name: GITEA__DATABASE__USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: gitea-db-credentials
+                      key: username
+              - op: add
+                path: /spec/template/spec/initContainers/3/env/-
+                value:
+                  name: GITEA__DATABASE__PASSWD
+                  valueFrom:
+                    secretKeyRef:
+                      name: gitea-db-credentials
+                      key: password
   chart:
     spec:
       chart: gitea
