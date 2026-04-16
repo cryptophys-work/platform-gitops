@@ -4,7 +4,9 @@ metadata:
   name: spire-server-config
   namespace: spire-system
 data:
-  server.conf: |
+  # Rendered at pod startup: init container substitutes <<<SPIRE_POSTGRES_DSN>>> with a libpq/URI
+  # connection string built from spire-postgres-credentials (Vault → ExternalSecret).
+  server.conf.template: |
     Server {
       bind_address = "0.0.0.0"
       bind_port = "8081"
@@ -19,8 +21,8 @@ data:
     plugins {
       DataStore "sql" {
         plugin_data {
-          database_type = "sqlite3"
-          connection_string = "/run/spire/data/datastore.sqlite3"
+          database_type = "postgres"
+          connection_string = "<<<SPIRE_POSTGRES_DSN>>>"
         }
       }
       NodeAttestor "k8s_psat" {

@@ -10,7 +10,7 @@ metadata:
     environment: prod
     owner: infrastructure
 spec:
-  replicas: 1  # SQLite datastore requires single replica; scale up after migrating to postgres
+  replicas: 1  # Single SPIRE server writer; postgres datastore allows HA read replicas in a future change
   selector:
     matchLabels:
       app: spire-server
@@ -64,6 +64,49 @@ spec:
                 matchLabels:
                   app: spire-server
               topologyKey: kubernetes.io/hostname
+      initContainers:
+        - name: spire-render-server-conf
+          image: docker.io/library/python:3.11.9-alpine3.20
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PG_USER
+              valueFrom:
+                secretKeyRef:
+                  name: spire-postgres-credentials
+                  key: username
+            - name: PG_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: spire-postgres-credentials
+                  key: password
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              python3 - <<'PY'
+              import os, urllib.parse
+              user = os.environ["PG_USER"]
+              password = os.environ["PG_PASS"]
+              host = "postgres-security-ha-rw.postgresql-system.svc.cluster.local"
+              port = "5432"
+              db = "spire"
+              dsn = (
+                  f"postgres://{urllib.parse.quote_plus(user)}:"
+                  f"{urllib.parse.quote_plus(password)}@{host}:{port}/{db}?sslmode=disable"
+              )
+              tpl = open("/template/server.conf.template", encoding="utf-8").read()
+              if "<<<SPIRE_POSTGRES_DSN>>>" not in tpl:
+                  raise SystemExit("missing placeholder in server.conf.template")
+              open("/out/server.conf", "w", encoding="utf-8").write(
+                  tpl.replace("<<<SPIRE_POSTGRES_DSN>>>", dsn)
+              )
+              PY
+          volumeMounts:
+            - name: spire-server-config-template
+              mountPath: /template
+              readOnly: true
+            - name: spire-rendered-config
+              mountPath: /out
       containers:
         - name: spire-server
           image: ghcr.io/spiffe/spire-server:1.8.0
@@ -93,7 +136,7 @@ spec:
             timeoutSeconds: 5
             failureThreshold: 6
           volumeMounts:
-            - name: spire-config
+            - name: spire-rendered-config
               mountPath: /run/spire/config
               readOnly: true
             - name: spire-data
@@ -157,9 +200,11 @@ spec:
             - name: controller-manager-tmp
               mountPath: /tmp
       volumes:
-        - name: spire-config
+        - name: spire-server-config-template
           configMap:
             name: spire-server-config
+        - name: spire-rendered-config
+          emptyDir: {}
         - name: controller-manager-config
           configMap:
             name: spire-controller-manager-config

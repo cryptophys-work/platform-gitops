@@ -19,3 +19,4 @@ spec:
   dependsOn:
     - name: 31-secrets
     - name: 11-controllers
+    - name: 25-database-crs
