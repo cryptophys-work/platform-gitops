@@ -1,0 +1,68 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-pool-tolerations-apps-ha
+  annotations:
+    policies.kyverno.io/title: Mutate Apps HA Pool Tolerations
+    policies.kyverno.io/category: Node Placement
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >
+      Inject apps-ha toleration for Pods in namespaces labeled
+      cryptophys.io/pool=apps-ha without overwriting workload-declared tolerations.
+    pod-policies.kyverno.io/autogen-controllers: none
+    cryptophys.io/source: ClusterPool (apps-ha)
+    cryptophys.io/component: cluster-pool-policy
+    cryptophys.io/managed-by: crossplane
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+  - name: init-apps-ha-toleration
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: apps-ha
+    preconditions:
+      all:
+      - key: "{{ request.object.spec.tolerations || '' }}"
+        operator: Equals
+        value: ""
+    mutate:
+      patchesJson6902: |-
+        - op: add
+          path: /spec/tolerations
+          value:
+            - key: cryptophys.io/pool
+              operator: Equal
+              value: apps-ha
+              effect: NoSchedule
+  - name: append-apps-ha-toleration
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: apps-ha
+    preconditions:
+      all:
+      - key: "{{ request.object.spec.tolerations || '' }}"
+        operator: NotEquals
+        value: ""
+      - key: "{{ request.object.spec.tolerations[?key=='cryptophys.io/pool' && value=='apps-ha'] | length(@) }}"
+        operator: Equals
+        value: 0
+    mutate:
+      patchesJson6902: |-
+        - op: add
+          path: /spec/tolerations/-
+          value:
+            key: cryptophys.io/pool
+            operator: Equal
+            value: apps-ha
+            effect: NoSchedule
