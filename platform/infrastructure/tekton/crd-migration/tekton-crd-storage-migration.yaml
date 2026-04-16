@@ -61,7 +61,8 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: tekton-crd-storage-migration-v9
+  # v10: new Job object so template (tolerations for nexus-hpc) replaces stuck v5–v9 merges.
+  name: tekton-crd-storage-migration-v10
   namespace: tekton-pipelines
   labels:
     app.kubernetes.io/name: tekton-crd-migrator
