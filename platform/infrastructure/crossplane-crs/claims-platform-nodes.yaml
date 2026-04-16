@@ -9,6 +9,9 @@ spec:
   - key: daemonset
     value: "true"
     effect: NoSchedule
+  - key: cplane-guardian
+    value: "true"
+    effect: NoSchedule
   customLabels:
     cryptophys.io/tier: platform
   longhornNode:
@@ -35,6 +38,9 @@ spec:
   - key: daemonset
     value: "true"
     effect: NoSchedule
+  - key: cplane-guardian
+    value: "true"
+    effect: NoSchedule
   customLabels:
     cryptophys.io/tier: platform
   longhornNode:
@@ -59,6 +65,9 @@ spec:
   tier: platform
   taints:
   - key: daemonset
+    value: "true"
+    effect: NoSchedule
+  - key: cplane-guardian
     value: "true"
     effect: NoSchedule
   customLabels:
@@ -88,6 +97,9 @@ spec:
     value: nexus-hpc
     effect: NoSchedule
   - key: daemonset
+    value: "true"
+    effect: NoSchedule
+  - key: worker-guardian
     value: "true"
     effect: NoSchedule
   customLabels:
@@ -135,6 +147,9 @@ spec:
   - key: daemonset
     value: "true"
     effect: NoSchedule
+  - key: worker-guardian
+    value: "true"
+    effect: NoSchedule
   - key: cryptophys.io/pool
     value: apps-ha
     effect: NoSchedule
@@ -171,6 +186,9 @@ spec:
   - key: daemonset
     value: "true"
     effect: NoSchedule
+  - key: worker-guardian
+    value: "true"
+    effect: NoSchedule
   - key: cryptophys.io/pool
     value: platform-ha
     effect: NoSchedule
@@ -201,6 +219,9 @@ spec:
   tier: compute
   taints:
   - key: daemonset
+    value: "true"
+    effect: NoSchedule
+  - key: worker-guardian
     value: "true"
     effect: NoSchedule
   - key: cryptophys.io/pool
@@ -237,6 +258,9 @@ spec:
   tier: compute
   taints:
   - key: daemonset
+    value: "true"
+    effect: NoSchedule
+  - key: worker-guardian
     value: "true"
     effect: NoSchedule
   - key: bridge-system
@@ -279,6 +303,9 @@ spec:
   - key: daemonset
     value: "true"
     effect: NoSchedule
+  - key: worker-guardian
+    value: "true"
+    effect: NoSchedule
   customLabels:
     cryptophys.io/tier: compute
     cryptophys.io/role: llm-inference
@@ -307,6 +334,9 @@ spec:
   tier: storage
   taints:
   - key: daemonset
+    value: "true"
+    effect: NoSchedule
+  - key: worker-guardian
     value: "true"
     effect: NoSchedule
   customLabels:
