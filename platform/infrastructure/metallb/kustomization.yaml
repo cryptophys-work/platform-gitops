@@ -1,5 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  # Pool/L2Advertisement live under platform/infrastructure/metallb-config and are synced
+  # after this kustomization (e.g. 10-metallb-config) so Helm can install CRDs first.
   - release.yaml
-  - pool.yaml
