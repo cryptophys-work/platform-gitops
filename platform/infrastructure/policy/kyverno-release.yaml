@@ -55,6 +55,14 @@ spec:
                 operator: Equal
                 value: platform-ha
                 effect: NoSchedule
+              - key: cryptophys.io/node-class
+                operator: Equal
+                value: nexus-hpc
+                effect: NoSchedule
+              - key: ray-head
+                operator: Equal
+                value: "true"
+                effect: NoSchedule
               - key: node.cilium.io/agent-not-ready
                 operator: Exists
                 effect: NoSchedule
@@ -77,6 +85,14 @@ spec:
                 operator: Equal
                 value: platform-ha
                 effect: NoSchedule
+              - key: cryptophys.io/node-class
+                operator: Equal
+                value: nexus-hpc
+                effect: NoSchedule
+              - key: ray-head
+                operator: Equal
+                value: "true"
+                effect: NoSchedule
               - key: node.cilium.io/agent-not-ready
                 operator: Exists
                 effect: NoSchedule
@@ -95,6 +111,14 @@ spec:
               - key: cryptophys.io/pool
                 operator: Equal
                 value: platform-ha
+                effect: NoSchedule
+              - key: cryptophys.io/node-class
+                operator: Equal
+                value: nexus-hpc
+                effect: NoSchedule
+              - key: ray-head
+                operator: Equal
+                value: "true"
                 effect: NoSchedule
               - key: node.cilium.io/agent-not-ready
                 operator: Exists
@@ -115,6 +139,14 @@ spec:
                 operator: Equal
                 value: platform-ha
                 effect: NoSchedule
+              - key: cryptophys.io/node-class
+                operator: Equal
+                value: nexus-hpc
+                effect: NoSchedule
+              - key: ray-head
+                operator: Equal
+                value: "true"
+                effect: NoSchedule
               - key: node.cilium.io/agent-not-ready
                 operator: Exists
                 effect: NoSchedule
@@ -133,6 +165,14 @@ spec:
               - key: cryptophys.io/pool
                 operator: Equal
                 value: platform-ha
+                effect: NoSchedule
+              - key: cryptophys.io/node-class
+                operator: Equal
+                value: nexus-hpc
+                effect: NoSchedule
+              - key: ray-head
+                operator: Equal
+                value: "true"
                 effect: NoSchedule
               - key: node.cilium.io/agent-not-ready
                 operator: Exists
@@ -178,7 +218,7 @@ spec:
         - "[velero.io/*,*,*]"
     admissionController:
       createSelfSignedCert: true
-      replicas: 3
+      replicas: 2
       livenessProbe:
         initialDelaySeconds: 30
         periodSeconds: 10
@@ -206,6 +246,14 @@ spec:
         - key: cryptophys.io/pool
           operator: Equal
           value: platform-ha
+          effect: NoSchedule
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
+        - key: ray-head
+          operator: Equal
+          value: "true"
           effect: NoSchedule
         - key: node.cilium.io/agent-not-ready
           operator: Exists
@@ -252,6 +300,14 @@ spec:
           operator: Equal
           value: platform-ha
           effect: NoSchedule
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
+        - key: ray-head
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
         - key: node.cilium.io/agent-not-ready
           operator: Exists
           effect: NoSchedule
@@ -277,6 +333,14 @@ spec:
         - key: cryptophys.io/pool
           operator: Equal
           value: platform-ha
+          effect: NoSchedule
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
+        - key: ray-head
+          operator: Equal
+          value: "true"
           effect: NoSchedule
         - key: node.cilium.io/agent-not-ready
           operator: Exists

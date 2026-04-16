@@ -34,6 +34,10 @@ spec:
       operator: Equal
       value: platform-ha
       effect: NoSchedule
+    - key: cryptophys.io/node-class
+      operator: Equal
+      value: nexus-hpc
+      effect: NoSchedule
     - key: ray-head
       operator: Exists
       effect: NoSchedule
