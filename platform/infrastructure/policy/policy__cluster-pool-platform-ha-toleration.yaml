@@ -38,7 +38,7 @@ spec:
       all:
       # Only inject (and potentially replace) tolerations when the pod has no tolerations at all.
       # Using length(@) avoids Kyverno/JMESPath string-coercion edge cases on non-empty lists.
-      - key: "{{ request.object.spec.tolerations || [] | length(@) }}"
+      - key: "{{ (request.object.spec.tolerations || []) | length(@) }}"
         operator: Equals
         value: 0
     mutate:
