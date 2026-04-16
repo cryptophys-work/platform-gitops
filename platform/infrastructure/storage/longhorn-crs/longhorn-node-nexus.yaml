@@ -13,7 +13,8 @@ spec:
   allowScheduling: true
   disks:
     default-disk-080600000000:
-      allowScheduling: false
+      # Spillover when /var/mnt/longhorn-data hits Longhorn's scheduling limit (50% provisioned cap).
+      allowScheduling: true
       diskDriver: ""
       diskType: filesystem
       evictionRequested: false

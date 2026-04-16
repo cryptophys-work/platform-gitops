@@ -1,0 +1,24 @@
+# SPIRE server SQLite PVC: single replica on the workload node (strict-local) with
+# WaitForFirstConsumer so provisioning follows the scheduled pod (nexus platform node).
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-spire-data
+  labels:
+    cryptophys.io/component: spire
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+parameters:
+  backupTargetName: default
+  dataEngine: v1
+  dataLocality: disabled
+  disableRevisionCounter: "true"
+  fromBackup: ""
+  fsType: ext4
+  numberOfReplicas: "1"
+  staleReplicaTimeout: "30"
+  unmapMarkSnapChainRemoved: ignored
