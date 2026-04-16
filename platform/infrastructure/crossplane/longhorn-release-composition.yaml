@@ -219,7 +219,7 @@ spec:
                   retries: 5
                 values:
                   defaultSettings:
-                    taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;daemonset:NoSchedule;cplane-guardian:NoSchedule;worker-guardian:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;cryptophys.io/node-class=nexus-hpc:NoSchedule;ray-cluster:NoSchedule;ray-head:NoSchedule;bridge-system:NoSchedule;dao-system:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule;node.kubernetes.io/disk-pressure:NoSchedule;node.kubernetes.io/pid-pressure:NoSchedule;node.kubernetes.io/not-ready:NoSchedule;node.kubernetes.io/unreachable:NoSchedule;node.kubernetes.io/network-unavailable:NoSchedule"
+                    taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;daemonset:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;cryptophys.io/node-class=nexus-hpc:NoSchedule;ray-cluster:NoSchedule;ray-head:NoSchedule;bridge-system:NoSchedule;dao-system:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule;node.kubernetes.io/disk-pressure:NoSchedule;node.kubernetes.io/pid-pressure:NoSchedule;node.kubernetes.io/not-ready:NoSchedule;node.kubernetes.io/unreachable:NoSchedule;node.kubernetes.io/network-unavailable:NoSchedule"
                   persistence:
                     defaultClass: true
                     defaultClassReplicaCount: 2
