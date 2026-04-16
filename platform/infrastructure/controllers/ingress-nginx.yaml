@@ -46,8 +46,6 @@ spec:
           memory: 256Mi
       nodeSelector:
         kubernetes.io/os: linux
-      tolerations:
-        - operator: Exists
       updateStrategy:
         type: RollingUpdate
         rollingUpdate:
