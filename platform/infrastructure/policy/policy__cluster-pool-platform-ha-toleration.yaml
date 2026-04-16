@@ -25,6 +25,16 @@ spec:
           namespaceSelector:
             matchLabels:
               cryptophys.io/pool: platform-ha
+    # Tekton CRD migrator Jobs declare full platform-ha pool tolerations (nexus-hpc, cilium, …).
+    # Strategic merge here would replace that list with only pool — do not touch those Pods.
+    exclude:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: tekton-crd-migrator
     mutate:
       patchStrategicMerge:
         spec:
@@ -52,7 +62,14 @@ spec:
             operator: Equal
             value: platform-ha
             effect: NoSchedule
+          - key: cryptophys.io/node-class
+            operator: Equal
+            value: nexus-hpc
+            effect: NoSchedule
           - key: ray-head
             operator: Equal
             value: "true"
+            effect: NoSchedule
+          - key: node.cilium.io/agent-not-ready
+            operator: Exists
             effect: NoSchedule
