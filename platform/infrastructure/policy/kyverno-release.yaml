@@ -204,6 +204,18 @@ spec:
       failurePolicy: Ignore
     config:
       exceptionNamespace: kyverno-system
+      webhooks:
+        namespaceSelector:
+          matchExpressions:
+            - key: kubernetes.io/metadata.name
+              operator: NotIn
+              values:
+                - kube-system
+                - kyverno-system
+                - cilium-system
+                - longhorn-system
+                - vault-system
+                - spire-system
       resourceFilters:
         # Skip entire namespaces that generate null-kind dry-run requests (Kyverno 3.x webhook parse bug)
         - "[*/*,vault-system,*]"
