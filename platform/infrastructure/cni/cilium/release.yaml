@@ -69,11 +69,11 @@ spec:
       type: wireguard
       nodeEncryption: true
     svcSourceRangeCheck: false
-    # Mutual authentication via SPIRE — makes SPIFFE/SVID fundamental
+    # SPIRE mutual auth: re-enable when spire-server is Ready and agents are healthy (reduces agent crash pressure on dense nodes).
     authentication:
       mutual:
         spire:
-          enabled: true
+          enabled: false
           install:
             enabled: false   # We manage SPIRE ourselves (35-spire stage)
           serverAddress: spire-server-api.spire-system.svc.cluster.local:8081
