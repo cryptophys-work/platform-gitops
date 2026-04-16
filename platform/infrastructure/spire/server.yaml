@@ -41,6 +41,19 @@ spec:
         - key: node.cilium.io/agent-not-ready
           operator: Exists
           effect: NoSchedule
+        # nexus (platform workloads) carries nexus-hpc + ray-head; match Kyverno pool tolerations
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
+        - key: ray-head
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
