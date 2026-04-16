@@ -54,8 +54,6 @@ spec:
       serviceAccountName: spiffe-csi-driver
       hostNetwork: true
       hostPID: true
-      tolerations:
-        - operator: Exists
       nodeSelector:
         kubernetes.io/os: linux
       containers:

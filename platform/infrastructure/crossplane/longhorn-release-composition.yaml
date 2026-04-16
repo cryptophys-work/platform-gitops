@@ -132,12 +132,9 @@ spec:
                           name: longhorn-csi-plugin
                         patch: |
                           - op: add
-                            path: /spec/template/spec/affinity
-                            value: {}
-                          - op: replace
-                            path: /spec/template/spec/tolerations
+                            path: /spec/template/spec/nodeSelector
                             value:
-                              - operator: Exists
+                              kubernetes.io/os: linux
                           - op: replace
                             path: /spec/template/spec/containers/0/resources
                             value:
@@ -152,12 +149,9 @@ spec:
                           name: longhorn-manager
                         patch: |
                           - op: add
-                            path: /spec/template/spec/affinity
-                            value: {}
-                          - op: replace
-                            path: /spec/template/spec/tolerations
+                            path: /spec/template/spec/nodeSelector
                             value:
-                              - operator: Exists
+                              kubernetes.io/os: linux
                           - op: replace
                             path: /spec/template/spec/containers/0/resources
                             value:
@@ -219,13 +213,13 @@ spec:
                   retries: 5
                 values:
                   defaultSettings:
-                    taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;daemonset:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;cryptophys.io/node-class=nexus-hpc:NoSchedule;ray-cluster:NoSchedule;ray-head:NoSchedule;bridge-system:NoSchedule;dao-system:NoSchedule;node.kubernetes.io/memory-pressure:NoSchedule;node.kubernetes.io/disk-pressure:NoSchedule;node.kubernetes.io/pid-pressure:NoSchedule;node.kubernetes.io/not-ready:NoSchedule;node.kubernetes.io/unreachable:NoSchedule;node.kubernetes.io/network-unavailable:NoSchedule"
+                    taintToleration: ""
                   persistence:
                     defaultClass: true
                     defaultClassReplicaCount: 2
                   longhornManager:
-                    tolerations:
-                      - operator: Exists
+                    nodeSelector:
+                      kubernetes.io/os: linux
                     resources:
                       requests:
                         cpu: "200m"
@@ -236,10 +230,6 @@ spec:
                 longhornDriver:
                   nodeSelector:
                     kubernetes.io/os: linux
-                  tolerations:
-                    - key: daemonset
-                      operator: Exists
-                      effect: NoSchedule
                   resources:
                     requests:
                       cpu: "20m"
@@ -248,43 +238,16 @@ spec:
                       cpu: "500m"
                       memory: "512Mi"
                 longhornUI:
-                  tolerations:
-                    - operator: Exists
-                      effect: NoSchedule
+                  nodeSelector:
+                    kubernetes.io/os: linux
                   csi:
                     attacherReplicaCount: 2
                     provisionerReplicaCount: 2
                     resizerReplicaCount: 2
                     snapshotterReplicaCount: 2
                     longhornCSI:
-                      tolerations:
-                        - key: daemonset
-                          operator: Exists
-                          effect: NoSchedule
-                        - key: cryptophys.io/pool
-                          operator: Equal
-                          value: platform-ha
-                          effect: NoSchedule
-                        - key: cryptophys.io/pool
-                          operator: Equal
-                          value: apps-ha
-                          effect: NoSchedule
-                        - key: cryptophys.io/node-class
-                          operator: Equal
-                          value: nexus-hpc
-                          effect: NoSchedule
-                        - key: ray-cluster
-                          operator: Exists
-                          effect: NoSchedule
-                        - key: ray-head
-                          operator: Exists
-                          effect: NoSchedule
-                        - key: bridge-system
-                          operator: Exists
-                          effect: NoSchedule
-                        - key: dao-system
-                          operator: Exists
-                          effect: NoSchedule
+                      nodeSelector:
+                        kubernetes.io/os: linux
         providerConfigRef:
           name: local-kubernetes-provider
     patches:

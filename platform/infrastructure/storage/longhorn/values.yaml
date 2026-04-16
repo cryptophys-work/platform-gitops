@@ -2,21 +2,19 @@ USER-SUPPLIED VALUES:
 defaultSettings:
   defaultReplicaCount: 2
   systemManagedComponentsNodeSelector: "kubernetes.io/os: linux"
-  taintToleration: "*"
+  taintToleration: ""
 persistence:
   defaultClass: true
   defaultClassReplicaCount: 2
 csi:
   kubeletRootDir: /var/lib/kubelet
 longhornCSI:
-  tolerations:
-    - operator: Exists
+  nodeSelector:
+    kubernetes.io/os: linux
 longhornUI:
   replicas: 2
   nodeSelector:
     kubernetes.io/os: linux
-  tolerations:
-    - operator: Exists
   resources:
     requests:
       cpu: 10m
@@ -25,8 +23,8 @@ longhornUI:
       cpu: 100m
       memory: 256Mi
 longhornManager:
-  tolerations:
-    - operator: Exists
+  nodeSelector:
+    kubernetes.io/os: linux
   resources:
     requests:
       cpu: 100m
@@ -37,8 +35,6 @@ longhornManager:
 longhornDriver:
   nodeSelector:
     kubernetes.io/os: linux
-  tolerations:
-    - operator: Exists
   resources:
     requests:
       cpu: 50m
