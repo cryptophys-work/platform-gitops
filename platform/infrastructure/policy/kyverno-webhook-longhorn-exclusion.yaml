@@ -13,3 +13,5 @@ webhooks:
             - kube-system
             - cilium-system
             - longhorn-system
+            - vault-system
+            - spire-system
