@@ -13,12 +13,12 @@ spec:
   validationFailureAction: Audit
   background: true
   rules:
-    - name: clear-daemonset-node-affinity
+    - name: daemonset-force-linux-nodeselector-only
       match:
         any:
           - resources:
               kinds:
-                - Pod
+                - DaemonSet
               namespaceSelector:
                 matchExpressions:
                   - key: kubernetes.io/metadata.name
@@ -26,24 +26,16 @@ spec:
                     values:
                       - ingress-system
                       - tetragon-system
-      preconditions:
-        all:
-          - key: "{{ request.object.metadata.ownerReferences[?kind=='DaemonSet'] | length(@) }}"
-            operator: Equals
-            value: 1
-          - key: "{{ request.object.spec.affinity.nodeAffinity || 'null' }}"
-            operator: NotEquals
-            value: 'null'
       mutate:
         patchesJson6902: |-
           - op: replace
-            path: /spec/affinity
+            path: /spec/template/spec/affinity
             value: {}
           - op: replace
-            path: /spec/nodeSelector
+            path: /spec/template/spec/nodeSelector
             value:
               kubernetes.io/os: linux
           - op: replace
-            path: /spec/tolerations
+            path: /spec/template/spec/tolerations
             value:
               - operator: Exists
