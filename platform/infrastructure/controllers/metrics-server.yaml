@@ -46,22 +46,4 @@ spec:
         cpu: 500m
         memory: 512Mi
     tolerations:
-      - key: daemonset
-        operator: Exists
-        effect: NoSchedule
-      - key: cplane-guardian
-        operator: Equal
-        value: "true"
-        effect: NoSchedule
-      - key: worker-guardian
-        operator: Equal
-        value: "true"
-        effect: NoSchedule
-      - key: ray-cluster
-        operator: Equal
-        value: "true"
-        effect: NoSchedule
-      - key: cryptophys.io/pool
-        operator: Equal
-        value: platform-ha
-        effect: NoSchedule
+      - operator: Exists
