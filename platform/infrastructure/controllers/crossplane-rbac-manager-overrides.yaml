@@ -17,6 +17,17 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
       tolerations:
+        - key: daemonset
+          operator: Exists
+          effect: NoSchedule
+        - key: cplane-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
+        - key: worker-guardian
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
         - key: ray-head
           operator: Exists
           effect: NoSchedule
