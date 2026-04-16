@@ -68,15 +68,37 @@ spec:
             template:
               metadata:
                 annotations:
-                  cryptophys.io/daemonset-refresh: "2026-04-16T10:45:00Z"
+                  cryptophys.io/daemonset-refresh: "2026-04-16T19:15:00Z"
   values:
     crds:
       enabled: true
-    # Chart templates already set nodeSelector.kubernetes.io/os=linux for controller
-    # and speaker; do not repeat it here or Helm renders duplicate keys and post-render fails.
+    # Chart templates inject kubernetes.io/os=linux for controller and speaker; never
+    # repeat that key under values or Helm renders duplicate YAML keys (post-render fails).
+    # Keep full placement here so SSA replaces stale merged values in the HelmRelease.
+    controller:
+      nodeSelector:
+        workload.cryptophys.work/apps-core: "true"
+      tolerations:
+        - operator: Exists
     speaker:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: cryptophys.io/platform-ha
+                    operator: In
+                    values:
+                      - "true"
+              - matchExpressions:
+                  - key: apps-core-target
+                    operator: In
+                    values:
+                      - apps-core
       excludeInterfaces:
         enabled: true
       frr:
         enabled: false
       tolerateMaster: true
+      tolerations:
+        - operator: Exists
