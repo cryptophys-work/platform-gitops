@@ -5,6 +5,7 @@ resources:
   - cloudnative-pg-policy-exception.yaml
   - flux-controllers-policy-exception.yaml
   - longhorn-policy-exception.yaml
+  - ingress-tetragon-platform-ha-exception.yaml
   - postgres-apps-ha-policy-exception.yaml
   - cp-restriction-policy.yaml
   - security-observability-exception.yaml

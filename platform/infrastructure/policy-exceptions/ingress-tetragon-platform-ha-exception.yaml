@@ -1,0 +1,48 @@
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: ingress-tetragon-platform-ha-exception
+  namespace: kyverno-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: ingress-tetragon
+    cryptophys.io/managed-by: flux
+  annotations:
+    cryptophys.work/exception-owner: "platform-ai"
+    cryptophys.work/exception-reason: >-
+      Prevent mutate-pool-tolerations-platform-ha from overwriting tolerations
+      on ingress-nginx and tetragon DaemonSet pods (nodeSelector linux-only).
+spec:
+  exceptions:
+    - policyName: mutate-pool-tolerations-platform-ha
+      ruleNames:
+        - inject-platform-ha-toleration
+        - append-platform-ha-toleration
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+          namespaces:
+            - ingress-system
+            - tetragon-system
+---
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: ingress-tetragon-platform-ha-daemonset-exception
+  namespace: kyverno-system
+spec:
+  exceptions:
+    - policyName: mutate-pool-tolerations-platform-ha
+      ruleNames:
+        - inject-platform-ha-toleration
+        - append-platform-ha-toleration
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+          namespaces:
+            - ingress-system
+            - tetragon-system
