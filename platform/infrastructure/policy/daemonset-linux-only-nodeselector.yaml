@@ -19,9 +19,13 @@ spec:
           - resources:
               kinds:
                 - Pod
-            namespaces:
-              - ingress-system
-              - tetragon-system
+            namespaceSelector:
+              matchExpressions:
+                - key: kubernetes.io/metadata.name
+                  operator: In
+                  values:
+                    - ingress-system
+                    - tetragon-system
       preconditions:
         all:
           - key: "{{ request.object.metadata.ownerReferences[?kind=='DaemonSet'] | length(@) }}"
@@ -29,7 +33,7 @@ spec:
             value: 1
           - key: "{{ request.object.spec.affinity.nodeAffinity || 'null' }}"
             operator: NotEquals
-            value: null
+            value: 'null'
       mutate:
         patchesJson6902: |-
           - op: replace
