@@ -207,6 +207,9 @@ spec:
       resourceFilters:
         # Skip entire namespaces that generate null-kind dry-run requests (Kyverno 3.x webhook parse bug)
         - "[*/*,vault-system,*]"
+        # Longhorn bootstrap can fail if Kyverno resolves Longhorn GVRs during stale startup windows.
+        # Keep longhorn-system admission filter-idempotent so storage recovery is never blocked.
+        - "[*/*,longhorn-system,*]"
         - "[*/*,gitops-system,*]"
         - "[*/*,security-system,*]"
         - "[*/*,kueue-system,*]"
