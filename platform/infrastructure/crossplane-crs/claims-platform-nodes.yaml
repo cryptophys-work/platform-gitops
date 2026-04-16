@@ -299,7 +299,7 @@ metadata:
   name: medulla-82-208-20-242
   namespace: crossplane-system
 spec:
-  tier: compute
+  tier: deprecated
   taints:
   - key: daemonset
     value: "true"
@@ -308,11 +308,9 @@ spec:
     value: "true"
     effect: NoSchedule
   customLabels:
-    cryptophys.io/tier: compute
+    cryptophys.io/tier: deprecated
+    cryptophys.io/status: dismantle
     cryptophys.io/role: llm-inference
-    workload.cryptophys.work/apps-core: "true"
-    workload.cryptophys.work/llm: "true"
-    workload.cryptophys.work/compute: "true"
   longhornNode:
     allowScheduling: false
     evictionRequested: true
@@ -332,7 +330,7 @@ metadata:
   name: campus-212-47-66-101
   namespace: crossplane-system
 spec:
-  tier: storage
+  tier: deprecated
   taints:
   - key: daemonset
     value: "true"
@@ -341,7 +339,8 @@ spec:
     value: "true"
     effect: NoSchedule
   customLabels:
-    cryptophys.io/tier: storage
+    cryptophys.io/tier: deprecated
+    cryptophys.io/status: dismantle
     node-role: storage-worker
   longhornNode:
     allowScheduling: false
