@@ -118,6 +118,16 @@ spec:
     bpf:
       policyMapMax: 262144
       mapDynamicSizeRatio: 0.08
+    # Dense platform-ha nodes: BPF restore + many endpoints can exceed default liveness window.
+    startupProbe:
+      failureThreshold: 180
+      periodSeconds: 2
+    livenessProbe:
+      failureThreshold: 20
+      periodSeconds: 45
+    readinessProbe:
+      failureThreshold: 6
+      periodSeconds: 15
     resources:
       requests:
         cpu: 100m
