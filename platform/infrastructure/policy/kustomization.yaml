@@ -4,7 +4,6 @@ resources:
   - edge-and-harbor-exceptions.yaml
   - crossplane-system-exceptions.yaml
   - kyverno-release.yaml
-  - kyverno-webhook-longhorn-exclusion.yaml
   - policy__cluster-pool-apps-ha-toleration.yaml
   - policy__cluster-pool-platform-ha-toleration.yaml
   - cluster-pool-workload-restrictions.yaml
@@ -22,3 +21,10 @@ resources:
   # kyverno-cleanup-rbac.yaml and kyverno-background-rbac.yaml moved to
   # ../policy-rbac/ (stage 14-policy-rbac) to break chicken-and-egg:
   # RBAC must exist before ClusterPolicy dry-run triggers webhook validation
+patches:
+  - path: kyverno-webhook-longhorn-exclusion.yaml
+    target:
+      group: admissionregistration.k8s.io
+      version: v1
+      kind: ValidatingWebhookConfiguration
+      name: kyverno-resource-validating-webhook-cfg
