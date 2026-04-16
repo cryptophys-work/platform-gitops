@@ -257,6 +257,17 @@ spec:
           operator: "Equal"
           value: "platform-ha"
           effect: "NoSchedule"
+        - key: "cryptophys.io/node-class"
+          operator: "Equal"
+          value: "nexus-hpc"
+          effect: "NoSchedule"
+        - key: "ray-head"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+        - key: "node.cilium.io/agent-not-ready"
+          operator: "Exists"
+          effect: "NoSchedule"
       pdb:
         enabled: true
         minAvailable: 1
@@ -300,6 +311,17 @@ spec:
         - key: "cryptophys.io/pool"
           operator: "Equal"
           value: "platform-ha"
+          effect: "NoSchedule"
+        - key: "cryptophys.io/node-class"
+          operator: "Equal"
+          value: "nexus-hpc"
+          effect: "NoSchedule"
+        - key: "ray-head"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+        - key: "node.cilium.io/agent-not-ready"
+          operator: "Exists"
           effect: "NoSchedule"
       pdb:
         enabled: true
