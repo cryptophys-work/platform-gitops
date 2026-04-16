@@ -46,20 +46,7 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: daemonset
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: platform-ha
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: apps-ha
-                                effect: NoSchedule
-                              - key: ray-head
-                                operator: Exists
-                                effect: NoSchedule
+                              - operator: Exists
                           - op: replace
                             path: /spec/template/spec/affinity
                             value:
@@ -81,20 +68,7 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: daemonset
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: platform-ha
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: apps-ha
-                                effect: NoSchedule
-                              - key: ray-head
-                                operator: Exists
-                                effect: NoSchedule
+                              - operator: Exists
                           - op: replace
                             path: /spec/template/spec/affinity
                             value:
@@ -116,20 +90,7 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: daemonset
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: platform-ha
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: apps-ha
-                                effect: NoSchedule
-                              - key: ray-head
-                                operator: Exists
-                                effect: NoSchedule
+                              - operator: Exists
                           - op: replace
                             path: /spec/template/spec/affinity
                             value:
@@ -151,20 +112,7 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: daemonset
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: platform-ha
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: apps-ha
-                                effect: NoSchedule
-                              - key: ray-head
-                                operator: Exists
-                                effect: NoSchedule
+                              - operator: Exists
                           - op: replace
                             path: /spec/template/spec/affinity
                             value:
@@ -355,20 +303,7 @@ spec:
                           - op: replace
                             path: /spec/template/spec/tolerations
                             value:
-                              - key: daemonset
-                                operator: Exists
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: platform-ha
-                                effect: NoSchedule
-                              - key: cryptophys.io/pool
-                                operator: Equal
-                                value: apps-ha
-                                effect: NoSchedule
-                              - key: ray-head
-                                operator: Exists
-                                effect: NoSchedule
+                              - operator: Exists
                               - key: ray-cluster
                                 operator: Exists
                                 effect: NoSchedule
@@ -396,39 +331,13 @@ spec:
                   retries: 5
                 values:
                   defaultSettings:
-                    taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;daemonset:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;cryptophys.io/node-class=nexus-hpc:NoSchedule;node.kubernetes.io/unschedulable:NoSchedule;ray-cluster=true:NoSchedule;ray-head=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule"
+                    taintToleration: "*"
                   persistence:
                     defaultClass: true
                     defaultClassReplicaCount: 2
                   longhornManager:
                     tolerations:
-                      - key: daemonset
-                        operator: Exists
-                        effect: NoSchedule
-                      - key: cryptophys.io/pool
-                        operator: Equal
-                        value: platform-ha
-                        effect: NoSchedule
-                      - key: cryptophys.io/pool
-                        operator: Equal
-                        value: apps-ha
-                        effect: NoSchedule
-                      - key: cryptophys.io/node-class
-                        operator: Equal
-                        value: nexus-hpc
-                        effect: NoSchedule
-                      - key: ray-cluster
-                        operator: Exists
-                        effect: NoSchedule
-                      - key: ray-head
-                        operator: Exists
-                        effect: NoSchedule
-                      - key: bridge-system
-                        operator: Exists
-                        effect: NoSchedule
-                      - key: dao-system
-                        operator: Exists
-                        effect: NoSchedule
+                      - operator: Exists
                     resources:
                       requests:
                         cpu: "200m"
@@ -438,16 +347,9 @@ spec:
                         memory: "512Mi"
                 longhornDriver:
                   nodeSelector:
-                    cryptophys.io/tier: compute
-                    nexus-workload-hub: "true"
+                    kubernetes.io/os: linux
                   tolerations:
-                    - key: daemonset
-                      operator: Exists
-                      effect: NoSchedule
-                    - key: cryptophys.io/node-class
-                      operator: Equal
-                      value: nexus-hpc
-                      effect: NoSchedule
+                    - operator: Exists
                   resources:
                     requests:
                       cpu: "20m"
@@ -457,12 +359,7 @@ spec:
                       memory: "512Mi"
                 longhornUI:
                   tolerations:
-                    - key: daemonset
-                      operator: Exists
-                      effect: NoSchedule
-                    - key: cryptophys.io/pool
-                      operator: Equal
-                      value: platform-ha
+                    - operator: Exists
                       effect: NoSchedule
                     - key: cryptophys.io/pool
                       operator: Equal

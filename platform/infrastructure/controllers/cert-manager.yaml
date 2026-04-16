@@ -20,80 +20,24 @@ spec:
       kubernetes.io/os: linux
       workload.cryptophys.work/apps-core: "true"
     tolerations:
-      - key: daemonset
-        operator: Exists
-        effect: NoSchedule
-      - key: cplane-guardian
-        operator: Equal
-        value: "true"
-        effect: NoSchedule
-      - key: worker-guardian
-        operator: Equal
-        value: "true"
-        effect: NoSchedule
-      - key: cryptophys.io/role
-        operator: Equal
-        value: llm-inference
-        effect: NoSchedule
+      - operator: Exists
     webhook:
       replicaCount: 2
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
       tolerations:
-        - key: daemonset
-          operator: Exists
-          effect: NoSchedule
-        - key: cplane-guardian
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-        - key: worker-guardian
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-        - key: cryptophys.io/role
-          operator: Equal
-          value: llm-inference
-          effect: NoSchedule
+        - operator: Exists
     cainjector:
       replicaCount: 2
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
       tolerations:
-        - key: daemonset
-          operator: Exists
-          effect: NoSchedule
-        - key: cplane-guardian
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-        - key: worker-guardian
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-        - key: cryptophys.io/role
-          operator: Equal
-          value: llm-inference
-          effect: NoSchedule
+        - operator: Exists
     startupapicheck:
       nodeSelector:
         kubernetes.io/os: linux
         workload.cryptophys.work/apps-core: "true"
       tolerations:
-        - key: daemonset
-          operator: Exists
-          effect: NoSchedule
-        - key: cplane-guardian
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-        - key: worker-guardian
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-        - key: cryptophys.io/role
-          operator: Equal
-          value: llm-inference
-          effect: NoSchedule
+        - operator: Exists

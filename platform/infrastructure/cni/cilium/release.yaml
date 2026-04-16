@@ -37,24 +37,7 @@ spec:
         nodeSelector:
           cryptophys.io/platform-ha: "true"
         tolerations:
-          - key: daemonset
-            operator: Exists
-            effect: NoSchedule
-          - key: cplane-guardian
-            operator: Equal
-            value: "true"
-            effect: NoSchedule
-          - key: worker-guardian
-            operator: Equal
-            value: "true"
-            effect: NoSchedule
-          - key: cryptophys.io/pool
-            operator: Equal
-            value: platform-ha
-            effect: NoSchedule
-          - key: node.cilium.io/agent-not-ready
-            operator: Exists
-            effect: NoSchedule
+          - operator: Exists
     kubeProxyReplacement: "true"
     hostServices:
       enabled: true
@@ -107,47 +90,13 @@ spec:
         nodeSelector:
           cryptophys.io/platform-ha: "true"
         tolerations:
-          - key: daemonset
-            operator: Exists
-            effect: NoSchedule
-          - key: cplane-guardian
-            operator: Equal
-            value: "true"
-            effect: NoSchedule
-          - key: worker-guardian
-            operator: Equal
-            value: "true"
-            effect: NoSchedule
-          - key: cryptophys.io/pool
-            operator: Equal
-            value: platform-ha
-            effect: NoSchedule
-          - key: node.cilium.io/agent-not-ready
-            operator: Exists
-            effect: NoSchedule
+          - operator: Exists
       ui:
         enabled: true
         nodeSelector:
           cryptophys.io/platform-ha: "true"
         tolerations:
-          - key: daemonset
-            operator: Exists
-            effect: NoSchedule
-          - key: cplane-guardian
-            operator: Equal
-            value: "true"
-            effect: NoSchedule
-          - key: worker-guardian
-            operator: Equal
-            value: "true"
-            effect: NoSchedule
-          - key: cryptophys.io/pool
-            operator: Equal
-            value: platform-ha
-            effect: NoSchedule
-          - key: node.cilium.io/agent-not-ready
-            operator: Exists
-            effect: NoSchedule
+          - operator: Exists
     bpf:
       policyMapMax: 262144
       mapDynamicSizeRatio: 0.08
@@ -184,32 +133,7 @@ spec:
                     values:
                       - "true"
       tolerations:
-        - key: daemonset
-          operator: Exists
-          effect: NoSchedule
-        - key: cplane-guardian
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-        - key: worker-guardian
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-        - key: cryptophys.io/pool
-          operator: Equal
-          value: platform-ha
-          effect: NoSchedule
-        - key: node.cilium.io/agent-not-ready
-          operator: Exists
-          effect: NoSchedule
-        - key: ray-head
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-        - key: ray-cluster
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
+        - operator: Exists
     securityContext:
       capabilities:
         ciliumAgent:

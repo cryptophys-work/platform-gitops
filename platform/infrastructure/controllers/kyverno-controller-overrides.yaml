@@ -33,35 +33,7 @@ spec:
                   app.kubernetes.io/instance: kyverno
               topologyKey: kubernetes.io/hostname
       tolerations:
-        - key: daemonset
-          operator: Exists
-          effect: NoSchedule
-        - key: cplane-guardian
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-        - key: worker-guardian
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-        - key: cryptophys.io/pool
-          operator: Equal
-          value: platform-ha
-          effect: NoSchedule
-        - key: ray-head
-          operator: Exists
-          effect: NoSchedule
-        - key: node.cilium.io/agent-not-ready
-          operator: Exists
-          effect: NoSchedule
-        - key: node.kubernetes.io/not-ready
-          operator: Exists
-          effect: NoExecute
-          tolerationSeconds: 300
-        - key: node.kubernetes.io/unreachable
-          operator: Exists
-          effect: NoExecute
-          tolerationSeconds: 300
+        - operator: Exists
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -94,35 +66,7 @@ spec:
                   app.kubernetes.io/instance: kyverno
               topologyKey: kubernetes.io/hostname
       tolerations:
-        - key: daemonset
-          operator: Exists
-          effect: NoSchedule
-        - key: cplane-guardian
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-        - key: worker-guardian
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-        - key: cryptophys.io/pool
-          operator: Equal
-          value: platform-ha
-          effect: NoSchedule
-        - key: ray-head
-          operator: Exists
-          effect: NoSchedule
-        - key: node.cilium.io/agent-not-ready
-          operator: Exists
-          effect: NoSchedule
-        - key: node.kubernetes.io/not-ready
-          operator: Exists
-          effect: NoExecute
-          tolerationSeconds: 300
-        - key: node.kubernetes.io/unreachable
-          operator: Exists
-          effect: NoExecute
-          tolerationSeconds: 300
+        - operator: Exists
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -155,32 +99,4 @@ spec:
                   app.kubernetes.io/instance: kyverno
               topologyKey: kubernetes.io/hostname
       tolerations:
-        - key: daemonset
-          operator: Exists
-          effect: NoSchedule
-        - key: cplane-guardian
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-        - key: worker-guardian
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
-        - key: cryptophys.io/pool
-          operator: Equal
-          value: platform-ha
-          effect: NoSchedule
-        - key: ray-head
-          operator: Exists
-          effect: NoSchedule
-        - key: node.cilium.io/agent-not-ready
-          operator: Exists
-          effect: NoSchedule
-        - key: node.kubernetes.io/not-ready
-          operator: Exists
-          effect: NoExecute
-          tolerationSeconds: 300
-        - key: node.kubernetes.io/unreachable
-          operator: Exists
-          effect: NoExecute
-          tolerationSeconds: 300
+        - operator: Exists
