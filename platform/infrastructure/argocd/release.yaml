@@ -200,14 +200,13 @@ spec:
     controller:
       dynamicClusterDistribution: true
       tolerations:
-        # Allow controller to schedule on medulla (llm-inference taint) when compute nodes are full
-        - key: "cryptophys.io/role"
-          operator: "Equal"
-          value: "llm-inference"
-          effect: "NoSchedule"
         - key: "cryptophys.io/pool"
           operator: "Equal"
           value: "platform-ha"
+          effect: "NoSchedule"
+        - key: "cryptophys.io/node-class"
+          operator: "Equal"
+          value: "nexus-hpc"
           effect: "NoSchedule"
       pdb:
         enabled: true
@@ -217,12 +216,18 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: kubernetes.io/hostname
+              - key: workload.cryptophys.work/platform
                 operator: In
                 values:
-                - nexus-144-91-103-10
-                - thalamus-217-76-59-241
-                - cerebellum-161-97-117-96
+                - "true"
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: cryptophys.io/node-class
+                    operator: In
+                    values:
+                      - nexus-hpc
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
@@ -276,12 +281,18 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: kubernetes.io/hostname
+              - key: workload.cryptophys.work/platform
                 operator: In
                 values:
-                - nexus-144-91-103-10
-                - thalamus-217-76-59-241
-                - cerebellum-161-97-117-96
+                - "true"
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: cryptophys.io/node-class
+                    operator: In
+                    values:
+                      - nexus-hpc
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
@@ -331,12 +342,18 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: kubernetes.io/hostname
+              - key: workload.cryptophys.work/platform
                 operator: In
                 values:
-                - nexus-144-91-103-10
-                - thalamus-217-76-59-241
-                - cerebellum-161-97-117-96
+                - "true"
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: cryptophys.io/node-class
+                    operator: In
+                    values:
+                      - nexus-hpc
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
