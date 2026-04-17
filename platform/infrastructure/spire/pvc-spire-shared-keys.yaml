@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: spire-shared-keys
+  namespace: spire-system
+  labels:
+    app: spire-server
+    cryptophys.io/domain: platform
+    cryptophys.io/component: spire-shared-keys
+    cryptophys.io/managed-by: flux
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: longhorn-retain
+  resources:
+    requests:
+      storage: 1Gi

@@ -34,7 +34,7 @@ data:
       }
       KeyManager "disk" {
         plugin_data {
-          keys_path = "/run/spire/data/keys.json"
+          keys_path = "/run/spire/keys/keys.json"
         }
       }
       Notifier "k8sbundle" {
