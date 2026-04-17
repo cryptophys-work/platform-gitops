@@ -84,8 +84,8 @@ spec:
     persistence:
       enabled: true
       storageClass: longhorn-backup
-      # 200Gi for model uploads: DeepSeek-V3 (131GB) + buffer for other models
-      size: 200Gi
+      # 180Gi keeps Longhorn 15% minimal-available headroom on nexus backup disks
+      size: 180Gi
     nodeSelector:
       workload.cryptophys.work/platform: "true"
       accepts-platform-workloads: "true"
