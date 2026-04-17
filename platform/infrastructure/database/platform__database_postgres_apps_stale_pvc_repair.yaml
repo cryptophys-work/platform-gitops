@@ -51,7 +51,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: postgres-apps-stale-pvc-repair-v5
+  name: postgres-apps-stale-pvc-repair-v6
   namespace: postgresql-system
   labels:
     cryptophys.io/domain: platform
@@ -81,14 +81,19 @@ spec:
       restartPolicy: OnFailure
       nodeSelector:
         platform-ha: "true"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values:
+                      - nexus-144-91-103-10
       tolerations:
         - key: cryptophys.io/pool
           operator: Equal
           value: platform-ha
-          effect: NoSchedule
-        - key: cryptophys.io/node-class
-          operator: Equal
-          value: nexus-hpc
           effect: NoSchedule
       securityContext:
         runAsNonRoot: true
