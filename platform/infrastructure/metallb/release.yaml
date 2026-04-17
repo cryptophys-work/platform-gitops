@@ -69,7 +69,7 @@ spec:
             template:
               metadata:
                 annotations:
-                  cryptophys.io/daemonset-refresh: "2026-04-16T19:25:00Z"
+                  cryptophys.io/daemonset-refresh: "2026-04-17T01:30:00Z"
   values:
     crds:
       enabled: true
@@ -93,20 +93,9 @@ spec:
         - operator: Exists
     speaker:
       nodeSelector: null
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: cryptophys.io/platform-ha
-                    operator: In
-                    values:
-                      - "true"
-              - matchExpressions:
-                  - key: apps-core-target
-                    operator: In
-                    values:
-                      - apps-core
+      # No required nodeAffinity: the prior OR (platform-ha | apps-core-target) only matched
+      # ~5 nodes, so the DaemonSet never reached full cluster coverage. L2 speaker should
+      # run on every Linux node; tolerateMaster + tolerations Exists cover CP/worker taints.
       excludeInterfaces:
         enabled: true
       frr:
