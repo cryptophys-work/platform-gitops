@@ -46,9 +46,9 @@ spec:
         cpu: 2000m
         memory: 1Gi
     
-    # Keep Qdrant on compute-class workers while allowing scheduler flexibility.
+    # Pin Qdrant to platform-ha lane (available worker pool with matching toleration).
     nodeSelector:
-      cryptophys.io/tier: compute
+      platform-ha: "true"
 
     # Scheduling hardening for nexus-hpc and ray-cluster taints.
     tolerations:
