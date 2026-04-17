@@ -5,6 +5,10 @@ metadata:
   namespace: falco-system
 spec:
   interval: 1h
+  install:
+    timeout: 25m
+  upgrade:
+    timeout: 25m
   # Previously suspended: 330+ restarts on chart 7.2.1 due to loader.enabled: false conflict
   # Fix: removed loader block (use default), upgraded chart >=7.3.0 with Talos eBPF fixes
   # If crashes persist after deploy: re-add suspend: true (Tetragon covers runtime detection)
@@ -34,8 +38,14 @@ spec:
                 template:
                   metadata:
                     annotations:
-                      cryptophys.io/daemonset-refresh: "2026-04-16T11:00:00Z"
+                      cryptophys.io/daemonset-refresh: "2026-04-17T02:30:00Z"
                   spec:
+                    affinity:
+                      nodeAffinity:
+                        requiredDuringSchedulingIgnoredDuringExecution:
+                          - matchExpressions:
+                              - key: node-role.kubernetes.io/control-plane
+                                operator: DoesNotExist
                     nodeSelector:
                       kubernetes.io/os: linux
                     tolerations:
