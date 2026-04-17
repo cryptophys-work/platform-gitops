@@ -15,10 +15,7 @@ data:
     maxmemory 256mb
     maxmemory-policy allkeys-lru
     save ""
-    appendonly yes
-    appendfsync everysec
-    auto-aof-rewrite-percentage 100
-    auto-aof-rewrite-min-size 64mb
+    appendonly no
   sentinel.conf: |
     dir /data
     # Monitor via announce service, not individual pod hostnames
@@ -34,9 +31,15 @@ data:
     INDEX=${HOSTNAME##*-}
     # Get own pod IP for announce
     POD_IP=$(hostname -i)
+    # Redis is used here as an HA cache, not as source-of-truth storage.
+    # Clear any stale AOF artifacts so new replicas do not inherit corrupt manifests.
+    rm -rf /data/appendonlydir
+    rm -f /data/appendonly.aof* /data/appendonly.aof.manifest
     # Copy configs to writable /data first, then modify
     cp /readonly-config/redis.conf /data/redis.conf
     cp /readonly-config/sentinel.conf /data/sentinel.conf
+    chown 1000:1000 /data/redis.conf /data/sentinel.conf
+    chmod 0644 /data/redis.conf /data/sentinel.conf
     # Set announce-ip to pod IP so peers can discover us
     echo "replica-announce-ip ${POD_IP}" >> /data/redis.conf
     echo "sentinel announce-ip ${POD_IP}" >> /data/sentinel.conf
