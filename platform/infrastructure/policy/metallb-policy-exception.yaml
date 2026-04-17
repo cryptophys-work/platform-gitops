@@ -1,0 +1,37 @@
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: metallb-infra-exceptions
+  namespace: kyverno-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: metallb
+    cryptophys.io/managed-by: flux
+  annotations:
+    cryptophys.io/reason: >-
+      MetalLB speaker uses hostNetwork and elevated caps (NET_RAW/NET_ADMIN) by design;
+      controller serves the admission webhook with mounted TLS.
+    cryptophys.io/ticket: "CRYPTOPHYS-2026-METALLB"
+    cryptophys.io/expiry: "2027-01-01"
+spec:
+  exceptions:
+    - policyName: cp-security-hardening-v1
+      ruleNames:
+        - restrict-pod-security-standard
+    - policyName: cp-pss-restricted-v1
+      ruleNames:
+        - deny-host-namespaces
+        - deny-capabilities-added
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - DaemonSet
+            - Deployment
+            - ReplicaSet
+          namespaces:
+            - metallb-system
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: metallb

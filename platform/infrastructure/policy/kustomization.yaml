@@ -13,6 +13,7 @@ resources:
   - pdb-generation.yaml
   - rbac-generation.yaml
   - nexus-placement-policy.yaml
+  - metallb-policy-exception.yaml
   - pdbs-critical-services.yaml
   - ../tekton
   # Existing ClusterPolicy resources remain live because the Flux kustomization has prune=false.
