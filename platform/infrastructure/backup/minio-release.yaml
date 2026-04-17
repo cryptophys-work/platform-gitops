@@ -84,7 +84,8 @@ spec:
     persistence:
       enabled: true
       storageClass: longhorn-backup
-      size: 200Gi
+      # Sized for current Longhorn pool headroom; expand later if backup retention grows.
+      size: 50Gi
     nodeSelector:
       workload.cryptophys.work/platform: "true"
       accepts-platform-workloads: "true"
