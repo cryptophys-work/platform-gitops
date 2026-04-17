@@ -1,0 +1,28 @@
+# Tier C / non-critical workloads: 1 Longhorn replica, Delete reclaim.
+# Use for caches, CI workspaces, and rebuildable data — NOT for Vault, DBs, Git, Harbor.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-noncritical
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: longhorn
+    cryptophys.io/layer: platform
+    cryptophys.io/managed-by: flux
+    cryptophys.io/storage-tier: noncritical
+    storageclass.kubernetes.io/description: "Longhorn single replica noncritical workloads"
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "1"
+  staleReplicaTimeout: "30"
+  fromBackup: ""
+  fsType: "ext4"
+  migratable: "false"
+  dataLocality: "best-effort"
+  unmapMarkSnapChainRemoved: "ignored"
+  disableRevisionCounter: "true"
+  dataEngine: "v1"
+  backupTargetName: "default"
