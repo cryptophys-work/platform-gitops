@@ -9,6 +9,16 @@ metadata:
 webhooks:
   - name: mjob.kb.io
     failurePolicy: Ignore
+    # Same namespace allowlist as mpod.kb.io — only Tekton/Ray/build namespaces use Kueue Jobs.
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: In
+          values:
+            - aide
+            - cqls-compute
+            - image-factory
+            - tekton-system
   - name: mclusterqueue.kb.io
     failurePolicy: Ignore
   - name: mpod.kb.io
@@ -22,6 +32,7 @@ webhooks:
     #   apps-gitops/apps/core/kueue/base/local-queue-{aide,cqls,tekton}.yaml
     #   apps-gitops/apps/tekton/infra/base/kueue/*.yaml
     #   apps-gitops/apps/tekton/infra/base/wave-queue/kueue-resources.yaml
+    # Same values are applied to mjob.kb.io and mdeployment.kb.io in this file.
     namespaceSelector:
       matchExpressions:
         - key: kubernetes.io/metadata.name
@@ -33,6 +44,16 @@ webhooks:
             - tekton-system
   - name: mdeployment.kb.io
     failurePolicy: Ignore
+    # Same allowlist as mpod — Kueue Deployment integration only for queued workloads here.
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: In
+          values:
+            - aide
+            - cqls-compute
+            - image-factory
+            - tekton-system
   - name: mjobset.kb.io
     failurePolicy: Ignore
   - name: mmxjob.kb.io
