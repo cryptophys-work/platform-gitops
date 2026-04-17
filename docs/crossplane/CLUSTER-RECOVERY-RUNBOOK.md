@@ -43,7 +43,10 @@ Unknown — requires investigation. Possibilities:
 # Test API server connectivity
 kubectl cluster-info
 
-# Expected: Kubernetes master is running at https://api.cryptophys.work:6443
+# Expected (current): Kubernetes master is running at the kubeconfig server URL.
+# Current operator kubeconfigs may still point to a direct control-plane endpoint
+# such as https://157.173.120.200:6443.
+# Target after API HA migration: https://api.cryptophys.work:6443
 
 # If timeout or connection refused → API server issue
 # → Jump to Section 3.1 (API Server Recovery)
@@ -449,7 +452,10 @@ kubectl get daemonset -n cilium-system -o wide
 
 # API server responsive
 kubectl cluster-info
-# Expected: Kubernetes master is running at https://api.cryptophys.work:6443
+# Expected (current): Kubernetes master is running at the kubeconfig server URL.
+# Current operator kubeconfigs may still point to a direct control-plane endpoint
+# such as https://157.173.120.200:6443.
+# Target after API HA migration: https://api.cryptophys.work:6443
 
 # etcd healthy
 kubectl exec -n kube-system etcd-cortex-178-18-250-39 -- \

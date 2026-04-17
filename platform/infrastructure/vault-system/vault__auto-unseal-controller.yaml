@@ -11,7 +11,7 @@ metadata:
     cryptophys.io/managed-by: flux
     cryptophys.io/layer: platform
 spec:
-  replicas: 1
+  replicas: 2
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -29,7 +29,7 @@ spec:
       automountServiceAccountToken: false
       nodeSelector:
         kubernetes.io/os: linux
-        workload.cryptophys.work/platform: "true"
+        platform-ha: "true"
       securityContext:
         runAsNonRoot: true
         runAsUser: 100
@@ -86,18 +86,24 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: workload.cryptophys.work/platform
+                  - key: platform-ha
                     operator: In
                     values:
                       - "true"
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - nexus-144-91-103-10
+                      - cerebellum-161-97-117-96
+                      - thalamus-217-76-59-241
+        podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
-              preference:
-                matchExpressions:
-                  - key: accepts-platform-workloads
-                    operator: In
-                    values:
-                      - "true"
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: vault-auto-unseal-controller
+                topologyKey: kubernetes.io/hostname
       tolerations:
         - key: cryptophys.io/pool
           operator: Equal

@@ -34,24 +34,22 @@ spec:
         limits: { cpu: 300m, memory: 256Mi }
       nodeSelector:
         kubernetes.io/os: linux
-        workload.cryptophys.work/platform: "true"
+        platform-ha: "true"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: workload.cryptophys.work/platform
+                  - key: platform-ha
                     operator: In
                     values:
                       - "true"
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: accepts-platform-workloads
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - "true"
+                      - nexus-144-91-103-10
+                      - cerebellum-161-97-117-96
+                      - thalamus-217-76-59-241
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
@@ -153,24 +151,22 @@ spec:
           maxUnavailable: 1
       nodeSelector:
         kubernetes.io/os: linux
-        workload.cryptophys.work/platform: "true"
+        platform-ha: "true"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: workload.cryptophys.work/platform
+                  - key: platform-ha
                     operator: In
                     values:
                       - "true"
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: accepts-platform-workloads
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - "true"
+                      - nexus-144-91-103-10
+                      - cerebellum-161-97-117-96
+                      - thalamus-217-76-59-241
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100

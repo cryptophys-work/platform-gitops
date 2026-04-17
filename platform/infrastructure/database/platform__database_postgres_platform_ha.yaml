@@ -6,8 +6,18 @@ metadata:
   namespace: postgresql-system
 spec:
   affinity:
+    nodeSelector:
+      platform-ha: "true"
     podAntiAffinityType: required
-    tolerations: []
+    tolerations:
+    - effect: NoSchedule
+      key: cryptophys.io/pool
+      operator: Equal
+      value: platform-ha
+    - effect: NoSchedule
+      key: cryptophys.io/node-class
+      operator: Equal
+      value: nexus-hpc
     topologyKey: kubernetes.io/hostname
   backup:
     barmanObjectStore:

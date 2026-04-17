@@ -33,7 +33,7 @@ spec:
             patch: |
               - op: replace
                 path: /spec/replicas
-                value: 1
+                value: 2
               - op: replace
                 path: /spec/template/spec/tolerations
                 value:
@@ -56,13 +56,19 @@ spec:
                               operator: In
                               values:
                                 - "true"
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - nexus-144-91-103-10
+                                - cerebellum-161-97-117-96
+                                - thalamus-217-76-59-241
           - target:
               kind: Deployment
               name: registry-harbor-jobservice
             patch: |
               - op: replace
                 path: /spec/replicas
-                value: 1
+                value: 2
               - op: replace
                 path: /spec/template/spec/tolerations
                 value:
@@ -85,13 +91,19 @@ spec:
                               operator: In
                               values:
                                 - "true"
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - nexus-144-91-103-10
+                                - cerebellum-161-97-117-96
+                                - thalamus-217-76-59-241
           - target:
               kind: Deployment
               name: registry-harbor-portal
             patch: |
               - op: replace
                 path: /spec/replicas
-                value: 1
+                value: 2
               - op: replace
                 path: /spec/template/spec/tolerations
                 value:
@@ -114,6 +126,12 @@ spec:
                               operator: In
                               values:
                                 - "true"
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - nexus-144-91-103-10
+                                - cerebellum-161-97-117-96
+                                - thalamus-217-76-59-241
           - target:
               kind: Deployment
               name: registry-harbor-registry
@@ -140,6 +158,12 @@ spec:
                               operator: In
                               values:
                                 - "true"
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - nexus-144-91-103-10
+                                - cerebellum-161-97-117-96
+                                - thalamus-217-76-59-241
           - target:
               kind: StatefulSet
               name: registry-harbor-database
@@ -169,6 +193,12 @@ spec:
                               operator: In
                               values:
                                 - "true"
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - nexus-144-91-103-10
+                                - cerebellum-161-97-117-96
+                                - thalamus-217-76-59-241
           - target:
               kind: StatefulSet
               name: registry-harbor-trivy
@@ -195,6 +225,12 @@ spec:
                               operator: In
                               values:
                                 - "true"
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - nexus-144-91-103-10
+                                - cerebellum-161-97-117-96
+                                - thalamus-217-76-59-241
   values:
     expose:
       type: ingress
@@ -320,6 +356,9 @@ spec:
     trivy:
       enabled: true
       replicas: 1
+      podDisruptionBudget:
+        enabled: false
+        minAvailable: 1
       resources:
         limits:
           cpu: 500m
@@ -358,7 +397,10 @@ spec:
                   release: registry-harbor
               topologyKey: kubernetes.io/hostname
     portal:
-      replicas: 1
+      replicas: 2
+      podDisruptionBudget:
+        enabled: true
+        minAvailable: 1
       resources:
         limits:
           cpu: 100m
@@ -388,6 +430,12 @@ spec:
                     operator: In
                     values:
                       - "true"
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - nexus-144-91-103-10
+                      - cerebellum-161-97-117-96
+                      - thalamus-217-76-59-241
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
@@ -403,7 +451,10 @@ spec:
           topologyKey: kubernetes.io/hostname
           whenUnsatisfiable: ScheduleAnyway
     core:
-      replicas: 1
+      replicas: 2
+      podDisruptionBudget:
+        enabled: true
+        minAvailable: 1
       initContainers:
         - name: clear-dirty-schema-migration
           image: goharbor/harbor-db:v2.14.2
@@ -464,6 +515,12 @@ spec:
                     operator: In
                     values:
                       - "true"
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - nexus-144-91-103-10
+                      - cerebellum-161-97-117-96
+                      - thalamus-217-76-59-241
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
@@ -479,7 +536,12 @@ spec:
           topologyKey: kubernetes.io/hostname
           whenUnsatisfiable: ScheduleAnyway
     jobservice:
-      replicas: 1
+      replicas: 2
+      podDisruptionBudget:
+        enabled: true
+        minAvailable: 1
+      jobLoggers:
+        - database
       resources:
         limits:
           cpu: 200m
@@ -509,6 +571,12 @@ spec:
                     operator: In
                     values:
                       - "true"
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - nexus-144-91-103-10
+                      - cerebellum-161-97-117-96
+                      - thalamus-217-76-59-241
     registry:
       registry:
         resources:
@@ -549,6 +617,12 @@ spec:
                     operator: In
                     values:
                       - "true"
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - nexus-144-91-103-10
+                      - cerebellum-161-97-117-96
+                      - thalamus-217-76-59-241
     exporter:
       replicas: 1
       resources:
