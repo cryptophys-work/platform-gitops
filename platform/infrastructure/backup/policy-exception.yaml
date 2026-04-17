@@ -9,6 +9,9 @@ spec:
       ruleNames:
         - restrict-pod-security-standard
         - autogen-restrict-pod-security-standard
+    - policyName: cp-integrity-provenance-v1
+      ruleNames:
+        - check-canonical-release-name
     - policyName: cp-standard-naming-canonical-v1
       ruleNames:
         - validate-resource-name

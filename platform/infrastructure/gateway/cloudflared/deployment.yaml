@@ -5,6 +5,9 @@ metadata:
   # not the primary ingress exposure mechanism.
   name: cloudflared
   namespace: cloudflare-tunnel
+  annotations:
+    # Scale back up after Vault KV `platform/cloudflare/tunnel` exists and ExternalSecret syncs.
+    cryptophys.io/scaled-down-reason: awaiting-vault-secret-platform-cloudflare-tunnel
   labels:
     app.kubernetes.io/instance: cloudflared
     app.kubernetes.io/managed-by: flux
@@ -16,7 +19,7 @@ metadata:
     cryptophys.io/managed-by: flux
     cryptophys.io/layer: platform
 spec:
-  replicas: 2
+  replicas: 0
   revisionHistoryLimit: 2
   strategy:
     type: RollingUpdate
