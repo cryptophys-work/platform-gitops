@@ -89,6 +89,14 @@ spec:
     nodeSelector:
       workload.cryptophys.work/platform: "true"
       accepts-platform-workloads: "true"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - matchExpressions:
+              - key: cryptophys.io/node-class
+                operator: NotIn
+                values:
+                  - nexus-hpc
     tolerations:
       - key: ray-cluster
         operator: Equal

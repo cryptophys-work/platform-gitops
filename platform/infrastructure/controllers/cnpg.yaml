@@ -43,7 +43,15 @@ spec:
       operator: Exists
       effect: NoSchedule
     affinity:
-      nodeAffinity: null
+      # nexus-hpc nodes carry heavy GPU/IO and have shown Longhorn attach + webhook flakes;
+      # keep the operator on general platform workers only (label absent on cerebellum/quanta/thalamus).
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - matchExpressions:
+              - key: cryptophys.io/node-class
+                operator: NotIn
+                values:
+                  - nexus-hpc
       podAntiAffinity:
         preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
