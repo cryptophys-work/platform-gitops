@@ -28,7 +28,7 @@ spec:
     replicaCount: 1
 
     image:
-      repository: qdrant/qdrant
+      repository: docker.io/qdrant/qdrant
       tag: "v1.7.4"
     
     # Storage configuration for long-term AI memory
