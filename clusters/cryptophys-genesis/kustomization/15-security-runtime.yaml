@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 1h
   retryInterval: 2m
-  timeout: 10m  # DaemonSets on 8 nodes need more time
+  timeout: 35m  # Falco/Tetragon DaemonSets + Helm health checks across workers
   path: ./platform/security/
   prune: true
   wait: true
