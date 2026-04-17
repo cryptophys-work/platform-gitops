@@ -10,7 +10,9 @@ spec:
   suspend: false
   interval: 1h
   prune: false
-  wait: true
+  # Wait disabled: Trivy cache PVC rotation must not block apply when a prior PVC is
+  # stuck Terminating; HelmReleases and Deployments enforce their own readiness.
+  wait: false
   timeout: 25m
   path: ./platform/infrastructure/security-observability
   sourceRef:
