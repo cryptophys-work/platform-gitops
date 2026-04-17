@@ -5866,7 +5866,7 @@ metadata:
   name: kustomize-controller
   namespace: flux-system
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: kustomize-controller
@@ -5889,18 +5889,10 @@ spec:
     spec:
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            preference:
-              matchExpressions:
-              - key: accepts-platform-workloads
-                operator: In
-                values:
-                - "true"
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: workload.cryptophys.work/platform
+              - key: platform-ha
                 operator: In
                 values:
                 - "true"
@@ -5972,6 +5964,10 @@ spec:
         fsGroup: 1337
       serviceAccountName: kustomize-controller
       tolerations:
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
+        effect: NoSchedule
       - key: node.cilium.io/agent-not-ready
         operator: Exists
         effect: NoSchedule
