@@ -51,7 +51,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: postgres-apps-stale-pvc-repair-v7
+  name: postgres-apps-stale-pvc-repair-v8
   namespace: postgresql-system
   labels:
     cryptophys.io/domain: platform
@@ -138,12 +138,18 @@ spec:
                 exit 1
               fi
 
-              if [ -z "${dangling}" ]; then
-                echo "cluster ${cluster} has no dangling PVCs"
-                exit 0
+              candidates="${dangling}"
+              if [ -z "${candidates}" ]; then
+                candidates="$(kubectl get pvc -n "${ns}" -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | grep "^${cluster}-" || true)"
+                if [ -n "${candidates}" ]; then
+                  echo "status.danglingPVC empty; falling back to PVC scan for ${cluster}"
+                else
+                  echo "cluster ${cluster} has no candidate PVCs"
+                  exit 0
+                fi
               fi
 
-              for pvc in ${dangling}; do
+              for pvc in ${candidates}; do
                 if [ "${pvc}" = "${current_primary}" ]; then
                   echo "skipping current primary PVC ${pvc}"
                   continue
