@@ -466,6 +466,7 @@ spec:
     redis-ha:
       enabled: false
     notifications:
+      replicas: 2
       nodeSelector: {}
       tolerations:
         - key: "ray-cluster"
@@ -476,7 +477,6 @@ spec:
           operator: "Equal"
           value: "platform-ha"
           effect: "NoSchedule"
-      replicas: 2
       pdb:
         enabled: true
         minAvailable: 1

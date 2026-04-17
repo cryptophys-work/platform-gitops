@@ -95,6 +95,10 @@ spec:
           operator: Equal
           value: platform-ha
           effect: NoSchedule
+        - key: ray-head
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
         - key: cryptophys.io/role
           operator: Equal
           value: llm-inference
