@@ -5,6 +5,7 @@ resources:
   - storageclass-longhorn-harbor-retain.yaml
   - harbor__registry-pvc-v3.yaml
   - harbor__external-redis.yaml
+  - harbor__platform-ha-exception.yaml
   - release.yaml
   - pdb.yaml
   - servicemonitor-harbor.yaml
