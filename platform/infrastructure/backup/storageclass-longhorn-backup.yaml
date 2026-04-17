@@ -1,0 +1,25 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-backup
+  namespace: longhorn-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: backup
+    cryptophys.io/managed-by: flux
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+parameters:
+  numberOfReplicas: "1"
+  staleReplicaTimeout: "30"
+  fromBackup: ""
+  fsType: ext4
+  mkfsParams: ""
+  migratable: "false"
+  dataEngine: v1
+  dataLocality: disabled
+  disableRevisionCounter: "true"
+  backupTargetName: default
+  unmapMarkSnapChainRemoved: ignored
+volumeBindingMode: Immediate
+reclaimPolicy: Delete
