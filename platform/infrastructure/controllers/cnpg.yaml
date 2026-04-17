@@ -47,11 +47,12 @@ spec:
       # keep the operator on general platform workers only (label absent on cerebellum/quanta/thalamus).
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
-          - matchExpressions:
-              - key: cryptophys.io/node-class
-                operator: NotIn
-                values:
-                  - nexus-hpc
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: cryptophys.io/node-class
+                  operator: NotIn
+                  values:
+                    - nexus-hpc
       podAntiAffinity:
         preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
