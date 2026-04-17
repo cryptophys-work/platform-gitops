@@ -82,7 +82,7 @@ spec:
       type: Recreate
     persistence:
       enabled: true
-      storageClass: longhorn
+      storageClass: longhorn-backup
       size: 200Gi
     nodeSelector:
       workload.cryptophys.work/platform: "true"
