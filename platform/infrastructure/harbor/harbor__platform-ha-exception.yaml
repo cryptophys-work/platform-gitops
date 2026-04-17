@@ -18,6 +18,9 @@ spec:
     - policyName: mutate-pool-tolerations-platform-ha
       ruleNames:
         - inject-platform-ha-toleration
+    - policyName: mutate-platform-ha-toleration
+      ruleNames:
+        - allow-platform-ha
   match:
     any:
       - resources:
