@@ -17,9 +17,16 @@ parameters:
   mkfsParams: ""
   migratable: "false"
   dataEngine: v1
-  dataLocality: disabled
+  dataLocality: best-effort
   disableRevisionCounter: "true"
   backupTargetName: default
   unmapMarkSnapChainRemoved: ignored
+  replicaAutoBalance: ignored
+  nodeSelector: cryptophys.io/node-class=nexus-hpc
 volumeBindingMode: Immediate
 reclaimPolicy: Delete
+allowedTopologies:
+  - matchLabelExpressions:
+      - key: cryptophys.io/node-class
+        values:
+          - nexus-hpc
