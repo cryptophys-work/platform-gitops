@@ -8,6 +8,7 @@ metadata:
     cryptophys.io/managed-by: flux
 spec:
   suspend: false
+  force: true
   interval: 1h
   prune: false
   # Wait disabled: Trivy cache PVC rotation must not block apply when a prior PVC is
