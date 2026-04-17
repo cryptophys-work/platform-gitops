@@ -485,6 +485,20 @@ spec:
             - |
               psql "host=${POSTGRESQL_HOST} port=${POSTGRESQL_PORT} user=${POSTGRESQL_USERNAME} dbname=${POSTGRESQL_DATABASE} sslmode=${POSTGRESQL_SSLMODE}" \
                 -v ON_ERROR_STOP=1 \
+                -c "CREATE TABLE IF NOT EXISTS artifact_accessory (
+                      id SERIAL PRIMARY KEY NOT NULL,
+                      artifact_id bigint,
+                      subject_artifact_id bigint,
+                      type varchar(256),
+                      size bigint,
+                      digest varchar(1024),
+                      creation_time timestamp default CURRENT_TIMESTAMP,
+                      FOREIGN KEY (artifact_id) REFERENCES artifact(id),
+                      FOREIGN KEY (subject_artifact_id) REFERENCES artifact(id),
+                      CONSTRAINT unique_artifact_accessory UNIQUE (artifact_id, subject_artifact_id)
+                    );"
+              psql "host=${POSTGRESQL_HOST} port=${POSTGRESQL_PORT} user=${POSTGRESQL_USERNAME} dbname=${POSTGRESQL_DATABASE} sslmode=${POSTGRESQL_SSLMODE}" \
+                -v ON_ERROR_STOP=1 \
                 -c "UPDATE schema_migrations SET dirty = FALSE WHERE dirty = TRUE;"
       resources:
         limits:

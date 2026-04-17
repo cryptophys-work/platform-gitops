@@ -13,8 +13,9 @@ metadata:
     cryptophys.io/anti-regression: "true"
     cryptophys.io/purpose: >-
       One-time idempotent Harbor PostgreSQL repair job to clear any dirty
-      schema_migrations rows so registry-harbor-core can resume startup
-      migrations after interrupted upgrades.
+      schema_migrations rows and restore the missing artifact_accessory
+      table so registry-harbor-core can resume startup migrations and cosign
+      attachment after interrupted upgrades.
 spec:
   backoffLimit: 3
   ttlSecondsAfterFinished: 600
@@ -63,6 +64,21 @@ spec:
             - /bin/sh
             - -ec
             - |
+              psql \
+                "host=registry-harbor-database port=5432 user=postgres dbname=registry sslmode=disable" \
+                -v ON_ERROR_STOP=1 \
+                -c "CREATE TABLE IF NOT EXISTS artifact_accessory (
+                      id SERIAL PRIMARY KEY NOT NULL,
+                      artifact_id bigint,
+                      subject_artifact_id bigint,
+                      type varchar(256),
+                      size bigint,
+                      digest varchar(1024),
+                      creation_time timestamp default CURRENT_TIMESTAMP,
+                      FOREIGN KEY (artifact_id) REFERENCES artifact(id),
+                      FOREIGN KEY (subject_artifact_id) REFERENCES artifact(id),
+                      CONSTRAINT unique_artifact_accessory UNIQUE (artifact_id, subject_artifact_id)
+                    );"
               psql \
                 "host=registry-harbor-database port=5432 user=postgres dbname=registry sslmode=disable" \
                 -v ON_ERROR_STOP=1 \
