@@ -432,22 +432,9 @@ spec:
           args:
             - -c
             - |
-              psql "host=${POSTGRESQL_HOST} port=${POSTGRESQL_PORT} user=${POSTGRESQL_USERNAME} dbname=${POSTGRESQL_DATABASE} sslmode=${POSTGRESQL_SSLMODE}" <<'SQL'
-              DO $$
-              BEGIN
-                IF EXISTS (
-                  SELECT 1
-                  FROM information_schema.tables
-                  WHERE table_schema = 'public'
-                    AND table_name = 'schema_migrations'
-                ) THEN
-                  UPDATE schema_migrations
-                  SET dirty = FALSE
-                  WHERE version = 80
-                    AND dirty = TRUE;
-                END IF;
-              END $$;
-              SQL
+              psql "host=${POSTGRESQL_HOST} port=${POSTGRESQL_PORT} user=${POSTGRESQL_USERNAME} dbname=${POSTGRESQL_DATABASE} sslmode=${POSTGRESQL_SSLMODE}" \
+                -v ON_ERROR_STOP=1 \
+                -c "UPDATE schema_migrations SET dirty = FALSE WHERE version = 80 AND dirty = TRUE;"
       resources:
         limits:
           cpu: 500m
