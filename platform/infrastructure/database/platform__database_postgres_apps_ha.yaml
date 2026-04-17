@@ -4,7 +4,11 @@ metadata:
   name: postgres-apps-ha
   namespace: postgresql-system
 spec:
-  instances: 3
+  # Stabilize the Gitea control-plane database on a single primary until the
+  # Longhorn replica path and Vault-backed CNPG archive credentials are healthy
+  # again. This restores the rw service Gitea depends on without waiting for the
+  # replica join PVC path to recover.
+  instances: 1
   imageName: ghcr.io/cloudnative-pg/postgresql:16.2
   monitoring:
     enablePodMonitor: false
@@ -14,7 +18,7 @@ spec:
     name: postgres-superuser-secret
   storage:
     size: 10Gi
-    storageClass: longhorn
+    storageClass: longhorn-single
   nodeMaintenanceWindow:
     inProgress: false
     reusePVC: true
@@ -25,36 +29,6 @@ spec:
       encoding: UTF8
       localeCType: C
       localeCollate: C
-  # WAL archiving: prevents pg_rewind loop on replica restart
-  backup:
-    barmanObjectStore:
-      endpointURL: http://platform-backup-minio.minio-system.svc.cluster.local:9000
-      destinationPath: s3://cnpg-wal/postgres-apps-ha/
-      s3Credentials:
-        accessKeyId:
-          name: cnpg-minio-s3-credentials
-          key: ACCESS_KEY_ID
-        secretAccessKey:
-          name: cnpg-minio-s3-credentials
-          key: ACCESS_SECRET_KEY
-      wal:
-        compression: gzip
-    retentionPolicy: 7d
-  # externalClusters: enables restore_command on replicas so pg_rewind can fetch WAL from MinIO
-  externalClusters:
-    - name: postgres-apps-ha
-      barmanObjectStore:
-        endpointURL: http://platform-backup-minio.minio-system.svc.cluster.local:9000
-        destinationPath: s3://cnpg-wal/postgres-apps-ha/
-        s3Credentials:
-          accessKeyId:
-            name: cnpg-minio-s3-credentials
-            key: ACCESS_KEY_ID
-          secretAccessKey:
-            name: cnpg-minio-s3-credentials
-            key: ACCESS_SECRET_KEY
-        wal:
-          compression: gzip
   # Resource limits: reduced to allow scheduling on memory-pressured workers
   resources:
     requests:
