@@ -29,6 +29,13 @@ spec:
             - postgresql-system
           names:
             - postgres-apps-ha-1
+      - resources:
+          kinds:
+            - Secret
+          namespaces:
+            - postgresql-system
+          names:
+            - postgres-apps-ha-app
 ---
 apiVersion: kyverno.io/v2
 kind: PolicyException
@@ -61,3 +68,10 @@ spec:
             - postgresql-system
           names:
             - postgres-apps-ha-1
+      - resources:
+          kinds:
+            - Secret
+          namespaces:
+            - postgresql-system
+          names:
+            - postgres-apps-ha-app
