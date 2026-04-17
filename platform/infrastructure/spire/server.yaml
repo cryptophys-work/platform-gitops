@@ -10,7 +10,7 @@ metadata:
     environment: prod
     owner: infrastructure
 spec:
-  replicas: 1  # SQLite datastore: single writer; migrate to postgres when postgres-security-ha is healthy
+  replicas: 2  # Postgres datastore with shared RWX key material supports active-active server replicas
   selector:
     matchLabels:
       app: spire-server
@@ -115,6 +115,9 @@ spec:
             - name: spire-config
               mountPath: /run/spire/config
               readOnly: true
+            - name: spire-shared-keys
+              mountPath: /run/spire/keys
+              readOnly: false
             - name: spire-data
               mountPath: /run/spire/data
               readOnly: false
@@ -186,6 +189,9 @@ spec:
           emptyDir: {}
         - name: controller-manager-tmp
           emptyDir: {}
+        - name: spire-shared-keys
+          persistentVolumeClaim:
+            claimName: spire-shared-keys
   volumeClaimTemplates:
     - metadata:
         name: spire-data

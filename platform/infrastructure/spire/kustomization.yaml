@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: spire-system
 resources:
   - storageclass-longhorn-spire-data.yaml
+  - pvc-spire-shared-keys.yaml
   - externalsecret-spire-postgres-auth.yaml
   - crd-clusterspiffeids.yaml
   - crd-clusterfederatedtrustdomains.yaml
