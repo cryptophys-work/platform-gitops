@@ -405,6 +405,50 @@ spec:
           whenUnsatisfiable: ScheduleAnyway
     core:
       replicas: 1
+      initContainers:
+        - name: clear-dirty-schema-migration
+          image: goharbor/harbor-db:v2.14.2
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 999
+            runAsGroup: 999
+            seccompProfile:
+              type: RuntimeDefault
+          envFrom:
+            - configMapRef:
+                name: registry-harbor-core
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: registry-harbor-database
+                  key: POSTGRES_PASSWORD
+          command:
+            - /bin/sh
+          args:
+            - -c
+            - |
+              psql "host=${POSTGRESQL_HOST} port=${POSTGRESQL_PORT} user=${POSTGRESQL_USERNAME} dbname=${POSTGRESQL_DATABASE} sslmode=${POSTGRESQL_SSLMODE}" <<'SQL'
+              DO $$
+              BEGIN
+                IF EXISTS (
+                  SELECT 1
+                  FROM information_schema.tables
+                  WHERE table_schema = 'public'
+                    AND table_name = 'schema_migrations'
+                ) THEN
+                  UPDATE schema_migrations
+                  SET dirty = FALSE
+                  WHERE version = 80
+                    AND dirty = TRUE;
+                END IF;
+              END $$;
+              SQL
       resources:
         limits:
           cpu: 500m
