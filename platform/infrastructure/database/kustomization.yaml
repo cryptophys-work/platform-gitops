@@ -2,5 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - qdrant-release.yaml
-  - platform__cronjob_cleanup_remaining.yaml
+  # Historical one-shot cleanup job was left active in-cluster and now blocks drift
+  # detection for the whole database kustomization. Keep it out of the active
+  # reconcile set; prune is already disabled here, so removing it will not delete
+  # the live object.
   # PostgreSQL Cluster CRs are in 25-database-crs (CRD/CR split — needs CNPG operator from 11-controllers)
