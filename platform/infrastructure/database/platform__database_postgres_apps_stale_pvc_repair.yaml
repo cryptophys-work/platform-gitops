@@ -8,6 +8,8 @@ metadata:
     cryptophys.io/component: postgresql
     cryptophys.io/managed-by: flux
     cryptophys.io/layer: platform
+imagePullSecrets:
+  - name: registry-cryptophys-work-auth
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -49,7 +51,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: postgres-apps-stale-pvc-repair-v2
+  name: postgres-apps-stale-pvc-repair-v3
   namespace: postgresql-system
   labels:
     cryptophys.io/domain: platform
@@ -74,6 +76,8 @@ spec:
         cryptophys.io/layer: platform
     spec:
       serviceAccountName: postgres-apps-stale-pvc-repair
+      imagePullSecrets:
+        - name: registry-cryptophys-work-auth
       restartPolicy: OnFailure
       nodeSelector:
         platform-ha: "true"
@@ -93,7 +97,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: repair
-          image: bitnami/kubectl:1.31.4
+          image: registry.cryptophys.work/docker-proxy/bitnami/kubectl@sha256:a0fa7201b97239cdbcb2777465710201c7eb5676ffa646ec8466b417bf479196
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
