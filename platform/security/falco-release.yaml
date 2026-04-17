@@ -38,14 +38,15 @@ spec:
                 template:
                   metadata:
                     annotations:
-                      cryptophys.io/daemonset-refresh: "2026-04-17T02:30:00Z"
+                      cryptophys.io/daemonset-refresh: "2026-04-17T02:40:00Z"
                   spec:
                     affinity:
                       nodeAffinity:
                         requiredDuringSchedulingIgnoredDuringExecution:
-                          - matchExpressions:
-                              - key: node-role.kubernetes.io/control-plane
-                                operator: DoesNotExist
+                          nodeSelectorTerms:
+                            - matchExpressions:
+                                - key: node-role.kubernetes.io/control-plane
+                                  operator: DoesNotExist
                     nodeSelector:
                       kubernetes.io/os: linux
                     tolerations:
