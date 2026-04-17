@@ -306,6 +306,7 @@ spec:
                     retries: 5
                 values:
                   defaultSettings:
+                    storageMinimalAvailablePercentage: 15
                     guaranteedInstanceManagerCPU: '{"v1":"2","v2":"2"}'
                     systemManagedComponentsNodeSelector: "kubernetes.io/os: linux"
                     taintToleration: "daemonset:NoSchedule;node-role.kubernetes.io/control-plane:NoSchedule;worker-guardian=true:NoSchedule;cplane-guardian=true:NoSchedule;cryptophys.io/node-class=nexus-hpc:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;ray-head=true:NoSchedule;ray-cluster=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule"
