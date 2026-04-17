@@ -92,11 +92,12 @@ spec:
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
-          - matchExpressions:
-              - key: cryptophys.io/node-class
-                operator: NotIn
-                values:
-                  - nexus-hpc
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: cryptophys.io/node-class
+                  operator: NotIn
+                  values:
+                    - nexus-hpc
     tolerations:
       - key: ray-cluster
         operator: Equal
