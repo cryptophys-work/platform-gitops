@@ -99,6 +99,15 @@ spec:
                   values:
                     - nexus-hpc
     tolerations:
+      # Align with platform-ha workers (thalamus / cerebellum); nexus had no pool taint but is excluded via nodeAffinity.
+      - key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
+        effect: NoSchedule
+      - key: ray-head
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
       - key: ray-cluster
         operator: Equal
         value: "true"
