@@ -13,6 +13,7 @@ spec:
   upgrade:
     timeout: 10m
     cleanupOnFail: true
+    preserveValues: false
     remediation:
       retries: 3
   chart:
