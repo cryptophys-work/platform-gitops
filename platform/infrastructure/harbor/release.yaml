@@ -43,7 +43,8 @@ spec:
                     value: nexus-hpc
                     effect: NoSchedule
                   - key: cryptophys.io/pool
-                    operator: Exists
+                    operator: Equal
+                    value: platform-ha
                     effect: NoSchedule
               - op: replace
                 path: /spec/template/spec/affinity
@@ -52,7 +53,7 @@ spec:
                     requiredDuringSchedulingIgnoredDuringExecution:
                       nodeSelectorTerms:
                         - matchExpressions:
-                            - key: registry-system
+                            - key: platform-ha
                               operator: In
                               values:
                                 - "true"
@@ -71,7 +72,8 @@ spec:
                     value: nexus-hpc
                     effect: NoSchedule
                   - key: cryptophys.io/pool
-                    operator: Exists
+                    operator: Equal
+                    value: platform-ha
                     effect: NoSchedule
               - op: replace
                 path: /spec/template/spec/affinity
@@ -80,7 +82,7 @@ spec:
                     requiredDuringSchedulingIgnoredDuringExecution:
                       nodeSelectorTerms:
                         - matchExpressions:
-                            - key: registry-system
+                            - key: platform-ha
                               operator: In
                               values:
                                 - "true"
@@ -99,7 +101,8 @@ spec:
                     value: nexus-hpc
                     effect: NoSchedule
                   - key: cryptophys.io/pool
-                    operator: Exists
+                    operator: Equal
+                    value: platform-ha
                     effect: NoSchedule
               - op: replace
                 path: /spec/template/spec/affinity
@@ -108,7 +111,7 @@ spec:
                     requiredDuringSchedulingIgnoredDuringExecution:
                       nodeSelectorTerms:
                         - matchExpressions:
-                            - key: registry-system
+                            - key: platform-ha
                               operator: In
                               values:
                                 - "true"
@@ -124,7 +127,8 @@ spec:
                     value: nexus-hpc
                     effect: NoSchedule
                   - key: cryptophys.io/pool
-                    operator: Exists
+                    operator: Equal
+                    value: platform-ha
                     effect: NoSchedule
               - op: replace
                 path: /spec/template/spec/affinity
@@ -133,7 +137,7 @@ spec:
                     requiredDuringSchedulingIgnoredDuringExecution:
                       nodeSelectorTerms:
                         - matchExpressions:
-                            - key: registry-system
+                            - key: platform-ha
                               operator: In
                               values:
                                 - "true"
@@ -152,7 +156,8 @@ spec:
                     value: nexus-hpc
                     effect: NoSchedule
                   - key: cryptophys.io/pool
-                    operator: Exists
+                    operator: Equal
+                    value: platform-ha
                     effect: NoSchedule
               - op: replace
                 path: /spec/template/spec/affinity
@@ -161,7 +166,7 @@ spec:
                     requiredDuringSchedulingIgnoredDuringExecution:
                       nodeSelectorTerms:
                         - matchExpressions:
-                            - key: registry-system
+                            - key: platform-ha
                               operator: In
                               values:
                                 - "true"
@@ -177,7 +182,8 @@ spec:
                     value: nexus-hpc
                     effect: NoSchedule
                   - key: cryptophys.io/pool
-                    operator: Exists
+                    operator: Equal
+                    value: platform-ha
                     effect: NoSchedule
               - op: replace
                 path: /spec/template/spec/affinity
@@ -186,7 +192,7 @@ spec:
                     requiredDuringSchedulingIgnoredDuringExecution:
                       nodeSelectorTerms:
                         - matchExpressions:
-                            - key: registry-system
+                            - key: platform-ha
                               operator: In
                               values:
                                 - "true"
@@ -243,7 +249,7 @@ spec:
       type: internal
       internal:
         nodeSelector:
-          registry-system: "true"
+          platform-ha: "true"
         extrInitContainers:
           - name: stale-postmaster-cleaner
             image: goharbor/harbor-db:v2.14.2
@@ -290,17 +296,18 @@ spec:
             value: llm-inference
             effect: NoSchedule
           - key: cryptophys.io/pool
-            operator: Exists
+            operator: Equal
+            value: platform-ha
             effect: NoSchedule
-        affinity:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-                - matchExpressions:
-                    - key: registry-system
-                      operator: In
-                      values:
-                        - "true"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: platform-ha
+                    operator: In
+                    values:
+                      - "true"
     redis:
       type: external
       external:
@@ -331,14 +338,15 @@ spec:
           value: llm-inference
           effect: NoSchedule
         - key: cryptophys.io/pool
-          operator: Exists
+          operator: Equal
+          value: platform-ha
           effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: registry-system
+                  - key: platform-ha
                     operator: In
                     values:
                       - "true"
@@ -369,14 +377,15 @@ spec:
           value: llm-inference
           effect: NoSchedule
         - key: cryptophys.io/pool
-          operator: Exists
+          operator: Equal
+          value: platform-ha
           effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: registry-system
+                  - key: platform-ha
                     operator: In
                     values:
                       - "true"
@@ -413,14 +422,15 @@ spec:
           value: llm-inference
           effect: NoSchedule
         - key: cryptophys.io/pool
-          operator: Exists
+          operator: Equal
+          value: platform-ha
           effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: registry-system
+                  - key: platform-ha
                     operator: In
                     values:
                       - "true"
@@ -457,14 +467,15 @@ spec:
           value: llm-inference
           effect: NoSchedule
         - key: cryptophys.io/pool
-          operator: Exists
+          operator: Equal
+          value: platform-ha
           effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: registry-system
+                  - key: platform-ha
                     operator: In
                     values:
                       - "true"
@@ -496,14 +507,15 @@ spec:
           value: llm-inference
           effect: NoSchedule
         - key: cryptophys.io/pool
-          operator: Exists
+          operator: Equal
+          value: platform-ha
           effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: registry-system
+                  - key: platform-ha
                     operator: In
                     values:
                       - "true"
@@ -526,18 +538,18 @@ spec:
           value: llm-inference
           effect: NoSchedule
         - key: cryptophys.io/pool
-          operator: Exists
+          operator: Equal
+          value: platform-ha
           effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: platform-ha
                     operator: In
                     values:
-                      - thalamus-217-76-59-241
-                      - cerebellum-161-97-117-96
+                      - "true"
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
