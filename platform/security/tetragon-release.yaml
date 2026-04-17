@@ -41,6 +41,8 @@ spec:
                   spec:
                     nodeSelector:
                       kubernetes.io/os: linux
+                    tolerations:
+                      - operator: Exists
                     containers:
                       - name: export-stdout
                         resources:

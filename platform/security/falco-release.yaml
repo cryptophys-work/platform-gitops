@@ -34,7 +34,12 @@ spec:
                 template:
                   metadata:
                     annotations:
-                      cryptophys.io/daemonset-refresh: "2026-04-12T12:30:00Z"
+                      cryptophys.io/daemonset-refresh: "2026-04-16T11:00:00Z"
+                  spec:
+                    nodeSelector:
+                      kubernetes.io/os: linux
+                    tolerations:
+                      - operator: Exists
   values:
     driver:
       kind: modern_ebpf
