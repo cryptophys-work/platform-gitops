@@ -22,10 +22,6 @@ parameters:
   backupTargetName: default
   unmapMarkSnapChainRemoved: ignored
   replicaAutoBalance: ignored
+  nodeSelector: backup-storage
 volumeBindingMode: Immediate
 reclaimPolicy: Retain
-allowedTopologies:
-  - matchLabelExpressions:
-      - key: cryptophys.io/node-class
-        values:
-          - nexus-hpc
