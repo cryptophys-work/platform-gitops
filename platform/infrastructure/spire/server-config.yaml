@@ -19,8 +19,8 @@ data:
     plugins {
       DataStore "sql" {
         plugin_data {
-          database_type = "sqlite3"
-          connection_string = "/run/spire/data/datastore.sqlite3"
+          database_type = "postgres"
+          connection_string = "dbname=spire user=spire host=postgres-security-ha-rw.postgresql-system.svc.cluster.local port=5432 sslmode=require"
         }
       }
       NodeAttestor "k8s_psat" {
