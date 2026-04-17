@@ -5,15 +5,16 @@ metadata:
   namespace: minio-system
 spec:
   interval: 1h
-  timeout: 20m
+  timeout: 35m
   install:
-    timeout: 20m
-    disableWait: true
+    timeout: 35m
+    # Must be false so the MinIO Deployment is Ready before post-install mc jobs run
+    disableWait: false
     remediation:
       retries: 3
   upgrade:
-    timeout: 20m
-    disableWait: true
+    timeout: 35m
+    disableWait: false
     remediation:
       retries: 3
   chart:

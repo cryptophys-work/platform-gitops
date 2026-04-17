@@ -11,7 +11,7 @@ spec:
   interval: 1h
   prune: false
   wait: true
-  timeout: 10m
+  timeout: 25m
   path: ./platform/infrastructure/security-observability
   sourceRef:
     kind: GitRepository
