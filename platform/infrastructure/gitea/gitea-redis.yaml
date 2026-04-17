@@ -14,7 +14,7 @@ spec:
         app: gitea-redis
     spec:
       nodeSelector:
-        workload.cryptophys.work/platform: "true"
+        platform-ha: "true"
       tolerations:
       - key: cryptophys.io/pool
         operator: Equal

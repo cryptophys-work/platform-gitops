@@ -27,7 +27,7 @@ spec:
             patch: |
               - op: replace
                 path: /spec/replicas
-                value: 1
+                value: 2
               - op: replace
                 path: /spec/strategy
                 value:
@@ -38,7 +38,7 @@ spec:
               - op: replace
                 path: /spec/template/spec/nodeSelector
                 value:
-                  workload.cryptophys.work/platform: "true"
+                  platform-ha: "true"
               - op: replace
                 path: /spec/template/spec/tolerations
                 value:
@@ -60,18 +60,16 @@ spec:
                     requiredDuringSchedulingIgnoredDuringExecution:
                       nodeSelectorTerms:
                         - matchExpressions:
-                            - key: workload.cryptophys.work/platform
+                            - key: platform-ha
                               operator: In
                               values:
                                 - "true"
-                    preferredDuringSchedulingIgnoredDuringExecution:
-                      - weight: 100
-                        preference:
-                          matchExpressions:
-                            - key: accepts-platform-workloads
+                            - key: kubernetes.io/hostname
                               operator: In
                               values:
-                                - "true"
+                                - nexus-144-91-103-10
+                                - cerebellum-161-97-117-96
+                                - thalamus-217-76-59-241
                   podAntiAffinity:
                     requiredDuringSchedulingIgnoredDuringExecution:
                       - labelSelector:
@@ -206,7 +204,7 @@ spec:
         name: gitea-charts
         namespace: flux-system
   values:
-    replicaCount: 1
+    replicaCount: 2
     image:
       registry: ghcr.io
       repository: go-gitea/gitea
@@ -372,24 +370,22 @@ spec:
         operator: Exists
         effect: NoSchedule
     nodeSelector:
-      workload.cryptophys.work/platform: "true"
+      platform-ha: "true"
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
             - matchExpressions:
-                - key: workload.cryptophys.work/platform
+                - key: platform-ha
                   operator: In
                   values:
                     - "true"
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            preference:
-              matchExpressions:
-                - key: accepts-platform-workloads
+                - key: kubernetes.io/hostname
                   operator: In
                   values:
-                    - "true"
+                    - nexus-144-91-103-10
+                    - cerebellum-161-97-117-96
+                    - thalamus-217-76-59-241
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
