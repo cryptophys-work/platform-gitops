@@ -4,7 +4,6 @@ resources:
   - aide-flux-protection-policy.yaml
   - cloudnative-pg-policy-exception.yaml
   - flux-controllers-policy-exception.yaml
-  - harbor-platform-ha-exception.yaml
   - longhorn-policy-exception.yaml
   - ingress-tetragon-platform-ha-exception.yaml
   - postgres-apps-ha-policy-exception.yaml
