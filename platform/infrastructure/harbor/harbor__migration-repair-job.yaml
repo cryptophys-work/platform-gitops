@@ -1,0 +1,80 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: harbor-migration-repair-v1
+  namespace: registry-system
+  labels:
+    app.kubernetes.io/name: harbor-migration-repair
+    cryptophys.io/domain: platform
+    cryptophys.io/component: harbor
+    cryptophys.io/layer: platform
+    cryptophys.io/managed-by: flux
+  annotations:
+    cryptophys.io/anti-regression: "true"
+    cryptophys.io/purpose: >-
+      One-time idempotent Harbor PostgreSQL repair job to clear the dirty
+      schema_migrations flag for version 80 so registry-harbor-core can finish
+      startup migrations.
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: harbor-migration-repair
+        cryptophys.io/domain: platform
+        cryptophys.io/component: harbor
+        cryptophys.io/layer: platform
+        cryptophys.io/managed-by: flux
+    spec:
+      restartPolicy: OnFailure
+      nodeSelector:
+        platform-ha: "true"
+      tolerations:
+        - key: cryptophys.io/node-class
+          operator: Equal
+          value: nexus-hpc
+          effect: NoSchedule
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
+      containers:
+        - name: repair
+          image: goharbor/harbor-db:v2.14.2
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 999
+            runAsGroup: 999
+            seccompProfile:
+              type: RuntimeDefault
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: registry-harbor-database
+                  key: POSTGRES_PASSWORD
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              psql \
+                "host=registry-harbor-database port=5432 user=postgres dbname=registry sslmode=disable" \
+                -v ON_ERROR_STOP=1 \
+                -c "UPDATE schema_migrations SET dirty = FALSE WHERE version = 80 AND dirty = TRUE;"
+              psql \
+                "host=registry-harbor-database port=5432 user=postgres dbname=registry sslmode=disable" \
+                -v ON_ERROR_STOP=1 \
+                -c "SELECT version, dirty FROM schema_migrations;"
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
