@@ -31,20 +31,19 @@ spec:
                 allowScheduling: true
                 disks:
                   default-disk-080600000000:
-                    allowScheduling: true
+                    allowScheduling: false
                     diskDriver: ""
                     diskType: filesystem
-                    evictionRequested: false
+                    evictionRequested: true
                     path: /var/lib/longhorn/
                     storageReserved: 21474836480
                     tags:
                       - general
-                      - backup-storage
                   data-disk-1901e1e1c520:
-                    allowScheduling: true
+                    allowScheduling: false
                     diskDriver: ""
                     diskType: filesystem
-                    evictionRequested: false
+                    evictionRequested: true
                     path: /var/mnt/longhorn-data/
                     storageReserved: 21474836480
                     tags:
