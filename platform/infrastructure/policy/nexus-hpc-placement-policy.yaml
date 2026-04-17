@@ -8,7 +8,8 @@ metadata:
     policies.kyverno.io/severity: high
     policies.kyverno.io/description: >
       Inject nexus-hpc taint toleration for workloads running in namespaces
-      labeled with cryptophys.io/node-class=nexus-hpc.
+      labeled with cryptophys.io/node-class=nexus-hpc without overwriting
+      existing lane tolerations such as platform-ha.
     cryptophys.io/domain: platform
     cryptophys.io/managed-by: flux
 spec:
@@ -26,17 +27,44 @@ spec:
                   cryptophys.io/node-class: nexus-hpc
       preconditions:
         all:
-          - key: "{{ request.object.spec.tolerations[?key=='cryptophys.io/node-class' && value=='nexus-hpc'] | length(@) }}"
+          - key: "{{ (request.object.spec.tolerations || []) | length(@) }}"
             operator: Equals
             value: 0
       mutate:
-        patchStrategicMerge:
-          spec:
-            tolerations:
+        patchesJson6902: |-
+          - op: add
+            path: /spec/tolerations
+            value:
               - key: cryptophys.io/node-class
                 operator: Equal
                 value: nexus-hpc
                 effect: NoSchedule
+    - name: append-nexus-hpc-toleration
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaceSelector:
+                matchLabels:
+                  cryptophys.io/node-class: nexus-hpc
+      preconditions:
+        all:
+          - key: "{{ request.object.spec.tolerations || '' }}"
+            operator: NotEquals
+            value: ""
+          - key: "{{ request.object.spec.tolerations[?key=='cryptophys.io/node-class' && value=='nexus-hpc'] | length(@) }}"
+            operator: Equals
+            value: 0
+      mutate:
+        patchesJson6902: |-
+          - op: add
+            path: /spec/tolerations/-
+            value:
+              key: cryptophys.io/node-class
+              operator: Equal
+              value: nexus-hpc
+              effect: NoSchedule
 ---
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
@@ -84,9 +112,9 @@ metadata:
     policies.kyverno.io/category: Node Placement
     policies.kyverno.io/severity: high
     policies.kyverno.io/description: >
-      Require workloads in nexus-hpc namespaces to explicitly target
-      cryptophys.io/node-class=nexus-hpc using nodeSelector or required
-      nodeAffinity.
+      Require workloads in nexus-hpc namespaces to explicitly target either the
+      nexus-hpc node class or the shared platform-ha lane using nodeSelector or
+      required nodeAffinity.
     cryptophys.io/domain: platform
     cryptophys.io/managed-by: flux
 spec:
@@ -105,12 +133,15 @@ spec:
       validate:
         message: >
           Workloads in nexus-hpc namespaces must target
-          cryptophys.io/node-class=nexus-hpc via nodeSelector or required
-          nodeAffinity.
+          cryptophys.io/node-class=nexus-hpc or platform-ha=true via
+          nodeSelector or required nodeAffinity.
         anyPattern:
           - spec:
               nodeSelector:
                 cryptophys.io/node-class: nexus-hpc
+          - spec:
+              nodeSelector:
+                platform-ha: "true"
           - spec:
               affinity:
                 nodeAffinity:
@@ -121,3 +152,13 @@ spec:
                             operator: In
                             values:
                               - nexus-hpc
+          - spec:
+              affinity:
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                      - matchExpressions:
+                          - key: platform-ha
+                            operator: In
+                            values:
+                              - "true"

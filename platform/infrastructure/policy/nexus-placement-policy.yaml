@@ -218,14 +218,61 @@ spec:
                       - metallb-system
                       - falco-system
                       - tetragon-system
+      preconditions:
+        all:
+          - key: "{{ (request.object.spec.tolerations || []) | length(@) }}"
+            operator: Equals
+            value: 0
       mutate:
-        patchStrategicMerge:
-          spec:
-            tolerations:
+        patchesJson6902: |-
+          - op: add
+            path: /spec/tolerations
+            value:
               - key: cryptophys.io/pool
                 operator: Equal
                 value: platform-ha
                 effect: NoSchedule
+    - name: append-platform-ha
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaceSelector:
+                matchLabels:
+                  cryptophys.io/pool: platform-ha
+      exclude:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaceSelector:
+                matchExpressions:
+                  - key: kubernetes.io/metadata.name
+                    operator: In
+                    values:
+                      - ingress-system
+                      - longhorn-system
+                      - metallb-system
+                      - falco-system
+                      - tetragon-system
+      preconditions:
+        all:
+          - key: "{{ request.object.spec.tolerations || '' }}"
+            operator: NotEquals
+            value: ""
+          - key: "{{ request.object.spec.tolerations[?key=='cryptophys.io/pool' && value=='platform-ha'] | length(@) }}"
+            operator: Equals
+            value: 0
+      mutate:
+        patchesJson6902: |-
+          - op: add
+            path: /spec/tolerations/-
+            value:
+              key: cryptophys.io/pool
+              operator: Equal
+              value: platform-ha
+              effect: NoSchedule
     - name: allow-tekton-migrator-ray-head
       match:
         any:

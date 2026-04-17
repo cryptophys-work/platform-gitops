@@ -119,6 +119,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: platform
+    cryptophys.io/pool: platform-ha
     cryptophys.io/node-class: nexus-hpc
   name: registry-system
 ---
