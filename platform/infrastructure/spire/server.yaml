@@ -81,6 +81,12 @@ spec:
         - name: spire-server
           image: ghcr.io/spiffe/spire-server:1.8.0
           args: ["-config", "/run/spire/config/server.conf"]
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: spire-postgres-auth
+                  key: password
           ports:
             - containerPort: 8081
               protocol: TCP

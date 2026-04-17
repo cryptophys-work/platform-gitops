@@ -1,6 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  # Fallback only: keep Cloudflare Tunnel as a secondary public-origin path,
+  # not the primary ingress exposure mechanism.
   name: cloudflared
   namespace: cloudflare-tunnel
   labels:
