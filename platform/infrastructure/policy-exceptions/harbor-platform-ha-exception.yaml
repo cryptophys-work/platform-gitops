@@ -1,0 +1,27 @@
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: harbor-platform-ha-exception
+  namespace: kyverno-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: harbor
+    cryptophys.io/managed-by: flux
+  annotations:
+    cryptophys.work/exception-owner: "platform-ai"
+    cryptophys.work/exception-reason: >-
+      Prevent mutate-pool-tolerations-platform-ha from overwriting Harbor pod
+      tolerations in registry-system; Harbor must keep explicit nexus-hpc
+      tolerations to schedule on the registry node.
+spec:
+  exceptions:
+    - policyName: mutate-pool-tolerations-platform-ha
+      ruleNames:
+        - inject-platform-ha-toleration
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+          namespaces:
+            - registry-system
