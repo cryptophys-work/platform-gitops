@@ -93,6 +93,8 @@ spec:
         - operator: Exists
     speaker:
       nodeSelector: null
+      # Explicit null: Flux/K8s SSA merge keeps nested keys if omitted; must clear old affinity.
+      affinity: null
       # No required nodeAffinity: the prior OR (platform-ha | apps-core-target) only matched
       # ~5 nodes, so the DaemonSet never reached full cluster coverage. L2 speaker should
       # run on every Linux node; tolerateMaster + tolerations Exists cover CP/worker taints.
