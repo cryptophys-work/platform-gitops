@@ -13,17 +13,24 @@ webhooks:
     failurePolicy: Ignore
   - name: mpod.kb.io
     failurePolicy: Ignore
-    # Exclude metallb-system: Kueue pod mutation can drop chart tolerations; Kyverno then
-    # injects only platform-ha and the controller stays Pending on tainted workers.
+    # Allowlist only namespaces where GitOps declares LocalQueue / Kueue-gated batch work.
+    # Upstream default (NotIn kube-system,kueue-system,apps-user) still called mpod for
+    # almost every other namespace (MetalLB, CNI, vault, etc.), which is unsafe: the
+    # webhook can normalize Pod specs and strip Helm tolerations before Kyverno runs.
+    #
+    # Source of truth for this list (update when adding a LocalQueue or Kueue-gated Pod):
+    #   apps-gitops/apps/core/kueue/base/local-queue-{aide,cqls,tekton}.yaml
+    #   apps-gitops/apps/tekton/infra/base/kueue/*.yaml
+    #   apps-gitops/apps/tekton/infra/base/wave-queue/kueue-resources.yaml
     namespaceSelector:
       matchExpressions:
         - key: kubernetes.io/metadata.name
-          operator: NotIn
+          operator: In
           values:
-            - kube-system
-            - kueue-system
-            - apps-user
-            - metallb-system
+            - aide
+            - cqls-compute
+            - image-factory
+            - tekton-system
   - name: mdeployment.kb.io
     failurePolicy: Ignore
   - name: mjobset.kb.io
