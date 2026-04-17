@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: qdrant-snapshot
+  namespace: database
+spec:
+  schedule: "0 */6 * * *"
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: snapshot
+              image: curlimages/curl:8.12.1
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - -ec
+                - |
+                  ts="$(date -u +%Y%m%dT%H%M%SZ)"
+                  curl -fsS -X POST "http://qdrant.database.svc.cluster.local:6333/collections/ai-cognition-memory/snapshots" \
+                    -H "Content-Type: application/json"
+                  echo "snapshot requested at ${ts}"
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  cpu: 100m
+                  memory: 128Mi

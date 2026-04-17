@@ -45,11 +45,11 @@ spec:
         cpu: 2000m
         memory: 1Gi
     
-    # Pin Qdrant to Nexus for AI Cognition vector-memory wiring.
+    # Keep Qdrant on compute-class workers while allowing scheduler flexibility.
     nodeSelector:
-      kubernetes.io/hostname: nexus-144-91-103-10
       cryptophys.io/tier: compute
 
+    # Scheduling hardening for nexus-hpc and ray-cluster taints.
     tolerations:
       - key: cryptophys.io/pool
         operator: Equal
@@ -59,3 +59,25 @@ spec:
         operator: Equal
         value: "true"
         effect: NoSchedule
+      - key: cryptophys.io/node-class
+        operator: Equal
+        value: nexus-hpc
+        effect: NoSchedule
+
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: qdrant
+              topologyKey: kubernetes.io/hostname
+
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app: qdrant
