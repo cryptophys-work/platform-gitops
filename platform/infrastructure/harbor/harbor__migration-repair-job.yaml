@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: harbor-migration-repair-v1
+  name: harbor-migration-repair-v2
   namespace: registry-system
   labels:
     app.kubernetes.io/name: harbor-migration-repair
@@ -12,9 +12,9 @@ metadata:
   annotations:
     cryptophys.io/anti-regression: "true"
     cryptophys.io/purpose: >-
-      One-time idempotent Harbor PostgreSQL repair job to clear the dirty
-      schema_migrations flag for version 80 so registry-harbor-core can finish
-      startup migrations.
+      One-time idempotent Harbor PostgreSQL repair job to clear any dirty
+      schema_migrations rows so registry-harbor-core can resume startup
+      migrations after interrupted upgrades.
 spec:
   backoffLimit: 3
   ttlSecondsAfterFinished: 600
@@ -66,7 +66,7 @@ spec:
               psql \
                 "host=registry-harbor-database port=5432 user=postgres dbname=registry sslmode=disable" \
                 -v ON_ERROR_STOP=1 \
-                -c "UPDATE schema_migrations SET dirty = FALSE WHERE version = 80 AND dirty = TRUE;"
+                -c "UPDATE schema_migrations SET dirty = FALSE WHERE dirty = TRUE;"
               psql \
                 "host=registry-harbor-database port=5432 user=postgres dbname=registry sslmode=disable" \
                 -v ON_ERROR_STOP=1 \

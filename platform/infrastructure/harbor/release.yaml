@@ -434,7 +434,7 @@ spec:
             - |
               psql "host=${POSTGRESQL_HOST} port=${POSTGRESQL_PORT} user=${POSTGRESQL_USERNAME} dbname=${POSTGRESQL_DATABASE} sslmode=${POSTGRESQL_SSLMODE}" \
                 -v ON_ERROR_STOP=1 \
-                -c "UPDATE schema_migrations SET dirty = FALSE WHERE version = 80 AND dirty = TRUE;"
+                -c "UPDATE schema_migrations SET dirty = FALSE WHERE dirty = TRUE;"
       resources:
         limits:
           cpu: 500m
