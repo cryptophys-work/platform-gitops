@@ -10,11 +10,11 @@ metadata:
 spec:
   interval: 1h
   install:
-    timeout: 8m
+    timeout: 15m
     crds: CreateReplace
   upgrade:
     preserveValues: false
-    timeout: 8m
+    timeout: 15m
     crds: CreateReplace
   chart:
     spec:
@@ -25,7 +25,8 @@ spec:
         name: cloudnative-pg
         namespace: flux-system
   values:
-    replicaCount: 1
+    replicaCount: 2
+    priorityClassName: cryptophys-platform-critical
     nodeSelector:
       kubernetes.io/os: linux
       workload.cryptophys.work/platform: "true"
@@ -43,9 +44,20 @@ spec:
       effect: NoSchedule
     affinity:
       nodeAffinity: null
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: cloudnative-pg
+              topologyKey: kubernetes.io/hostname
+    config:
+      maxConcurrentReconciles: 5
     resources:
       requests:
-        cpu: 100m
-        memory: 256Mi
+        cpu: 250m
+        memory: 512Mi
       limits:
-        memory: 768Mi
+        cpu: "1"
+        memory: 1536Mi
