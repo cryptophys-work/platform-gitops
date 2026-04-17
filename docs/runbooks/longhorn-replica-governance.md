@@ -1,6 +1,6 @@
 # Longhorn: replica governance, rollout, and storage growth
 
-Reference for how cryptophys classifies Longhorn replica policy in GitOps. Live inventory output is produced by `platform/infrastructure/storage/scripts/inventory-longhorn-volumes.sh` when executed where `kubectl` has cluster access (CI or controlled runner).
+Reference for how cryptophys classifies Longhorn replica policy in GitOps. Live PVC and Longhorn volume state are observed with standard cluster tooling (`kubectl`, Longhorn UI) — not vendored in this repository.
 
 ## 1. PVC / volume classification (design intent)
 
