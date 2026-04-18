@@ -76,9 +76,9 @@ spec:
           adminSocketPath: /run/spire/sockets/admin.sock
     mtu: 1370
     # Use Talos KubePrism local HA proxy on every node instead of an external control-plane endpoint.
-    # Cluster-internal networking must not depend on api.cryptophys.work.
-    k8sServiceHost: 127.0.0.1
-    k8sServicePort: 7445
+    # reachable from all nodes.
+    k8sServiceHost: 10.96.0.1
+    k8sServicePort: 443
     extraEnv:
       - name: CRYPTOPHYS_CILIUM_ROLLOUT_AT
         value: "2026-04-10T07:45:31Z"
