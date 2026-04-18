@@ -1,0 +1,25 @@
+# Bootstrap secret for CNPG postgres-security-ha (owner user + password).
+# Must match Vault path used by spire-system ExternalSecret spire-postgres-auth (password only).
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: spire-postgres-bootstrap
+  namespace: postgresql-system
+spec:
+  refreshInterval: 24h
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: spire-postgres-secret
+    creationPolicy: Owner
+    template:
+      engineVersion: v2
+      data:
+        username: spire
+        password: "{{ index . \"password\" }}"
+  data:
+    - secretKey: password
+      remoteRef:
+        key: platform/spire/postgres
+        property: password

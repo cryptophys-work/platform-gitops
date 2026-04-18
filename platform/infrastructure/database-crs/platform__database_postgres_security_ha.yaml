@@ -4,8 +4,9 @@ metadata:
   name: postgres-security-ha
   namespace: postgresql-system
 spec:
-  # HA: three instances; WAL archive to MinIO removed (insufficient MinIO volume).
-  instances: 3
+  # Temporary: single instance until platform-ha scheduling is stable (mirrors
+  # postgres-registry-ha). Revert to 3 when nodes can schedule anti-affinity replicas.
+  instances: 1
   imageName: ghcr.io/cloudnative-pg/postgresql:16.2
   monitoring:
     enablePodMonitor: false
@@ -38,11 +39,11 @@ spec:
       platform-ha: "true"
     podAntiAffinityType: required
     tolerations:
-    - effect: NoSchedule
-      key: cryptophys.io/pool
-      operator: Equal
-      value: platform-ha
-    - effect: NoSchedule
-      key: cryptophys.io/node-class
-      operator: Equal
-      value: nexus-hpc
+      - effect: NoSchedule
+        key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
+      - effect: NoSchedule
+        key: ray-head
+        operator: Equal
+        value: "true"
