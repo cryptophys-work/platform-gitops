@@ -24,6 +24,20 @@ spec:
         kind: HelmRepository
         name: cloudnative-pg
         namespace: flux-system
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: cloudnative-pg
+              namespace: cnpg-system
+            patch: |
+              - op: replace
+                path: /spec/strategy/rollingUpdate/maxSurge
+                value: 0
+              - op: replace
+                path: /spec/strategy/rollingUpdate/maxUnavailable
+                value: 1
   values:
     replicaCount: 2
     priorityClassName: cryptophys-platform-critical
@@ -47,11 +61,14 @@ spec:
                   operator: In
                   values:
                     - "true"
+                # Third platform-ha node: allows scheduling when only two hostnames would
+                # deadlock with required anti-affinity + default maxSurge (rollout also pinned maxSurge:0 below).
                 - key: kubernetes.io/hostname
                   operator: In
                   values:
                     - cerebellum-161-97-117-96
                     - thalamus-217-76-59-241
+                    - nexus-144-91-103-10
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
