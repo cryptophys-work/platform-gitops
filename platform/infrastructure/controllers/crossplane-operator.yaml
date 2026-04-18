@@ -70,7 +70,7 @@ spec:
                 effect: NoSchedule
               - key: cryptophys.io/pool
                 operator: Equal
-                value: apps-ha
+                value: platform-ha
                 effect: NoSchedule
           - op: replace
             path: /spec/template/spec/affinity
@@ -117,7 +117,7 @@ spec:
                 effect: NoSchedule
               - key: cryptophys.io/pool
                 operator: Equal
-                value: apps-ha
+                value: platform-ha
                 effect: NoSchedule
           - op: replace
             path: /spec/template/spec/affinity
