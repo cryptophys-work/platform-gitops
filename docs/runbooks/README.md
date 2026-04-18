@@ -9,3 +9,6 @@ All runbooks must comply with:
 
 - `vault-unseal-procedure.md`
 - `nexus-hpc-policy-observation.md`
+- `longhorn-ui-cloudflare-access-vs-keycloak.md`
+- `longhorn-replica-governance.md`
+- `qdrant-runtime-preflight-and-restore.md`

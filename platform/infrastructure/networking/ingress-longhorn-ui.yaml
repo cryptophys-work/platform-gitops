@@ -1,3 +1,5 @@
+# Longhorn UI SSO: Keycloak via headlamp-oauth2-proxy (nginx auth_request).
+# If operators see Cloudflare Access instead of Keycloak, disable overlapping Zero Trust apps for this hostname — see docs/runbooks/longhorn-ui-cloudflare-access-vs-keycloak.md
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
