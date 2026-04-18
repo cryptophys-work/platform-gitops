@@ -18,3 +18,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: platform-repo
+  dependsOn:
+    - name: 25-database-crs

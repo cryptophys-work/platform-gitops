@@ -65,7 +65,7 @@ spec:
             - -ec
             - |
               psql \
-                "host=registry-harbor-database port=5432 user=postgres dbname=registry sslmode=disable" \
+                "host=postgres-registry-ha-rw.postgresql-system.svc.cluster.local port=5432 user=registry dbname=registry sslmode=disable" \
                 -v ON_ERROR_STOP=1 \
                 -c "CREATE TABLE IF NOT EXISTS artifact_accessory (
                       id SERIAL PRIMARY KEY NOT NULL,
@@ -80,11 +80,11 @@ spec:
                       CONSTRAINT unique_artifact_accessory UNIQUE (artifact_id, subject_artifact_id)
                     );"
               psql \
-                "host=registry-harbor-database port=5432 user=postgres dbname=registry sslmode=disable" \
+                "host=postgres-registry-ha-rw.postgresql-system.svc.cluster.local port=5432 user=registry dbname=registry sslmode=disable" \
                 -v ON_ERROR_STOP=1 \
                 -c "UPDATE schema_migrations SET dirty = FALSE WHERE dirty = TRUE;"
               psql \
-                "host=registry-harbor-database port=5432 user=postgres dbname=registry sslmode=disable" \
+                "host=postgres-registry-ha-rw.postgresql-system.svc.cluster.local port=5432 user=registry dbname=registry sslmode=disable" \
                 -v ON_ERROR_STOP=1 \
                 -c "SELECT version, dirty FROM schema_migrations;"
           resources:
