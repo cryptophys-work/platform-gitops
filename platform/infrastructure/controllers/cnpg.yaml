@@ -53,13 +53,22 @@ spec:
                     - cerebellum-161-97-117-96
                     - thalamus-217-76-59-241
       podAntiAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/name: cloudnative-pg
-              topologyKey: kubernetes.io/hostname
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: cloudnative-pg
+            topologyKey: kubernetes.io/hostname
+    webhook:
+      livenessProbe:
+        initialDelaySeconds: 10
+        periodSeconds: 15
+        timeoutSeconds: 5
+        failureThreshold: 6
+      readinessProbe:
+        initialDelaySeconds: 10
+        periodSeconds: 15
+        timeoutSeconds: 5
+        failureThreshold: 6
     config:
       maxConcurrentReconciles: 5
     resources:
