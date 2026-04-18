@@ -10,10 +10,9 @@ metadata:
     environment: prod
     owner: infrastructure
 spec:
-  # Single replica: SPIRE server uses Postgres as datastore (single-writer). Running two StatefulSet
-  # pods caused readiness/mount churn and NOT_SERVING while the DB or Longhorn was flaky, which
-  # cascaded to spire-agent. Revisit HA only with an explicit SPIRE + Postgres HA design.
-  replicas: 1
+  # 3x HA: shared Postgres datastore (read/write via SQL); per-pod spire-data (RWO); spire-shared-keys (RWX).
+  # required podAntiAffinity on hostname + nodeAffinity to three platform-ha nodes => one replica per node.
+  replicas: 3
   selector:
     matchLabels:
       app: spire-server

@@ -4,7 +4,8 @@ metadata:
   name: spire-server
   namespace: spire-system
 spec:
-  minAvailable: 1
+  # Critical path: keep at least two servers during voluntary disruption (drain / rollout).
+  minAvailable: 2
   selector:
     matchLabels:
       app: spire-server
