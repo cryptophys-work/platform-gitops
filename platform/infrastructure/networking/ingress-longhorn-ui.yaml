@@ -13,10 +13,10 @@ metadata:
       client_header_buffer_size 64k;
       large_client_header_buffers 16 128k;
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      more_set_headers "Set-Cookie: _oauth2_proxy_cryptophys=; Domain=.cryptophys.work; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; Secure; SameSite=Lax";
-      more_set_headers "Set-Cookie: _oauth2_proxy_cryptophys_csrf=; Domain=.cryptophys.work; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; Secure; SameSite=Lax";
-      more_set_headers "Set-Cookie: _oauth2_proxy=; Domain=.cryptophys.work; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; Secure; SameSite=Lax";
-      more_set_headers "Set-Cookie: _oauth2_proxy_csrf=; Domain=.cryptophys.work; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; Secure; SameSite=Lax";
+      add_header Set-Cookie "_oauth2_proxy_cryptophys=; Domain=.cryptophys.work; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; Secure; SameSite=Lax" always;
+      add_header Set-Cookie "_oauth2_proxy_cryptophys_csrf=; Domain=.cryptophys.work; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; Secure; SameSite=Lax" always;
+      add_header Set-Cookie "_oauth2_proxy=; Domain=.cryptophys.work; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; Secure; SameSite=Lax" always;
+      add_header Set-Cookie "_oauth2_proxy_csrf=; Domain=.cryptophys.work; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; Secure; SameSite=Lax" always;
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   ingressClassName: nginx
