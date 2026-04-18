@@ -44,7 +44,7 @@ spec:
         large-client-header-buffers: "16 128k"
       extraEnvs:
         - name: CRYPTOPHYS_INGRESS_ROLLOUT_AT
-          value: "1776348140"
+          value: "1776492350"
       extraArgs:
         default-ssl-certificate: ingress-system/platform-wildcard-tls
         healthz-port: "11054"
