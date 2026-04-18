@@ -3,5 +3,6 @@ kind: Kustomization
 resources:
   - ../database/minio-s3-credentials-externalsecret.yaml
   - ../database/platform__database_postgres_apps_ha.yaml
+  - ../database/platform__database_postgres_apps_primary_realign.yaml
   - ../database/platform__database_postgres_security_ha.yaml
   - ../database/postgres-trustedledger-ha.yaml

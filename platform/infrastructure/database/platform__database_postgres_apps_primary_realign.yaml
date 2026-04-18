@@ -1,0 +1,115 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-apps-primary-realign-v1
+  namespace: postgresql-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: postgresql
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+  annotations:
+    cryptophys.io/anti-regression: "true"
+    cryptophys.io/purpose: >-
+      Idempotently restart the single postgres-apps-ha primary only when the
+      live pod is still running on a node that no longer matches the GitOps
+      target host, so CNPG can recreate it on the approved platform-ha node.
+spec:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      labels:
+        cryptophys.io/domain: platform
+        cryptophys.io/component: postgresql
+        cryptophys.io/managed-by: flux
+        cryptophys.io/layer: platform
+    spec:
+      serviceAccountName: postgres-apps-stale-pvc-repair
+      imagePullSecrets:
+        - name: registry-cryptophys-work-auth
+      restartPolicy: OnFailure
+      nodeSelector:
+        platform-ha: "true"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values:
+                      - nexus-144-91-103-10
+      tolerations:
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: realign
+          image: docker.io/alpine/k8s@sha256:bd01dae02676ce4cab62fc744e43443eee5bf660054e94d3496d23bfc35d384e
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              ns="postgresql-system"
+              cluster="postgres-apps-ha"
+
+              desired_host="$(kubectl get cluster.postgresql.cnpg.io "${cluster}" -n "${ns}" -o jsonpath='{.spec.affinity.nodeSelector.kubernetes\.io/hostname}')"
+              desired_instances="$(kubectl get cluster.postgresql.cnpg.io "${cluster}" -n "${ns}" -o jsonpath='{.spec.instances}')"
+              primary_pod="$(kubectl get cluster.postgresql.cnpg.io "${cluster}" -n "${ns}" -o jsonpath='{.status.currentPrimary}')"
+
+              if [ "${desired_instances}" != "1" ]; then
+                echo "cluster ${cluster} is not in single-primary mode (spec.instances=${desired_instances}); nothing to realign"
+                exit 0
+              fi
+
+              if [ -z "${desired_host}" ]; then
+                echo "cluster ${cluster} has no desired hostname pin; nothing to realign"
+                exit 0
+              fi
+
+              if [ -z "${primary_pod}" ]; then
+                echo "cluster ${cluster} has no currentPrimary; refusing restart"
+                exit 1
+              fi
+
+              if ! kubectl get pod "${primary_pod}" -n "${ns}" >/dev/null 2>&1; then
+                echo "primary pod ${primary_pod} already absent"
+                exit 0
+              fi
+
+              current_node="$(kubectl get pod "${primary_pod}" -n "${ns}" -o jsonpath='{.spec.nodeName}')"
+              phase="$(kubectl get pod "${primary_pod}" -n "${ns}" -o jsonpath='{.status.phase}')"
+
+              if [ "${current_node}" = "${desired_host}" ]; then
+                echo "primary pod ${primary_pod} already runs on ${desired_host}"
+                exit 0
+              fi
+
+              if [ "${phase}" != "Running" ]; then
+                echo "primary pod ${primary_pod} is in phase ${phase}; waiting for operator-driven recovery"
+                exit 0
+              fi
+
+              echo "deleting ${primary_pod} on ${current_node} so CNPG can recreate it on ${desired_host}"
+              kubectl delete pod "${primary_pod}" -n "${ns}" --wait=false
