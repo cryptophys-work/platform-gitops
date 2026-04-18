@@ -40,10 +40,10 @@ spec:
                     tags:
                       - general
                   data-disk-1901e1e1c520:
-                    allowScheduling: false
+                    allowScheduling: true
                     diskDriver: ""
                     diskType: filesystem
-                    evictionRequested: true
+                    evictionRequested: false
                     path: /var/mnt/longhorn-data/
                     storageReserved: 21474836480
                     tags:
