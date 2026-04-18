@@ -1,0 +1,68 @@
+# Pin every workload in tekton-system to the nexus-hpc node pool (nexus).
+# Namespace tekton-system is labeled cryptophys.io/node-class=nexus-hpc; SPIFFE/SVID
+# and Longhorn hot paths are validated there. Generic platform-ha-only placement is not enough.
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-tekton-system-nexus-hpc-node-selector
+  annotations:
+    policies.kyverno.io/title: Mutate Tekton System Nexus HPC Node Selector
+    policies.kyverno.io/category: Node Placement
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >
+      Merge cryptophys.io/node-class=nexus-hpc into Pod nodeSelector for tekton-system
+      so controllers, TaskRuns, and helpers schedule only on the nexus HPC node.
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+spec:
+  validationFailureAction: Audit
+  background: false
+  rules:
+    - name: merge-nexus-hpc-node-selector
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - tekton-system
+      mutate:
+        patchStrategicMerge:
+          spec:
+            nodeSelector:
+              cryptophys.io/node-class: nexus-hpc
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: validate-tekton-system-nexus-hpc-node-selector
+  annotations:
+    policies.kyverno.io/title: Validate Tekton System Nexus HPC Node Selector
+    policies.kyverno.io/category: Node Placement
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >
+      Enforce cryptophys.io/node-class=nexus-hpc on all Pods in tekton-system.
+      Runs after mutation; blocks mis-scheduled or bypassed Pod specs.
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: require-nexus-hpc-node-selector
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - tekton-system
+      validate:
+        message: >
+          Pods in tekton-system must set spec.nodeSelector["cryptophys.io/node-class"]=nexus-hpc
+          so workloads run only on the nexus HPC node pool.
+        pattern:
+          spec:
+            nodeSelector:
+              cryptophys.io/node-class: nexus-hpc
