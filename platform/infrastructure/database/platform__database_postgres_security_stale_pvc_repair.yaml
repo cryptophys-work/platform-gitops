@@ -81,10 +81,15 @@ spec:
       restartPolicy: OnFailure
       nodeSelector:
         platform-ha: "true"
+        kubernetes.io/hostname: cerebellum-161-97-117-96
       tolerations:
         - key: cryptophys.io/pool
           operator: Equal
           value: platform-ha
+          effect: NoSchedule
+        - key: ray-head
+          operator: Equal
+          value: "true"
           effect: NoSchedule
       securityContext:
         runAsNonRoot: true
