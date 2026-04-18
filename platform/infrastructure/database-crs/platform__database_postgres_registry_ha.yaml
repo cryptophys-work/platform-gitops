@@ -6,7 +6,10 @@ metadata:
   name: postgres-registry-ha
   namespace: postgresql-system
 spec:
-  instances: 3
+  # Temporary: single instance until platform-ha nodes have headroom (scheduling was
+  # failing with Insufficient memory / Too many pods; primary had readiness 500 + CrashLoop).
+  # Revert to 3 when Harbor registry DB is stable and nodes can schedule anti-affinity pods.
+  instances: 1
   imageName: ghcr.io/cloudnative-pg/postgresql:16.2
   monitoring:
     enablePodMonitor: false
