@@ -77,8 +77,8 @@ spec:
     mtu: 1370
     # Use Talos KubePrism local HA proxy on every node instead of an external control-plane endpoint.
     # reachable from all nodes.
-    k8sServiceHost: 10.96.0.1
-    k8sServicePort: 443
+    k8sServiceHost: 127.0.0.1
+    k8sServicePort: 7445
     extraEnv:
       - name: CRYPTOPHYS_CILIUM_ROLLOUT_AT
         value: "2026-04-10T07:45:31Z"
