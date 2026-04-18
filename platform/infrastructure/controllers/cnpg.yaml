@@ -33,11 +33,12 @@ spec:
               namespace: cnpg-system
             patch: |
               - op: replace
-                path: /spec/strategy/rollingUpdate/maxSurge
-                value: 0
-              - op: replace
-                path: /spec/strategy/rollingUpdate/maxUnavailable
-                value: 1
+                path: /spec/strategy
+                value:
+                  type: RollingUpdate
+                  rollingUpdate:
+                    maxSurge: 0
+                    maxUnavailable: 1
   values:
     replicaCount: 2
     priorityClassName: cryptophys-platform-critical
