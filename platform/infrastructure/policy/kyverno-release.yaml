@@ -245,6 +245,17 @@ spec:
         periodSeconds: 10
         timeoutSeconds: 15
         failureThreshold: 6
+      # Relaxed startup probe: chart default 1s HTTPS probe flapped under apiserver load.
+      startupProbe:
+        httpGet:
+          path: /health/liveness
+          port: 9443
+          scheme: HTTPS
+        initialDelaySeconds: 5
+        periodSeconds: 6
+        timeoutSeconds: 10
+        failureThreshold: 30
+      apiPriorityAndFairness: true
       updateStrategy:
         rollingUpdate:
           maxSurge: 0

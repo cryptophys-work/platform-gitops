@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 1h
   wait: false
-  timeout: 5m
+  timeout: 15m
   path: ./platform/infrastructure/namespaces
   prune: false
   sourceRef:
