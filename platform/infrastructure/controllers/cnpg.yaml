@@ -35,10 +35,6 @@ spec:
       operator: Equal
       value: platform-ha
       effect: NoSchedule
-    - key: cryptophys.io/node-class
-      operator: Equal
-      value: nexus-hpc
-      effect: NoSchedule
     - key: ray-head
       operator: Exists
       effect: NoSchedule
@@ -51,6 +47,11 @@ spec:
                   operator: In
                   values:
                     - "true"
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - cerebellum-161-97-117-96
+                    - thalamus-217-76-59-241
       podAntiAffinity:
         preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
