@@ -12329,7 +12329,7 @@ spec:
   - name: https
     port: 443
     protocol: TCP
-    targetPort: 8082
+    targetPort: visibility
   selector:
     control-plane: controller-manager
 ---
@@ -12456,6 +12456,7 @@ spec:
   service:
     name: kueue-visibility-server
     namespace: kueue-system
+    port: 443
   version: v1beta1
   versionPriority: 100
 ---
