@@ -71,7 +71,6 @@ spec:
                 annotations:
                   cryptophys.io/daemonset-refresh: "2026-04-18T15:00:00Z"
               spec:
-                # Helm SSA can leave stale tolerations/affinity; force full Linux coverage.
                 affinity: {}
                 tolerations:
                   - effect: NoSchedule

@@ -34,6 +34,18 @@ spec:
           selector:
             matchLabels:
               app.kubernetes.io/name: tekton-crd-migrator
+      # DaemonSets in these namespaces carry their own full toleration sets (master/CP/Exists).
+      # Pool injection here can leave only platform-ha and break scheduling on tainted nodes.
+      - resources:
+          kinds:
+          - Pod
+          namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values:
+                  - metallb-system
+                  - falco-system
     preconditions:
       all:
       # Only inject (and potentially replace) tolerations when the pod has no tolerations at all.
@@ -67,6 +79,16 @@ spec:
           selector:
             matchLabels:
               app.kubernetes.io/name: tekton-crd-migrator
+      - resources:
+          kinds:
+          - Pod
+          namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values:
+                  - metallb-system
+                  - falco-system
     preconditions:
       all:
       - key: "{{ request.object.spec.tolerations || '' }}"
