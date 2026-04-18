@@ -4,6 +4,7 @@ resources:
   - gateway-class.yaml
   - n8n-netpol.yaml
   - longhorn-oauth2-proxy.yaml
+  - externalsecret-vault-ui-basic-auth.yaml
   - ingress-vault.yaml
   - ingress-hubble-ui.yaml
   - ingress-longhorn-ui.yaml
