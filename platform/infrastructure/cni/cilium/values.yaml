@@ -11,8 +11,8 @@ hubble:
     enabled: true
 ipam:
   mode: kubernetes
-k8sServiceHost: 127.0.0.1
-k8sServicePort: 7445
+k8sServiceHost: 10.96.0.1
+k8sServicePort: 443
 kubeProxyReplacement: true
 svcSourceRangeCheck: false
 hostServices:
