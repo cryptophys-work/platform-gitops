@@ -38,10 +38,10 @@ while IFS= read -r target || [[ -n "${target}" ]]; do
     exit 1
   fi
 
-  if grep -qE "${IMAGE_LATEST_PATTERN}" "${build_out}"; then
+  if grep_output=$(grep -nE "${IMAGE_LATEST_PATTERN}" "${build_out}"); then
     violations=1
     echo "error: :latest image reference(s) in rendered manifest for ${target}:" >&2
-    grep -nE "${IMAGE_LATEST_PATTERN}" "${build_out}" >&2 | sed "s|^|${target}:|"
+    echo "${grep_output}" | sed "s|^|${target}:|" >&2
   fi
 
   rm -f "${build_out}" "${stderr_out}"
