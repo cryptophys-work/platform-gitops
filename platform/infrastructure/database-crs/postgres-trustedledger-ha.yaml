@@ -1,0 +1,45 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-trustedledger-ha
+  namespace: postgresql-system
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.2
+  logLevel: info
+  # Disable ALL monitoring: monitoring.coreos.com/v1 API times out during reconcile
+  # blocking cluster object creation (primary pod never recreated).
+  # disableDefaultQueries skips the API group discovery call entirely.
+  monitoring:
+    enablePodMonitor: false
+    disableDefaultQueries: true
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: postgres-superuser-secret
+  storage:
+    size: 10Gi
+    storageClass: longhorn
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+  bootstrap:
+    initdb:
+      database: trustedledger
+      owner: trustedledger
+  # Resource limits: reduced to allow scheduling on memory-pressured workers
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  affinity:
+    nodeSelector:
+      platform-ha: "true"
+    podAntiAffinityType: required
+    tolerations:
+      - effect: NoSchedule
+        key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha

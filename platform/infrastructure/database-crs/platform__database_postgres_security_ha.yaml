@@ -1,0 +1,48 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-security-ha
+  namespace: postgresql-system
+spec:
+  # HA: three instances; WAL archive to MinIO removed (insufficient MinIO volume).
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.2
+  monitoring:
+    enablePodMonitor: false
+    disableDefaultQueries: true
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: postgres-superuser-secret
+  storage:
+    size: 5Gi
+    storageClass: longhorn
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+  bootstrap:
+    initdb:
+      database: spire
+      owner: spire
+      secret:
+        name: spire-postgres-secret
+  # Resource limits: reduced to allow scheduling on memory-pressured workers
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  affinity:
+    nodeSelector:
+      platform-ha: "true"
+    podAntiAffinityType: required
+    tolerations:
+    - effect: NoSchedule
+      key: cryptophys.io/pool
+      operator: Equal
+      value: platform-ha
+    - effect: NoSchedule
+      key: cryptophys.io/node-class
+      operator: Equal
+      value: nexus-hpc

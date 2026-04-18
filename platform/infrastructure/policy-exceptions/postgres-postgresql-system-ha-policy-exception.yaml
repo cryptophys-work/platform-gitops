@@ -1,0 +1,98 @@
+# CNPG HA pods + app secrets (security, trustedledger, registry clusters) under platform-ha tolerations.
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: postgres-postgresql-system-ha-platform-ha-exception
+  namespace: kyverno-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: postgresql
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+  annotations:
+    cryptophys.work/exception-owner: "platform-sre"
+    cryptophys.work/exception-reason: >-
+      Allow CloudNativePG HA pods for postgres-security-ha, postgres-trustedledger-ha,
+      and postgres-registry-ha (3 instances each) under platform-ha tolerations.
+    cryptophys.work/exception-ticket: "OPS-POSTGRES-HA-002"
+    cryptophys.work/exception-expires-at: "2026-12-31T00:00:00Z"
+spec:
+  exceptions:
+    - policyName: deny-platform-ha-toleration-outside-platform
+      ruleNames:
+        - block-platform-ha
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+          namespaces:
+            - postgresql-system
+          names:
+            - postgres-security-ha-1
+            - postgres-security-ha-2
+            - postgres-security-ha-3
+            - postgres-trustedledger-ha-1
+            - postgres-trustedledger-ha-2
+            - postgres-trustedledger-ha-3
+            - postgres-registry-ha-1
+            - postgres-registry-ha-2
+            - postgres-registry-ha-3
+      - resources:
+          kinds:
+            - Secret
+          namespaces:
+            - postgresql-system
+          names:
+            - postgres-security-ha-app
+            - postgres-trustedledger-ha-app
+            - postgres-registry-ha-app
+---
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: postgres-postgresql-system-ha-platform-ha-exception
+  namespace: postgresql-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: postgresql
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+  annotations:
+    cryptophys.work/exception-owner: "platform-sre"
+    cryptophys.work/exception-reason: >-
+      Allow CloudNativePG HA pods for postgres-security-ha, postgres-trustedledger-ha,
+      and postgres-registry-ha (3 instances each) under platform-ha tolerations.
+    cryptophys.work/exception-ticket: "OPS-POSTGRES-HA-002"
+    cryptophys.work/exception-expires-at: "2026-12-31T00:00:00Z"
+spec:
+  exceptions:
+    - policyName: deny-platform-ha-toleration-outside-platform
+      ruleNames:
+        - block-platform-ha
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+          namespaces:
+            - postgresql-system
+          names:
+            - postgres-security-ha-1
+            - postgres-security-ha-2
+            - postgres-security-ha-3
+            - postgres-trustedledger-ha-1
+            - postgres-trustedledger-ha-2
+            - postgres-trustedledger-ha-3
+            - postgres-registry-ha-1
+            - postgres-registry-ha-2
+            - postgres-registry-ha-3
+      - resources:
+          kinds:
+            - Secret
+          namespaces:
+            - postgresql-system
+          names:
+            - postgres-security-ha-app
+            - postgres-trustedledger-ha-app
+            - postgres-registry-ha-app

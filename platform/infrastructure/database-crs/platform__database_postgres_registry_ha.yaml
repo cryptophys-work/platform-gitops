@@ -1,0 +1,48 @@
+# Harbor registry metadata DB — CNPG HA in postgresql-system (no MinIO WAL archive).
+# Cutover from embedded Harbor PostgreSQL requires operator pg_dump/pg_restore into this cluster.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-registry-ha
+  namespace: postgresql-system
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.2
+  monitoring:
+    enablePodMonitor: false
+    disableDefaultQueries: true
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: postgres-superuser-secret
+  storage:
+    size: 10Gi
+    storageClass: longhorn
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+  bootstrap:
+    initdb:
+      database: registry
+      owner: registry
+      secret:
+        name: harbor-registry-db-bootstrap
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  affinity:
+    nodeSelector:
+      platform-ha: "true"
+    podAntiAffinityType: required
+    tolerations:
+      - effect: NoSchedule
+        key: cryptophys.io/pool
+        operator: Equal
+        value: platform-ha
+      - effect: NoSchedule
+        key: ray-head
+        operator: Equal
+        value: "true"

@@ -4,11 +4,8 @@ metadata:
   name: postgres-apps-ha
   namespace: postgresql-system
 spec:
-  # Stabilize the Gitea control-plane database on a single primary until the
-  # Longhorn replica path and Vault-backed CNPG archive credentials are healthy
-  # again. This restores the rw service Gitea depends on without waiting for the
-  # replica join PVC path to recover.
-  instances: 1
+  # HA: three instances on platform-ha pool (no MinIO WAL archive — in-cluster replication only).
+  instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:16.2
   monitoring:
     enablePodMonitor: false

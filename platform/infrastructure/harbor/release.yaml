@@ -166,56 +166,6 @@ spec:
                                 - thalamus-217-76-59-241
           - target:
               kind: StatefulSet
-              name: registry-harbor-database
-            patch: |
-              - op: replace
-                path: /spec/replicas
-                value: 1
-              - op: replace
-                path: /spec/template/spec/tolerations
-                value:
-                  - key: cryptophys.io/node-class
-                    operator: Equal
-                    value: nexus-hpc
-                    effect: NoSchedule
-                  - key: cryptophys.io/pool
-                    operator: Equal
-                    value: platform-ha
-                    effect: NoSchedule
-              - op: replace
-                path: /spec/template/spec/affinity
-                value:
-                  nodeAffinity:
-                    requiredDuringSchedulingIgnoredDuringExecution:
-                      nodeSelectorTerms:
-                        - matchExpressions:
-                            - key: platform-ha
-                              operator: In
-                              values:
-                                - "true"
-                            - key: kubernetes.io/hostname
-                              operator: In
-                              values:
-                                - nexus-144-91-103-10
-                                - cerebellum-161-97-117-96
-                                - thalamus-217-76-59-241
-              - op: replace
-                path: /spec/template/spec/containers/0/readinessProbe/initialDelaySeconds
-                value: 20
-              - op: replace
-                path: /spec/template/spec/containers/0/readinessProbe/timeoutSeconds
-                value: 5
-              - op: replace
-                path: /spec/template/spec/containers/0/readinessProbe/failureThreshold
-                value: 12
-              - op: replace
-                path: /spec/template/spec/containers/0/livenessProbe/timeoutSeconds
-                value: 5
-              - op: replace
-                path: /spec/template/spec/containers/0/livenessProbe/failureThreshold
-                value: 6
-          - target:
-              kind: StatefulSet
               name: registry-harbor-trivy
             patch: |
               - op: replace
@@ -284,9 +234,6 @@ spec:
           jobLog:
             storageClass: longhorn-harbor-retain
             size: 1Gi
-        database:
-          storageClass: longhorn-harbor-retain
-          size: 20Gi
         redis:
           storageClass: longhorn
           size: 5Gi
@@ -295,69 +242,19 @@ spec:
           size: 20Gi
     updateStrategy:
       type: Recreate
+    # Registry metadata DB runs in postgresql-system (CNPG postgres-registry-ha, 3 replicas).
+    # Before switching from embedded Harbor Postgres: pg_dump from old DB, pg_restore into CNPG.
     database:
-      type: internal
-      internal:
-        nodeSelector:
-          platform-ha: "true"
-        extrInitContainers:
-          - name: stale-postmaster-cleaner
-            image: goharbor/harbor-db:v2.14.2
-            imagePullPolicy: IfNotPresent
-            securityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                  - ALL
-              runAsNonRoot: true
-              runAsUser: 999
-              runAsGroup: 999
-              seccompProfile:
-                type: RuntimeDefault
-            command:
-              - /bin/sh
-            args:
-              - -c
-              - |
-                for candidate in \
-                  /var/lib/postgresql/data/pgdata/postmaster.pid \
-                  /var/lib/postgresql/data/pgdata/pg15/postmaster.pid; do
-                  if [ -f "$candidate" ] && [ -w "$candidate" ]; then
-                    rm -f "$candidate"
-                  fi
-                done
-            volumeMounts:
-              - name: database-data
-                mountPath: /var/lib/postgresql/data
-        resources:
-          limits:
-            cpu: 500m
-            memory: 1Gi
-          requests:
-            cpu: 100m
-            memory: 128Mi
-        tolerations:
-          - key: cryptophys.io/node-class
-            operator: Equal
-            value: nexus-hpc
-            effect: NoSchedule
-          - key: cryptophys.io/role
-            operator: Equal
-            value: llm-inference
-            effect: NoSchedule
-          - key: cryptophys.io/pool
-            operator: Equal
-            value: platform-ha
-            effect: NoSchedule
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: platform-ha
-                    operator: In
-                    values:
-                      - "true"
+      type: external
+      external:
+        host: postgres-registry-ha-rw.postgresql-system.svc.cluster.local
+        port: "5432"
+        username: registry
+        existingSecret: registry-harbor-database
+        coreDatabase: registry
+        sslmode: disable
+      maxIdleConns: 100
+      maxOpenConns: 900
     redis:
       type: external
       external:

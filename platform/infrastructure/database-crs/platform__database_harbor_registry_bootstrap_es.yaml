@@ -1,0 +1,25 @@
+# Bootstrap secret for CNPG postgres-registry-ha (owner user + password).
+# Required before Cluster reconcile: vault kv put secret/apps/harbor/registry-db \
+#   username=registry password='<strong-password>'
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: harbor-registry-db-bootstrap
+  namespace: postgresql-system
+spec:
+  refreshInterval: 24h
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: harbor-registry-db-bootstrap
+    creationPolicy: Owner
+  data:
+    - secretKey: username
+      remoteRef:
+        key: apps/harbor/registry-db
+        property: username
+    - secretKey: password
+      remoteRef:
+        key: apps/harbor/registry-db
+        property: password
