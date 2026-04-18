@@ -1,0 +1,167 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: postgres-security-stale-pvc-repair
+  namespace: postgresql-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: postgresql
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+imagePullSecrets:
+  - name: registry-cryptophys-work-auth
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: postgres-security-stale-pvc-repair
+  namespace: postgresql-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: postgresql
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+rules:
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims", "pods"]
+    verbs: ["get", "list", "delete"]
+  - apiGroups: ["postgresql.cnpg.io"]
+    resources: ["clusters"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: postgres-security-stale-pvc-repair
+  namespace: postgresql-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: postgresql
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: postgres-security-stale-pvc-repair
+subjects:
+  - kind: ServiceAccount
+    name: postgres-security-stale-pvc-repair
+    namespace: postgresql-system
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-security-stale-pvc-repair-v1
+  namespace: postgresql-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: postgresql
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+  annotations:
+    cryptophys.io/anti-regression: "true"
+    cryptophys.io/purpose: >-
+      Idempotently remove only stale postgres-security-ha replica PVCs when the
+      SPIRE backend CNPG cluster is intentionally pinned to a single primary, so
+      dangling and initializing replica claims do not keep the cluster degraded.
+spec:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      labels:
+        cryptophys.io/domain: platform
+        cryptophys.io/component: postgresql
+        cryptophys.io/managed-by: flux
+        cryptophys.io/layer: platform
+    spec:
+      serviceAccountName: postgres-security-stale-pvc-repair
+      imagePullSecrets:
+        - name: registry-cryptophys-work-auth
+      restartPolicy: OnFailure
+      nodeSelector:
+        platform-ha: "true"
+      tolerations:
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: repair
+          image: docker.io/alpine/k8s@sha256:bd01dae02676ce4cab62fc744e43443eee5bf660054e94d3496d23bfc35d384e
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              ns="postgresql-system"
+              cluster="postgres-security-ha"
+
+              desired="$(kubectl get cluster.postgresql.cnpg.io "${cluster}" -n "${ns}" -o jsonpath='{.spec.instances}')"
+              current_primary="$(kubectl get cluster.postgresql.cnpg.io "${cluster}" -n "${ns}" -o jsonpath='{.status.currentPrimary}')"
+              dangling="$(kubectl get cluster.postgresql.cnpg.io "${cluster}" -n "${ns}" -o jsonpath='{range .status.danglingPVC[*]}{.}{"\n"}{end}')"
+              initializing="$(kubectl get cluster.postgresql.cnpg.io "${cluster}" -n "${ns}" -o jsonpath='{range .status.initializingPVC[*]}{.}{"\n"}{end}')"
+
+              if [ "${desired}" != "1" ]; then
+                echo "cluster ${cluster} is not in single-primary mode (spec.instances=${desired}); nothing to repair"
+                exit 0
+              fi
+
+              if [ -z "${current_primary}" ]; then
+                echo "cluster ${cluster} has no currentPrimary; refusing cleanup"
+                exit 1
+              fi
+
+              candidates="$(
+                printf '%s\n%s\n' "${dangling}" "${initializing}" \
+                | sed '/^$/d' \
+                | sort -u
+              )"
+              if [ -z "${candidates}" ]; then
+                candidates="$(kubectl get pvc -n "${ns}" -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | grep "^${cluster}-" || true)"
+                if [ -n "${candidates}" ]; then
+                  echo "status.danglingPVC/status.initializingPVC empty; falling back to PVC scan for ${cluster}"
+                else
+                  echo "cluster ${cluster} has no candidate PVCs"
+                  exit 0
+                fi
+              fi
+
+              for pvc in ${candidates}; do
+                if [ "${pvc}" = "${current_primary}" ]; then
+                  echo "skipping current primary PVC ${pvc}"
+                  continue
+                fi
+
+                if ! kubectl get pvc "${pvc}" -n "${ns}" >/dev/null 2>&1; then
+                  echo "PVC ${pvc} already absent"
+                  continue
+                fi
+
+                pod="$(kubectl get pod -n "${ns}" -l "cnpg.io/instanceName=${pvc}" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
+                if [ -n "${pod}" ]; then
+                  echo "PVC ${pvc} still has pod ${pod}; refusing deletion"
+                  exit 1
+                fi
+
+                echo "deleting stale PVC ${ns}/${pvc}"
+                kubectl delete pvc "${pvc}" -n "${ns}" --ignore-not-found=true --wait=false
+              done
