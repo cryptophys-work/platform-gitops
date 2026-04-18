@@ -37,6 +37,11 @@ spec:
       priorityClassName: cryptophys-platform-critical
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      config:
+        allow-snippet-annotations: "true"
+        annotations-risk-level: Critical
+        client-header-buffer-size: 64k
+        large-client-header-buffers: "16 128k"
       extraEnvs:
         - name: CRYPTOPHYS_INGRESS_ROLLOUT_AT
           value: "1776348140"
