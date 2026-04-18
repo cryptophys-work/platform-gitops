@@ -38,12 +38,8 @@ spec:
                 template:
                   metadata:
                     annotations:
-                      cryptophys.io/daemonset-refresh: "2026-04-18T15:00:00Z"
+                      cryptophys.io/daemonset-refresh: "2026-04-18T16:15:00Z"
                   spec:
-                    # Run on all Linux nodes including control-plane (tolerations Exists).
-                    affinity: {}
-                    nodeSelector:
-                      kubernetes.io/os: linux
                     tolerations:
                       - operator: Exists
   values:
@@ -51,6 +47,9 @@ spec:
       kind: modern_ebpf
     nodeSelector:
       kubernetes.io/os: linux
+    # Same pattern as ingress-gateway DaemonSet (controllers/ingress-nginx.yaml)
+    tolerations:
+      - operator: Exists
     # FALCO CORE RESOURCES (DaemonSet)
     resources:
       requests:
