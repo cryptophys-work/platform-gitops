@@ -4,7 +4,10 @@ metadata:
   name: postgres-security-ha
   namespace: postgresql-system
 spec:
-  instances: 3
+  # Restore the SPIRE backend on a single primary first. The current 3-instance
+  # topology is stuck with detached/unknown Longhorn replicas, and SPIRE only
+  # needs a healthy rw service to resume issuing identities for Tekton.
+  instances: 1
   imageName: ghcr.io/cloudnative-pg/postgresql:16.2
   monitoring:
     enablePodMonitor: false
