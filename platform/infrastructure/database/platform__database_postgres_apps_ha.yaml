@@ -40,10 +40,13 @@ spec:
   affinity:
     nodeSelector:
       platform-ha: "true"
-      kubernetes.io/hostname: thalamus-217-76-59-241
     podAntiAffinityType: required
     tolerations:
     - effect: NoSchedule
       key: cryptophys.io/pool
       operator: Equal
       value: platform-ha
+    - effect: NoSchedule
+      key: ray-head
+      operator: Equal
+      value: "true"
