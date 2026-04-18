@@ -12,7 +12,8 @@ spec:
   interval: 1h
   prune: false
   wait: false
-  timeout: 30m
+  # Harbor chart + admission webhooks: allow headroom when apiserver is under pressure.
+  timeout: 45m
   path: ./platform/infrastructure/harbor
   sourceRef:
     kind: GitRepository

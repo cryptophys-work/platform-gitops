@@ -14,7 +14,8 @@ spec:
   force: true     # Apply label updates to existing namespaces
   prune: false    # Never prune namespaces
   wait: false
-  timeout: 15m
+  # Namespace object health checks can exceed default budgets when apiserver/etcd are slow.
+  timeout: 25m
   path: ./platform/infrastructure/namespaces
   sourceRef:
     kind: GitRepository
