@@ -36,6 +36,8 @@ spec:
               app.kubernetes.io/name: tekton-crd-migrator
       # DaemonSets in these namespaces carry their own full toleration sets (master/CP/Exists).
       # Pool injection here can leave only platform-ha and break scheduling on tainted nodes.
+      # cert-manager Helm sets operator=Exists for the controller; injecting only platform-ha
+      # first can prevent scheduling on nodes with other NoSchedule taints.
       - resources:
           kinds:
           - Pod
@@ -46,6 +48,7 @@ spec:
                 values:
                   - metallb-system
                   - falco-system
+                  - cert-manager
     preconditions:
       all:
       # Only inject (and potentially replace) tolerations when the pod has no tolerations at all.
@@ -89,6 +92,7 @@ spec:
                 values:
                   - metallb-system
                   - falco-system
+                  - cert-manager
     preconditions:
       all:
       - key: "{{ request.object.spec.tolerations || '' }}"
