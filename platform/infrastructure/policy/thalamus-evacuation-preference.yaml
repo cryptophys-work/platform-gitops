@@ -1,0 +1,99 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-thalamus-evacuation-preference
+  annotations:
+    policies.kyverno.io/title: Thalamus Evacuation Preference
+    policies.kyverno.io/category: Node Placement
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >
+      Preferentially schedule critical infrastructure and application controllers
+      on the nexus node pool during thalamus rebalancing, while maintaining
+      platform-ha fallbacks.
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: prefer-nexus-for-infra-and-apps
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - apps-system
+                - external-secrets
+                - tekton-pipelines
+                - tekton-system
+                - kyverno-system
+                - registry-system
+                - vault-system
+                - image-factory
+                - database
+                - gitops-system
+                - envoy-gateway-system
+                - flux-system
+                - cert-manager
+                - cnpg-system
+                - crossplane-system
+                - facilitator
+                - falco-system
+                - security-system
+                - observability-system
+                - tekton-dashboard
+                - tekton-pipelines-resolvers
+      exclude:
+        any:
+          - resources:
+              kinds:
+                - DaemonSet
+      mutate:
+        patchStrategicMerge:
+          spec:
+            affinity:
+              nodeAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    preference:
+                      matchExpressions:
+                        - key: kubernetes.io/hostname
+                          operator: In
+                          values:
+                            - nexus-144-91-103-10
+    - name: prefer-nexus-for-kube-system-critical
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - kube-system
+              selector:
+                matchExpressions:
+                  - key: k8s-app
+                    operator: In
+                    values:
+                      - kube-dns
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - kube-system
+              selector:
+                matchLabels:
+                  io.cilium.k8s.policy.serviceaccount: cilium-operator
+      mutate:
+        patchStrategicMerge:
+          spec:
+            affinity:
+              nodeAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    preference:
+                      matchExpressions:
+                        - key: kubernetes.io/hostname
+                          operator: In
+                          values:
+                            - nexus-144-91-103-10
