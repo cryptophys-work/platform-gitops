@@ -1,5 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+# workloads.kueue.x-k8s.io CRD is omitted from kueue-install.yaml: OpenAPI exceeds the
+# 262144-byte kubectl last-applied-configuration limit. Source of truth: crds/workloads.kueue.x-k8s.io.yaml
+# Apply/upgrade with server-side apply only, and keep kustomize.toolkit.fluxcd.io/prune=disabled on the live CRD.
 
 resources:
   - kueue-install.yaml

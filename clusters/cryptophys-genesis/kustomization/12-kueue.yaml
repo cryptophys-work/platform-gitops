@@ -11,7 +11,7 @@ spec:
   interval: 1h
   prune: true
   wait: true
-  timeout: 5m
+  timeout: 15m
   path: ./platform/infrastructure/kueue/base
   sourceRef:
     kind: GitRepository
