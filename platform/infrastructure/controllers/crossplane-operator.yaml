@@ -18,32 +18,13 @@ spec:
     crds: CreateReplace
   upgrade:
     crds: CreateReplace
+  # ValidatingWebhookConfiguration objects are applied at runtime by the
+  # Crossplane init container, not rendered by this chart — Helm post-renders
+  # never affect them. Tune timeout/failurePolicy via Kyverno instead:
+  # policy/crossplane-validating-webhook-tuning.yaml
   postRenderers:
   - kustomize:
       patches:
-      - target:
-          kind: ValidatingWebhookConfiguration
-          name: crossplane
-        patch: |
-          - op: replace
-            path: /webhooks/0/failurePolicy
-            value: "Ignore"
-          - op: replace
-            path: /webhooks/1/failurePolicy
-            value: "Ignore"
-          - op: replace
-            path: /webhooks/0/timeoutSeconds
-            value: 30
-          - op: replace
-            path: /webhooks/1/timeoutSeconds
-            value: 30
-      - target:
-          kind: ValidatingWebhookConfiguration
-          name: crossplane-no-usages
-        patch: |
-          - op: replace
-            path: /webhooks/0/failurePolicy
-            value: Ignore
       - target:
           kind: Deployment
           name: crossplane

@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - edge-and-harbor-exceptions.yaml
   - crossplane-system-exceptions.yaml
+  - crossplane-validating-webhook-tuning.yaml
   - kyverno-release.yaml
   - daemonset-linux-only-nodeselector.yaml
   - policy__cluster-pool-apps-ha-toleration.yaml
