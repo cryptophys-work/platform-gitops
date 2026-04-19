@@ -25,11 +25,10 @@ spec:
     loki:
       enabled: true
       isDefault: false
-      # Local PVC: boltdb-shipper index + cache; chunks on MinIO (bucket `loki`).
+      # Chunks + shipped index live on MinIO (bucket `loki`). Boltdb active/cache use
+      # emptyDir here — enabling PVC would require StatefulSet replace (immutable PVC template).
       persistence:
-        enabled: true
-        storageClassName: longhorn-single
-        size: 10Gi
+        enabled: false
       extraEnvFrom:
         - secretRef:
             name: platform-observability-loki-minio
