@@ -1,6 +1,10 @@
 ---
 # PodDisruptionBudget Auto-Generation per Pool
 #
+# Operational note: Kyverno rejects in-place edits that change immutable fields of
+# an existing generate rule. When restructuring rules here, delete the affected
+# ClusterPolicy in-cluster first, then let Flux recreate it (or bump policy name).
+#
 # These policies auto-generate PodDisruptionBudgets for Deployments and StatefulSets
 # based on the namespace's cryptophys.io/pool label.
 #

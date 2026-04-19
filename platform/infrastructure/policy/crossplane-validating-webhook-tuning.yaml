@@ -1,8 +1,9 @@
 # Crossplane applies ValidatingWebhookConfiguration objects from its init
 # container (not from Helm templates). Helm post-renders therefore never see
 # those manifests and cannot tune timeout/failurePolicy. This policy keeps the
-# apiserver-facing settings idempotent on CREATE/UPDATE and reconciles existing
-# objects when background processing runs (background: true).
+# apiserver-facing settings idempotent on CREATE/UPDATE (admission), on policy
+# updates (mutateExistingOnPolicyUpdate + targets), and via background scans
+# (background: true).
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -14,7 +15,9 @@ metadata:
     policies.kyverno.io/description: >
       Enforce maximum admission timeout (30s) and Ignore failure policy on
       Crossplane's validating webhooks so slow validation or webhook outages do
-      not hard-block the API server or GitOps dry-runs.
+      not hard-block the API server or GitOps dry-runs. Re-applies to existing
+      VWCs when this ClusterPolicy changes so drift after Crossplane restarts is
+      corrected without Helm post-renderers.
     cryptophys.io/domain: platform
     cryptophys.io/component: crossplane
     cryptophys.io/managed-by: flux
@@ -31,6 +34,11 @@ spec:
               names:
                 - crossplane
       mutate:
+        mutateExistingOnPolicyUpdate: true
+        targets:
+          - apiVersion: admissionregistration.k8s.io/v1
+            kind: ValidatingWebhookConfiguration
+            name: crossplane
         foreach:
           - list: "request.object.webhooks || `[]`"
             patchesJson6902: |-
@@ -49,6 +57,11 @@ spec:
               names:
                 - crossplane-no-usages
       mutate:
+        mutateExistingOnPolicyUpdate: true
+        targets:
+          - apiVersion: admissionregistration.k8s.io/v1
+            kind: ValidatingWebhookConfiguration
+            name: crossplane-no-usages
         foreach:
           - list: "request.object.webhooks || `[]`"
             patchesJson6902: |-
