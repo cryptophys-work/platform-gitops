@@ -61,6 +61,19 @@ spec:
                     operator: Equal
                     value: platform-ha
                     effect: NoSchedule
+          # Required host anti-affinity only allows three platform-ha nodes; chart default
+          # RollingUpdate maxSurge would schedule a third controller pod and deadlock Pending.
+          - target:
+              kind: Deployment
+              name: argocd-application-controller
+            patch: |
+              - op: replace
+                path: /spec/strategy
+                value:
+                  type: RollingUpdate
+                  rollingUpdate:
+                    maxSurge: 0
+                    maxUnavailable: 1
           - target:
               kind: Deployment
               name: argocd-notifications-controller
