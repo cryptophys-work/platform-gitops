@@ -2,10 +2,12 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - prometheus-release.yaml
+  - loki-minio-externalsecret.yaml
   - loki-release.yaml
   - otel-collector-release.yaml
   - trivy-server.yaml
   - trivy-operator-release.yaml
   - trivy-policy-exception.yaml
   - grafana-dashboard-cluster-insights.yaml
+  - grafana-dashboard-spire-agent-sizing.yaml
   - grafana-dashboard-falco-runtime-live.yaml

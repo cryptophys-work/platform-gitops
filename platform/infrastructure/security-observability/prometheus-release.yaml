@@ -82,6 +82,16 @@ spec:
           enabled: true
           org_name: Main Org.
           org_role: Viewer
+      # Align uid with dashboards (e.g. Falco) that reference datasource uid `loki`.
+      additionalDataSources:
+        - name: Loki
+          uid: loki
+          type: loki
+          url: http://platform-observability-loki.observability-system.svc.cluster.local:3100
+          access: proxy
+          isDefault: false
+          jsonData:
+            maxLines: 5000
       sidecar:
         datasources:
           defaultDatasourceEnabled: true
@@ -168,6 +178,27 @@ spec:
           memory: 256Mi
     kubeEtcd:
       enabled: false
+    # Recording rules for SPIRE agent CPU/memory (cAdvisor + kube-state) to size quotas from Prometheus.
+    additionalPrometheusRulesMap:
+      cryptophys-spire-agent-sizing:
+        groups:
+          - name: cryptophys.spire_agent.sizing
+            interval: 60s
+            rules:
+              - record: cryptophys:spire_agent:container_memory_working_set_bytes:max
+                expr: max by (pod, node) (container_memory_working_set_bytes{namespace="spire-system", pod=~"spire-agent-.*", container="spire-agent", image!=""})
+              - record: cryptophys:spire_agent:container_memory_working_set_bytes:p99_1h
+                expr: max by (pod) (quantile_over_time(0.99, container_memory_working_set_bytes{namespace="spire-system", pod=~"spire-agent-.*", container="spire-agent", image!=""}[1h]))
+              - record: cryptophys:spire_agent:container_cpu_usage_seconds:rate5m
+                expr: sum by (pod, node) (rate(container_cpu_usage_seconds_total{namespace="spire-system", pod=~"spire-agent-.*", container="spire-agent", image!=""}[5m]))
+              - record: cryptophys:spire_agent:kube_pod_container_resource_limits_memory_bytes
+                expr: kube_pod_container_resource_limits{namespace="spire-system", pod=~"spire-agent-.*", container="spire-agent", resource="memory"}
+              - record: cryptophys:spire_agent:kube_pod_container_resource_limits_cpu_cores
+                expr: kube_pod_container_resource_limits{namespace="spire-system", pod=~"spire-agent-.*", container="spire-agent", resource="cpu"}
+              - record: cryptophys:spire_agent:kube_pod_container_resource_requests_memory_bytes
+                expr: kube_pod_container_resource_requests{namespace="spire-system", pod=~"spire-agent-.*", container="spire-agent", resource="memory"}
+              - record: cryptophys:spire_agent:kube_pod_container_resource_requests_cpu_cores
+                expr: kube_pod_container_resource_requests{namespace="spire-system", pod=~"spire-agent-.*", container="spire-agent", resource="cpu"}
     nodeExporter:
       tolerations:
         - operator: Exists

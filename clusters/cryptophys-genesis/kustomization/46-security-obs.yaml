@@ -21,3 +21,5 @@ spec:
     name: platform-repo
   dependsOn:
     - name: 45-observability
+    # MinIO (platform-backup-minio) + bucket `loki` must exist before Loki S3 storage mounts.
+    - name: 50-backup
