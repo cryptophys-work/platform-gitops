@@ -30,6 +30,10 @@ spec:
     mode: standalone
     replicas: 1
     existingSecret: minio-static-creds
+    image:
+      repository: quay.io/minio/minio
+      # Required to read xl.meta v3 files written by the accidental newer MinIO pod.
+      tag: RELEASE.2025-09-07T16-13-09Z
     users: []
     buckets:
       - name: velero

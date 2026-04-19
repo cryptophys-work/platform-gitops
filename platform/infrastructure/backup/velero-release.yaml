@@ -33,6 +33,8 @@ spec:
           region: us-east-1
           s3ForcePathStyle: true
           s3Url: http://platform-backup-minio.minio-system.svc.cluster.local:9000
+      uploaderType: kopia
+      defaultVolumesToFsBackup: false
     initContainers:
     - name: velero-plugin-for-aws
       image: velero/velero-plugin-for-aws:v1.11.0
@@ -50,7 +52,20 @@ spec:
     credentials:
       existingSecret: platform-backup-velero-credentials
       useSecret: true
-    deployNodeAgent: false
+    deployNodeAgent: true
+    nodeAgent:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+      tolerations:
+        - operator: Exists
+          effect: NoSchedule
+        - operator: Exists
+          effect: NoExecute
     snapshotsEnabled: false
     upgradeCRDs: false
     replicas: 2

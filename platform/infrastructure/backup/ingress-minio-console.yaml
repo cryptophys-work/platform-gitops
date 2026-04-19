@@ -6,6 +6,13 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($request_uri ~* "^/browser(/.*)?$") {
+        return 308 /;
+      }
+      sub_filter_once off;
+      sub_filter_types text/html;
+      sub_filter '</head>' '<script>try{localStorage.removeItem("redirect-path");if(location.hash&&location.hash.indexOf("#/browser")===0){history.replaceState(null,"","/");location.hash="";}}catch(e){}</script></head>';
     # Longer timeouts during PVC attach / pod restart (avoids nginx closing early while upstream is down)
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
