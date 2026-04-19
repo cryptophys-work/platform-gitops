@@ -29,7 +29,7 @@ spec:
       app.kubernetes.io/instance: platform-backup-minio
     mode: standalone
     replicas: 1
-    existingSecret: minio-static-creds
+    existingSecret: platform-backup-minio-credentials
     image:
       repository: quay.io/minio/minio
       # Required to read xl.meta v3 files written by the accidental newer MinIO pod.
