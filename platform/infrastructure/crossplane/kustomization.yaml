@@ -16,8 +16,6 @@ resources:
   # Provider configuration (local Kubernetes API access)
   - provider-kubernetes.yaml
   - provider-kubernetes-rbac.yaml
-  # Re-apply Crossplane VWC timeout/failurePolicy after init container resets them
-  - crossplane__validating_webhook_refresh.yaml
   # Longhorn release abstraction
   - longhorn-release-definition.yaml
   - longhorn-release-composition.yaml

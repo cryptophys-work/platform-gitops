@@ -1,0 +1,100 @@
+# Bundled webhook YAML baked into the Crossplane image is read from
+# /webhookconfigurations during `crossplane core init` (see upstream
+# cluster/webhookconfigurations). Mounting this ConfigMap at that path replaces
+# the embedded files so admission settings are source-of-truth in GitOps while
+# the init code still injects CABundle and Service clientConfig.
+#
+# Sync with upstream when upgrading Crossplane:
+# https://github.com/crossplane/crossplane/tree/v1.18.2/cluster/webhookconfigurations
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crossplane-webhook-admission-profile
+  namespace: crossplane-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+  annotations:
+    cryptophys.io/upstream-crossplane-version: "1.18.2"
+data:
+  manifests.yaml: |
+    ---
+    apiVersion: admissionregistration.k8s.io/v1
+    kind: ValidatingWebhookConfiguration
+    metadata:
+      name: validating-webhook-configuration
+    webhooks:
+      - admissionReviewVersions:
+          - v1
+        clientConfig:
+          service:
+            name: webhook-service
+            namespace: system
+            path: /validate-apiextensions-crossplane-io-v1-compositeresourcedefinition
+        failurePolicy: Ignore
+        timeoutSeconds: 30
+        name: compositeresourcedefinitions.apiextensions.crossplane.io
+        rules:
+          - apiGroups:
+              - apiextensions.crossplane.io
+            apiVersions:
+              - v1
+            operations:
+              - CREATE
+              - UPDATE
+            resources:
+              - compositeresourcedefinitions
+        sideEffects: None
+      - admissionReviewVersions:
+          - v1
+        clientConfig:
+          service:
+            name: webhook-service
+            namespace: system
+            path: /validate-apiextensions-crossplane-io-v1-composition
+        failurePolicy: Ignore
+        timeoutSeconds: 30
+        name: compositions.apiextensions.crossplane.io
+        rules:
+          - apiGroups:
+              - apiextensions.crossplane.io
+            apiVersions:
+              - v1
+            operations:
+              - UPDATE
+              - CREATE
+            resources:
+              - compositions
+        sideEffects: None
+  usage.yaml: |
+    ---
+    apiVersion: admissionregistration.k8s.io/v1
+    kind: ValidatingWebhookConfiguration
+    metadata:
+      name: crossplane-no-usages
+    webhooks:
+      - admissionReviewVersions:
+          - v1
+        clientConfig:
+          service:
+            name: webhook-service
+            namespace: system
+            path: /validate-no-usages
+        failurePolicy: Ignore
+        timeoutSeconds: 30
+        name: nousages.apiextensions.crossplane.io
+        objectSelector:
+          matchLabels:
+            crossplane.io/in-use: "true"
+        rules:
+          - apiGroups:
+              - "*"
+            apiVersions:
+              - "*"
+            operations:
+              - DELETE
+            resources:
+              - "*"
+        sideEffects: None
