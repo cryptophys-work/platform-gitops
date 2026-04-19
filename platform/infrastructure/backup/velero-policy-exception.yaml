@@ -8,6 +8,7 @@ metadata:
     reason: velero-backup-service-requires-security-exceptions
     ticket: PLATFORM-001
     expiry: "2026-12-31"
+    cryptophys.work/exception-expires-at: "2026-12-31T23:59:59Z"
 spec:
   exceptions:
     - policyName: cp-security-hardening-v1
