@@ -26,6 +26,9 @@ spec:
   postRenderers:
   - kustomize:
       patches:
+      # Single JSON6902 document for Deployment/crossplane: Flux+kustomize may not
+      # reliably apply multiple patch entries targeting the same object; keep scheduling
+      # and webhook ConfigMap mount in one patch list.
       - target:
           kind: Deployment
           name: crossplane
@@ -73,6 +76,19 @@ spec:
                           operator: In
                           values:
                             - "true"
+          - op: add
+            path: /spec/template/spec/volumes/-
+            value:
+              name: crossplane-webhook-admission-profile
+              configMap:
+                name: crossplane-webhook-admission-profile
+                defaultMode: 420
+          - op: add
+            path: /spec/template/spec/initContainers/0/volumeMounts
+            value:
+              - name: crossplane-webhook-admission-profile
+                mountPath: /webhookconfigurations
+                readOnly: true
       - target:
           kind: Deployment
           name: crossplane-rbac-manager
@@ -120,23 +136,6 @@ spec:
                           operator: In
                           values:
                             - "true"
-      - target:
-          kind: Deployment
-          name: crossplane
-        patch: |
-          - op: add
-            path: /spec/template/spec/volumes/-
-            value:
-              name: crossplane-webhook-admission-profile
-              configMap:
-                name: crossplane-webhook-admission-profile
-                defaultMode: 420
-          - op: add
-            path: /spec/template/spec/initContainers/0/volumeMounts
-            value:
-              - name: crossplane-webhook-admission-profile
-                mountPath: /webhookconfigurations
-                readOnly: true
   values:
     replicas: 1
     deploymentStrategy: RollingUpdate
