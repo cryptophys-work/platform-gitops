@@ -25,11 +25,14 @@ spec:
                 policies.kyverno.io/severity: "medium"
                 cryptophys.io/managed-by: crossplane
                 cryptophys.io/component: cluster-pool-policy
+                pod-policies.kyverno.io/autogen-controllers: "none"
             spec:
               validationFailureAction: audit
               background: true
+              # Append-only mutations: patchStrategicMerge on tolerations replaces broad
+              # entries (e.g. operator Exists on ingress / Falco DaemonSets) and breaks 8/8.
               rules:
-              - name: ""
+              - name: inject-pool-toleration
                 match:
                   any:
                   - resources:
@@ -37,13 +40,44 @@ spec:
                       namespaceSelector:
                         matchLabels:
                           cryptophys.io/pool: ""
+                preconditions:
+                  all:
+                  - key: "{{ (request.object.spec.tolerations || []) | length(@) }}"
+                    operator: Equals
+                    value: 0
                 mutate:
-                  patchStrategicMerge:
-                    spec:
-                      tolerations:
-                      - key: cryptophys.io/pool
+                  patchesJson6902: |
+                    - op: add
+                      path: /spec/tolerations
+                      value:
+                        - key: cryptophys.io/pool
+                          operator: Equal
+                          value: pool-placeholder
+                          effect: NoSchedule
+              - name: append-pool-toleration
+                match:
+                  any:
+                  - resources:
+                      kinds: [Pod]
+                      namespaceSelector:
+                        matchLabels:
+                          cryptophys.io/pool: ""
+                preconditions:
+                  all:
+                  - key: "{{ request.object.spec.tolerations || '' }}"
+                    operator: NotEquals
+                    value: ""
+                  - key: "{{ request.object.spec.tolerations[?key=='cryptophys.io/pool' && value=='pool-placeholder'] | length(@) }}"
+                    operator: Equals
+                    value: 0
+                mutate:
+                  patchesJson6902: |
+                    - op: add
+                      path: /spec/tolerations/-
+                      value:
+                        key: cryptophys.io/pool
                         operator: Equal
-                        value: ""
+                        value: pool-placeholder
                         effect: NoSchedule
         providerConfigRef:
           name: local-kubernetes-provider
@@ -55,19 +89,54 @@ spec:
       - type: string
         string:
           fmt: "mutate-pool-tolerations-%s"
-    # Rule name: "inject-<pool-name>-toleration"
     - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
       toFieldPath: "spec.forProvider.manifest.spec.rules[0].name"
       transforms:
       - type: string
         string:
           fmt: "inject-%s-toleration"
-    # namespaceSelector label value → pool name
+    - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+      toFieldPath: "spec.forProvider.manifest.spec.rules[1].name"
+      transforms:
+      - type: string
+        string:
+          fmt: "append-%s-toleration"
     - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
       toFieldPath: "spec.forProvider.manifest.spec.rules[0].match.any[0].resources.namespaceSelector.matchLabels[cryptophys.io/pool]"
-    # toleration value → pool name
     - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
-      toFieldPath: "spec.forProvider.manifest.spec.rules[0].mutate.patchStrategicMerge.spec.tolerations[0].value"
+      toFieldPath: "spec.forProvider.manifest.spec.rules[1].match.any[0].resources.namespaceSelector.matchLabels[cryptophys.io/pool]"
+    - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+      toFieldPath: "spec.forProvider.manifest.spec.rules[1].preconditions.all[1].key"
+      transforms:
+      - type: string
+        string:
+          fmt: "{{ request.object.spec.tolerations[?key=='cryptophys.io/pool' && value=='%s'] | length(@) }}"
+    - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+      toFieldPath: "spec.forProvider.manifest.spec.rules[0].mutate.patchesJson6902"
+      transforms:
+      - type: string
+        string:
+          fmt: |
+            - op: add
+              path: /spec/tolerations
+              value:
+                - key: cryptophys.io/pool
+                  operator: Equal
+                  value: %s
+                  effect: NoSchedule
+    - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+      toFieldPath: "spec.forProvider.manifest.spec.rules[1].mutate.patchesJson6902"
+      transforms:
+      - type: string
+        string:
+          fmt: |
+            - op: add
+              path: /spec/tolerations/-
+              value:
+                key: cryptophys.io/pool
+                operator: Equal
+                value: %s
+                effect: NoSchedule
   - name: pool-namespace-object
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
