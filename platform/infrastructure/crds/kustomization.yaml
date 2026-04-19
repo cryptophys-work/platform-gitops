@@ -2,3 +2,4 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - spire/spire-crds.yaml
+  - velero/backups.velero.io-crd.yaml
