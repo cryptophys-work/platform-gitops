@@ -62,6 +62,28 @@ spec:
                                 - nexus-144-91-103-10
                                 - cerebellum-161-97-117-96
                                 - thalamus-217-76-59-241
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 100
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - nexus-144-91-103-10
+                      - weight: 100
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - cerebellum-161-97-117-96
+                      - weight: 35
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - thalamus-217-76-59-241
           - target:
               kind: Deployment
               name: registry-harbor-jobservice
@@ -96,6 +118,28 @@ spec:
                               values:
                                 - nexus-144-91-103-10
                                 - cerebellum-161-97-117-96
+                                - thalamus-217-76-59-241
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 100
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - nexus-144-91-103-10
+                      - weight: 100
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - cerebellum-161-97-117-96
+                      - weight: 35
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
                                 - thalamus-217-76-59-241
           - target:
               kind: Deployment
@@ -132,6 +176,28 @@ spec:
                                 - nexus-144-91-103-10
                                 - cerebellum-161-97-117-96
                                 - thalamus-217-76-59-241
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 100
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - nexus-144-91-103-10
+                      - weight: 100
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - cerebellum-161-97-117-96
+                      - weight: 35
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - thalamus-217-76-59-241
           - target:
               kind: Deployment
               name: registry-harbor-registry
@@ -164,6 +230,28 @@ spec:
                                 - nexus-144-91-103-10
                                 - cerebellum-161-97-117-96
                                 - thalamus-217-76-59-241
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 100
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - nexus-144-91-103-10
+                      - weight: 100
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - cerebellum-161-97-117-96
+                      - weight: 35
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - thalamus-217-76-59-241
           - target:
               kind: StatefulSet
               name: registry-harbor-trivy
@@ -195,6 +283,28 @@ spec:
                               values:
                                 - nexus-144-91-103-10
                                 - cerebellum-161-97-117-96
+                                - thalamus-217-76-59-241
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 100
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - nexus-144-91-103-10
+                      - weight: 100
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - cerebellum-161-97-117-96
+                      - weight: 35
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
                                 - thalamus-217-76-59-241
   values:
     expose:
@@ -348,6 +458,28 @@ spec:
                       - nexus-144-91-103-10
                       - cerebellum-161-97-117-96
                       - thalamus-217-76-59-241
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - nexus-144-91-103-10
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - cerebellum-161-97-117-96
+            - weight: 35
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - thalamus-217-76-59-241
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
@@ -403,6 +535,28 @@ spec:
                     values:
                       - nexus-144-91-103-10
                       - cerebellum-161-97-117-96
+                      - thalamus-217-76-59-241
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - nexus-144-91-103-10
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - cerebellum-161-97-117-96
+            - weight: 35
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
                       - thalamus-217-76-59-241
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -460,6 +614,28 @@ spec:
                       - nexus-144-91-103-10
                       - cerebellum-161-97-117-96
                       - thalamus-217-76-59-241
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - nexus-144-91-103-10
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - cerebellum-161-97-117-96
+            - weight: 35
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - thalamus-217-76-59-241
     registry:
       registry:
         resources:
@@ -505,6 +681,28 @@ spec:
                     values:
                       - nexus-144-91-103-10
                       - cerebellum-161-97-117-96
+                      - thalamus-217-76-59-241
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - nexus-144-91-103-10
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - cerebellum-161-97-117-96
+            - weight: 35
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
                       - thalamus-217-76-59-241
     exporter:
       replicas: 1

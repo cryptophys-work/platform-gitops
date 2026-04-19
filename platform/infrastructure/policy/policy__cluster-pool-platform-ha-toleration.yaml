@@ -7,8 +7,8 @@ metadata:
     policies.kyverno.io/category: Node Placement
     policies.kyverno.io/severity: medium
     policies.kyverno.io/description: >
-      Inject platform-ha toleration for pods in namespaces labeled
-      cryptophys.io/pool=platform-ha.
+      Append pool toleration for namespaces labeled cryptophys.io/pool=platform-ha.
+      JSON6902 append preserves workload tolerations (e.g. operator Exists on ingress / Falco).
     cryptophys.io/source: ClusterPool (platform-ha)
     cryptophys.io/component: cluster-pool-policy
     cryptophys.io/managed-by: crossplane
@@ -34,21 +34,6 @@ spec:
           selector:
             matchLabels:
               app.kubernetes.io/name: tekton-crd-migrator
-      # DaemonSets in these namespaces carry their own full toleration sets (master/CP/Exists).
-      # Pool injection here can leave only platform-ha and break scheduling on tainted nodes.
-      # cert-manager Helm sets operator=Exists for the controller; injecting only platform-ha
-      # first can prevent scheduling on nodes with other NoSchedule taints.
-      - resources:
-          kinds:
-          - Pod
-          namespaceSelector:
-            matchExpressions:
-              - key: kubernetes.io/metadata.name
-                operator: In
-                values:
-                  - metallb-system
-                  - falco-system
-                  - cert-manager
     preconditions:
       all:
       # Only inject (and potentially replace) tolerations when the pod has no tolerations at all.
@@ -59,12 +44,12 @@ spec:
     mutate:
       patchesJson6902: |-
         - op: add
-          path: /spec/tolerations/-
+          path: /spec/tolerations
           value:
-            key: cryptophys.io/pool
-            operator: Equal
-            value: platform-ha
-            effect: NoSchedule
+            - key: cryptophys.io/pool
+              operator: Equal
+              value: platform-ha
+              effect: NoSchedule
   - name: append-platform-ha-toleration
     match:
       any:
@@ -82,17 +67,6 @@ spec:
           selector:
             matchLabels:
               app.kubernetes.io/name: tekton-crd-migrator
-      - resources:
-          kinds:
-          - Pod
-          namespaceSelector:
-            matchExpressions:
-              - key: kubernetes.io/metadata.name
-                operator: In
-                values:
-                  - metallb-system
-                  - falco-system
-                  - cert-manager
     preconditions:
       all:
       - key: "{{ request.object.spec.tolerations || '' }}"
