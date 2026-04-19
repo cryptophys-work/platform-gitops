@@ -85,6 +85,21 @@ spec:
         operator: Equal
         value: llm-inference
         effect: NoSchedule
+      - key: node.cilium.io/agent-not-ready
+        operator: Exists
+        effect: NoSchedule
+      - key: bridge-system
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+      - key: dao-system
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+      - key: ray-head
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
     livenessProbe:
       httpGet:
         path: /metrics
