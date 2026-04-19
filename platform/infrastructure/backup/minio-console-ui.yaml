@@ -74,7 +74,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: console
-          image: docker.io/minio/console:v1.7.6
+          image: docker.io/opens3/console@sha256:5cd26c5c3dab49eca5cf1da012e9389db9602e1996f2f4cbffb9d22207a73aae
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
