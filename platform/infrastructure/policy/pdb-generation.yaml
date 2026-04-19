@@ -23,11 +23,14 @@ metadata:
     cryptophys.io/description: >
       Automatically generate PodDisruptionBudgets for apps-ha workloads requiring
       minAvailable=2 to ensure at least 2 replicas survive pod disruptions.
+      When pod templates carry an "app" label (e.g. Crossplane chart: crossplane vs
+      crossplane-rbac-manager), PDB selectors include it so two Deployments that
+      share app.kubernetes.io/name do not produce overlapping PDBs.
 spec:
   validationFailureAction: audit
   background: true
   rules:
-  - name: generate-pdb-apps-ha-deployments
+  - name: generate-pdb-apps-ha-deployments-by-app
     match:
       any:
       - resources:
@@ -35,7 +38,48 @@ spec:
           namespaceSelector:
             matchLabels:
               cryptophys.io/pool: apps-ha
+    preconditions:
+      all:
+        - key: "{{ request.object.spec.template.metadata.labels.app || '' }}"
+          operator: NotEquals
+          value: ""
     generate:
+      synchronize: true
+      apiVersion: policy/v1
+      kind: PodDisruptionBudget
+      name: pdb-{{ request.object.metadata.name }}
+      namespace: "{{ request.object.metadata.namespace }}"
+      data:
+        apiVersion: policy/v1
+        kind: PodDisruptionBudget
+        metadata:
+          name: pdb-{{ request.object.metadata.name }}
+          namespace: "{{ request.object.metadata.namespace }}"
+          annotations:
+            cryptophys.io/generated-by: kyverno
+            cryptophys.io/pool: apps-ha
+        spec:
+          minAvailable: 2
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: "{{ request.object.metadata.labels.\"app.kubernetes.io/name\" }}"
+              app: "{{ request.object.spec.template.metadata.labels.app }}"
+
+  - name: generate-pdb-apps-ha-deployments-fallback
+    match:
+      any:
+      - resources:
+          kinds: [Deployment]
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: apps-ha
+    preconditions:
+      all:
+        - key: "{{ request.object.spec.template.metadata.labels.app || '' }}"
+          operator: Equals
+          value: ""
+    generate:
+      synchronize: true
       apiVersion: policy/v1
       kind: PodDisruptionBudget
       name: pdb-{{ request.object.metadata.name }}
@@ -55,7 +99,7 @@ spec:
             matchLabels:
               app.kubernetes.io/name: "{{ request.object.metadata.labels.\"app.kubernetes.io/name\" }}"
 
-  - name: generate-pdb-apps-ha-statefulsets
+  - name: generate-pdb-apps-ha-statefulsets-by-app
     match:
       any:
       - resources:
@@ -63,7 +107,48 @@ spec:
           namespaceSelector:
             matchLabels:
               cryptophys.io/pool: apps-ha
+    preconditions:
+      all:
+        - key: "{{ request.object.spec.template.metadata.labels.app || '' }}"
+          operator: NotEquals
+          value: ""
     generate:
+      synchronize: true
+      apiVersion: policy/v1
+      kind: PodDisruptionBudget
+      name: pdb-{{ request.object.metadata.name }}
+      namespace: "{{ request.object.metadata.namespace }}"
+      data:
+        apiVersion: policy/v1
+        kind: PodDisruptionBudget
+        metadata:
+          name: pdb-{{ request.object.metadata.name }}
+          namespace: "{{ request.object.metadata.namespace }}"
+          annotations:
+            cryptophys.io/generated-by: kyverno
+            cryptophys.io/pool: apps-ha
+        spec:
+          minAvailable: 2
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: "{{ request.object.metadata.labels.\"app.kubernetes.io/name\" }}"
+              app: "{{ request.object.spec.template.metadata.labels.app }}"
+
+  - name: generate-pdb-apps-ha-statefulsets-fallback
+    match:
+      any:
+      - resources:
+          kinds: [StatefulSet]
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: apps-ha
+    preconditions:
+      all:
+        - key: "{{ request.object.spec.template.metadata.labels.app || '' }}"
+          operator: Equals
+          value: ""
+    generate:
+      synchronize: true
       apiVersion: policy/v1
       kind: PodDisruptionBudget
       name: pdb-{{ request.object.metadata.name }}
@@ -96,11 +181,13 @@ metadata:
     cryptophys.io/description: >
       Automatically generate PodDisruptionBudgets for platform-ha workloads requiring
       minAvailable=1 to ensure at least 1 replica survives pod disruptions.
+      When pod templates carry an "app" label, PDB selectors include it so sibling
+      controllers (same app.kubernetes.io/name) do not share one PDB selector.
 spec:
   validationFailureAction: audit
   background: true
   rules:
-  - name: generate-pdb-platform-ha-deployments
+  - name: generate-pdb-platform-ha-deployments-by-app
     match:
       any:
       - resources:
@@ -108,7 +195,48 @@ spec:
           namespaceSelector:
             matchLabels:
               cryptophys.io/pool: platform-ha
+    preconditions:
+      all:
+        - key: "{{ request.object.spec.template.metadata.labels.app || '' }}"
+          operator: NotEquals
+          value: ""
     generate:
+      synchronize: true
+      apiVersion: policy/v1
+      kind: PodDisruptionBudget
+      name: pdb-{{ request.object.metadata.name }}
+      namespace: "{{ request.object.metadata.namespace }}"
+      data:
+        apiVersion: policy/v1
+        kind: PodDisruptionBudget
+        metadata:
+          name: pdb-{{ request.object.metadata.name }}
+          namespace: "{{ request.object.metadata.namespace }}"
+          annotations:
+            cryptophys.io/generated-by: kyverno
+            cryptophys.io/pool: platform-ha
+        spec:
+          minAvailable: 1
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: "{{ request.object.metadata.labels.\"app.kubernetes.io/name\" }}"
+              app: "{{ request.object.spec.template.metadata.labels.app }}"
+
+  - name: generate-pdb-platform-ha-deployments-fallback
+    match:
+      any:
+      - resources:
+          kinds: [Deployment]
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: platform-ha
+    preconditions:
+      all:
+        - key: "{{ request.object.spec.template.metadata.labels.app || '' }}"
+          operator: Equals
+          value: ""
+    generate:
+      synchronize: true
       apiVersion: policy/v1
       kind: PodDisruptionBudget
       name: pdb-{{ request.object.metadata.name }}
@@ -128,7 +256,7 @@ spec:
             matchLabels:
               app.kubernetes.io/name: "{{ request.object.metadata.labels.\"app.kubernetes.io/name\" }}"
 
-  - name: generate-pdb-platform-ha-statefulsets
+  - name: generate-pdb-platform-ha-statefulsets-by-app
     match:
       any:
       - resources:
@@ -136,7 +264,48 @@ spec:
           namespaceSelector:
             matchLabels:
               cryptophys.io/pool: platform-ha
+    preconditions:
+      all:
+        - key: "{{ request.object.spec.template.metadata.labels.app || '' }}"
+          operator: NotEquals
+          value: ""
     generate:
+      synchronize: true
+      apiVersion: policy/v1
+      kind: PodDisruptionBudget
+      name: pdb-{{ request.object.metadata.name }}
+      namespace: "{{ request.object.metadata.namespace }}"
+      data:
+        apiVersion: policy/v1
+        kind: PodDisruptionBudget
+        metadata:
+          name: pdb-{{ request.object.metadata.name }}
+          namespace: "{{ request.object.metadata.namespace }}"
+          annotations:
+            cryptophys.io/generated-by: kyverno
+            cryptophys.io/pool: platform-ha
+        spec:
+          minAvailable: 1
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: "{{ request.object.metadata.labels.\"app.kubernetes.io/name\" }}"
+              app: "{{ request.object.spec.template.metadata.labels.app }}"
+
+  - name: generate-pdb-platform-ha-statefulsets-fallback
+    match:
+      any:
+      - resources:
+          kinds: [StatefulSet]
+          namespaceSelector:
+            matchLabels:
+              cryptophys.io/pool: platform-ha
+    preconditions:
+      all:
+        - key: "{{ request.object.spec.template.metadata.labels.app || '' }}"
+          operator: Equals
+          value: ""
+    generate:
+      synchronize: true
       apiVersion: policy/v1
       kind: PodDisruptionBudget
       name: pdb-{{ request.object.metadata.name }}
