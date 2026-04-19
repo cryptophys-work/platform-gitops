@@ -1,0 +1,60 @@
+# Crossplane applies ValidatingWebhookConfiguration objects from its init
+# container (not from Helm templates). Helm post-renders therefore never see
+# those manifests and cannot tune timeout/failurePolicy. This policy keeps the
+# apiserver-facing settings idempotent on CREATE/UPDATE and reconciles existing
+# objects when background processing runs (background: true).
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: crossplane-validating-webhook-tuning
+  annotations:
+    policies.kyverno.io/title: Tune Crossplane validating webhooks
+    policies.kyverno.io/category: Availability
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >
+      Enforce maximum admission timeout (30s) and Ignore failure policy on
+      Crossplane's validating webhooks so slow validation or webhook outages do
+      not hard-block the API server or GitOps dry-runs.
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: tune-crossplane-primary
+      match:
+        any:
+          - resources:
+              kinds:
+                - ValidatingWebhookConfiguration
+              names:
+                - crossplane
+      mutate:
+        foreach:
+          - list: "request.object.webhooks || `[]`"
+            patchesJson6902: |-
+              - op: replace
+                path: /webhooks/{{elementIndex}}/timeoutSeconds
+                value: 30
+              - op: replace
+                path: /webhooks/{{elementIndex}}/failurePolicy
+                value: Ignore
+    - name: tune-crossplane-no-usages
+      match:
+        any:
+          - resources:
+              kinds:
+                - ValidatingWebhookConfiguration
+              names:
+                - crossplane-no-usages
+      mutate:
+        foreach:
+          - list: "request.object.webhooks || `[]`"
+            patchesJson6902: |-
+              - op: replace
+                path: /webhooks/{{elementIndex}}/timeoutSeconds
+                value: 30
+              - op: replace
+                path: /webhooks/{{elementIndex}}/failurePolicy
+                value: Ignore
