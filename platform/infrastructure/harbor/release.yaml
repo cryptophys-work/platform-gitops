@@ -70,14 +70,14 @@ spec:
                               operator: In
                               values:
                                 - nexus-144-91-103-10
-                      - weight: 100
+                      - weight: 50
                         preference:
                           matchExpressions:
                             - key: kubernetes.io/hostname
                               operator: In
                               values:
                                 - cerebellum-161-97-117-96
-                      - weight: 35
+                      - weight: 50
                         preference:
                           matchExpressions:
                             - key: kubernetes.io/hostname
@@ -127,14 +127,14 @@ spec:
                               operator: In
                               values:
                                 - nexus-144-91-103-10
-                      - weight: 100
+                      - weight: 50
                         preference:
                           matchExpressions:
                             - key: kubernetes.io/hostname
                               operator: In
                               values:
                                 - cerebellum-161-97-117-96
-                      - weight: 35
+                      - weight: 50
                         preference:
                           matchExpressions:
                             - key: kubernetes.io/hostname
@@ -184,14 +184,14 @@ spec:
                               operator: In
                               values:
                                 - nexus-144-91-103-10
-                      - weight: 100
+                      - weight: 50
                         preference:
                           matchExpressions:
                             - key: kubernetes.io/hostname
                               operator: In
                               values:
                                 - cerebellum-161-97-117-96
-                      - weight: 35
+                      - weight: 50
                         preference:
                           matchExpressions:
                             - key: kubernetes.io/hostname
@@ -238,14 +238,14 @@ spec:
                               operator: In
                               values:
                                 - nexus-144-91-103-10
-                      - weight: 100
+                      - weight: 50
                         preference:
                           matchExpressions:
                             - key: kubernetes.io/hostname
                               operator: In
                               values:
                                 - cerebellum-161-97-117-96
-                      - weight: 35
+                      - weight: 50
                         preference:
                           matchExpressions:
                             - key: kubernetes.io/hostname
@@ -292,14 +292,14 @@ spec:
                               operator: In
                               values:
                                 - nexus-144-91-103-10
-                      - weight: 100
+                      - weight: 50
                         preference:
                           matchExpressions:
                             - key: kubernetes.io/hostname
                               operator: In
                               values:
                                 - cerebellum-161-97-117-96
-                      - weight: 35
+                      - weight: 50
                         preference:
                           matchExpressions:
                             - key: kubernetes.io/hostname
@@ -466,14 +466,14 @@ spec:
                     operator: In
                     values:
                       - nexus-144-91-103-10
-            - weight: 100
+            - weight: 50
               preference:
                 matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
                       - cerebellum-161-97-117-96
-            - weight: 35
+            - weight: 50
               preference:
                 matchExpressions:
                   - key: kubernetes.io/hostname
@@ -544,14 +544,14 @@ spec:
                     operator: In
                     values:
                       - nexus-144-91-103-10
-            - weight: 100
+            - weight: 50
               preference:
                 matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
                       - cerebellum-161-97-117-96
-            - weight: 35
+            - weight: 50
               preference:
                 matchExpressions:
                   - key: kubernetes.io/hostname
@@ -622,14 +622,14 @@ spec:
                     operator: In
                     values:
                       - nexus-144-91-103-10
-            - weight: 100
+            - weight: 50
               preference:
                 matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
                       - cerebellum-161-97-117-96
-            - weight: 35
+            - weight: 50
               preference:
                 matchExpressions:
                   - key: kubernetes.io/hostname
@@ -690,14 +690,14 @@ spec:
                     operator: In
                     values:
                       - nexus-144-91-103-10
-            - weight: 100
+            - weight: 50
               preference:
                 matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
                       - cerebellum-161-97-117-96
-            - weight: 35
+            - weight: 50
               preference:
                 matchExpressions:
                   - key: kubernetes.io/hostname
