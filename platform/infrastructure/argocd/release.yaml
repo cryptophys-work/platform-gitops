@@ -46,6 +46,7 @@ spec:
               - op: replace
                 path: /spec/template/spec/containers/1/resources/requests/memory
                 value: 4Mi
+          # Same three-node + host anti-affinity constraint as application-controller.
           - target:
               kind: Deployment
               name: argocd-applicationset-controller
@@ -61,6 +62,13 @@ spec:
                     operator: Equal
                     value: platform-ha
                     effect: NoSchedule
+              - op: replace
+                path: /spec/strategy
+                value:
+                  type: RollingUpdate
+                  rollingUpdate:
+                    maxSurge: 0
+                    maxUnavailable: 1
           # Required host anti-affinity only allows three platform-ha nodes; chart default
           # RollingUpdate maxSurge would schedule a third controller pod and deadlock Pending.
           - target:
