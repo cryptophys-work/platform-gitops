@@ -352,9 +352,12 @@ spec:
                 values:
                   defaultSettings:
                     storageMinimalAvailablePercentage: 15
-                    guaranteedInstanceManagerCPU: '{"v1":"2","v2":"2"}'
+                    concurrentReplicaRebuildPerNodeLimit: 1
+                    snapshotHeavyTaskConcurrentLimit: 1
+                    instanceManagerPodLivenessProbeTimeout: 30
+                    guaranteedInstanceManagerCPU: '{"v1":"5","v2":"5"}'
                     systemManagedComponentsNodeSelector: "kubernetes.io/os: linux"
-                    taintToleration: "daemonset:NoSchedule;node-role.kubernetes.io/control-plane:NoSchedule;worker-guardian=true:NoSchedule;cplane-guardian=true:NoSchedule;cryptophys.io/node-class=nexus-hpc:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;ray-head=true:NoSchedule;ray-cluster=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule"
+                    taintToleration: "daemonset:NoSchedule;node-role.kubernetes.io/control-plane:NoSchedule;worker-guardian=true:NoSchedule;cplane-guardian=true:NoSchedule;cryptophys.io/node-class=nexus-hpc:NoSchedule;cryptophys.io/pool=platform-ha:NoSchedule;cryptophys.io/pool=apps-ha:NoSchedule;ray-head=true:NoSchedule;ray-cluster=true:NoSchedule;bridge-system=true:NoSchedule;dao-system=true:NoSchedule;node.cilium.io/agent-not-ready:NoSchedule"
                   persistence:
                     defaultClass: true
                     defaultClassReplicaCount: 2
@@ -402,6 +405,9 @@ spec:
                         operator: Equal
                         value: "true"
                         effect: NoSchedule
+                      - key: node.cilium.io/agent-not-ready
+                        operator: Exists
+                        effect: NoSchedule
                     resources:
                       requests:
                         cpu: "200m"
@@ -414,6 +420,9 @@ spec:
                       kubernetes.io/os: linux
                     tolerations:
                       - key: daemonset
+                        operator: Exists
+                        effect: NoSchedule
+                      - key: node.cilium.io/agent-not-ready
                         operator: Exists
                         effect: NoSchedule
                     resources:
@@ -475,6 +484,9 @@ spec:
                         - key: dao-system
                           operator: Equal
                           value: "true"
+                          effect: NoSchedule
+                        - key: node.cilium.io/agent-not-ready
+                          operator: Exists
                           effect: NoSchedule
           providerConfigRef:
             name: local-kubernetes-provider
