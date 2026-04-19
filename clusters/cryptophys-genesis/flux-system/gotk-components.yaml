@@ -4482,6 +4482,7 @@ spec:
           capabilities:
             drop:
             - ALL
+          privileged: false
           readOnlyRootFilesystem: true
           runAsNonRoot: true
           seccompProfile:
