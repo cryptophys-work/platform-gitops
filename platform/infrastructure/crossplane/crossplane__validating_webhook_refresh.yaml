@@ -1,0 +1,144 @@
+# Crossplane's init container re-applies ValidatingWebhookConfiguration objects with
+# failurePolicy=Fail and timeoutSeconds=10. Kyverno ClusterPolicy mutate rules that
+# target VWCs only re-apply on policy updates (Kyverno's resource mutating webhook
+# does not register admissionregistration.k8s.io/validatingwebhookconfigurations).
+# This CronJob idempotently restores the platform-tuned settings so Flux dry-runs
+# and API admission stay resilient after Crossplane restarts or upgrades.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: crossplane-validating-webhook-refresh
+  namespace: crossplane-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+imagePullSecrets:
+  - name: registry-cryptophys-work-auth
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: crossplane-validating-webhook-refresh
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+rules:
+  - apiGroups: ["admissionregistration.k8s.io"]
+    resources: ["validatingwebhookconfigurations"]
+    resourceNames: ["crossplane", "crossplane-no-usages"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: crossplane-validating-webhook-refresh
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: crossplane-validating-webhook-refresh
+subjects:
+  - kind: ServiceAccount
+    name: crossplane-validating-webhook-refresh
+    namespace: crossplane-system
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: crossplane-validating-webhook-refresh
+  namespace: crossplane-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: crossplane
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+spec:
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  schedule: "*/15 * * * *"
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 600
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            cryptophys.io/domain: platform
+            cryptophys.io/component: crossplane
+            cryptophys.io/managed-by: flux
+        spec:
+          serviceAccountName: crossplane-validating-webhook-refresh
+          imagePullSecrets:
+            - name: registry-cryptophys-work-auth
+          restartPolicy: OnFailure
+          nodeSelector:
+            workload.cryptophys.work/platform: "true"
+            kubernetes.io/os: linux
+          tolerations:
+            - key: cryptophys.io/pool
+              operator: Equal
+              value: platform-ha
+              effect: NoSchedule
+            - key: cryptophys.io/role
+              operator: Equal
+              value: llm-inference
+              effect: NoSchedule
+            - key: bridge-system
+              operator: Exists
+              effect: NoSchedule
+            - key: dao-system
+              operator: Exists
+              effect: NoSchedule
+            - key: ray-head
+              operator: Exists
+              effect: NoSchedule
+            - key: node.cilium.io/agent-not-ready
+              operator: Exists
+              effect: NoSchedule
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: refresh
+              image: docker.io/alpine/k8s@sha256:bd01dae02676ce4cab62fc744e43443eee5bf660054e94d3496d23bfc35d384e
+              imagePullPolicy: IfNotPresent
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              resources:
+                requests:
+                  cpu: 25m
+                  memory: 48Mi
+                limits:
+                  cpu: 200m
+                  memory: 128Mi
+              command:
+                - /bin/sh
+                - -ceu
+                - |
+                  set -e
+                  echo "Refreshing Crossplane validating webhook admission settings"
+                  kubectl patch validatingwebhookconfiguration crossplane --type=json -p='[
+                    {"op":"replace","path":"/webhooks/0/timeoutSeconds","value":30},
+                    {"op":"replace","path":"/webhooks/0/failurePolicy","value":"Ignore"},
+                    {"op":"replace","path":"/webhooks/1/timeoutSeconds","value":30},
+                    {"op":"replace","path":"/webhooks/1/failurePolicy","value":"Ignore"}
+                  ]'
+                  kubectl patch validatingwebhookconfiguration crossplane-no-usages --type=json -p='[
+                    {"op":"replace","path":"/webhooks/0/timeoutSeconds","value":30},
+                    {"op":"replace","path":"/webhooks/0/failurePolicy","value":"Ignore"}
+                  ]'
+                  echo "Done"

@@ -4,6 +4,11 @@
 # apiserver-facing settings idempotent on CREATE/UPDATE (admission), on policy
 # updates (mutateExistingOnPolicyUpdate + targets), and via background scans
 # (background: true).
+#
+# Note: Kyverno's resource mutating webhook does not register rules for
+# ValidatingWebhookConfiguration, so Crossplane can reset these fields without
+# tripping admission-time mutation. Drift is corrected by
+# crossplane__validating_webhook_refresh.yaml (CronJob in crossplane-system).
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
