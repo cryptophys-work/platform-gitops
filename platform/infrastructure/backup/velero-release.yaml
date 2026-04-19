@@ -67,7 +67,7 @@ spec:
         - operator: Exists
           effect: NoExecute
     snapshotsEnabled: false
-    upgradeCRDs: false
+    upgradeCRDs: true
     replicas: 2
     nodeSelector:
       workload.cryptophys.work/platform: "true"
