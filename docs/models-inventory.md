@@ -131,8 +131,10 @@ kubectl logs -n minio-system -l batch.kubernetes.io/job-name=model-batch-uploade
 # Port-forward Minio
 kubectl port-forward -n minio-system svc/platform-backup-minio 9000:9000 &
 
-# Configure mc
-mc alias set minio http://localhost:9000 cryptophys-admin <password>
+# Configure mc with the Vault-backed MinIO root credentials
+MINIO_ROOT_USER=$(kubectl -n minio-system get secret platform-backup-minio-credentials -o jsonpath='{.data.rootUser}' | base64 -d)
+MINIO_ROOT_PASSWORD=$(kubectl -n minio-system get secret platform-backup-minio-credentials -o jsonpath='{.data.rootPassword}' | base64 -d)
+mc alias set minio http://localhost:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"
 
 # Download and upload
 wget https://huggingface.co/.../DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf
@@ -179,10 +181,9 @@ kubectl apply -f cerebrum-model-loader-job.yaml
 - Use HuggingFace CDN mirror if available
 
 **Minio connection fails:**
-- Verify `minio-static-creds` secret exists
+- Verify `platform-backup-minio-credentials` ExternalSecret synced into `minio-system`
 - Check service endpoint: `platform-backup-minio.minio-system.svc.cluster.local:9000`
 
 **Large model uploads stuck:**
 - Check nexus node disk space: `kubectl get nodes -o wide`
 - Verify Longhorn volume is healthy: `kubectl get volumes -n longhorn-system`
-
