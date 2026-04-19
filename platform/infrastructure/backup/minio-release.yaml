@@ -38,6 +38,8 @@ spec:
     buckets:
       - name: velero
       - name: models
+      # Loki boltdb-shipper chunk + index offload (HelmRelease platform-observability-loki)
+      - name: loki
     makeBucketJob:
       resources:
         requests:

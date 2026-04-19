@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-spire-agent-sizing
+  namespace: observability-system
+  labels:
+    cryptophys.work/component: monitoring
+    grafana_dashboard: "1"
+data:
+  spire-agent-sizing.json: |
+    {
+      "annotations": {"list": []},
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 1,
+      "id": null,
+      "links": [],
+      "liveNow": false,
+      "panels": [
+        {
+          "collapsed": false,
+          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0},
+          "id": 1,
+          "panels": [],
+          "title": "Memory (Prometheus + recording rules)",
+          "type": "row"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "fieldConfig": {
+            "defaults": {"color": {"mode": "palette-classic"}, "unit": "bytes"},
+            "overrides": []
+          },
+          "gridPos": {"h": 9, "w": 12, "x": 0, "y": 1},
+          "id": 2,
+          "options": {"legend": {"displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+          "targets": [
+            {"expr": "cryptophys:spire_agent:container_memory_working_set_bytes:max", "legendFormat": "max {{pod}}", "refId": "A"},
+            {"expr": "cryptophys:spire_agent:kube_pod_container_resource_limits_memory_bytes", "legendFormat": "limit {{pod}}", "refId": "B"},
+            {"expr": "cryptophys:spire_agent:kube_pod_container_resource_requests_memory_bytes", "legendFormat": "request {{pod}}", "refId": "C"}
+          ],
+          "title": "Working set vs requests/limits",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "fieldConfig": {
+            "defaults": {"color": {"mode": "palette-classic"}, "unit": "bytes"},
+            "overrides": []
+          },
+          "gridPos": {"h": 9, "w": 12, "x": 12, "y": 1},
+          "id": 3,
+          "options": {"legend": {"displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+          "targets": [
+            {"expr": "cryptophys:spire_agent:container_memory_working_set_bytes:p99_1h", "legendFormat": "p99 1h {{pod}}", "refId": "A"}
+          ],
+          "title": "Memory p99 (1h) — sizing headroom",
+          "type": "timeseries"
+        },
+        {
+          "collapsed": false,
+          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 10},
+          "id": 4,
+          "panels": [],
+          "title": "CPU",
+          "type": "row"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "fieldConfig": {
+            "defaults": {"color": {"mode": "palette-classic"}, "unit": "short"},
+            "overrides": []
+          },
+          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 11},
+          "id": 5,
+          "options": {"legend": {"displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+          "targets": [
+            {"expr": "cryptophys:spire_agent:container_cpu_usage_seconds:rate5m", "legendFormat": "usage {{pod}}", "refId": "A"},
+            {"expr": "cryptophys:spire_agent:kube_pod_container_resource_limits_cpu_cores", "legendFormat": "limit {{pod}}", "refId": "B"},
+            {"expr": "cryptophys:spire_agent:kube_pod_container_resource_requests_cpu_cores", "legendFormat": "request {{pod}}", "refId": "C"}
+          ],
+          "title": "CPU cores (5m rate) vs requests/limits",
+          "type": "timeseries"
+        },
+        {
+          "collapsed": false,
+          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 19},
+          "id": 6,
+          "panels": [],
+          "title": "Logs (Loki)",
+          "type": "row"
+        },
+        {
+          "datasource": {"type": "loki", "uid": "loki"},
+          "gridPos": {"h": 10, "w": 24, "x": 0, "y": 20},
+          "id": 7,
+          "options": {"dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": false, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true},
+          "targets": [{"datasource": {"type": "loki", "uid": "loki"}, "expr": "{namespace=\"spire-system\", pod=~\"spire-agent-.*\"}", "refId": "A"}],
+          "title": "spire-agent pod logs",
+          "type": "logs"
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 38,
+      "style": "dark",
+      "tags": ["spire", "sizing", "cryptophys"],
+      "templating": {"list": []},
+      "time": {"from": "now-24h", "to": "now"},
+      "timepicker": {},
+      "timezone": "",
+      "title": "SPIRE Agent — resource sizing",
+      "uid": "spire-agent-sizing",
+      "version": 1,
+      "weekStart": ""
+    }

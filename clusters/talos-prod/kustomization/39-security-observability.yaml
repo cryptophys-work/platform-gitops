@@ -12,6 +12,8 @@ spec:
   sourceRef:
     kind: GitRepository
     name: platform-repo
+  dependsOn:
+    - name: 40-backup-stack
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta2
       kind: HelmRelease
