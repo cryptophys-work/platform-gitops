@@ -1,6 +1,6 @@
 ---
-# Hourly backup for L0-L1 (Infrastructure + Security)
-# Critical: DNS, networking, identity, policy enforcement
+# Hourly metadata backup for L0-L1 control plane
+# Focuses on fast-rebuild infrastructure and security objects, not data volumes.
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
@@ -14,13 +14,14 @@ spec:
   template:
     includedNamespaces:
       - kube-system
-      - cilium-system
       - cert-manager
-      - ingress-nginx
+      - ingress-system
       - longhorn-system
       - spire-system
       - vault-system
-      - kyverno
+      - kyverno-system
+      - external-secrets
+      - flux-system
     excludedResources:
       - events
       - events.events.k8s.io
@@ -36,8 +37,8 @@ spec:
   paused: false
 
 ---
-# Daily full backup for L0-L1-L2 (Infrastructure + Security + Platform)
-# Includes: PostgreSQL, Gitea, Harbor, ArgoCD, MinIO, Flux
+# Daily metadata backup for L0-L2 platform and app control objects.
+# Runtime data volumes are handled by narrower fs-backup schedules below.
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
@@ -51,21 +52,25 @@ spec:
   template:
     includedNamespaces:
       - kube-system
-      - cilium-system
       - cert-manager
-      - ingress-nginx
+      - ingress-system
       - longhorn-system
       - spire-system
       - vault-system
-      - kyverno
+      - kyverno-system
+      - external-secrets
       - postgresql-system
-      - gitea
-      - registry
-      - argocd
-      - platform-gitops
+      - gitops-system
+      - registry-system
+      - apps-system
       - minio-system
       - flux-system
       - velero-system
+      - trustedledger
+      - database
+      - mesh-system
+      - apps-dash
+      - automation
     excludedResources:
       - events
       - events.events.k8s.io
@@ -79,8 +84,7 @@ spec:
   paused: false
 
 ---
-# Weekly PostgreSQL PVC backup (data volumes)
-# Backup actual database volumes for disaster recovery
+# Weekly CNPG data backup (30-day retention)
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
@@ -103,7 +107,97 @@ spec:
           operator: Exists
     includeClusterResources: false
     storageLocation: default
-    ttl: 2160h0m0s  # Keep for 90 days
+    ttl: 720h0m0s  # Keep for 30 days
     snapshotVolumes: false
     defaultVolumesToFsBackup: true  # Use Velero fs-backup for PVCs
   paused: false
+
+---
+# Weekly platform state backup for authoritative runtime stores.
+# Excludes MinIO object data and Harbor blobs, which are handled separately.
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: platform-stateful-weekly
+  namespace: velero-system
+  labels:
+    backup-tier: data
+    backup-frequency: weekly
+spec:
+  schedule: "0 4 * * 0"  # Every Sunday at 04:00 UTC
+  template:
+    includedNamespaces:
+      - vault-system
+      - spire-system
+      - gitops-system
+      - trustedledger
+      - database
+      - mesh-system
+    excludedResources:
+      - events
+      - events.events.k8s.io
+      - backups.velero.io
+      - restores.velero.io
+    includeClusterResources: false
+    storageLocation: default
+    ttl: 720h0m0s  # Keep for 30 days
+    snapshotVolumes: false
+    defaultVolumesToFsBackup: true
+  paused: false
+
+---
+# Weekly application data backup for namespaces with small canonical runtime stores.
+# Intentionally excludes transient app workspaces, model caches, and build scratch PVCs.
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: app-stateful-weekly
+  namespace: velero-system
+  labels:
+    backup-tier: app-data
+    backup-frequency: weekly
+spec:
+  schedule: "0 5 * * 0"  # Every Sunday at 05:00 UTC
+  template:
+    includedNamespaces:
+      - apps-dash
+      - automation
+    excludedResources:
+      - events
+      - events.events.k8s.io
+      - backups.velero.io
+      - restores.velero.io
+    includeClusterResources: false
+    storageLocation: default
+    ttl: 720h0m0s  # Keep for 30 days
+    snapshotVolumes: false
+    defaultVolumesToFsBackup: true
+  paused: false
+
+---
+# Harbor blobs are critical, but blob volume backups are intentionally gated to release events
+# so day-to-day Velero growth stays bounded. Unpause or trigger manually around major releases.
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: harbor-major-release
+  namespace: velero-system
+  labels:
+    backup-tier: release
+    backup-frequency: manual
+spec:
+  schedule: "0 6 1 1 *"  # Placeholder; kept paused until a major release window.
+  template:
+    includedNamespaces:
+      - registry-system
+    excludedResources:
+      - events
+      - events.events.k8s.io
+      - backups.velero.io
+      - restores.velero.io
+    includeClusterResources: false
+    storageLocation: default
+    ttl: 720h0m0s  # Keep for 30 days
+    snapshotVolumes: false
+    defaultVolumesToFsBackup: true
+  paused: true

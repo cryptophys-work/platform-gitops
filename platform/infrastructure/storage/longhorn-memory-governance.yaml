@@ -2,8 +2,8 @@
 # Longhorn Memory Governance — v1.0
 # Applied via: 30-storage kustomization
 # Purpose: Prevent instance-manager and engine-manager pods from consuming
-#          unbounded memory. Root cause: prior analysis showed instance-manager
-#          on medulla consumed 5.9Gi (of 7.7Gi allocatable) with no limit set.
+#          unbounded memory while leaving enough headroom for busy instance-manager
+#          pods on large storage nodes to avoid repeated crash/recreate loops.
 # =============================================================================
 ---
 # LimitRange enforces a default memory limit on ALL pods in longhorn-system.
@@ -25,15 +25,15 @@ spec:
     # ── Per-container defaults — applies to any container that omits resources ──
     - type: Container
       default:
-        memory: "512Mi"   # Default limit — reduced from 2Gi to prevent control-plane OOMKill
-        cpu: "1"
+        memory: "2Gi"     # Give instance-manager enough headroom under rebuild/attach pressure
+        cpu: "2"
       defaultRequest:
-        memory: "256Mi"   # Default request — ensures scheduler sees realistic footprint
-        cpu: "50m"
+        memory: "512Mi"   # Prevent underscheduling without returning to unbounded defaults
+        cpu: "250m"
       max:
-        memory: "1Gi"     # Hard cap — reduced from 4Gi to fit control-plane capacity (corpus 9.2Gi allocatable)
+        memory: "4Gi"     # Keep namespace bounded while allowing larger instance-manager spikes
         cpu: "4"
     # ── Per-pod defaults ──
     - type: Pod
       max:
-        memory: "2Gi"     # One instance-manager pod max = 2Gi (reduced from 8Gi for control-plane stability)
+        memory: "4Gi"     # Allow a single busy instance-manager pod to stay below the container cap

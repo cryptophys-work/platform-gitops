@@ -35,10 +35,12 @@ spec:
       - resources:
           kinds:
             - Pod
+            - DaemonSet
             - Deployment
             - ReplicaSet
           names:
             - velero*
             - platform-backup-velero*
+            - node-agent*
           namespaces:
             - velero-system
