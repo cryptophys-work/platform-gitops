@@ -156,7 +156,6 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
-    cryptophys.io/pool: platform-ha
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
