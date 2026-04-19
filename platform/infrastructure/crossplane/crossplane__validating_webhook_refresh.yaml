@@ -2,8 +2,11 @@
 # failurePolicy=Fail and timeoutSeconds=10. Kyverno ClusterPolicy mutate rules that
 # target VWCs only re-apply on policy updates (Kyverno's resource mutating webhook
 # does not register admissionregistration.k8s.io/validatingwebhookconfigurations).
-# This CronJob idempotently restores the platform-tuned settings so Flux dry-runs
-# and API admission stay resilient after Crossplane restarts or upgrades.
+#
+# This Deployment runs a continuous reconcile loop: a kubectl watch on the
+# primary crossplane VWC reacts immediately to spec changes; a 60-second
+# heartbeat re-checks both VWCs so crossplane-no-usages drift is bounded without
+# relying on polling-only CronJobs.
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -30,7 +33,7 @@ rules:
   - apiGroups: ["admissionregistration.k8s.io"]
     resources: ["validatingwebhookconfigurations"]
     resourceNames: ["crossplane", "crossplane-no-usages"]
-    verbs: ["get", "patch"]
+    verbs: ["get", "list", "watch", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -50,10 +53,10 @@ subjects:
     name: crossplane-validating-webhook-refresh
     namespace: crossplane-system
 ---
-apiVersion: batch/v1
-kind: CronJob
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: crossplane-validating-webhook-refresh
+  name: crossplane-validating-webhook-sync
   namespace: crossplane-system
   labels:
     cryptophys.io/domain: platform
@@ -61,84 +64,128 @@ metadata:
     cryptophys.io/managed-by: flux
     cryptophys.io/layer: platform
 spec:
-  concurrencyPolicy: Forbid
-  successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 2
-  schedule: "*/15 * * * *"
-  jobTemplate:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: crossplane-validating-webhook-sync
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: crossplane-validating-webhook-sync
+        cryptophys.io/domain: platform
+        cryptophys.io/component: crossplane
+        cryptophys.io/managed-by: flux
     spec:
-      ttlSecondsAfterFinished: 600
-      backoffLimit: 2
-      template:
-        metadata:
-          labels:
-            cryptophys.io/domain: platform
-            cryptophys.io/component: crossplane
-            cryptophys.io/managed-by: flux
-        spec:
-          serviceAccountName: crossplane-validating-webhook-refresh
-          imagePullSecrets:
-            - name: registry-cryptophys-work-auth
-          restartPolicy: OnFailure
-          nodeSelector:
-            workload.cryptophys.work/platform: "true"
-            kubernetes.io/os: linux
-          tolerations:
-            - key: cryptophys.io/pool
-              operator: Equal
-              value: platform-ha
-              effect: NoSchedule
-            - key: cryptophys.io/role
-              operator: Equal
-              value: llm-inference
-              effect: NoSchedule
-            - key: bridge-system
-              operator: Exists
-              effect: NoSchedule
-            - key: dao-system
-              operator: Exists
-              effect: NoSchedule
-            - key: ray-head
-              operator: Exists
-              effect: NoSchedule
-            - key: node.cilium.io/agent-not-ready
-              operator: Exists
-              effect: NoSchedule
+      serviceAccountName: crossplane-validating-webhook-refresh
+      imagePullSecrets:
+        - name: registry-cryptophys-work-auth
+      terminationGracePeriodSeconds: 30
+      nodeSelector:
+        workload.cryptophys.work/platform: "true"
+        kubernetes.io/os: linux
+      tolerations:
+        - key: cryptophys.io/pool
+          operator: Equal
+          value: platform-ha
+          effect: NoSchedule
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
+          effect: NoSchedule
+        - key: bridge-system
+          operator: Exists
+          effect: NoSchedule
+        - key: dao-system
+          operator: Exists
+          effect: NoSchedule
+        - key: ray-head
+          operator: Exists
+          effect: NoSchedule
+        - key: node.cilium.io/agent-not-ready
+          operator: Exists
+          effect: NoSchedule
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+        - name: tmp
+          emptyDir: {}
+      containers:
+        - name: sync
+          image: docker.io/alpine/k8s@sha256:bd01dae02676ce4cab62fc744e43443eee5bf660054e94d3496d23bfc35d384e
+          imagePullPolicy: IfNotPresent
           securityContext:
-            runAsNonRoot: true
-            runAsUser: 1000
-            seccompProfile:
-              type: RuntimeDefault
-          containers:
-            - name: refresh
-              image: docker.io/alpine/k8s@sha256:bd01dae02676ce4cab62fc744e43443eee5bf660054e94d3496d23bfc35d384e
-              imagePullPolicy: IfNotPresent
-              securityContext:
-                allowPrivilegeEscalation: false
-                readOnlyRootFilesystem: true
-                capabilities:
-                  drop: ["ALL"]
-              resources:
-                requests:
-                  cpu: 25m
-                  memory: 48Mi
-                limits:
-                  cpu: 200m
-                  memory: 128Mi
-              command:
-                - /bin/sh
-                - -ceu
-                - |
-                  set -e
-                  echo "Refreshing Crossplane validating webhook admission settings"
-                  kubectl patch validatingwebhookconfiguration crossplane --type=json -p='[
-                    {"op":"replace","path":"/webhooks/0/timeoutSeconds","value":30},
-                    {"op":"replace","path":"/webhooks/0/failurePolicy","value":"Ignore"},
-                    {"op":"replace","path":"/webhooks/1/timeoutSeconds","value":30},
-                    {"op":"replace","path":"/webhooks/1/failurePolicy","value":"Ignore"}
-                  ]'
-                  kubectl patch validatingwebhookconfiguration crossplane-no-usages --type=json -p='[
-                    {"op":"replace","path":"/webhooks/0/timeoutSeconds","value":30},
-                    {"op":"replace","path":"/webhooks/0/failurePolicy","value":"Ignore"}
-                  ]'
-                  echo "Done"
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 192Mi
+          readinessProbe:
+            exec:
+              command: ["/bin/sh", "-c", "test -f /tmp/ready"]
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          command:
+            - /bin/sh
+            - -ceu
+            - |
+              set -eu
+              PATCH_PRIMARY='[
+                {"op":"replace","path":"/webhooks/0/timeoutSeconds","value":30},
+                {"op":"replace","path":"/webhooks/0/failurePolicy","value":"Ignore"},
+                {"op":"replace","path":"/webhooks/1/timeoutSeconds","value":30},
+                {"op":"replace","path":"/webhooks/1/failurePolicy","value":"Ignore"}
+              ]'
+              PATCH_NU='[
+                {"op":"replace","path":"/webhooks/0/timeoutSeconds","value":30},
+                {"op":"replace","path":"/webhooks/0/failurePolicy","value":"Ignore"}
+              ]'
+
+              align_if_needed() {
+                tp0=$(kubectl get validatingwebhookconfiguration crossplane -o jsonpath='{.webhooks[0].timeoutSeconds}' 2>/dev/null || echo "")
+                if [ -z "$tp0" ]; then return 0; fi
+                tp1=$(kubectl get validatingwebhookconfiguration crossplane -o jsonpath='{.webhooks[1].timeoutSeconds}')
+                fp0=$(kubectl get validatingwebhookconfiguration crossplane -o jsonpath='{.webhooks[0].failurePolicy}')
+                fp1=$(kubectl get validatingwebhookconfiguration crossplane -o jsonpath='{.webhooks[1].failurePolicy}')
+                if [ "$tp0" != "30" ] || [ "$tp1" != "30" ] || [ "$fp0" != "Ignore" ] || [ "$fp1" != "Ignore" ]; then
+                  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) aligning validatingwebhookconfiguration/crossplane"
+                  kubectl patch validatingwebhookconfiguration crossplane --type=json -p "$PATCH_PRIMARY"
+                fi
+
+                ntp=$(kubectl get validatingwebhookconfiguration crossplane-no-usages -o jsonpath='{.webhooks[0].timeoutSeconds}' 2>/dev/null || echo "")
+                if [ -z "$ntp" ]; then return 0; fi
+                nfp=$(kubectl get validatingwebhookconfiguration crossplane-no-usages -o jsonpath='{.webhooks[0].failurePolicy}')
+                if [ "$ntp" != "30" ] || [ "$nfp" != "Ignore" ]; then
+                  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) aligning validatingwebhookconfiguration/crossplane-no-usages"
+                  kubectl patch validatingwebhookconfiguration crossplane-no-usages --type=json -p "$PATCH_NU"
+                fi
+                touch /tmp/ready
+              }
+
+              ( while true; do sleep 60; align_if_needed; done ) &
+              hb=$!
+              trap 'kill "$hb" 2>/dev/null || true' INT TERM EXIT
+
+              echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) starting Crossplane validating webhook admission profile sync"
+              align_if_needed
+              while true; do
+                kubectl get validatingwebhookconfiguration crossplane -w -o name 2>/dev/null | while read -r _; do
+                  align_if_needed
+                done || true
+                sleep 2
+              done
