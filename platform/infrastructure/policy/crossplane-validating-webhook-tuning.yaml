@@ -6,10 +6,12 @@
 # (background: true).
 #
 # Note: Kyverno's resource mutating webhook does not register rules for
-# ValidatingWebhookConfiguration, so Crossplane can reset these fields without
-# tripping admission-time mutation. Drift is corrected by
-# crossplane__validating_webhook_refresh.yaml (Deployment watch loop + heartbeat
-# in crossplane-system).
+# ValidatingWebhookConfiguration, so Crossplane init would otherwise reset these
+# fields without tripping admission-time mutation. Primary desired state is
+# GitOps-owned manifests mounted at /webhookconfigurations on the Crossplane init
+# container (controllers/crossplane__webhook_admission_profile.yaml). This
+# ClusterPolicy still re-applies on policy updates via mutateExisting for
+# defense in depth.
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:

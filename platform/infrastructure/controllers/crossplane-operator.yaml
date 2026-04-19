@@ -18,10 +18,11 @@ spec:
     crds: CreateReplace
   upgrade:
     crds: CreateReplace
-  # ValidatingWebhookConfiguration objects are applied at runtime by the
-  # Crossplane init container, not rendered by this chart — Helm post-renders
-  # never affect them. Tune timeout/failurePolicy via Kyverno instead:
-  # policy/crossplane-validating-webhook-tuning.yaml
+  # ValidatingWebhookConfiguration objects are applied by the Crossplane init
+  # container from /webhookconfigurations inside the image. We mount
+  # crossplane-webhook-admission-profile (ConfigMap) at that path so
+  # timeoutSeconds/failurePolicy are GitOps-owned. Kyverno policy remains a
+  # secondary mutateExisting backstop (see policy/crossplane-validating-webhook-tuning.yaml).
   postRenderers:
   - kustomize:
       patches:
@@ -119,6 +120,23 @@ spec:
                           operator: In
                           values:
                             - "true"
+      - target:
+          kind: Deployment
+          name: crossplane
+        patch: |
+          - op: add
+            path: /spec/template/spec/volumes/-
+            value:
+              name: crossplane-webhook-admission-profile
+              configMap:
+                name: crossplane-webhook-admission-profile
+                defaultMode: 420
+          - op: add
+            path: /spec/template/spec/initContainers/0/volumeMounts
+            value:
+              - name: crossplane-webhook-admission-profile
+                mountPath: /webhookconfigurations
+                readOnly: true
   values:
     replicas: 1
     deploymentStrategy: RollingUpdate
