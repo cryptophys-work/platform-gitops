@@ -20,9 +20,9 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: platform-backup-minio-console
+                name: platform-backup-minio-console-ui
                 port:
-                  number: 9001
+                  number: 9090
   tls:
     - secretName: platform-wildcard-tls
       hosts:
