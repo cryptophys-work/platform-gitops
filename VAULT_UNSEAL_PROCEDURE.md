@@ -111,6 +111,48 @@ kubectl get externalsecrets -A | grep -E "NAMESPACE|gitea|headlamp"
 # All should show STATUS=SecretSynced, READY=True
 ```
 
+### 6. Vault Web UI: username & password (optional Layer 2)
+
+Ingress uses **HTTP Basic Auth** (browser popup) as the first gate. For a **second** login inside the Vault UI (user/password instead of pasting a token), enable **`userpass`** and point the UI at it.
+
+1. **Apply read policy for UI browsing** (from GitOps ConfigMap; idempotent):
+
+   ```bash
+   kubectl exec -n vault-system vault-0 -- sh -c 'vault policy write vault-ui-operator-read - <<EOF
+   # paste contents of vault-ui-operator-read.hcl from vault-policy-hcl ConfigMap
+   EOF'
+   ```
+
+   Or copy from: `platform-gitops/platform/infrastructure/vault-system/policies/vault-ui-operator-read.hcl`.
+
+2. **Enable userpass** (once per cluster):
+
+   ```bash
+   kubectl exec -n vault-system vault-0 -- vault auth enable userpass
+   ```
+
+3. **Create an operator user** (choose a strong password; do not commit it):
+
+   ```bash
+   kubectl exec -n vault-system vault-0 -- \
+     vault write auth/userpass/users/cryptophys.adm password='REPLACE_ME' policies=vault-ui-operator-read
+   ```
+
+4. **Set UI default login method to userpass** (Vault 1.11+):
+
+   ```bash
+   kubectl exec -n vault-system vault-0 -- \
+     vault write sys/config/ui/login/default-auth method=userpass
+   ```
+
+5. Open the UI URL; complete **Basic Auth**, then sign in with **Method: Username** (user `cryptophys.adm`, password from step 3).
+
+To revert to token-only in the UI:
+
+```bash
+kubectl exec -n vault-system vault-0 -- vault delete sys/config/ui/login/default-auth
+```
+
 ## Prevention: Auto-Unseal
 
 Consider implementing Vault auto-unseal for production:

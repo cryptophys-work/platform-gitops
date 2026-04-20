@@ -16,3 +16,4 @@ configMapGenerator:
     files:
       - external-secrets-kv2-read.hcl=policies/external-secrets-kv2-read.hcl
       - platform-kv2-bootstrap-write.hcl=policies/platform-kv2-bootstrap-write.hcl
+      - vault-ui-operator-read.hcl=policies/vault-ui-operator-read.hcl
