@@ -48,6 +48,9 @@ spec:
               mountPath: /run/spire/bundle
             - name: spire-token
               mountPath: /var/run/secrets/tokens
+            - name: containerd-socket
+              mountPath: /run/containerd/containerd.sock
+              readOnly: true
       volumes:
         - name: spire-config
           configMap:
@@ -66,3 +69,7 @@ spec:
                   path: spire-agent
                   expirationSeconds: 7200
                   audience: spire-server
+        - name: containerd-socket
+          hostPath:
+            path: /run/containerd/containerd.sock
+            type: Socket
