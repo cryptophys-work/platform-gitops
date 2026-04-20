@@ -6,6 +6,7 @@ resources:
   - flux-controllers-policy-exception.yaml
   - longhorn-policy-exception.yaml
   - ingress-tetragon-platform-ha-exception.yaml
+  - ingress-platform-policy-exception.yaml
   - postgres-apps-ha-policy-exception.yaml
   - postgres-postgresql-system-ha-policy-exception.yaml
   - cp-restriction-policy.yaml

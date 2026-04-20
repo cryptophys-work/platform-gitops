@@ -1,0 +1,34 @@
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: ingress-platform-policy-exception
+  namespace: kyverno-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: ingress
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+    cryptophys.io/contract: contract.platform.policy.v1
+spec:
+  exceptions:
+    - policyName: cp-security-hardening-v1
+      ruleNames:
+        - restrict-pod-security-standard
+    - policyName: cp-pss-restricted-v1
+      ruleNames:
+        - deny-host-namespaces
+        - deny-capabilities-added
+    - policyName: cp-supplychain-registry-v1
+      ruleNames:
+        - restrict-image-registries
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - DaemonSet
+          namespaces:
+            - ingress-system
+          names:
+            - ingress-gateway-ingress-nginx-controller
+

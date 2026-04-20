@@ -8,9 +8,9 @@ persistence:
   defaultClassReplicaCount: 2
 csi:
   kubeletRootDir: /var/lib/kubelet
-longhornCSI:
-  nodeSelector:
-    kubernetes.io/os: linux
+  longhornCSI:
+    nodeSelector:
+      kubernetes.io/os: linux
 longhornUI:
   replicas: 2
   nodeSelector:

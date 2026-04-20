@@ -258,6 +258,27 @@ metadata:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: aide
     cryptophys.io/pool: apps-ha
+    kagenti-enabled: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bridge
+  labels:
+    app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: bridge
+    cryptophys.io/pool: apps-ha
+    kagenti-enabled: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mcp-system
+  labels:
+    app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: mcp
+    cryptophys.io/pool: apps-ha
+    kagenti-enabled: "true"
 ---
 apiVersion: v1
 kind: Namespace
@@ -300,6 +321,15 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: automation
+    cryptophys.io/pool: apps-ha
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kagenti-system
+  labels:
+    app.kubernetes.io/created-by: aide
+    cryptophys.io/domain: kagenti
     cryptophys.io/pool: apps-ha
 ---
 apiVersion: v1
