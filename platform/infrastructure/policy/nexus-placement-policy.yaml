@@ -346,6 +346,56 @@ spec:
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
+  name: mutate-platform-ha-nexus-hard-priority
+  annotations:
+    policies.kyverno.io/title: Enforce Nexus Hard Priority For Platform HA
+    policies.kyverno.io/category: Node Placement
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >
+      Enforce hard hostname priority to Nexus for platform-ha workloads with
+      platform-ha lane fallback during Nexus maintenance or outage windows.
+    pod-policies.kyverno.io/autogen-controllers: none
+    cryptophys.io/domain: platform
+    cryptophys.io/contract: contract.infrastructure.talos_topology.v1
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: enforce-platform-ha-nexus-hard-priority
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaceSelector:
+                matchLabels:
+                  cryptophys.io/pool: platform-ha
+      preconditions:
+        all:
+          - key: "{{ request.object.metadata.ownerReferences[0].kind || '' }}"
+            operator: NotEquals
+            value: DaemonSet
+      mutate:
+        patchStrategicMerge:
+          spec:
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                        - key: kubernetes.io/hostname
+                          operator: In
+                          values:
+                            - nexus-144-91-103-10
+                    - matchExpressions:
+                        - key: platform-ha
+                          operator: In
+                          values:
+                            - "true"
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
   name: deny-platform-ha-toleration-outside-platform
   annotations:
     policies.kyverno.io/title: Deny Platform HA Toleration Outside Platform
