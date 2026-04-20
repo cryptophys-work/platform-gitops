@@ -15,6 +15,7 @@ resources:
   - pdb-generation.yaml
   - rbac-generation.yaml
   - nexus-placement-policy.yaml
+  - policy__nexus-daemonset-resource-overrides.yaml
   - thalamus-evacuation-preference.yaml
   - metallb-policy-exception.yaml
   - policy__spire-agent-nexus-resources.yaml
