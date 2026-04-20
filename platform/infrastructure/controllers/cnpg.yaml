@@ -39,6 +39,9 @@ spec:
                   rollingUpdate:
                     maxSurge: 0
                     maxUnavailable: 1
+              - op: add
+                path: /spec/template/metadata/annotations/cryptophys.io~1cnpg-affinity-rollout
+                value: "exclude-nexus-2026-04-20"
   values:
     replicaCount: 2
     priorityClassName: cryptophys-platform-critical
