@@ -5,3 +5,14 @@ resources:
   - vault.yaml
   - vault__auto-unseal-controller.yaml
   - vault-injector-cert.yaml
+configMapGenerator:
+  - name: vault-policy-hcl
+    options:
+      disableNameSuffixHash: true
+      labels:
+        app.kubernetes.io/name: vault-policy-hcl
+        cryptophys.io/component: vault-policy
+        cryptophys.io/managed-by: flux
+    files:
+      - external-secrets-kv2-read.hcl=policies/external-secrets-kv2-read.hcl
+      - platform-kv2-bootstrap-write.hcl=policies/platform-kv2-bootstrap-write.hcl

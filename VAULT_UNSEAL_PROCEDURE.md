@@ -71,50 +71,37 @@ kubectl get clustersecretstore vault-backend
 # Expected: STATUS=Valid, READY=True
 ```
 
-If still showing `ValidationFailed`, the ESO token may be invalid. Regenerate:
+If still showing `ValidationFailed`, the ESO token may be invalid or the Vault policy may be wrong. Regenerate using the **canonical HCL** shipped in-cluster:
+
+**Design:** `ClusterSecretStore` uses KV mount `secret` (v2). All `remoteRef.key` values (for example `apps/gitea/admin`) map to `secret/data/<key>`. Policies on separate mounts such as `apps/data/*` **do not** apply and must not be used for ESO.
+
+**Sources of truth (GitOps):**
+
+- Read-only policy for ESO: `platform/infrastructure/vault-system/policies/external-secrets-kv2-read.hcl` (Vault policy name: `external-secrets`).
+- Break-glass KV writer (never for ESO): `platform/infrastructure/vault-system/policies/platform-kv2-bootstrap-write.hcl` (policy name: `platform-kv2-bootstrap`).
+- Flux renders these into ConfigMap `vault-policy-hcl` in namespace `vault-system`.
 
 ```bash
-# Login with privileged token from secure storage
-kubectl exec -n vault-system vault-0 -- vault login <SECURELY_RETRIEVED_VAULT_TOKEN>
+# Export a privileged Vault token from secure storage (root or admin). Do not commit or paste into chat.
+export VAULT_TOKEN=<SECURELY_RETRIEVED_VAULT_TOKEN>
 
-# Create policy for External Secrets (if not exists)
-kubectl exec -n vault-system vault-0 -- sh -c 'export VAULT_TOKEN=<SECURELY_RETRIEVED_VAULT_TOKEN> && vault policy write external-secrets - <<EOF
-path "secret/data/*" {
-  capabilities = ["read"]
-}
-path "secret/metadata/*" {
-  capabilities = ["list", "read"]
-}
-path "apps/data/*" {
-  capabilities = ["read"]
-}
-path "apps/metadata/*" {
-  capabilities = ["list", "read"]
-}
-path "platform/data/*" {
-  capabilities = ["read"]
-}
-path "platform/metadata/*" {
-  capabilities = ["list", "read"]
-}
-path "auth/token/lookup-self" {
-  capabilities = ["read"]
-}
-path "auth/token/renew-self" {
-  capabilities = ["update"]
-}
-EOF'
+# Install / refresh the read-only policy External Secrets uses
+kubectl get configmap vault-policy-hcl -n vault-system -o jsonpath='{.data.external-secrets-kv2-read\.hcl}' | \
+  kubectl exec -i -n vault-system vault-0 -- env VAULT_TOKEN="$VAULT_TOKEN" vault policy write external-secrets -
 
-# Generate new token
-NEW_TOKEN=$(kubectl exec -n vault-system vault-0 -- sh -c 'export VAULT_TOKEN=<SECURELY_RETRIEVED_VAULT_TOKEN> && vault token create -policy=external-secrets -ttl=0 -format=json' | jq -r '.auth.client_token')
+# (Optional break-glass) Install bootstrap writer — use only to vault kv put missing paths; revoke token after.
+kubectl get configmap vault-policy-hcl -n vault-system -o jsonpath='{.data.platform-kv2-bootstrap-write\.hcl}' | \
+  kubectl exec -i -n vault-system vault-0 -- env VAULT_TOKEN="$VAULT_TOKEN" vault policy write platform-kv2-bootstrap -
 
-# Update secret
+# Create a long-lived renewable read-only token for ESO (never attach platform-kv2-bootstrap to ESO)
+NEW_TOKEN=$(kubectl exec -n vault-system vault-0 -- env VAULT_TOKEN="$VAULT_TOKEN" \
+  vault token create -policy=external-secrets -ttl=8760h -renewable=true -format=json | jq -r '.auth.client_token')
+
 kubectl create secret generic vault-eso-token \
   -n external-secrets \
   --from-literal=token="$NEW_TOKEN" \
   --dry-run=client -o yaml | kubectl apply -f -
 
-# Restart ESO controller
 kubectl rollout restart -n external-secrets deployment/external-secrets
 ```
 
@@ -154,6 +141,12 @@ Reference: https://developer.hashicorp.com/vault/docs/concepts/seal#auto-unseal
 ## Recovery History
 
 **2026-02-17:** Vault sealed after restart. Root cause: Shamir unseal requires manual intervention. Successfully unsealed all 3 pods and regenerated ESO token. Result: 14/14 ExternalSecrets synced, 100% cluster health restored.
+
+## ESO token vs bootstrap (security model)
+
+- **`vault-eso-token`** must remain **read-only** on KV mount `secret` (policy `external-secrets`). External Secrets Operator only needs `read` + `list` on `secret/data/*` and `secret/metadata/*`, plus `renew-self` / `lookup-self`.
+- **Bootstrap / remediation** (for example `vault kv put secret/apps/gitea/admin ...`) requires a **separate** privileged Vault session. Use policy `platform-kv2-bootstrap` from the same ConfigMap only with a short-lived admin token, then **revoke** that token. **Never** attach `platform-kv2-bootstrap` to the ESO `vault-eso-token`.
+- **Never** paste root tokens, unseal keys, or `vault-eso-token` values into chat, tickets, or Git.
 
 ## Security Follow-up (Mandatory)
 
