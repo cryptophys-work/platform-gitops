@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: platform
-    cryptophys.io/pool: platform-ha
-  name: vault-system

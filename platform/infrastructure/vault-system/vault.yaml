@@ -15,6 +15,18 @@ spec:
               - op: replace
                 path: /spec/publishNotReadyAddresses
                 value: false
+          - target:
+              group: admissionregistration.k8s.io
+              version: v1
+              kind: MutatingWebhookConfiguration
+              name: vault-agent-injector-cfg
+            patch: |
+              apiVersion: admissionregistration.k8s.io/v1
+              kind: MutatingWebhookConfiguration
+              metadata:
+                name: vault-agent-injector-cfg
+                annotations:
+                  cert-manager.io/inject-ca-from: vault-system/vault-injector-cert
   chart:
     spec:
       chart: vault

@@ -54,6 +54,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: orchestrator
+    kagenti-enabled: "true"
 ---
 apiVersion: v1
 kind: Namespace
