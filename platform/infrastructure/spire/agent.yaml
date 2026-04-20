@@ -29,13 +29,15 @@ spec:
         - name: spire-agent
           image: ghcr.io/spiffe/spire-agent:1.8.0
           args: ["-config", "/run/spire/config/agent.conf"]
+          # Nexus-class nodes (dense pods + many SVIDs) spike memory at cold start; 1Gi caused
+          # repeat OOMKilled (see spiffe/spire#5067). Kubelet-attestor improvements land in SPIRE ≥1.11.
           resources:
             limits:
-              cpu: 300m
-              memory: 1Gi
+              cpu: 500m
+              memory: 2Gi
             requests:
-              cpu: 50m
-              memory: 256Mi
+              cpu: 100m
+              memory: 512Mi
           volumeMounts:
             - name: spire-config
               mountPath: /run/spire/config
