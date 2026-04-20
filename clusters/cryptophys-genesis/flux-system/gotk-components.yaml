@@ -4452,9 +4452,13 @@ spec:
         image: ghcr.io/fluxcd/source-controller:v1.8.2 # {"$imagepolicy": "flux-system:flux-source-controller"}
         imagePullPolicy: IfNotPresent
         livenessProbe:
+          failureThreshold: 6
           httpGet:
             path: /healthz
             port: healthz
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          timeoutSeconds: 5
         name: manager
         ports:
         - containerPort: 9090
@@ -4467,16 +4471,20 @@ spec:
           name: healthz
           protocol: TCP
         readinessProbe:
+          failureThreshold: 6
           httpGet:
             path: /
             port: http
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          timeoutSeconds: 5
         resources:
           limits:
-            cpu: 1000m
-            memory: 1Gi
+            cpu: "2"
+            memory: 4Gi
           requests:
-            cpu: 50m
-            memory: 64Mi
+            cpu: 200m
+            memory: 512Mi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -11412,16 +11420,20 @@ spec:
           name: healthz
           protocol: TCP
         readinessProbe:
+          failureThreshold: 6
           httpGet:
             path: /readyz
             port: healthz
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 5
         resources:
           limits:
-            cpu: 1000m
-            memory: 1Gi
+            cpu: "2"
+            memory: 2Gi
           requests:
-            cpu: 100m
-            memory: 64Mi
+            cpu: 200m
+            memory: 256Mi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
