@@ -41,7 +41,7 @@ spec:
                     maxUnavailable: 1
               - op: add
                 path: /spec/template/metadata/annotations/cryptophys.io~1cnpg-affinity-rollout
-                value: "exclude-nexus-2026-04-20"
+                value: "nexus-hard-priority-2026-04-20"
   values:
     replicaCount: 2
     priorityClassName: cryptophys-platform-critical
@@ -65,15 +65,20 @@ spec:
                   operator: In
                   values:
                     - "true"
-                # Prefer nexus/cerebellum; thalamus remains eligible (fallback if peers stalled).
-                # Exclude nexus: dense user workloads + API churn caused CNPG operator
-                # leader-election timeouts to 10.96.0.1 and webhook/apply flakes.
                 - key: kubernetes.io/hostname
                   operator: In
                   values:
+                    - nexus-144-91-103-10
                     - cerebellum-161-97-117-96
                     - thalamus-217-76-59-241
         preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - nexus-144-91-103-10
           - weight: 50
             preference:
               matchExpressions:
