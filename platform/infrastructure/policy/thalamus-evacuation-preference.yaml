@@ -34,7 +34,8 @@ spec:
                 - database
                 - gitops-system
                 - envoy-gateway-system
-                - flux-system
+                # flux-system excluded: source-controller and other Flux controllers must not be
+                # soft-pinned to nexus (dense workloads + artifact HTTP); platform-ha spread is enough.
                 - cert-manager
                 - cnpg-system
                 - crossplane-system
