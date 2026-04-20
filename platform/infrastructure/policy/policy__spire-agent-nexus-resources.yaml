@@ -1,0 +1,48 @@
+# Overlay (Kyverno mutate): dense Nexus node runs ~300+ pods; only spire-agent pods
+# bound to this hostname get higher requests. Baseline stays in spire/agent.yaml.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-spire-agent-nexus-resources
+  annotations:
+    policies.kyverno.io/title: SPIRE agent CPU/memory requests on Nexus only
+    policies.kyverno.io/category: Identity
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >
+      For spire-system pods labeled app=spire-agent, when scheduled on the Nexus
+      platform node, set requests to 0.5 CPU and 2Gi memory and matching limits so
+      admission stays valid. Other nodes keep the DaemonSet defaults from GitOps.
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+spec:
+  validationFailureAction: Audit
+  background: false
+  rules:
+    - name: spire-agent-nexus-requests
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - spire-system
+              selector:
+                matchLabels:
+                  app: spire-agent
+      preconditions:
+        all:
+          - key: "{{ request.object.spec.nodeName }}"
+            operator: Equals
+            value: nexus-144-91-103-10
+      mutate:
+        patchStrategicMerge:
+          spec:
+            containers:
+              - name: spire-agent
+                resources:
+                  requests:
+                    cpu: 500m
+                    memory: 2Gi
+                  limits:
+                    cpu: "2"
+                    memory: 4Gi
