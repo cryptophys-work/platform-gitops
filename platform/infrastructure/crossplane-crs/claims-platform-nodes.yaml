@@ -99,6 +99,9 @@ spec:
   longhornNode:
     allowScheduling: true
     evictionRequested: false
+    tags:
+      - backup-storage
+      - platform-ha
     disks:
       default-disk-080600000000:
         allowScheduling: true
@@ -107,7 +110,8 @@ spec:
         evictionRequested: false
         path: /var/lib/longhorn/
         storageReserved: 21474836480
-        tags: []
+        tags:
+          - general
       data-disk-1901e1e1c520:
         allowScheduling: true
         diskDriver: ""
@@ -115,7 +119,9 @@ spec:
         evictionRequested: false
         path: /var/mnt/longhorn-data/
         storageReserved: 21474836480
-        tags: []
+        tags:
+          - dedicated-llm
+          - backup-storage
 ---
 apiVersion: cryptophys.work/v1alpha1
 kind: ManagedNode
@@ -124,13 +130,7 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: apps
-  taints:
-  - key: cryptophys.io/pool
-    value: apps-ha
-    effect: NoSchedule
-  - key: ray-head
-    value: "true"
-    effect: NoSchedule
+  taints: []
   customLabels:
     cryptophys.io/tier: apps
     cryptophys.io/guardian: "true"
@@ -158,10 +158,7 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: platform
-  taints:
-  - key: cryptophys.io/pool
-    value: platform-ha
-    effect: NoSchedule
+  taints: []
   customLabels:
     cryptophys.io/tier: platform
     cryptophys.io/guardian: "true"
