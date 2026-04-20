@@ -208,98 +208,104 @@ spec:
               kind: Deployment
               name: registry-harbor-registry
             patch: |
-              - op: replace
-                path: /spec/template/spec/tolerations
-                value:
-                  - key: cryptophys.io/node-class
-                    operator: Equal
-                    value: nexus-hpc
-                    effect: NoSchedule
-                  - key: cryptophys.io/pool
-                    operator: Equal
-                    value: platform-ha
-                    effect: NoSchedule
-              - op: replace
-                path: /spec/template/spec/affinity
-                value:
-                  nodeAffinity:
-                    requiredDuringSchedulingIgnoredDuringExecution:
-                      nodeSelectorTerms:
-                        - matchExpressions:
-                            - key: platform-ha
-                              operator: In
-                              values:
-                                - "true"
-                    preferredDuringSchedulingIgnoredDuringExecution:
-                      - weight: 100
-                        preference:
-                          matchExpressions:
-                            - key: kubernetes.io/hostname
-                              operator: In
-                              values:
-                                - nexus-144-91-103-10
-                      - weight: 50
-                        preference:
-                          matchExpressions:
-                            - key: kubernetes.io/hostname
-                              operator: In
-                              values:
-                                - cerebellum-161-97-117-96
-                      - weight: 50
-                        preference:
-                          matchExpressions:
-                            - key: kubernetes.io/hostname
-                              operator: In
-                              values:
-                                - thalamus-217-76-59-241
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: registry-harbor-registry
+              spec:
+                template:
+                  spec:
+                    tolerations:
+                      - key: cryptophys.io/node-class
+                        operator: Equal
+                        value: nexus-hpc
+                        effect: NoSchedule
+                      - key: cryptophys.io/pool
+                        operator: Equal
+                        value: platform-ha
+                        effect: NoSchedule
+                    affinity:
+                      nodeAffinity:
+                        requiredDuringSchedulingIgnoredDuringExecution:
+                          nodeSelectorTerms:
+                            - matchExpressions:
+                                - key: platform-ha
+                                  operator: In
+                                  values:
+                                    - "true"
+                        preferredDuringSchedulingIgnoredDuringExecution:
+                          - weight: 100
+                            preference:
+                              matchExpressions:
+                                - key: kubernetes.io/hostname
+                                  operator: In
+                                  values:
+                                    - nexus-144-91-103-10
+                          - weight: 50
+                            preference:
+                              matchExpressions:
+                                - key: kubernetes.io/hostname
+                                  operator: In
+                                  values:
+                                    - cerebellum-161-97-117-96
+                          - weight: 50
+                            preference:
+                              matchExpressions:
+                                - key: kubernetes.io/hostname
+                                  operator: In
+                                  values:
+                                    - thalamus-217-76-59-241
           - target:
               kind: StatefulSet
               name: registry-harbor-trivy
             patch: |
-              - op: replace
-                path: /spec/template/spec/tolerations
-                value:
-                  - key: cryptophys.io/node-class
-                    operator: Equal
-                    value: nexus-hpc
-                    effect: NoSchedule
-                  - key: cryptophys.io/pool
-                    operator: Equal
-                    value: platform-ha
-                    effect: NoSchedule
-              - op: replace
-                path: /spec/template/spec/affinity
-                value:
-                  nodeAffinity:
-                    requiredDuringSchedulingIgnoredDuringExecution:
-                      nodeSelectorTerms:
-                        - matchExpressions:
-                            - key: platform-ha
-                              operator: In
-                              values:
-                                - "true"
-                    preferredDuringSchedulingIgnoredDuringExecution:
-                      - weight: 100
-                        preference:
-                          matchExpressions:
-                            - key: kubernetes.io/hostname
-                              operator: In
-                              values:
-                                - nexus-144-91-103-10
-                      - weight: 50
-                        preference:
-                          matchExpressions:
-                            - key: kubernetes.io/hostname
-                              operator: In
-                              values:
-                                - cerebellum-161-97-117-96
-                      - weight: 50
-                        preference:
-                          matchExpressions:
-                            - key: kubernetes.io/hostname
-                              operator: In
-                              values:
-                                - thalamus-217-76-59-241
+              apiVersion: apps/v1
+              kind: StatefulSet
+              metadata:
+                name: registry-harbor-trivy
+              spec:
+                template:
+                  spec:
+                    tolerations:
+                      - key: cryptophys.io/node-class
+                        operator: Equal
+                        value: nexus-hpc
+                        effect: NoSchedule
+                      - key: cryptophys.io/pool
+                        operator: Equal
+                        value: platform-ha
+                        effect: NoSchedule
+                    affinity:
+                      nodeAffinity:
+                        requiredDuringSchedulingIgnoredDuringExecution:
+                          nodeSelectorTerms:
+                            - matchExpressions:
+                                - key: platform-ha
+                                  operator: In
+                                  values:
+                                    - "true"
+                        preferredDuringSchedulingIgnoredDuringExecution:
+                          - weight: 100
+                            preference:
+                              matchExpressions:
+                                - key: kubernetes.io/hostname
+                                  operator: In
+                                  values:
+                                    - nexus-144-91-103-10
+                          - weight: 50
+                            preference:
+                              matchExpressions:
+                                - key: kubernetes.io/hostname
+                                  operator: In
+                                  values:
+                                    - cerebellum-161-97-117-96
+                          - weight: 50
+                            preference:
+                              matchExpressions:
+                                - key: kubernetes.io/hostname
+                                  operator: In
+                                  values:
+                                    - thalamus-217-76-59-241
   values:
     expose:
       type: ingress
