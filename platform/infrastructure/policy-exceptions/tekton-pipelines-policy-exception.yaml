@@ -29,10 +29,6 @@ metadata:
     cryptophys.work/exception-expires-at: "2027-01-01T00:00:00Z"
 spec:
   exceptions:
-    # Naming: Tekton operator generates names like "tekton-pipelines-controller"
-    - policyName: cp-standard-naming-canonical-v1
-      ruleNames:
-        - validate-resource-name
     # Resource limits: upstream defaults don't match our standard
     - policyName: cp-mutate-default-resources-v1
       ruleNames:
@@ -105,10 +101,6 @@ metadata:
     cryptophys.work/exception-expires-at: "2027-01-01T00:00:00Z"
 spec:
   exceptions:
-    # Provenance: mirrored images don't carry SLSA provenance
-    - policyName: cp-integrity-provenance-v1
-      ruleNames:
-        - "*"
     # Registry enforcement: these ARE in Harbor but from proxy/library paths
     - policyName: cp-mutate-supplychain-registry-v1
       ruleNames:

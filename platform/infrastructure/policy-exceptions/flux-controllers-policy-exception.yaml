@@ -10,10 +10,6 @@ metadata:
     cryptophys.work/exception-expires-at: "2026-06-30T00:00:00Z"
 spec:
   exceptions:
-    - policyName: cp-integrity-provenance-v1
-      ruleNames:
-        - enforce-helm-provenance
-        - check-canonical-release-name
     - policyName: cp-security-hardening-v1
       ruleNames:
         - restrict-pod-security-standard
