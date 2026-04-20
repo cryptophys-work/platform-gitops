@@ -19,10 +19,6 @@ spec:
     - policyName: deny-platform-ha-toleration-outside-platform
       ruleNames:
         - block-platform-ha
-    - policyName: cp-integrity-provenance-v1
-      ruleNames:
-        - enforce-helm-provenance
-        - check-canonical-release-name
   match:
     any:
       - resources:
@@ -63,10 +59,6 @@ spec:
     - policyName: deny-platform-ha-toleration-outside-platform
       ruleNames:
         - block-platform-ha
-    - policyName: cp-integrity-provenance-v1
-      ruleNames:
-        - enforce-helm-provenance
-        - check-canonical-release-name
   match:
     any:
       - resources:

@@ -19,37 +19,7 @@ spec:
   dependsOn:
     - name: 15-policy
     # 41-harbor removed: Kyverno policies don't need Harbor at deploy time; Harbor dep was blocking all ssot policy updates
-  # Patch: move validate.exclude → rule-level exclude (Kyverno v1.15.3 schema compat)
   patches:
-    - patch: |
-        - op: remove
-          path: /spec/rules/0/validate/exclude
-        - op: remove
-          path: /spec/rules/0/validate/preconditions
-        - op: add
-          path: /spec/rules/0/exclude
-          value:
-            any:
-            - resources:
-                names:
-                - cilium*
-                - longhorn*
-                - vault*
-                - argocd*
-                - linkerd*
-                - metallb*
-                - cert-manager*
-                - flux-system
-        - op: add
-          path: /spec/rules/0/preconditions
-          value:
-            all:
-            - key: "{{ request.object.metadata.labels.\"cryptophys.work/managed-by\" || '' }}"
-              operator: Equals
-              value: "argocd"
-      target:
-        kind: ClusterPolicy
-        name: cp-standard-naming-canonical-v1
     # Patch: scope attestation to ONLY signed image paths.
     # Exclude mirrored upstream images (library/*, docker-proxy/*) that lack cosign signatures.
     # Only verify images built by our Tekton pipeline (core/*, aide/*, tools/*, etc.)
