@@ -223,13 +223,13 @@ spec:
                 path: /spec/template/spec/affinity
                 value:
                   nodeAffinity:
-                   requiredDuringSchedulingIgnoredDuringExecution:
-                     nodeSelectorTerms:
-                       - matchExpressions:
-                           - key: platform-ha
-                             operator: In
-                             values:
-                               - "true"
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      nodeSelectorTerms:
+                        - matchExpressions:
+                            - key: platform-ha
+                              operator: In
+                              values:
+                                - "true"
                     preferredDuringSchedulingIgnoredDuringExecution:
                       - weight: 100
                         preference:
@@ -271,13 +271,13 @@ spec:
                 path: /spec/template/spec/affinity
                 value:
                   nodeAffinity:
-                   requiredDuringSchedulingIgnoredDuringExecution:
-                     nodeSelectorTerms:
-                       - matchExpressions:
-                           - key: platform-ha
-                             operator: In
-                             values:
-                               - "true"
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      nodeSelectorTerms:
+                        - matchExpressions:
+                            - key: platform-ha
+                              operator: In
+                              values:
+                                - "true"
                     preferredDuringSchedulingIgnoredDuringExecution:
                       - weight: 100
                         preference:
