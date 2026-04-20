@@ -15,7 +15,7 @@ spec:
       labels:
         app: spire-agent
       annotations:
-        cryptophys.io/redeploy-token: "2026-04-13-spire-agent-config-v2"
+        cryptophys.io/redeploy-token: "2026-04-20-spire-agent-non-nexus-small-req"
     spec:
       hostPID: true
       hostNetwork: true
@@ -29,15 +29,15 @@ spec:
         - name: spire-agent
           image: ghcr.io/spiffe/spire-agent:1.8.0
           args: ["-config", "/run/spire/config/agent.conf"]
-          # Nexus-class nodes (dense pods + many SVIDs) spike memory at cold start; 1Gi caused
-          # repeat OOMKilled (see spiffe/spire#5067). Kubelet-attestor improvements land in SPIRE ≥1.11.
+          # Default: minimal scheduling footprint on non-Nexus nodes. Dense Nexus gets
+          # 500m CPU / 2Gi request (+ caps) via Kyverno mutate-spire-agent-nexus-resources.
           resources:
             limits:
               cpu: 500m
-              memory: 2Gi
-            requests:
-              cpu: 100m
               memory: 512Mi
+            requests:
+              cpu: 10m
+              memory: 100Mi
           volumeMounts:
             - name: spire-config
               mountPath: /run/spire/config

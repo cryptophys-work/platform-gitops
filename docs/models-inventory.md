@@ -1,8 +1,8 @@
 # CryptoPhys Model Inventory & Upload Guide
 
-**Last Updated:** 2026-04-18  
+**Last Updated:** 2026-04-19  
 **Minio Storage:** `platform-backup-minio.minio-system.svc.cluster.local:9000`  
-**Bucket:** `models/ai-models/`  
+**Bucket:** `models/`  
 **Capacity:** 200Gi (nexus-hpc node)
 
 ---
@@ -10,39 +10,43 @@
 ## Critical GGUF Models (Cerebrum + AIDE)
 
 ### 1. DeepSeek-R1-Distill-Qwen-1.5B
-- **Path:** `models/ai-models/DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf`
+- **Path:** `models/bartowski/deepseek-r1-distill-qwen-1.5b-q4_k_m.gguf`
 - **Size:** ~1.0 GB
 - **Format:** GGUF Q4_K_M quantization
 - **HuggingFace:** bartowski/DeepSeek-R1-Distill-Qwen-1.5B-GGUF
 - **Download URL:** https://huggingface.co/bartowski/DeepSeek-R1-Distill-Qwen-1.5B-GGUF/resolve/main/DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf
 - **Usage:** Cerebrum NANO tier inference, llm-provider fallback
+- **Status:** ✅ Uploaded
 - **Priority:** 🔴 CRITICAL
 
 ### 2. Phi-3.5-Mini-Instruct
-- **Path:** `models/ai-models/Phi-3.5-mini-instruct-Q4_K_M.gguf`
+- **Path:** `models/bartowski/phi-3.5-mini-instruct-q4_k_m.gguf`
 - **Size:** ~2.2 GB
 - **Format:** GGUF Q4_K_M quantization
 - **HuggingFace:** bartowski/Phi-3.5-mini-instruct-GGUF
 - **Download URL:** https://huggingface.co/bartowski/Phi-3.5-mini-instruct-GGUF/resolve/main/Phi-3.5-mini-instruct-Q4_K_M.gguf
 - **Usage:** Cerebrum LIGHT tier, AIDE llm-provider PRIMARY model
+- **Status:** ✅ Uploaded
 - **Priority:** 🔴 CRITICAL
 
 ### 3. Meta-Llama-3.1-8B-Instruct
-- **Path:** `models/ai-models/Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf`
+- **Path:** `models/quantfactory/meta-llama-3.1-8b-instruct-q4_k_m.gguf`
 - **Size:** ~8.0 GB
 - **Format:** GGUF Q4_K_M quantization
 - **HuggingFace:** QuantFactory/Meta-Llama-3.1-8B-Instruct-GGUF
 - **Download URL:** https://huggingface.co/QuantFactory/Meta-Llama-3.1-8B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf
 - **Usage:** Cerebrum BALANCED tier inference
+- **Status:** ✅ Uploaded
 - **Priority:** 🔴 CRITICAL
 
 ### 4. Qwen-2.5-Coder-14B-Instruct
-- **Path:** `models/ai-models/Qwen2.5-Coder-14B-Instruct-Q4_K_M.gguf`
+- **Path:** `models/qwen/qwen2.5-coder-14b-instruct-q4_k_m.gguf`
 - **Size:** ~14.0 GB
 - **Format:** GGUF Q4_K_M quantization
 - **HuggingFace:** Qwen/Qwen2.5-Coder-14B-Instruct-GGUF
 - **Download URL:** https://huggingface.co/Qwen/Qwen2.5-Coder-14B-Instruct-GGUF/resolve/main/Qwen2.5-Coder-14B-Instruct-Q4_K_M.gguf
 - **Usage:** Cerebrum HEAVY tier inference, code reasoning
+- **Status:** ✅ Uploaded
 - **Priority:** 🔴 CRITICAL
 
 ---
@@ -50,18 +54,18 @@
 ## Large Models (Fine-Tuning & Specialized)
 
 ### 5. DeepSeek-V3 (131GB)
-- **Path:** `models/ai-models/DeepSeek-V3-UD-IQ1_S.gguf`
+- **Path:** `models/deepseek/DeepSeek-V3-UD-IQ1_S.gguf`
 - **Size:** 131 GB
 - **Format:** GGUF 1.58-bit IQ1_S ultra-compression
 - **HuggingFace:** unsloth/DeepSeek-V3-GGUF
 - **Download URL:** https://huggingface.co/unsloth/DeepSeek-V3-GGUF/resolve/main/DeepSeek-V3-UD-IQ1_S.gguf
 - **Usage:** bitnet-provider worker, advanced reasoning
-- **Status:** 🟡 IN PROGRESS (bitnet-provider Job)
+- **Status:** 🟡 Planned upload (only shard `models/deepseek/DeepSeek-V3-0324-UD-IQ1_S-00001-of-00004.gguf` is present today)
 - **Priority:** 🔴 CRITICAL
 - **Storage:** Allocates 131GB of 200GB Minio PVC
 
 ### 6. Mistral-7B-Instruct (Base for Aether)
-- **Path:** `models/ai-models/mistral-7b-instruct-v0.2-Q4_K_M.gguf`
+- **Path:** `models/mistral/mistral-7b-instruct-v0.2.Q4_K_M.gguf`
 - **Size:** ~7.0 GB
 - **Format:** GGUF Q4_K_M quantization
 - **HuggingFace:** TheBloke/Mistral-7B-Instruct-v0.2-GGUF
@@ -69,6 +73,7 @@
 - **Usage:** Aether Navigator fine-tuning base model
 - **LoRA Adapter:** worldline_reasoning, invariant_consistency (SSOT: `/ssot/aether/llm`)
 - **Output:** custom.gguf (~1GB after LoRA compression)
+- **Status:** 🟡 Download local first, then upload to MinIO
 - **Priority:** 🟡 MEDIUM
 
 ---
@@ -92,7 +97,7 @@ mc cp deepseek-r1-1.5b.modelfile store/models/ollama/
 ## Auto-Generated Models (Tekton Finetune Pipeline)
 
 ### Custom CryptoPhys Models
-- **Pattern:** `models/ai-models/custom-cryptophys-<version>.gguf`
+- **Pattern:** `models/custom/custom-cryptophys-<version>.gguf`
 - **Base Model:** DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf
 - **Training Data:** TrustedLedger decisions (100-5000 records)
 - **Fine-tuning:** QLoRA (Unsloth-compatible)
@@ -138,7 +143,7 @@ mc alias set minio http://localhost:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWOR
 
 # Download and upload
 wget https://huggingface.co/.../DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf
-mc cp DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf minio/models/ai-models/
+mc cp DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf minio/models/bartowski/
 ```
 
 ### Method 3: Direct Pod Upload
@@ -152,7 +157,7 @@ kubectl apply -f cerebrum-model-loader-job.yaml
 ## Verification Checklist
 
 - [ ] Minio PVC 200Gi is Bound on nexus-hpc
-- [ ] `models/ai-models/` bucket exists
+- [ ] `models/` bucket exists
 - [ ] All 4 cerebrum GGUF models uploaded
 - [ ] DeepSeek-V3 upload in progress or complete
 - [ ] Cerebrum loader Job pulls models successfully
@@ -165,10 +170,10 @@ kubectl apply -f cerebrum-model-loader-job.yaml
 
 | Service | Model(s) | Loader Method | Status |
 |---------|----------|---------------|--------|
-| **Cerebrum** | All 4 GGUF | cerebrum-model-loader-job | Pending upload |
+| **Cerebrum** | All 4 GGUF | cerebrum-model-loader-job | 4 uploaded |
 | **Cerebrum Ollama** | deepseek-r1:1.5b, phi3.5, qwen2.5:3b | Ollama registry | Native pull |
-| **AIDE llm-provider** | phi-3.5-mini-instruct | init container | Pending upload |
-| **Aether Navigator** | mistral-7b + LoRA | SSOT/Tekton | Pending setup |
+| **AIDE llm-provider** | phi-3.5-mini-instruct | init container | Uploaded |
+| **Aether Navigator** | mistral-7b + LoRA | SSOT/Tekton | Download local first |
 | **Corpus ESOG** | Generic model.gguf | Manual mount | SSOT path |
 | **Tekton Pipeline** | DeepSeek-R1 (input) | MinIO | Auto-pulls |
 
