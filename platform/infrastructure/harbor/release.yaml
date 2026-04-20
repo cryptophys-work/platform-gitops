@@ -47,15 +47,15 @@ spec:
                     effect: NoSchedule
               - op: replace
                 path: /spec/template/spec/affinity
-               value:
+                value:
                   nodeAffinity:
                     requiredDuringSchedulingIgnoredDuringExecution:
                       nodeSelectorTerms:
                         - matchExpressions:
-                           - key: platform-ha
-                             operator: In
-                             values:
-                               - "true"
+                            - key: platform-ha
+                              operator: In
+                              values:
+                                - "true"
                     preferredDuringSchedulingIgnoredDuringExecution:
                       - weight: 100
                         preference:
@@ -71,21 +71,21 @@ spec:
                               operator: In
                               values:
                                 - cerebellum-161-97-117-96
-                       - weight: 50
-                         preference:
-                           matchExpressions:
-                             - key: kubernetes.io/hostname
-                               operator: In
-                               values:
-                                 - thalamus-217-76-59-241
-                   podAntiAffinity:
-                     requiredDuringSchedulingIgnoredDuringExecution:
-                       - labelSelector:
-                           matchLabels:
-                             app: harbor
-                             component: core
-                             release: registry-harbor
-                         topologyKey: kubernetes.io/hostname
+                      - weight: 50
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - thalamus-217-76-59-241
+                  podAntiAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      - labelSelector:
+                          matchLabels:
+                            app: harbor
+                            component: core
+                            release: registry-harbor
+                        topologyKey: kubernetes.io/hostname
           - target:
               kind: Deployment
               name: registry-harbor-jobservice
@@ -106,15 +106,15 @@ spec:
                     effect: NoSchedule
               - op: replace
                 path: /spec/template/spec/affinity
-               value:
+                value:
                   nodeAffinity:
                     requiredDuringSchedulingIgnoredDuringExecution:
                       nodeSelectorTerms:
                         - matchExpressions:
-                           - key: platform-ha
-                             operator: In
-                             values:
-                               - "true"
+                            - key: platform-ha
+                              operator: In
+                              values:
+                                - "true"
                     preferredDuringSchedulingIgnoredDuringExecution:
                       - weight: 100
                         preference:
@@ -130,21 +130,21 @@ spec:
                               operator: In
                               values:
                                 - cerebellum-161-97-117-96
-                       - weight: 50
-                         preference:
-                           matchExpressions:
-                             - key: kubernetes.io/hostname
-                               operator: In
-                               values:
-                                 - thalamus-217-76-59-241
-                   podAntiAffinity:
-                     requiredDuringSchedulingIgnoredDuringExecution:
-                       - labelSelector:
-                           matchLabels:
-                             app: harbor
-                             component: jobservice
-                             release: registry-harbor
-                         topologyKey: kubernetes.io/hostname
+                      - weight: 50
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - thalamus-217-76-59-241
+                  podAntiAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      - labelSelector:
+                          matchLabels:
+                            app: harbor
+                            component: jobservice
+                            release: registry-harbor
+                        topologyKey: kubernetes.io/hostname
           - target:
               kind: Deployment
               name: registry-harbor-portal
@@ -165,15 +165,15 @@ spec:
                     effect: NoSchedule
               - op: replace
                 path: /spec/template/spec/affinity
-               value:
+                value:
                   nodeAffinity:
                     requiredDuringSchedulingIgnoredDuringExecution:
                       nodeSelectorTerms:
                         - matchExpressions:
-                           - key: platform-ha
-                             operator: In
-                             values:
-                               - "true"
+                            - key: platform-ha
+                              operator: In
+                              values:
+                                - "true"
                     preferredDuringSchedulingIgnoredDuringExecution:
                       - weight: 100
                         preference:
@@ -189,21 +189,21 @@ spec:
                               operator: In
                               values:
                                 - cerebellum-161-97-117-96
-                       - weight: 50
-                         preference:
-                           matchExpressions:
-                             - key: kubernetes.io/hostname
-                               operator: In
-                               values:
-                                 - thalamus-217-76-59-241
-                   podAntiAffinity:
-                     requiredDuringSchedulingIgnoredDuringExecution:
-                       - labelSelector:
-                           matchLabels:
-                             app: harbor
-                             component: portal
-                             release: registry-harbor
-                         topologyKey: kubernetes.io/hostname
+                      - weight: 50
+                        preference:
+                          matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - thalamus-217-76-59-241
+                  podAntiAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      - labelSelector:
+                          matchLabels:
+                            app: harbor
+                            component: portal
+                            release: registry-harbor
+                        topologyKey: kubernetes.io/hostname
           - target:
               kind: Deployment
               name: registry-harbor-registry
