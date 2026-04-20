@@ -3,6 +3,11 @@ kind: PolicyException
 metadata:
   name: platform-backup-velero
   namespace: velero-system
+  labels:
+    cryptophys.io/contract: contract.platform.component.velero.v1
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+    cryptophys.io/anti-regression: "true"
   annotations:
     owner: platform-team
     reason: velero-backup-service-requires-security-exceptions
@@ -27,6 +32,10 @@ spec:
       ruleNames:
         - require-limits-requests
         - autogen-require-limits-requests
+    - policyName: cp-integrity-provenance-v1
+      ruleNames:
+        - enforce-helm-provenance
+        - check-canonical-release-name
     - policyName: cp-supplychain-registry-v1
       ruleNames:
         - restrict-image-registries
@@ -36,6 +45,7 @@ spec:
       - resources:
           kinds:
             - Pod
+            - Job
             - DaemonSet
             - Deployment
             - ReplicaSet
@@ -43,5 +53,6 @@ spec:
             - velero*
             - platform-backup-velero*
             - node-agent*
+            - "*-default-kopia-maintain-job*"
           namespaces:
             - velero-system

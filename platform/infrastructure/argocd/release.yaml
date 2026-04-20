@@ -107,10 +107,14 @@ spec:
     configs:
       params:
         server.insecure: "true"
+        controller.status.processors: "10"
+        controller.operation.processors: "5"
+        controller.kubectl.parallelism.limit: "10"
       cm:
         # Enable non-expiring API token for drift-sentinel + automation tooling
         accounts.admin: "apiKey, login"
         cluster.inClusterEnabled: "true"
+        timeout.reconciliation: 300s
         # Exclude high-churn Trivy report CRDs from ArgoCD cache/diff to avoid
         # intermittent cache sync timeouts on large report sets.
         resource.exclusions: |
