@@ -184,6 +184,10 @@ spec:
           memory: 256Mi
     kubeEtcd:
       enabled: false
+    kubeApiServer:
+      serviceMonitor:
+        interval: 60s
+        scrapeTimeout: 10s
     # Recording rules for SPIRE agent CPU/memory (cAdvisor + kube-state) to size quotas from Prometheus.
     additionalPrometheusRulesMap:
       cryptophys-spire-agent-sizing:

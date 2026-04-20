@@ -3,6 +3,11 @@ kind: HelmRelease
 metadata:
   name: platform-backup-velero
   namespace: velero-system
+  labels:
+    cryptophys.io/contract: contract.platform.component.velero.v1
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+    cryptophys.io/anti-regression: "true"
 spec:
   interval: 1h
   timeout: 20m
@@ -35,6 +40,16 @@ spec:
           s3Url: http://platform-backup-minio.minio-system.svc.cluster.local:9000
       uploaderType: kopia
       defaultVolumesToFsBackup: false
+      backupSyncPeriod: 5m
+      clientBurst: 10
+      clientQPS: 5
+      garbageCollectionFrequency: 12h
+      storeValidationFrequency: 15m
+      defaultRepoMaintainFrequency: 24h
+      repositoryMaintenanceJob:
+        repositoryConfigData:
+          global:
+            keepLatestMaintenanceJobs: 1
     initContainers:
     - name: velero-plugin-for-aws
       image: velero/velero-plugin-for-aws:v1.11.0
