@@ -57,6 +57,11 @@ spec:
                   evictionRequested:
                     type: boolean
                     description: "Request eviction of Longhorn replicas from this node."
+                  tags:
+                    type: array
+                    description: "Top-level Longhorn node tags used by storage class selectors."
+                    items:
+                      type: string
                   disks:
                     type: object
                     description: "Disk configuration (disk ID maps to disk settings)."

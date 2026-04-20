@@ -64,6 +64,7 @@ spec:
               name: ""
               allowScheduling: true
               evictionRequested: false
+              tags: []
               disks: {}
         providerConfigRef:
           name: local-kubernetes-provider
@@ -89,6 +90,11 @@ spec:
     # Longhorn node evictionRequested
     - fromFieldPath: "spec.longhornNode.evictionRequested"
       toFieldPath: "spec.forProvider.manifest.spec.evictionRequested"
+      policy:
+        fromFieldPath: Optional
+    # Longhorn node tags
+    - fromFieldPath: "spec.longhornNode.tags"
+      toFieldPath: "spec.forProvider.manifest.spec.tags"
       policy:
         fromFieldPath: Optional
     # Longhorn node disks
