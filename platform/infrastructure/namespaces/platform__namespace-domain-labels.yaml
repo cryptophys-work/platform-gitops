@@ -71,7 +71,6 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: tekton
-    cryptophys.io/node-class: nexus-hpc
 ---
 apiVersion: v1
 kind: Namespace
