@@ -185,13 +185,7 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: platform
-  taints:
-  - key: cryptophys.io/pool
-    value: platform-ha
-    effect: NoSchedule
-  - key: ray-head
-    value: "true"
-    effect: NoSchedule
+  taints: []
   customLabels:
     cryptophys.io/tier: platform
     cryptophys.io/guardian: "true"
@@ -219,16 +213,7 @@ metadata:
   namespace: crossplane-system
 spec:
   tier: apps
-  taints:
-  - key: bridge-system
-    value: "true"
-    effect: NoSchedule
-  - key: dao-system
-    value: "true"
-    effect: NoSchedule
-  - key: ray-head
-    value: "true"
-    effect: NoSchedule
+  taints: []
   customLabels:
     cryptophys.io/tier: apps
     cryptophys.io/guardian: "true"
