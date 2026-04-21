@@ -14,11 +14,11 @@ spec:
   data:
     - secretKey: client-secret
       remoteRef:
-        key: secret/apps/platform-ui/oauth2-proxy
+        key: apps/platform-ui/oauth2-proxy
         property: client-secret
     - secretKey: cookie-secret
       remoteRef:
-        key: secret/apps/platform-ui/oauth2-proxy
+        key: apps/platform-ui/oauth2-proxy
         property: cookie-secret
 ---
 apiVersion: apps/v1
