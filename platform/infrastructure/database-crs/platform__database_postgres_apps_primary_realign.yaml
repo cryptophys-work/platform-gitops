@@ -16,7 +16,6 @@ metadata:
       target host, so CNPG can recreate it on the approved platform-ha node.
 spec:
   backoffLimit: 2
-  ttlSecondsAfterFinished: 600
   template:
     metadata:
       labels:

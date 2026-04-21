@@ -3,7 +3,6 @@ kind: Kustomization
 resources:
   - edge-and-harbor-exceptions.yaml
   - harbor-redis-supplychain-exception.yaml
-  - repair-job-pss-exceptions.yaml
   - crossplane-system-exceptions.yaml
   - crossplane-validating-webhook-tuning.yaml
   - kyverno-release.yaml

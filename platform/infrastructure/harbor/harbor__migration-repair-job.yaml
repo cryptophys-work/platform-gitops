@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: harbor-migration-repair-v3
+  name: harbor-migration-repair-v4
   namespace: registry-system
   labels:
     app.kubernetes.io/name: harbor-migration-repair
@@ -18,7 +18,6 @@ metadata:
       attachment after interrupted upgrades.
 spec:
   backoffLimit: 3
-  ttlSecondsAfterFinished: 600
   template:
     metadata:
       labels:
@@ -51,6 +50,7 @@ spec:
             capabilities:
               drop:
                 - ALL
+            privileged: false
             runAsNonRoot: true
             runAsUser: 999
             runAsGroup: 999
