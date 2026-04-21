@@ -8,12 +8,30 @@ spec:
     - policyName: cp-security-hardening-v1
       ruleNames:
         - restrict-pod-security-standard
+        - autogen-restrict-pod-security-standard
+    - policyName: cp-pss-restricted-v1
+      ruleNames:
+        - deny-host-namespaces
+        - autogen-deny-host-namespaces
+        - deny-hostpath-volumes
+        - autogen-deny-hostpath-volumes
+        - deny-capabilities-added
+        - autogen-deny-capabilities-added
     - policyName: cp-standard-resources-limits-v1
       ruleNames:
         - require-limits-requests
+        - autogen-require-limits-requests
     - policyName: cp-enforce-business
       ruleNames:
         - require-resources
+    - policyName: cp-integrity-ssot-boundary-v1
+      ruleNames:
+        - restrict-ssot-mount-boundary
+        - autogen-restrict-ssot-mount-boundary
+    - policyName: cp-supplychain-registry-v1
+      ruleNames:
+        - restrict-image-registries
+        - autogen-restrict-image-registries
   match:
     any:
       - resources:
