@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: harbor-migration-repair-v2
+  name: harbor-migration-repair-v3
   namespace: registry-system
   labels:
     app.kubernetes.io/name: harbor-migration-repair
@@ -28,7 +28,9 @@ spec:
         cryptophys.io/layer: platform
         cryptophys.io/managed-by: flux
     spec:
+      automountServiceAccountToken: false
       restartPolicy: OnFailure
+      volumes: []
       nodeSelector:
         platform-ha: "true"
       tolerations:
@@ -42,7 +44,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: repair
-          image: goharbor/harbor-db:v2.14.2
+          image: docker.io/goharbor/harbor-db@sha256:bf94789dfd58911f6957119a10db0ae78e49d1c58f85c0e09db519d49e194e88
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
@@ -65,7 +67,7 @@ spec:
             - -ec
             - |
               psql \
-                "host=postgres-registry-ha-rw.postgresql-system.svc.cluster.local port=5432 user=registry dbname=registry sslmode=disable" \
+                "host=postgres-registry-ha-rw.postgresql-system.svc.cluster.local port=5432 user=registry dbname=registry sslmode=require" \
                 -v ON_ERROR_STOP=1 \
                 -c "CREATE TABLE IF NOT EXISTS artifact_accessory (
                       id SERIAL PRIMARY KEY NOT NULL,
@@ -80,11 +82,11 @@ spec:
                       CONSTRAINT unique_artifact_accessory UNIQUE (artifact_id, subject_artifact_id)
                     );"
               psql \
-                "host=postgres-registry-ha-rw.postgresql-system.svc.cluster.local port=5432 user=registry dbname=registry sslmode=disable" \
+                "host=postgres-registry-ha-rw.postgresql-system.svc.cluster.local port=5432 user=registry dbname=registry sslmode=require" \
                 -v ON_ERROR_STOP=1 \
                 -c "UPDATE schema_migrations SET dirty = FALSE WHERE dirty = TRUE;"
               psql \
-                "host=postgres-registry-ha-rw.postgresql-system.svc.cluster.local port=5432 user=registry dbname=registry sslmode=disable" \
+                "host=postgres-registry-ha-rw.postgresql-system.svc.cluster.local port=5432 user=registry dbname=registry sslmode=require" \
                 -v ON_ERROR_STOP=1 \
                 -c "SELECT version, dirty FROM schema_migrations;"
           resources:
