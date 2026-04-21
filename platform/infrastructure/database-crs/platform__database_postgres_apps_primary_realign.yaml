@@ -26,8 +26,6 @@ spec:
         cryptophys.io/layer: platform
     spec:
       serviceAccountName: postgres-apps-stale-pvc-repair
-      imagePullSecrets:
-        - name: registry-cryptophys-work-auth
       restartPolicy: OnFailure
       nodeSelector:
         platform-ha: "true"

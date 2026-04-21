@@ -1,19 +1,20 @@
+# Narrow exception: external Redis still pulls from docker.io (digest-pinned) and cannot satisfy
+# cp-mutate-supplychain-registry-v1 without mirroring into registry.cryptophys.work.
+# Pod Security Standard is no longer relaxed for this workload (see edge-and-harbor-exceptions).
 apiVersion: kyverno.io/v2
 kind: PolicyException
 metadata:
-  name: edge-and-harbor-exceptions
+  name: harbor-redis-supplychain-exception
   namespace: kyverno-system
   labels:
     cryptophys.io/domain: platform
-    cryptophys.io/component: edge-gateway
+    cryptophys.io/component: harbor-external-redis
     cryptophys.io/managed-by: flux
     cryptophys.io/layer: platform
   annotations:
     cryptophys.work/exception-owner: "platform-sre"
     cryptophys.work/exception-reason: >-
-      Cloudflared is a platform-managed integration that cannot satisfy canonical naming,
-      registry mirroring, and provenance policies without breaking upstream compatibility.
-      Harbor external Redis supply-chain exception lives in harbor-redis-supplychain-exception.
+      Harbor sidecar Redis uses upstream docker.io/library/redis digest-pinned until replicated to Harbor.
     cryptophys.work/exception-ticket: "OPS-EDGE-REGISTRY-001"
     cryptophys.work/exception-expires-at: "2027-01-01T00:00:00Z"
 spec:
@@ -21,18 +22,14 @@ spec:
     - policyName: cp-mutate-supplychain-registry-v1
       ruleNames:
         - "*"
-    - policyName: cp-security-hardening-v1
-      ruleNames:
-        - restrict-pod-security-standard
   match:
     any:
       - resources:
           kinds:
             - Deployment
             - Pod
-            - ServiceAccount
-            - ConfigMap
+            - Service
           names:
-            - cloudflared
+            - registry-harbor-redis-external
           namespaces:
-            - cloudflare-tunnel
+            - registry-system
