@@ -30,9 +30,4 @@ data:
           skip_kubelet_verification = true
         }
       }
-      WorkloadAttestor "containerd" {
-        plugin_data {
-          containerd_socket_path = "/run/containerd/containerd.sock"
-        }
-      }
     }

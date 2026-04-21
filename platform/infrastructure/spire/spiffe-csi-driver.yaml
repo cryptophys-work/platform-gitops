@@ -71,6 +71,13 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
           securityContext:
             privileged: true
           volumeMounts:
@@ -88,6 +95,13 @@ spec:
             - -csi-address=/run/spiffe-csi/csi.sock
             - -kubelet-registration-path=/var/lib/kubelet/plugins/csi.spiffe.io/csi.sock
             - -health-port=9809
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 64Mi
           livenessProbe:
             httpGet:
               path: /healthz
