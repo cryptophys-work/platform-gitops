@@ -46,7 +46,7 @@ spec:
             - --login-url=https://id.cryptophys.work/realms/cryptophys/protocol/openid-connect/auth
             - --redeem-url=http://identity-core.apps-dash.svc.cluster.local/realms/cryptophys/protocol/openid-connect/token
             - --oidc-jwks-url=http://identity-core.apps-dash.svc.cluster.local/realms/cryptophys/protocol/openid-connect/certs
-            - --client-id=platform-ui-oauth2-proxy
+            - --client-id=longhorn-oauth2-proxy
             - --oidc-audience-claim=azp
             - --http-address=0.0.0.0:4180
             - --redirect-url=https://longhorn.cryptophys.work/oauth2/callback
