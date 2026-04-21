@@ -186,8 +186,9 @@ Reference: https://developer.hashicorp.com/vault/docs/concepts/seal#auto-unseal
 
 ## ESO token vs bootstrap (security model)
 
-- **`vault-eso-token`** must remain **read-only** on KV mount `secret` (policy `external-secrets`). External Secrets Operator only needs `read` + `list` on `secret/data/*` and `secret/metadata/*`, plus `renew-self` / `lookup-self`.
-- **Bootstrap / remediation** (for example `vault kv put secret/apps/gitea/admin ...`) requires a **separate** privileged Vault session. Use policy `platform-kv2-bootstrap` from the same ConfigMap only with a short-lived admin token, then **revoke** that token. **Never** attach `platform-kv2-bootstrap` to the ESO `vault-eso-token`.
+- **`vault-eso-token`** currently grants **read/write** access on KV mount `secret` (policy `external-secrets`) so both `ExternalSecret` and `PushSecret` can use the shared `ClusterSecretStore`. This is a broad permission surface; rotate and reduce it later if you split read vs write stores.
+- **Bootstrap / remediation** may still use a separate privileged Vault session (for example `vault kv put secret/apps/gitea/admin ...`) via policy `platform-kv2-bootstrap`, but the cluster-wide ESO token is no longer read-only.
+- **PushSecret targeting `ClusterSecretStore/vault-backend` is expected to work** once the live Vault policy and `vault-eso-token` have been refreshed to the current Git-managed policy.
 - **Never** paste root tokens, unseal keys, or `vault-eso-token` values into chat, tickets, or Git.
 
 ## Security Follow-up (Mandatory)
