@@ -64,7 +64,6 @@ metadata:
       dangling and initializing replica claims do not keep the cluster degraded.
 spec:
   backoffLimit: 2
-  ttlSecondsAfterFinished: 600
   template:
     metadata:
       labels:

@@ -64,7 +64,6 @@ metadata:
       do not keep the cluster perpetually degraded.
 spec:
   backoffLimit: 2
-  ttlSecondsAfterFinished: 600
   template:
     metadata:
       labels:
