@@ -456,6 +456,11 @@ spec:
                       - postgresql-system
                       - crossplane-system
                       - cqls-compute
+      preconditions:
+        all:
+          - key: "{{ request.operation || 'BACKGROUND' }}"
+            operator: NotEquals
+            value: DELETE
       validate:
         message: >
           Namespace '{{ request.object.metadata.namespace }}' is not allowed to
@@ -511,6 +516,11 @@ spec:
                       - cilium-system
                       - spire-system
                       - metallb-system
+      preconditions:
+        all:
+          - key: "{{ request.operation || 'BACKGROUND' }}"
+            operator: NotEquals
+            value: DELETE
       validate:
         message: >
           Namespace '{{ request.object.metadata.namespace }}' is not allowed to
