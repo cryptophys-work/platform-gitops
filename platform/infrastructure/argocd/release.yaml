@@ -107,9 +107,11 @@ spec:
     configs:
       params:
         server.insecure: "true"
-        controller.status.processors: "10"
-        controller.operation.processors: "5"
-        controller.kubectl.parallelism.limit: "10"
+        # Keep Argo's live-state fan-out modest while the apiserver is still
+        # recovering from watch/list timeout bursts.
+        controller.status.processors: "5"
+        controller.operation.processors: "2"
+        controller.kubectl.parallelism.limit: "4"
       cm:
         # Enable non-expiring API token for drift-sentinel + automation tooling
         accounts.admin: "apiKey, login"
@@ -218,7 +220,10 @@ spec:
           value: "true"
           effect: "NoSchedule"
     controller:
-      dynamicClusterDistribution: true
+      # The v3 dynamic shard heartbeat makes /healthz depend on writes to the
+      # shard ConfigMap. Under apiserver transport resets that keeps both
+      # replicas perpetually unready and blocks fresh syncs from becoming current.
+      dynamicClusterDistribution: false
       tolerations:
         - key: "cryptophys.io/pool"
           operator: "Equal"
@@ -264,11 +269,13 @@ spec:
                 matchLabels:
                   app.kubernetes.io/name: argocd-application-controller
               topologyKey: kubernetes.io/hostname
-      replicas: 2
+      # Prefer one stable controller over two perpetually unready replicas until
+      # control-plane/API latency is consistently back within Argo probe budgets.
+      replicas: 1
       resources:
         requests:
-          cpu: 100m
-          memory: 512Mi
+          cpu: 250m
+          memory: 768Mi
         limits:
           cpu: 2000m
           memory: 4Gi
