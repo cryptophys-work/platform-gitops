@@ -3,6 +3,7 @@ kind: Namespace
 metadata:
   name: cqls-compute
   labels:
+    app.kubernetes.io/created-by: aide
     cryptophys.io/domain: cqls
     cryptophys.io/system: compute
     cryptophys.io/node-class: nexus-hpc
