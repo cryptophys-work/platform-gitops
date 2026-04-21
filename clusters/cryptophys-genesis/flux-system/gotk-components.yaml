@@ -8633,7 +8633,7 @@ spec:
             resourceFieldRef:
               containerName: manager
               resource: limits.memory
-        image: ghcr.io/fluxcd/helm-controller:v1.5.3 # {"$imagepolicy": "flux-system:flux-helm-controller"}
+        image: ghcr.io/fluxcd/helm-controller:v1.5.4 # {"$imagepolicy": "flux-system:flux-helm-controller"}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
