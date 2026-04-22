@@ -129,6 +129,30 @@ spec:
               - ClusterVulnerabilityReport
             clusters:
               - "*"
+          - apiGroups:
+              - reports.kyverno.io
+            kinds:
+              - AdmissionReport
+              - BackgroundScanReport
+              - ClusterAdmissionReport
+              - ClusterBackgroundScanReport
+              - EphemeralReport
+              - ClusterEphemeralReport
+            clusters:
+              - "*"
+          - apiGroups:
+              - wgpolicyk8s.io
+            kinds:
+              - PolicyReport
+              - ClusterPolicyReport
+            clusters:
+              - "*"
+          - apiGroups:
+              - kyverno.io
+            kinds:
+              - UpdateRequest
+            clusters:
+              - "*"
         resource.customizations.ignoreDifferences.all: |
           jsonPointers:
             - /metadata/annotations/argocd.argoproj.io~1tracking-id

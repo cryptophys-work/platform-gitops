@@ -289,8 +289,10 @@ spec:
         extraArgs:
           exceptionNamespace: "kyverno-system"
           forceFailurePolicyIgnore: "true"
-          maxAdmissionReports: "200"
-          webhookTimeout: "30"
+          # Keep admission report retention small and fail open sooner so
+          # apiserver requests do not sit behind slow webhook paths for 30s.
+          maxAdmissionReports: "50"
+          webhookTimeout: "10"
         resources:
           requests:
             cpu: "100m"
@@ -299,7 +301,7 @@ spec:
             cpu: "1000m"
             memory: "1Gi"
     backgroundController:
-      replicas: 2
+      replicas: 1
       extraArgs:
         exceptionNamespace: kyverno-system
       updateStrategy:
@@ -340,9 +342,10 @@ spec:
           effect: NoSchedule
     cleanupController:
       createSelfSignedCert: true
-      replicas: 2
+      replicas: 1
       extraArgs:
         leaderElectionRetryPeriod: "15s"
+        ttlReconciliationInterval: "15m"
       updateStrategy:
         rollingUpdate:
           maxSurge: 0

@@ -44,7 +44,12 @@ spec:
     socketLB:
       enabled: true
       hostNamespaceOnly: true
-    extraConfig: {}
+    # Disable high-volume BPF event streams that are useful for deep tracing but
+    # expensive on memory/CPU under sustained control-plane churn.
+    extraConfig:
+      bpf-events-drop-enabled: "false"
+      bpf-events-policy-verdict-enabled: "false"
+      bpf-events-trace-enabled: "false"
     externalIPs:
       enabled: true
     nodePort:
