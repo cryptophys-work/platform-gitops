@@ -1,0 +1,55 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kagenti-webhook
+  namespace: flux-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: kagenti-webhook
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+  annotations:
+    cryptophys.io/contract: contract.platform.primitives.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  targetNamespace: kagenti-webhook-system
+  interval: 1h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  chart:
+    spec:
+      chart: kagenti-webhook-chart
+      version: 0.4.0-alpha.8
+      sourceRef:
+        kind: HelmRepository
+        name: kagenti-extensions
+        namespace: flux-system
+      interval: 1h
+  values:
+    namespace:
+      create: false
+    namespaceOverride: kagenti-webhook-system
+    featureGates:
+      globalEnabled: true
+      envoyProxy: true
+      spiffeHelper: false
+      clientRegistration: false
+      injectTools: false
+    defaults:
+      images:
+        envoyProxy: ghcr.io/kagenti/kagenti-extensions/envoy-with-processor:v0.4.0-alpha.9
+        proxyInit: ghcr.io/kagenti/kagenti-extensions/proxy-init:v0.4.0-alpha.9
+        spiffeHelper: ghcr.io/spiffe/spiffe-helper:0.11.0
+        clientRegistration: ghcr.io/kagenti/kagenti-extensions/client-registration:v0.4.0-alpha.9
+        pullPolicy: IfNotPresent
+      sidecars:
+        envoyProxy:
+          enabled: true
+        spiffeHelper:
+          enabled: false
+        clientRegistration:
+          enabled: false
