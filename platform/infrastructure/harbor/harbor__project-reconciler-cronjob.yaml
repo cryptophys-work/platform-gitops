@@ -1,0 +1,122 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: harbor-project-reconciler
+  namespace: registry-system
+  labels:
+    app.kubernetes.io/name: harbor-project-reconciler
+    cryptophys.io/domain: platform
+    cryptophys.io/component: harbor
+    cryptophys.io/layer: platform
+    cryptophys.io/managed-by: flux
+  annotations:
+    cryptophys.io/contract: contract.platform.registry.v1
+    cryptophys.io/ssot: "true"
+    cryptophys.io/anti-regression: "true"
+    cryptophys.io/purpose: >-
+      Idempotently reconciles the Harbor project taxonomy required by active
+      GitOps-managed image references so Flux-managed builds and pulls do not
+      depend on ad-hoc Harbor UI state.
+spec:
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: harbor-project-reconciler
+            cryptophys.io/domain: platform
+            cryptophys.io/component: harbor
+            cryptophys.io/layer: platform
+            cryptophys.io/managed-by: flux
+          annotations:
+            cryptophys.io/contract: contract.platform.registry.v1
+            cryptophys.io/ssot: "true"
+            cryptophys.io/anti-regression: "true"
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: OnFailure
+          nodeSelector:
+            platform-ha: "true"
+          tolerations:
+            - key: cryptophys.io/node-class
+              operator: Equal
+              value: nexus-hpc
+              effect: NoSchedule
+            - key: cryptophys.io/pool
+              operator: Equal
+              value: platform-ha
+              effect: NoSchedule
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: reconcile-projects
+              image: curlimages/curl:8.5.0
+              imagePullPolicy: IfNotPresent
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                privileged: false
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+              env:
+                - name: HARBOR_URL
+                  value: http://registry-harbor-core.registry-system.svc.cluster.local
+                - name: HARBOR_PROJECTS
+                  value: >-
+                    aide aether apps-core apps-dash apps-user bridge cerebrum
+                    core-cognitive core-execution core-governance core-memory
+                    core-nervous core-ops core-peripherals core-sensory corpus
+                    docker-proxy facilitator library navigator notification
+                    openclaw omega orchestrator platform-ui signatures
+                    tekton-system tools watcher
+                - name: HARBOR_ADMIN_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: harbor-admin-credentials
+                      key: HARBOR_ADMIN_PASSWORD
+              command:
+                - /bin/sh
+                - -ec
+                - |
+                  api="${HARBOR_URL}/api/v2.0"
+                  auth="admin:${HARBOR_ADMIN_PASSWORD}"
+                  for project in ${HARBOR_PROJECTS}; do
+                    code="$(curl -sS -o /dev/null -w '%{http_code}' -u "${auth}" "${api}/projects/${project}")"
+                    if [ "${code}" = "200" ]; then
+                      echo "harbor project ${project} already exists"
+                      continue
+                    fi
+                    if [ "${code}" != "404" ]; then
+                      echo "failed to inspect harbor project ${project}: HTTP ${code}" >&2
+                      exit 1
+                    fi
+                    payload="$(printf '{"project_name":"%s","metadata":{"public":"false"}}' "${project}")"
+                    create_code="$(curl -sS -o /dev/null -w '%{http_code}' -u "${auth}" \
+                      -H 'Content-Type: application/json' \
+                      -X POST "${api}/projects" \
+                      -d "${payload}")"
+                    case "${create_code}" in
+                      201|409)
+                        echo "harbor project ${project} reconciled"
+                        ;;
+                      *)
+                        echo "failed to create harbor project ${project}: HTTP ${create_code}" >&2
+                        exit 1
+                        ;;
+                    esac
+                  done
+              resources:
+                requests:
+                  cpu: 25m
+                  memory: 32Mi
+                limits:
+                  cpu: 100m
+                  memory: 128Mi
