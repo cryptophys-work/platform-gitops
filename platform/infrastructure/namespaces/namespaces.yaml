@@ -12,7 +12,6 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: apps
-    cryptophys.io/pool: apps-ha
   name: apps-core
 ---
 apiVersion: v1
@@ -133,6 +132,7 @@ metadata:
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
     cryptophys.io/pool: platform-ha
+    kagenti-enabled: "true"
 ---
 apiVersion: v1
 kind: Namespace
@@ -317,11 +317,13 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: automation
+  name: apps-automation
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: automation
     cryptophys.io/pool: apps-ha
+    kagenti-enabled: "true"
+
 ---
 apiVersion: v1
 kind: Namespace
@@ -331,7 +333,6 @@ metadata:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: kagenti
     cryptophys.io/pool: apps-ha
----
 apiVersion: v1
 kind: Namespace
 metadata:
