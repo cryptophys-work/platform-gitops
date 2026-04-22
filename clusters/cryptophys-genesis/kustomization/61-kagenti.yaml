@@ -14,7 +14,6 @@ spec:
     name: platform-repo
   dependsOn:
     - name: 01-namespaces
-    - name: 11-controllers
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
