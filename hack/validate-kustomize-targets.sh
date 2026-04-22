@@ -6,10 +6,14 @@ ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 TARGET_FILE="${SCRIPT_DIR}/validation-targets.txt"
 
 ci_mode=0
+with_live_smoke_gates=0
 while [[ "${#}" -gt 0 ]]; do
   case "${1}" in
     --ci-mode)
       ci_mode=1
+      ;;
+    --with-live-smoke-gates)
+      with_live_smoke_gates=1
       ;;
     *)
       echo "error: unknown argument: ${1}" >&2
@@ -44,6 +48,13 @@ echo "[validate] kyverno policy annotation completeness"
 
 echo "[validate] kyverno policy behavior explicitness"
 "${SCRIPT_DIR}/lint-kyverno-policy-behavior.py"
+
+echo "[validate] platform smoke gates"
+if [[ "${with_live_smoke_gates}" -eq 1 ]]; then
+  "${SCRIPT_DIR}/check-platform-smoke-gates.py" --live
+else
+  "${SCRIPT_DIR}/check-platform-smoke-gates.py"
+fi
 
 failures=0
 stderr_file="$(mktemp)"
