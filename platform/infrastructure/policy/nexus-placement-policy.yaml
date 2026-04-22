@@ -450,12 +450,15 @@ spec:
                       - tekton-pipelines-resolvers
                       - tekton-dashboard
                       - kueue-system
-                      - cloudflare-tunnel
-                      - longhorn-system
-                      - cnpg-system
-                      - postgresql-system
-                      - crossplane-system
-                      - cqls-compute
+                       - cloudflare-tunnel
+                       - longhorn-system
+                       - cnpg-system
+                       - postgresql-system
+                       - crossplane-system
+                       - cqls-compute
+                       - apps-system
+                       - kagenti-system
+                       - kagenti-webhook-system
       preconditions:
         all:
           - key: "{{ request.operation || 'BACKGROUND' }}"
