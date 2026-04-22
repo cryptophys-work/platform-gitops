@@ -44,12 +44,6 @@ spec:
     socketLB:
       enabled: true
       hostNamespaceOnly: true
-    # Disable high-volume BPF event streams that are useful for deep tracing but
-    # expensive on memory/CPU under sustained control-plane churn.
-    extraConfig:
-      bpf-events-drop-enabled: "false"
-      bpf-events-policy-verdict-enabled: "false"
-      bpf-events-trace-enabled: "false"
     externalIPs:
       enabled: true
     nodePort:
@@ -105,6 +99,13 @@ spec:
     bpf:
       policyMapMax: 262144
       mapDynamicSizeRatio: 0.08
+      events:
+        drop:
+          enabled: false
+        policyVerdict:
+          enabled: false
+        trace:
+          enabled: false
     # Dense platform-ha nodes: BPF restore + many endpoints can exceed default liveness window.
     startupProbe:
       failureThreshold: 180
