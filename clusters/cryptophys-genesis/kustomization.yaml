@@ -41,4 +41,5 @@ resources:
   - kustomization/55-crossplane.yaml
   - kustomization/55-crossplane-crs.yaml
   - kustomization/60-ray.yaml
+  - kustomization/61-kagenti.yaml
   - kustomization/90-gateway.yaml
