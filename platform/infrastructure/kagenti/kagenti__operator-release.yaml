@@ -12,6 +12,7 @@ metadata:
     cryptophys.io/contract: contract.platform.primitives.v1
     cryptophys.io/anti-regression: "true"
 spec:
+  releaseName: kagenti-op
   targetNamespace: apps-system
   interval: 1h
   install:
