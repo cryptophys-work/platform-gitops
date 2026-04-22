@@ -15,7 +15,7 @@ spec:
   dependsOn:
     - name: 01-namespaces
     - name: 05-sources
-    - name: 20-certificates
+    - name: 11-controllers
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
