@@ -37,11 +37,41 @@ spec:
               name: kagenti-controller-manager
             patch: |
               - op: replace
+                path: /spec/replicas
+                value: 2
+              - op: replace
                 path: /spec/template/spec/volumes/0/secret/secretName
                 value: kagenti-op-webhook-server-cert
               - op: replace
                 path: /spec/template/spec/volumes/1/secret/secretName
                 value: kagenti-op-metrics-server-cert
+              - op: add
+                path: /spec/template/spec/containers/0/securityContext/privileged
+                value: false
+              - op: add
+                path: /spec/template/spec/tolerations
+                value:
+                  - key: cryptophys.io/pool
+                    operator: Equal
+                    value: platform-ha
+                    effect: NoSchedule
+              - op: add
+                path: /spec/template/spec/nodeSelector
+                value:
+                  kubernetes.io/os: linux
+                  platform-ha: "true"
+              - op: add
+                path: /spec/template/spec/affinity
+                value:
+                  podAntiAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      - labelSelector:
+                          matchExpressions:
+                            - key: app.kubernetes.io/instance
+                              operator: In
+                              values:
+                                - kagenti-op
+                        topologyKey: kubernetes.io/hostname
   install:
     crds: CreateReplace
     remediation:
@@ -61,8 +91,9 @@ spec:
       interval: 1h
   values:
     controllerManager:
+      replicas: 2
       container:
         image:
-          tag: 0.2.0-alpha.26
+          tag: 0.2.0-alpha.21
     prometheus:
       enable: false

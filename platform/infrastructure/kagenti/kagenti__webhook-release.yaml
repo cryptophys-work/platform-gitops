@@ -14,6 +14,31 @@ metadata:
 spec:
   targetNamespace: kagenti-webhook-system
   interval: 1h
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: kagenti-webhook-controller-manager
+            patch: |
+              - op: replace
+                path: /spec/replicas
+                value: 2
+              - op: add
+                path: /spec/template/spec/containers/0/securityContext/privileged
+                value: false
+              - op: add
+                path: /spec/template/spec/affinity
+                value:
+                  podAntiAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      - labelSelector:
+                          matchExpressions:
+                            - key: app.kubernetes.io/name
+                              operator: In
+                              values:
+                                - kagenti-webhook-chart
+                        topologyKey: kubernetes.io/hostname
   install:
     remediation:
       retries: 3
@@ -30,9 +55,12 @@ spec:
         namespace: flux-system
       interval: 1h
   values:
+    replicaCount: 2
     namespace:
       create: false
     namespaceOverride: kagenti-webhook-system
+    webhook:
+      enableClientRegistration: false
     featureGates:
       globalEnabled: true
       envoyProxy: true
