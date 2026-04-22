@@ -15,6 +15,33 @@ spec:
   releaseName: kagenti-op
   targetNamespace: apps-system
   interval: 1h
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Certificate
+              name: serving-cert-kagenti-op
+            patch: |
+              - op: replace
+                path: /spec/secretName
+                value: kagenti-op-webhook-server-cert
+          - target:
+              kind: Certificate
+              name: metrics-certs-kagenti-op
+            patch: |
+              - op: replace
+                path: /spec/secretName
+                value: kagenti-op-metrics-server-cert
+          - target:
+              kind: Deployment
+              name: kagenti-controller-manager
+            patch: |
+              - op: replace
+                path: /spec/template/spec/volumes/0/secret/secretName
+                value: kagenti-op-webhook-server-cert
+              - op: replace
+                path: /spec/template/spec/volumes/1/secret/secretName
+                value: kagenti-op-metrics-server-cert
   install:
     crds: CreateReplace
     remediation:
