@@ -1,5 +1,6 @@
 # Add source and destination image pairs (source dest)
 quay.io/keycloak/keycloak:20.0.3 registry.cryptophys.work/library/keycloak:20.0.3
+quay.io/keycloak/keycloak:23.0.0 registry.cryptophys.work/library/keycloak:23.0.0
 ghcr.io/headlamp/headlamp:v0.40.1 registry.cryptophys.work/library/headlamp:v0.40.1
 quay.io/oauth2-proxy/oauth2-proxy:v7.6.0 registry.cryptophys.work/library/oauth2-proxy:v7.6.0
 docker.io/library/postgres:15 registry.cryptophys.work/library/postgres:15
