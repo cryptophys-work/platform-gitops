@@ -216,6 +216,7 @@ spec:
                       - ingress-system
                       - longhorn-system
                       - metallb-system
+                      - cognitive-risk
                       - falco-system
                       - tetragon-system
       preconditions:
@@ -254,6 +255,7 @@ spec:
                       - ingress-system
                       - longhorn-system
                       - metallb-system
+                      - cognitive-risk
                       - falco-system
                       - tetragon-system
       preconditions:
@@ -429,6 +431,7 @@ spec:
                       - kyverno-system
                       - cert-manager
                       - metallb-system
+                      - cognitive-risk
                       - external-secrets
                       - spire-system
                       - vault-system
@@ -519,6 +522,7 @@ spec:
                       - cilium-system
                       - spire-system
                       - metallb-system
+                      - cognitive-risk
       preconditions:
         all:
           - key: "{{ request.operation || 'BACKGROUND' }}"
