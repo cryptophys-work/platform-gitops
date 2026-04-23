@@ -320,14 +320,16 @@ spec:
           core: registry.cryptophys.work
         annotations:
           nginx.ingress.kubernetes.io/ssl-redirect: "true"
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          # Finite limit mitigates unbounded-upload DoS; raise if legitimate layer bundles exceed this.
+          nginx.ingress.kubernetes.io/proxy-body-size: "32g"
     externalURL: https://registry.cryptophys.work
     storage:
       disableredirect: true
     existingSecretAdminPassword: harbor-admin-credentials
     existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
     internalTLS:
-      enabled: false
+      enabled: true
+      certSource: auto
     persistence:
       enabled: true
       resourcePolicy: keep
@@ -362,7 +364,7 @@ spec:
         username: registry
         existingSecret: registry-harbor-database
         coreDatabase: registry
-        sslmode: disable
+        sslmode: require
       maxIdleConns: 100
       maxOpenConns: 900
     redis:
@@ -374,7 +376,7 @@ spec:
         registryDatabaseIndex: "2"
         trivyAdapterIndex: "5"
         username: ""
-        password: ""
+        existingSecret: registry-harbor-redis
     trivy:
       enabled: true
       replicas: 1

@@ -75,7 +75,7 @@ spec:
       images:
         envoyProxy: ghcr.io/kagenti/kagenti-extensions/envoy-with-processor:v0.4.0-alpha.9
         proxyInit: ghcr.io/kagenti/kagenti-extensions/proxy-init:v0.4.0-alpha.9
-        spiffeHelper: ghcr.io/spiffe/spiffe-helper:0.11.0
+        spiffeHelper: registry.cryptophys.work/docker-proxy/spiffe/spiffe-helper:0.11.0
         clientRegistration: ghcr.io/kagenti/kagenti-extensions/client-registration:v0.4.0-alpha.9
         pullPolicy: IfNotPresent
       sidecars:

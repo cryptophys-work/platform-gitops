@@ -26,6 +26,10 @@ spec:
       rayStartParams:
         dashboard-host: '0.0.0.0'
         num-cpus: '0' # Head node is for scheduling only
+      labels:
+        kagenti.io/type: platform
+        kagenti.io/role: compute-orchestrator
+        kagenti.io/ray: "true"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

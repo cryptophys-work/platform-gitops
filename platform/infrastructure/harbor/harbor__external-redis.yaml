@@ -61,6 +61,12 @@ spec:
         cryptophys.work/managed-by: aide
     spec:
       automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 999
+        runAsNonRoot: true
+        runAsUser: 999
+        seccompProfile:
+          type: RuntimeDefault
       tolerations:
         - key: cryptophys.io/node-class
           operator: Equal
@@ -79,20 +85,21 @@ spec:
                     operator: In
                     values:
                       - "true"
-      securityContext:
-        fsGroup: 999
       containers:
         - name: redis
-          image: docker.io/redis:7.2-alpine
+          # Digest-pinned multi-arch index (security: supply-chain stability).
+          image: docker.io/library/redis@sha256:9907ac0c435717b4d95697cb4d0ce77d100b1d21269a01a0ce66f27335184c38
           imagePullPolicy: IfNotPresent
-          args:
-            - redis-server
-            - --save
-            - ""
-            - --appendonly
-            - "no"
-            - --protected-mode
-            - "no"
+          command:
+            - /bin/sh
+            - -c
+            - exec redis-server --save "" --appendonly no --requirepass "$REDIS_PASSWORD"
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: registry-harbor-redis
+                  key: REDIS_PASSWORD
           ports:
             - containerPort: 6379
               name: redis

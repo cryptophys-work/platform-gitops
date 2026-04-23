@@ -476,7 +476,7 @@ spec:
       # Sidecar: spiffe-helper extracts certs from CSI volume to filesystem for Git client
       extraContainers:
         - name: spiffe-helper
-          image: ghcr.io/spiffe/spiffe-helper:0.11.0
+          image: registry.cryptophys.work/docker-proxy/spiffe/spiffe-helper:0.11.0
           imagePullPolicy: IfNotPresent
           args:
             - -config
