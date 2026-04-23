@@ -14,9 +14,10 @@ else
   exit 3
 fi
 while read -r src dst; do
-  case "$src" in
-    ''|#*) continue ;;
-  esac
+  # skip empty lines and comment lines
+  if [ -z "${src:-}" ] || [[ "${src}" == \#* ]]; then
+    continue
+  fi
   echo "Mirroring $src -> $dst"
   if [[ "$COPIER" == skopeo* ]]; then
     skopeo copy --all "docker://${src}" "docker://${dst}" || echo "skopeo failed for $src"
