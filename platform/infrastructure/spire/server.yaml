@@ -9,7 +9,6 @@ metadata:
     app.kubernetes.io/managed-by: flux
     environment: prod
     owner: infrastructure
-    kagenti.io/type: agent
     kagenti.io/role: identity
     kagenti.io/spiffe: "true"
 spec:
@@ -28,7 +27,6 @@ spec:
         app.kubernetes.io/managed-by: flux
         environment: prod
         owner: infrastructure
-        kagenti.io/type: agent
     spec:
       serviceAccountName: spire-server
       nodeSelector:
