@@ -8,7 +8,7 @@ spec:
   wait: true
   timeout: 45m
   path: ./platform/infrastructure/harbor
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: platform-repo
