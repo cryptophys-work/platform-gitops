@@ -143,9 +143,6 @@ spec:
                                 - key: daemonset
                                   operator: Exists
                                   effect: NoSchedule
-                                - key: node-role.kubernetes.io/control-plane
-                                  operator: Exists
-                                  effect: NoSchedule
                                 - key: worker-guardian
                                   operator: Equal
                                   value: "true"
