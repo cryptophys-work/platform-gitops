@@ -271,7 +271,6 @@ metadata:
   labels:
     app.kubernetes.io/created-by: aide
     cryptophys.io/domain: mesh
-    cryptophys.io/pool: apps-ha
 ---
 apiVersion: v1
 kind: Namespace
