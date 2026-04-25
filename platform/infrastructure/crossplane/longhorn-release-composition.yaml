@@ -411,6 +411,10 @@ spec:
                     provisionerReplicaCount: 2
                     resizerReplicaCount: 2
                     snapshotterReplicaCount: 2
+                    admissionWebhook:
+                      enabled: true
+                      tolerations:
+                        - operator: Exists
                     longhornCSI:
                       tolerations:
                         - key: daemonset
