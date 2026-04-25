@@ -402,9 +402,13 @@ spec:
                       limits:
                         cpu: "500m"
                         memory: "512Mi"
-                  longhornUI:
-                    tolerations:
-                      - operator: Exists
+                    longhornUI:
+                      tolerations:
+                        - operator: Exists
+                    admissionWebhook:
+                      enabled: true
+                      tolerations:
+                        - operator: Exists
                         effect: NoSchedule
                   csi:
                     attacherReplicaCount: 2
