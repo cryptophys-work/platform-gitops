@@ -427,6 +427,10 @@ spec:
                           operator: Equal
                           value: "true"
                           effect: NoSchedule
+                        - key: cryptophys.io/platform-ha
+                          operator: Equal
+                          value: "true"
+                          effect: NoSchedule
                         - key: cryptophys.io/node-class
                           operator: Equal
                           value: nexus-hpc
