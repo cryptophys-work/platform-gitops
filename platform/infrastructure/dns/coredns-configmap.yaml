@@ -8,7 +8,7 @@ data:
         }
         ready
         hosts {
-           10.98.40.190 registry.cryptophys.work
+           10.107.249.177 registry.cryptophys.work
            10.107.45.144 giteainternal.cryptophys.work
            fallthrough
         }
