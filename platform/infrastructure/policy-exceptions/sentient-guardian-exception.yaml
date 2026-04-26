@@ -1,0 +1,24 @@
+apiVersion: kyverno.io/v2beta1
+kind: PolicyException
+metadata:
+  name: sentient-guardian-exception
+  namespace: core-genesis
+  labels:
+    cryptophys.io/domain: core-genesis
+    ai.cryptophys.work/role: security-exemption
+spec:
+  exceptions:
+    - policyName: cp-security-hardening-v1
+      ruleNames:
+        - autogen-restrict-pod-security-standard
+        - restrict-pod-security-standard
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+          names:
+            - picoclaw-cp-shield
+            - picoclaw-worker-shield
+          namespaces:
+            - core-genesis

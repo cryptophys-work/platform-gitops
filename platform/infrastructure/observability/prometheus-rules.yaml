@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: platform-resource-alerts
+spec:
+  groups:
+  - name: platform.resources
+    rules:
+    - alert: HighResourceUsage
+      expr: kube_pod_container_resource_requests{namespace="flux-system"} > 0.8
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High resource usage in platform components"
+    - alert: BackupFailure
+      expr: velero_backup_success_total{state="failed"} > 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Velero backup failed"
