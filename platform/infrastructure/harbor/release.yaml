@@ -377,6 +377,7 @@ spec:
         trivyAdapterIndex: "5"
         username: ""
         existingSecret: registry-harbor-redis
+        REDIS_PASSWORD: "SET_BY_EXISTING_SECRET" # Placeholder to satisfy chart nil check
     trivy:
       enabled: true
       replicas: 1

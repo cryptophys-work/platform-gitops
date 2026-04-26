@@ -66,8 +66,8 @@ spec:
                 privileged: false
                 readOnlyRootFilesystem: true
                 runAsNonRoot: true
-                runAsUser: 10001
-                runAsGroup: 10001
+                runAsUser: 100
+                runAsGroup: 1000
               env:
                 - name: HARBOR_URL
                   value: http://registry-harbor-core.registry-system.svc.cluster.local

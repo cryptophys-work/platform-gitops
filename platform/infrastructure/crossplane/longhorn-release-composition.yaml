@@ -143,9 +143,6 @@ spec:
                                 - key: daemonset
                                   operator: Exists
                                   effect: NoSchedule
-                                - key: node-role.kubernetes.io/control-plane
-                                  operator: Exists
-                                  effect: NoSchedule
                                 - key: worker-guardian
                                   operator: Equal
                                   value: "true"
@@ -188,6 +185,24 @@ spec:
                                 requests:
                                   cpu: "50m"
                                   memory: "128Mi"
+                                limits:
+                                  cpu: "200m"
+                                  memory: "256Mi"
+                            - op: replace
+                              path: /spec/template/spec/containers/1/resources
+                              value:
+                                requests:
+                                  cpu: "10m"
+                                  memory: "64Mi"
+                                limits:
+                                  cpu: "50m"
+                                  memory: "128Mi"
+                            - op: replace
+                              path: /spec/template/spec/containers/2/resources
+                              value:
+                                requests:
+                                  cpu: "200m"
+                                  memory: "256Mi"
                                 limits:
                                   cpu: "500m"
                                   memory: "512Mi"
@@ -387,15 +402,23 @@ spec:
                       limits:
                         cpu: "500m"
                         memory: "512Mi"
-                  longhornUI:
-                    tolerations:
-                      - operator: Exists
+                    longhornUI:
+                      tolerations:
+                        - operator: Exists
+                    admissionWebhook:
+                      enabled: true
+                      tolerations:
+                        - operator: Exists
                         effect: NoSchedule
                   csi:
                     attacherReplicaCount: 2
                     provisionerReplicaCount: 2
                     resizerReplicaCount: 2
                     snapshotterReplicaCount: 2
+                    admissionWebhook:
+                      enabled: true
+                      tolerations:
+                        - operator: Exists
                     longhornCSI:
                       tolerations:
                         - key: daemonset
@@ -409,6 +432,10 @@ spec:
                           value: "true"
                           effect: NoSchedule
                         - key: cplane-guardian
+                          operator: Equal
+                          value: "true"
+                          effect: NoSchedule
+                        - key: cryptophys.io/platform-ha
                           operator: Equal
                           value: "true"
                           effect: NoSchedule

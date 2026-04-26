@@ -1,0 +1,181 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-cilium
+  namespace: kube-system
+  labels:
+    cryptophys.io/component: cilium
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      k8s-app: cilium
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-spire-server
+  namespace: spire-system
+  labels:
+    cryptophys.io/component: spire-server
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: spire-server
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-spire-agent
+  namespace: spire-system
+  labels:
+    cryptophys.io/component: spire-agent
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: spire-agent
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-longhorn-manager
+  namespace: longhorn-system
+  labels:
+    cryptophys.io/component: longhorn
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: longhorn-manager
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-metallb-speaker
+  namespace: metallb-system
+  labels:
+    cryptophys.io/component: metallb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: metallb-speaker
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-falco
+  namespace: falco
+  labels:
+    cryptophys.io/component: falco
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: falco
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-ingress-nginx
+  namespace: ingress-nginx
+  labels:
+    cryptophys.io/component: ingress-nginx
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ingress-nginx
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-node-local-dns
+  namespace: kube-system
+  labels:
+    cryptophys.io/component: node-local-dns
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      k8s-app: node-local-dns
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-argocd-server
+  namespace: apps-system
+  labels:
+    cryptophys.io/component: argocd
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-server
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-prometheus
+  namespace: monitoring-core
+  labels:
+    cryptophys.io/component: prometheus
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: prometheus
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-grafana
+  namespace: monitoring-core
+  labels:
+    cryptophys.io/component: grafana
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: grafana
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-harbor-core
+  namespace: registry-system
+  labels:
+    cryptophys.io/component: harbor
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: harbor
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-keycloak
+  namespace: apps-dash
+  labels:
+    cryptophys.io/component: keycloak
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: keycloak
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-nexus
+  namespace: apps-dash
+  labels:
+    cryptophys.io/component: nexus
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: nexus
