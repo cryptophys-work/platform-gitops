@@ -409,7 +409,7 @@ spec:
                       enabled: true
                       tolerations:
                         - operator: Exists
-                        effect: NoSchedule
+                          effect: NoSchedule
                   csi:
                     attacherReplicaCount: 2
                     provisionerReplicaCount: 2
