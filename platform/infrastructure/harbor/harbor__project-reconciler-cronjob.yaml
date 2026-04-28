@@ -73,16 +73,15 @@ spec:
                   value: http://registry-harbor-core.registry-system.svc.cluster.local
                  - name: HARBOR_PROJECTS
                    value: >-
-                     aide aether apps-core apps-dash apps-user bridge cerebrum
-                     core-cognitive core-execution core-governance core-memory
-                     core-nervous core-ops core-peripherals core-sensory corpus
-                     docker-proxy facilitator library navigator notification
-                     openclaw omega orchestrator platform-ui signatures
-                     tekton-system tools watcher
+                     aide aether apps-dash apps-user autonomous-execution
+                     cognitive-brain corpus genesis governance-heart infra-ops
+                     library memory-storage nervous-system neural-mesh omega
+                     peripheral-tools sensory-perception signatures tekton tools
                  - name: HARBOR_SECURITY_PROJECTS
                    value: >-
-                     core-nervous core-cognitive core-execution core-memory
-                     core-ops core-peripherals tools library
+                     autonomous-execution cognitive-brain governance-heart
+                     memory-storage nervous-system neural-mesh peripheral-tools
+                     infra-ops sensory-perception tools library
                 - name: HARBOR_ADMIN_PASSWORD
                   valueFrom:
                     secretKeyRef:
