@@ -1,0 +1,51 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: flux-dependency-circuit-breaker
+  namespace: observability-system
+spec:
+  groups:
+  - name: flux-dependency-monitoring
+    rules:
+    - alert: FluxDependencyCircuitBreaker
+      expr: |
+        sum(gotk_reconcile_condition{status="False", kind="Kustomization"}) by (namespace) > 0
+        and
+        count(gotk_reconcile_condition{kind="Kustomization"}) by (namespace) > 3
+      for: 10m
+      labels:
+        severity: critical
+        circuit_breaker: "true"
+      annotations:
+        summary: "Flux dependency circuit breaker activated"
+        description: "Multiple Kustomizations failing in {{ $labels.namespace }}, activating circuit breaker to prevent cascade"
+        runbook: "Check dependency order in Flux Kustomizations, suspend failing dependencies"
+    - alert: FluxHelmReleaseDependencyFailure
+      expr: |
+        gotk_reconcile_condition{status="False", kind="HelmRelease"}
+        and on(namespace)
+        sum(gotk_reconcile_condition{status="False", kind="Kustomization"}) by (namespace) > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "HelmRelease failing due to Kustomization dependency"
+        description: "HelmRelease {{ $labels.name }} may be failing due to Kustomization dependency issues"
+    - alert: FluxSourceControllerBacklog
+      expr: |
+        sum(gotk_reconcile_condition{status="False", kind="GitRepository"}) by (name, namespace) > 0
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Flux source controller backlog"
+        description: "GitRepository reconciliation is failing, indicating source connectivity or configuration issues"
+    - alert: FluxReconciliationStuck
+      expr: |
+        gotk_reconcile_condition{status="Unknown"}
+      for: 30m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Flux reconciliation stuck"
+        description: "Flux resource {{ $labels.name }} reconciliation appears stuck (no update for 30+ minutes)"
