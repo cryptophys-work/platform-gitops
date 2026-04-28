@@ -14,3 +14,4 @@ resources:
   - stale-apps-ha-pods-policy-exception.yaml
   - tekton-pipelines-policy-exception.yaml
   - sentient-guardian-exception.yaml
+  - trustedledger-immudb-policy-exception.yaml
