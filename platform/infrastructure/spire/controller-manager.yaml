@@ -164,6 +164,8 @@ spec:
             - name: spire-server-socket
               mountPath: /run/spire/sockets
               readOnly: true
+            - name: tmp
+              mountPath: /tmp
       volumes:
         - name: config
           configMap:
@@ -172,3 +174,5 @@ spec:
           csi:
             driver: csi.spiffe.io
             readOnly: true
+        - name: tmp
+          emptyDir: {}
