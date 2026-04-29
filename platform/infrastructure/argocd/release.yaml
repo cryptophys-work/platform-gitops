@@ -101,6 +101,9 @@ spec:
                     value: platform-ha
                     effect: NoSchedule
   values:
+    global:
+      imagePullSecrets:
+        - name: registry-cryptophys-work-auth
     crds:
       install: true
       keep: true

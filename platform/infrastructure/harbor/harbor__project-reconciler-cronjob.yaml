@@ -70,13 +70,14 @@ spec:
                 runAsGroup: 1000
               env:
                 - name: HARBOR_URL
-                  value: http://registry-harbor-core.registry-system.svc.cluster.local
+                  value: https://registry-harbor-core.registry-system.svc.cluster.local
                 - name: HARBOR_PROJECTS
                   value: >-
                     aide aether apps-dash apps-user autonomous-execution
                     cognitive-brain corpus genesis governance-heart infra-ops
                     library memory-storage nervous-system neural-mesh omega
                     peripheral-tools sensory-perception signatures tekton tools
+                    docker-proxy platform apps
                 - name: HARBOR_SECURITY_PROJECTS
                   value: >-
                     autonomous-execution cognitive-brain governance-heart
@@ -94,14 +95,14 @@ spec:
                   api="${HARBOR_URL}/api/v2.0"
                   auth="admin:${HARBOR_ADMIN_PASSWORD}"
                    for project in ${HARBOR_PROJECTS}; do
-                     code="$(curl -sS -o /dev/null -w '%{http_code}' -u "${auth}" "${api}/projects/${project}")"
+                     code="$(curl -k -sS -o /dev/null -w '%{http_code}' -u "${auth}" "${api}/projects/${project}")"
                      if [ "${code}" = "200" ]; then
                        echo "harbor project ${project} already exists"
                        # Check if this is a security project that needs configuration
                        if echo "${HARBOR_SECURITY_PROJECTS}" | grep -q "\b${project}\b"; then
                          # Enable auto-scan, SBOM generation, and cosign signing
                          config_payload='{"vulnerability_scanning":"true","sbom_generation":"true","cosign_signing":"true"}'
-                         config_code="$(curl -sS -o /dev/null -w '%{http_code}' -u "${auth}" \
+                         config_code="$(curl -k -sS -o /dev/null -w '%{http_code}' -u "${auth}" \
                            -H 'Content-Type: application/json' \
                            -X PUT "${api}/projects/${project}" \
                            -d "${config_payload}")"
@@ -123,7 +124,7 @@ spec:
                      else
                        payload="$(printf '{"project_name":"%s","metadata":{"public":"false"}}' "${project}")"
                      fi
-                     create_code="$(curl -sS -o /dev/null -w '%{http_code}' -u "${auth}" \
+                     create_code="$(curl -k -sS -o /dev/null -w '%{http_code}' -u "${auth}" \
                        -H 'Content-Type: application/json' \
                        -X POST "${api}/projects" \
                        -d "${payload}")"
