@@ -1,4 +1,4 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta2
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: argocd
@@ -26,84 +26,7 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: Deployment
-              name: argocd-server
-            patch: |
-              - op: replace
-                path: /spec/template/spec/nodeSelector
-                value: {}
-          - target:
-              kind: Deployment
-              name: argocd-repo-server
-            patch: |
-              - op: replace
-                path: /spec/template/spec/nodeSelector
-                value: {}
-              - op: replace
-                path: /spec/template/spec/containers/1/resources/requests/memory
-                value: 4Mi
-          # Same three-node + host anti-affinity constraint as application-controller.
-          - target:
-              kind: Deployment
-              name: argocd-applicationset-controller
-            patch: |
-              - op: replace
-                path: /spec/template/spec/tolerations
-                value:
-                  - key: ray-cluster
-                    operator: Equal
-                    value: "true"
-                    effect: NoSchedule
-                  - key: cryptophys.io/pool
-                    operator: Equal
-                    value: platform-ha
-                    effect: NoSchedule
-              - op: replace
-                path: /spec/strategy
-                value:
-                  type: RollingUpdate
-                  rollingUpdate:
-                    maxSurge: 0
-                    maxUnavailable: 1
-          # Required host anti-affinity only allows three platform-ha nodes; chart default
-          # RollingUpdate maxSurge would schedule a third controller pod and deadlock Pending.
-          - target:
-              kind: Deployment
-              name: argocd-application-controller
-            patch: |
-              - op: replace
-                path: /spec/strategy
-                value:
-                  type: RollingUpdate
-                  rollingUpdate:
-                    maxSurge: 0
-                    maxUnavailable: 1
-          - target:
-              kind: Deployment
-              name: argocd-notifications-controller
-            patch: |
-              - op: replace
-                path: /spec/replicas
-                value: 2
-              - op: replace
-                path: /spec/template/spec/tolerations
-                value:
-                  - key: ray-cluster
-                    operator: Equal
-                    value: "true"
-                    effect: NoSchedule
-                  - key: cryptophys.io/pool
-                    operator: Equal
-                    value: platform-ha
-                    effect: NoSchedule
   values:
-    global:
-      imagePullSecrets:
-        - name: registry-cryptophys-work-auth
     crds:
       install: true
       keep: true
@@ -211,51 +134,44 @@ spec:
           end
           hs.message = "Policy accepted"
           return hs
-    global:
-      # Chart defaults (e.g. redis, redisSecretInit hook) inherit these; must cover worker taints
-      # or pre-upgrade hooks and redis pods stay Pending forever.
-      tolerations:
-        - key: "node.cilium.io/agent-not-ready"
-          operator: "Exists"
-          effect: "NoSchedule"
-        - key: "ray-head"
-          operator: "Equal"
-          value: "true"
-          effect: "NoSchedule"
-        - key: "ray-cluster"
-          operator: "Equal"
-          value: "true"
-          effect: "NoSchedule"
-        - key: "cryptophys.io/pool"
-          operator: "Equal"
-          value: "platform-ha"
-          effect: "NoSchedule"
-        - key: "cryptophys.io/pool"
-          operator: "Equal"
-          value: "apps-ha"
-          effect: "NoSchedule"
-        - key: "daemonset"
-          operator: "Equal"
-          value: "true"
-          effect: "NoSchedule"
-        - key: "bridge-system"
-          operator: "Equal"
-          value: "true"
-          effect: "NoSchedule"
-        - key: "dao-system"
-          operator: "Equal"
-          value: "true"
-          effect: "NoSchedule"
+
     controller:
       # The v3 dynamic shard heartbeat makes /healthz depend on writes to the
       # shard ConfigMap. Under apiserver transport resets that keeps both
       # replicas perpetually unready and blocks fresh syncs from becoming current.
       dynamicClusterDistribution: false
       tolerations:
-        - key: "cryptophys.io/pool"
-          operator: "Equal"
-          value: "platform-ha"
-          effect: "NoSchedule"
+         - key: "node.cilium.io/agent-not-ready"
+           operator: "Exists"
+           effect: "NoSchedule"
+         - key: "ray-head"
+           operator: "Equal"
+           value: "true"
+           effect: "NoSchedule"
+         - key: "ray-cluster"
+           operator: "Equal"
+           value: "true"
+           effect: "NoSchedule"
+         - key: "cryptophys.io/pool"
+           operator: "Equal"
+           value: "platform-ha"
+           effect: "NoSchedule"
+         - key: "cryptophys.io/pool"
+           operator: "Equal"
+           value: "apps-ha"
+           effect: "NoSchedule"
+         - key: "daemonset"
+           operator: "Equal"
+           value: "true"
+           effect: "NoSchedule"
+         - key: "bridge-system"
+           operator: "Equal"
+           value: "true"
+           effect: "NoSchedule"
+         - key: "dao-system"
+           operator: "Equal"
+           value: "true"
+           effect: "NoSchedule"
       pdb:
         enabled: true
         minAvailable: 1
