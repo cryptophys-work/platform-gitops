@@ -50,9 +50,11 @@ spec:
     spec:
       serviceAccountName: argocd-pv-retain
       restartPolicy: OnFailure
+      imagePullSecrets:
+        - name: registry-cryptophys-work-auth
       containers:
         - name: retain
-          image: bitnami/kubectl:1.31.4
+          image: registry.cryptophys.work/library/kubectl:sha-175d3e94e675
           command:
             - /bin/sh
             - -c
