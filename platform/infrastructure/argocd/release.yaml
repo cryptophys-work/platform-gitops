@@ -27,6 +27,9 @@ spec:
     remediation:
       retries: 3
   values:
+    global:
+      imagePullSecrets:
+        - registry-cryptophys-work-auth
     crds:
       install: true
       keep: true
@@ -424,8 +427,6 @@ spec:
             - name: spiffe-helper-config
               mountPath: /etc/spiffe-helper
               readOnly: true
-      imagePullSecrets:
-        - name: registry-cryptophys-work-auth
     applicationSet:
       replicas: 2
       nodeSelector: {}
