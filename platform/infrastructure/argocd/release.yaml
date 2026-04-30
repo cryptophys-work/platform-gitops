@@ -27,9 +27,8 @@ spec:
     remediation:
       retries: 3
   values:
-    global:
-      imagePullSecrets:
-        - registry-cryptophys-work-auth
+    imagePullSecrets:
+      - registry-cryptophys-work-auth
     crds:
       install: true
       keep: true
@@ -297,8 +296,6 @@ spec:
           cpu: 250m
           memory: 256Mi
     repoServer:
-      imagePullSecrets:
-        - registry-cryptophys-work-auth
       replicas: 2
       nodeSelector: {}
       deploymentStrategy:
