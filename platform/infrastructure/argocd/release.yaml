@@ -212,9 +212,8 @@ spec:
                 matchLabels:
                   app.kubernetes.io/name: argocd-application-controller
               topologyKey: kubernetes.io/hostname
-      # Prefer one stable controller over two perpetually unready replicas until
-      # control-plane/API latency is consistently back within Argo probe budgets.
-      replicas: 1
+      # Running HA application controllers - API latency conditions have improved
+      replicas: 2
       resources:
         requests:
           cpu: 250m
