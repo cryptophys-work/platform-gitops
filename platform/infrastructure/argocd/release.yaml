@@ -27,8 +27,6 @@ spec:
     remediation:
       retries: 3
   values:
-    imagePullSecrets:
-      - registry-cryptophys-work-auth
     crds:
       install: true
       keep: true
