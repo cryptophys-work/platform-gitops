@@ -424,6 +424,8 @@ spec:
             - name: spiffe-helper-config
               mountPath: /etc/spiffe-helper
               readOnly: true
+      imagePullSecrets:
+        - name: registry-cryptophys-work-auth
     applicationSet:
       replicas: 2
       nodeSelector: {}
