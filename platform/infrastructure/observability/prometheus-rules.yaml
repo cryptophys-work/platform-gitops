@@ -20,3 +20,53 @@ spec:
         severity: critical
       annotations:
         summary: "Velero backup failed"
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: spire-certificate-alerts
+  labels:
+    cryptophys.work/domain: security
+    cryptophys.work/component: spire-monitoring
+  annotations:
+    cryptophys.io/contract: contract.platform.observability.v1
+spec:
+  groups:
+  - name: spire.certificates
+    rules:
+    - alert: SPIFFESVIDExpiring
+      expr: (spire_agent_svid_seconds_remaining - time()) < 600
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "SPIFFE SVID certificate expiring in less than 10 minutes"
+        description: "SPIRE Agent {{ $labels.instance }} SVID expiring at {{ $value | humanizeTimestamp }}. If spiffe-helper fails to rotate, workloads will lose mTLS connectivity."
+        runbook_url: "https://github.com/ruvnet/claude-flow/docs/runbooks/spire-cert-rotation.md"
+    - alert: SPIFFESVIDRenewalFailed
+      expr: rate(spire_agent_svid_rotation_errors_total[5m]) > 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "SPIFFE SVID certificate rotation is failing"
+        description: "SPIRE Agent {{ $labels.instance }} has {{ $value }} SVID rotation errors in the last 5 minutes. NATS mTLS connections will fail when certs expire."
+        runbook_url: "https://github.com/ruvnet/claude-flow/docs/runbooks/spire-cert-rotation.md"
+    - alert: SPIFFETrustBundleExpiring
+      expr: (spire_server_bundle_seconds_remaining - time()) < 3600
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "SPIFFE Trust Bundle expiring in less than 1 hour"
+        description: "SPIRE Server {{ $labels.instance }} trust bundle is nearing expiry. All cross-workload mTLS will fail if the bundle expires."
+        runbook_url: "https://github.com/ruvnet/claude-flow/docs/runbooks/spire-cert-rotation.md"
+    - alert: SPIFFEWorkloadAPIDown
+      expr: up{job="spire-agent"} == 0
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "SPIRE Agent Workload API is down"
+        description: "SPIRE Agent {{ $labels.instance }} is unreachable. No new SVIDs can be issued. Existing certs continue until expiry."
+        runbook_url: "https://github.com/ruvnet/claude-flow/docs/runbooks/spire-cert-rotation.md"
