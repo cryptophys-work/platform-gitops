@@ -27,8 +27,10 @@ spec:
             - Pod
           namespaces:
             - image-factory
-          names:
-            - buildkit-warm-head-4pb6q
+          selector:
+            matchLabels:
+              ray.io/cluster: buildkit-warm
+              ray.io/node-type: head
       - resources:
           kinds:
             - Pod
@@ -66,8 +68,10 @@ spec:
             - Pod
           namespaces:
             - image-factory
-          names:
-            - buildkit-warm-head-4pb6q
+          selector:
+            matchLabels:
+              ray.io/cluster: buildkit-warm
+              ray.io/node-type: head
 ---
 apiVersion: kyverno.io/v2
 kind: PolicyException
