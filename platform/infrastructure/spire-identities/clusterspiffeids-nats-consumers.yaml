@@ -18,14 +18,14 @@ spec:
   spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
   namespaceSelector:
     matchLabels:
-      kubernetes.io/metadata.name: core-nervous
+      kubernetes.io/metadata.name: nervous-system
   podSelector:
     matchLabels:
       app: ai-mesh-broker
   dnsNameTemplates:
-    - "ai-mesh-broker.core-nervous.svc.cluster.local"
-    - "mesh-broker.core-nervous.svc.cluster.local"
-    - "{{ .PodMeta.Name }}.mesh-broker.core-nervous.svc.cluster.local"
+    - "ai-mesh-broker.nervous-system.svc.cluster.local"
+    - "mesh-broker.nervous-system.svc.cluster.local"
+    - "{{ .PodMeta.Name }}.mesh-broker.nervous-system.svc.cluster.local"
   autoPopulateDNSNames: true
   ttl: "1h"
 ---
