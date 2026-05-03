@@ -22,4 +22,3 @@ resources:
   - clusterspiffeid-argocd.yaml
   - clusterspiffeids-nats-consumers.yaml
   - clusterspiffeid-cilium.yaml
-  - spire-registration-tekton.yaml
