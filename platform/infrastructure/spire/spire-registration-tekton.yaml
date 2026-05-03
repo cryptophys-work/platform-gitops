@@ -13,8 +13,6 @@ spec:
       value: "ns:tekton-system"
     - type: k8s
       value: "sa:tekton-pipeline-sa"
-  dnsNames:
-    - tekton-pipeline-tekton-system.svc.cluster.local
 ---
 apiVersion: spire.spiffe.io/v1alpha1
 kind: ClusterSPIFFEID
@@ -28,8 +26,6 @@ spec:
       value: "ns:tekton-chains"
     - type: k8s
       value: "sa:tekton-chains"
-  dnsNames:
-    - tekton-chains-tekton-chains.svc.cluster.local
 ---
 # SPIRE Registration for image-factory namespace
 # Allows BuildKit and Ray workers to get SVIDs
@@ -45,8 +41,6 @@ spec:
       value: "ns:image-factory"
     - type: k8s
       value: "sa:buildkit-sa"
-  dnsNames:
-    - buildkitd.image-factory.svc.cluster.local
 ---
 apiVersion: spire.spiffe.io/v1alpha1
 kind: ClusterSPIFFEID
@@ -60,5 +54,3 @@ spec:
       value: "ns:image-factory"
     - type: k8s
       value: "sa:ray-build-sa"
-  dnsNames:
-    - "*.image-factory.svc.cluster.local"
