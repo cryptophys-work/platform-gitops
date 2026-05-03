@@ -10,10 +10,10 @@ spec:
   spiffeIDTemplate: spiffe://cryptophys.work/ns/tekton-system/sa/tekton-pipeline-sa,
   namespaceSelector:
     matchLabels:
-      kubernetes.io/metadata.name: tekton-system,
+      kubernetes.io/metadata.name: tekton-system
   podSelector:
     matchLabels:
-      kubernetes.io/metadata.name: tekton-pipeline-sa,
+      kubernetes.io/metadata.name: tekton-pipeline-sa
 ---
 apiVersion: spire.spiffe.io/v1alpha1,
 kind: ClusterSPIFFEID,
@@ -24,10 +24,10 @@ spec:
   spiffeIDTemplate: spiffe://cryptophys.work/ns/tekton-chains/sa/tekton-chains,
   namespaceSelector:
     matchLabels:
-      kubernetes.io/metadata.name: tekton-chains,
+      kubernetes.io/metadata.name: tekton-chains
   podSelector:
     matchLabels:
-      kubernetes.io/metadata.name: tekton-chains-sa,
+      kubernetes.io/metadata.name: tekton-chains-sa
 ---
 # SPIRE Registration for image-factory namespace
 # Allows BuildKit and Ray workers to get SVIDs,
@@ -40,10 +40,10 @@ spec:
   spiffeIDTemplate: spiffe://cryptophys.work/ns/image-factory/sa/buildkit-sa,
   namespaceSelector:
     matchLabels:
-      kubernetes.io/metadata.name: image-factory,
+      kubernetes.io/metadata.name: image-factory
   podSelector:
     matchLabels:
-      kubernetes.io/metadata.name: buildkit-sa,
+      kubernetes.io/metadata.name: buildkit-sa
 ---
 apiVersion: spire.spiffe.io/v1alpha1,
 kind: ClusterSPIFFEID,
@@ -54,7 +54,7 @@ spec:
   spiffeIDTemplate: spiffe://cryptophys.work/ns/image-factory/sa/ray-build-sa,
   namespaceSelector:
     matchLabels:
-      kubernetes.io/metadata.name: image-factory,
+      kubernetes.io/metadata.name: image-factory
   podSelector:
     matchLabels:
-      kubernetes.io/metadata.name: ray-build-sa,
+      kubernetes.io/metadata.name: ray-build-sa
