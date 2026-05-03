@@ -15,125 +15,125 @@ metadata:
 spec:
   validationFailureAction: Audit
   background: true
-  rules:
-    - name: allow-apps-ha
+   rules:
+  - name: allow-apps-ha
       match:
         any:
           - resources:
-              kinds:
-                - Pod
-              namespaceSelector:
-                matchLabels:
-                  cryptophys.io/pool: apps-ha
-      exclude:
-        any:
-          - resources:
-              kinds:
-                - Pod
-              namespaces:
-                - apps-user
-              selector:
-                matchLabels:
-                  app.kubernetes.io/name: signal-engine
-          - resources:
-              kinds:
-                - Pod
-              namespaces:
-                - platform-ui
-          - resources:
-              kinds:
-                - Pod
-              namespaces:
-                - apps-dash
-              selector:
-                matchExpressions:
-                  - key: app
-                    operator: In
-                    values:
-                      - nexus-oauth2-proxy
-                      - synapse-oauth2-proxy
-          - resources:
-              kinds:
-                - Pod
-              namespaces:
-                - apps-core
-              selector:
-                matchExpressions:
-                  - key: app
-                    operator: In
-                    values:
-                      - mcp-github
-                      - mcp-brave-search
-                      - mcp-postgres
-                      - mcp-fetch
-                      - mcp-prometheus
-                      - mcp-crypto
+               kinds:
+                 - Pod
+               namespaceSelector:
+                 matchLabels:
+                   cryptophys.io/pool: apps-ha
+       exclude:
+         any:
+           - resources:
+               kinds:
+                 - Pod
+               namespaces:
+                 - apps-user
+               selector:
+                 matchLabels:
+                   app.kubernetes.io/name: signal-engine
+           - resources:
+               kinds:
+                 - Pod
+               namespaces:
+                 - platform-ui
+           - resources:
+               kinds:
+                 - Pod
+               namespaces:
+                 - apps-dash
+               selector:
+                 matchExpressions:
+                   - key: app
+                     operator: In
+                     values:
+                       - nexus-oauth2-proxy
+                       - synapse-oauth2-proxy
+           - resources:
+               kinds:
+                 - Pod
+               namespaces:
+                 - apps-core
+               selector:
+                 matchExpressions:
+                   - key: app
+                     operator: In
+                     values:
+                       - mcp-github
+                       - mcp-brave-search
+                       - mcp-postgres
+                       - mcp-fetch
+                       - mcp-prometheus
+                       - mcp-crypto
       preconditions:
         all:
           - key: "{{ request.object.spec.tolerations || '' }}"
             operator: Equals
-            value: ""
-      mutate:
-        patchesJson6902: |-
+             value: ""
+    mutate:
+      patchesJson6902: |-
           - op: add
             path: /spec/tolerations
             value:
               - key: cryptophys.io/pool
                 operator: Equal
                 value: apps-ha
-                effect: NoSchedule
-    - name: append-apps-ha
+                 effect: NoSchedule
+  - name: append-apps-ha
       match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-              namespaceSelector:
-                matchLabels:
-                  cryptophys.io/pool: apps-ha
-      exclude:
-        any:
-          - resources:
-              kinds:
-                - Pod
-              namespaces:
-                - apps-user
-              selector:
-                matchLabels:
-                  app.kubernetes.io/name: signal-engine
-          - resources:
-              kinds:
-                - Pod
-              namespaces:
-                - platform-ui
-          - resources:
-              kinds:
-                - Pod
-              namespaces:
-                - apps-dash
-              selector:
-                matchExpressions:
-                  - key: app
-                    operator: In
-                    values:
-                      - nexus-oauth2-proxy
-                      - synapse-oauth2-proxy
-          - resources:
-              kinds:
-                - Pod
-              namespaces:
-                - apps-core
-              selector:
-                matchExpressions:
-                  - key: app
-                    operator: In
-                    values:
-                      - mcp-github
-                      - mcp-brave-search
-                      - mcp-postgres
-                      - mcp-fetch
-                      - mcp-prometheus
-                      - mcp-crypto
+         any:
+           - resources:
+               kinds:
+                 - Pod
+               namespaceSelector:
+                 matchLabels:
+                   cryptophys.io/pool: apps-ha
+       exclude:
+         any:
+           - resources:
+               kinds:
+                 - Pod
+               namespaces:
+                 - apps-user
+               selector:
+                 matchLabels:
+                   app.kubernetes.io/name: signal-engine
+           - resources:
+               kinds:
+                 - Pod
+               namespaces:
+                 - platform-ui
+           - resources:
+               kinds:
+                 - Pod
+               namespaces:
+                 - apps-dash
+               selector:
+                 matchExpressions:
+                   - key: app
+                     operator: In
+                     values:
+                       - nexus-oauth2-proxy
+                       - synapse-oauth2-proxy
+           - resources:
+               kinds:
+                 - Pod
+               namespaces:
+                 - apps-core
+               selector:
+                 matchExpressions:
+                   - key: app
+                     operator: In
+                     values:
+                       - mcp-github
+                       - mcp-brave-search
+                       - mcp-postgres
+                       - mcp-fetch
+                       - mcp-prometheus
+                       - mcp-crypto
       preconditions:
         all:
           - key: "{{ request.object.spec.tolerations || '' }}"
@@ -151,7 +151,7 @@ spec:
               operator: Equal
               value: apps-ha
               effect: NoSchedule
-    - name: allow-cerebrum-ray-cluster
+  - name: allow-cerebrum-ray-cluster
       match:
         any:
           - resources:
@@ -195,32 +195,31 @@ spec:
   background: true
   rules:
     - name: allow-platform-ha
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-              namespaceSelector:
-                matchLabels:
-                  cryptophys.io/pool: platform-ha
-      exclude:
-        any:
-          - resources:
-              kinds:
-                - Pod
-              namespaceSelector:
-                matchExpressions:
-                  - key: kubernetes.io/metadata.name
-                    operator: In
-                    values:
-                      - ingress-system
-                      - longhorn-system
-                      - metallb-system
-                      - cognitive-risk
-                      - cognitive-risk
-                      - falco-system
-                      - tetragon-system
-      preconditions:
+        match:
+          any:
+            - resources:
+                kinds:
+                  - Pod
+                namespaceSelector:
+                  matchLabels:
+                    cryptophys.io/pool: platform-ha
+        exclude:
+          any:
+            - resources:
+                kinds:
+                  - Pod
+                namespaceSelector:
+                  matchExpressions:
+                    - key: kubernetes.io/metadata.name
+                      operator: In
+                      values:
+                        - ingress-system
+                        - longhorn-system
+                        - metallb-system
+                        - cognitive-risk
+                        - falco-system
+                        - tetragon-system
+        preconditions:
         all:
           - key: "{{ (request.object.spec.tolerations || []) | length(@) }}"
             operator: Equals
@@ -233,34 +232,33 @@ spec:
               - key: cryptophys.io/pool
                 operator: Equal
                 value: platform-ha
-                effect: NoSchedule
+                 effect: NoSchedule
     - name: append-platform-ha
       match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-              namespaceSelector:
-                matchLabels:
-                  cryptophys.io/pool: platform-ha
-      exclude:
-        any:
-          - resources:
-              kinds:
-                - Pod
-              namespaceSelector:
-                matchExpressions:
-                  - key: kubernetes.io/metadata.name
-                    operator: In
-                    values:
-                      - ingress-system
-                      - longhorn-system
-                      - metallb-system
-                      - cognitive-risk
-                      - cognitive-risk
-                      - falco-system
-                      - tetragon-system
-      preconditions:
+          any:
+            - resources:
+                kinds:
+                  - Pod
+                namespaceSelector:
+                  matchLabels:
+                    cryptophys.io/pool: platform-ha
+        exclude:
+          any:
+            - resources:
+                kinds:
+                  - Pod
+                namespaceSelector:
+                  matchExpressions:
+                    - key: kubernetes.io/metadata.name
+                      operator: In
+                      values:
+                        - ingress-system
+                        - longhorn-system
+                        - metallb-system
+                        - cognitive-risk
+                        - falco-system
+                        - tetragon-system
+        preconditions:
         all:
           - key: "{{ request.object.spec.tolerations || '' }}"
             operator: NotEquals
@@ -277,7 +275,7 @@ spec:
               operator: Equal
               value: platform-ha
               effect: NoSchedule
-    - name: allow-tekton-migrator-ray-head
+  - name: allow-tekton-migrator-ray-head
       match:
         any:
           - resources:
@@ -300,7 +298,7 @@ spec:
                 operator: Equal
                 value: "true"
                 effect: NoSchedule
-    - name: allow-qdrant-ray-cluster
+  - name: allow-qdrant-ray-cluster
       match:
         any:
           - resources:
@@ -327,7 +325,7 @@ spec:
                 operator: Equal
                 value: "true"
                 effect: NoSchedule
-    - name: allow-longhorn-share-manager-platform-ha
+  - name: allow-longhorn-share-manager-platform-ha
       match:
         any:
           - resources:
@@ -364,23 +362,23 @@ metadata:
 spec:
   validationFailureAction: Audit
   background: true
-  rules:
-    - name: enforce-platform-ha-nexus-hard-priority
+   rules:
+  - name: enforce-platform-ha-nexus-hard-priority
       match:
         any:
           - resources:
               kinds:
                 - Pod
-              namespaceSelector:
-                matchLabels:
-                  cryptophys.io/pool: platform-ha
-      preconditions:
+                namespaceSelector:
+                  matchLabels:
+                    cryptophys.io/pool: platform-ha
+    preconditions:
         all:
           - key: "{{ request.object.metadata.ownerReferences[0].kind || '' }}"
             operator: NotEquals
-            value: DaemonSet
-      mutate:
-        patchStrategicMerge:
+             value: DaemonSet
+    mutate:
+      patchStrategicMerge:
           spec:
             affinity:
               nodeAffinity:
@@ -412,60 +410,59 @@ metadata:
 spec:
   validationFailureAction: Enforce
   background: true
-  rules:
-    - name: block-platform-ha
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-              namespaceSelector:
-                matchExpressions:
-                  - key: kubernetes.io/metadata.name
-                    operator: NotIn
-                    values:
-                      - kube-system
-                      - flux-system
-                      - gitops-system
-                      - ingress-system
-                      - envoy-gateway-system
-                      - registry-system
-                      - kyverno-system
-                      - cert-manager
-                      - metallb-system
-                      - cognitive-risk
-                      - cognitive-risk
-                      - external-secrets
-                      - spire-system
-                      - vault-system
-                      - observability-system
-                      - security-system
-                      - security-observability
-                      - gatekeeper-system
-                      - falco-system
-                      - tetragon-system
-                      - mesh-system
-                      - database
-                      - minio-system
-                      - trustedledger
-                      - image-factory
-                      - orchestrator
-                      - facilitator
-                      - tekton-system
-                      - tekton-pipelines
-                      - tekton-pipelines-resolvers
-                      - tekton-dashboard
-                      - kueue-system
-                      - cloudflare-tunnel
-                      - longhorn-system
-                      - cnpg-system
-                      - postgresql-system
-                      - crossplane-system
-                      - cqls-compute
-                      - apps-system
-                      - kagenti-system
-                      - kagenti-webhook-system
-      preconditions:
+   rules:
+  - name: block-platform-ha
+        match:
+          any:
+            - resources:
+                kinds:
+                  - Pod
+                namespaceSelector:
+                  matchExpressions:
+                    - key: kubernetes.io/metadata.name
+                      operator: NotIn
+                      values:
+                        - kube-system
+                        - flux-system
+                        - gitops-system
+                        - ingress-system
+                        - envoy-gateway-system
+                        - registry-system
+                        - kyverno-system
+                        - cert-manager
+                        - metallb-system
+                        - cognitive-risk
+                        - external-secrets
+                        - spire-system
+                        - vault-system
+                        - observability-system
+                        - security-system
+                        - security-observability
+                        - gatekeeper-system
+                        - falco-system
+                        - tetragon-system
+                        - mesh-system
+                        - database
+                        - minio-system
+                        - trustedledger
+                        - image-factory
+                        - orchestrator
+                        - facilitator
+                        - tekton-system
+                        - tekton-pipelines
+                        - tekton-pipelines-resolvers
+                        - tekton-dashboard
+                        - kueue-system
+                        - cloudflare-tunnel
+                        - longhorn-system
+                        - cnpg-system
+                        - postgresql-system
+                        - crossplane-system
+                        - cqls-compute
+                        - apps-system
+                         - kagenti-system
+                         - kagenti-webhook-system
+    preconditions:
         all:
           - key: "{{ request.operation || 'BACKGROUND' }}"
             operator: NotEquals
@@ -497,37 +494,36 @@ metadata:
 spec:
   validationFailureAction: Enforce
   background: true
-  rules:
-    - name: block-apps-ha
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-              namespaceSelector:
-                matchExpressions:
-                  - key: kubernetes.io/metadata.name
-                    operator: NotIn
-                    values:
-                      - aide
-                      - cerebrum
-                      - apps-core
-                      - apps-dash
-                      - apps-user
-                      - bridge
-                      - automation
-                      - apps-automation
-                      - apps-gateway
-                      - navigator
-                      - platform-ui
-                      - longhorn-system
-                      - kube-system
-                      - cilium-system
-                      - spire-system
-                      - metallb-system
-                      - cognitive-risk
-                      - cognitive-risk
-      preconditions:
+   rules:
+  - name: block-apps-ha
+        match:
+          any:
+            - resources:
+                kinds:
+                  - Pod
+                namespaceSelector:
+                  matchExpressions:
+                    - key: kubernetes.io/metadata.name
+                      operator: NotIn
+                      values:
+                        - aide
+                        - cerebrum
+                        - apps-core
+                        - apps-dash
+                        - apps-user
+                        - bridge
+                        - automation
+                        - apps-automation
+                        - apps-gateway
+                        - navigator
+                        - platform-ui
+                        - longhorn-system
+                        - kube-system
+                        - cilium-system
+                        - spire-system
+                        - metallb-system
+                         - cognitive-risk
+    preconditions:
         all:
           - key: "{{ request.operation || 'BACKGROUND' }}"
             operator: NotEquals
