@@ -264,3 +264,13 @@ spec:
   type: oci
   interval: 1h
   url: oci://ghcr.io/kagenti/kagenti-extensions
+---
+# Keycloak Bitnami chart (images mirrored to Harbor registry.cryptophys.work/library/keycloak)
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: bitnami
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://charts.bitnami.com/bitnami

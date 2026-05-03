@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: keycloak-system
+  labels:
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/part-of: identity-infrastructure
+    security-tier: critical
+    data-classification: sensitive
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted

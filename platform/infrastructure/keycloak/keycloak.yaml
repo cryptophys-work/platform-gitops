@@ -1,0 +1,110 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: keycloak
+  namespace: keycloak-system
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: keycloak
+      version: 21.3.4
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+  values:
+    global:
+      image:
+        registry: registry.cryptophys.work
+        repository: library/keycloak
+        tag: 23.0.0
+        pullSecrets:
+          - registry-cryptophys-work-auth
+    image:
+      pullPolicy: IfNotPresent
+    auth:
+      adminUser: admin
+      existingSecret: keycloak-admin-credentials
+    production: true
+    proxy: edge
+    extraEnvVars:
+      # Vault Integration via SPI
+      - name: KC_VAULT
+        value: hashicorp
+      - name: VAULT_ADDR
+        value: "http://vault.vault-system.svc:8200"
+      - name: VAULT_AUTH_METHOD
+        value: kubernetes
+      - name: VAULT_K8S_ROLE
+        value: keycloak
+      - name: VAULT_K8S_MOUNT_PATH
+        value: kubernetes
+      # Keycloak configuration
+      - name: KC_HOSTNAME
+        value: keycloak.cryptophys.work
+      - name: KC_HEALTH_ENABLED
+        value: "true"
+      - name: KC_METRICS_ENABLED
+        value: "true"
+      - name: KC_CACHE
+        value: ispn
+      - name: KC_CACHE_STACK
+        value: kubernetes
+    postgresql:
+      enabled: true
+      auth:
+        existingSecret: keycloak-db-credentials
+        usernameKey: username
+        passwordKey: password
+        databaseKey: database
+      primary:
+        persistence:
+          storageClass: longhorn
+          size: 10Gi
+        resources:
+          requests: { cpu: 100m, memory: 256Mi }
+          limits: { cpu: 500m, memory: 512Mi }
+        nodeSelector:
+          kubernetes.io/os: linux
+    replicaCount: 2
+    resources:
+      requests: { cpu: 500m, memory: 1Gi }
+      limits: { cpu: 2000m, memory: 4Gi }
+    nodeSelector:
+      kubernetes.io/os: linux
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: keycloak
+                app.kubernetes.io/name: keycloak
+            topologyKey: kubernetes.io/hostname
+    tolerations:
+      - key: node.kubernetes.io/memory-pressure
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 300
+      - key: node.kubernetes.io/disk-pressure
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 300
+    service:
+      type: ClusterIP
+      ports:
+        http: 8080
+        https: 8443
+    ingress:
+      enabled: true
+      className: nginx
+      hostname: keycloak.cryptophys.work
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        nginx.ingress.kubernetes.io/backend-protocol: HTTP
+      tls: true
+    metrics:
+      enabled: true
+    podDisruptionBudget:
+      create: true
+      minAvailable: 1
