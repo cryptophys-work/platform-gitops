@@ -1,7 +1,7 @@
 # SPIRE Registration for Tekton Service Accounts
 # Enables SPIFFE/SVID issuance for image factory workloads
 # Ref: https://www.kimi.com/preview/19debede-19c2-8350-8000-054af3a3a146
-apiVersion: spire.types.spiffe.io/v1
+apiVersion: spire.spiffe.io/v1
 kind: ClusterSPIFFEID
 metadata:
   name: tekton-pipeline-sa
@@ -16,7 +16,7 @@ spec:
   dnsNames:
     - tekton-pipeline-tekton-system.svc.cluster.local
 ---
-apiVersion: spire.types.spiffe.io/v1
+apiVersion: spire.spiffe.io/v1
 kind: ClusterSPIFFEID
 metadata:
   name: tekton-chains-sa
@@ -33,7 +33,7 @@ spec:
 ---
 # SPIRE Registration for image-factory namespace
 # Allows BuildKit and Ray workers to get SVIDs
-apiVersion: spire.types.spiffe.io/v1
+apiVersion: spire.spiffe.io/v1
 kind: ClusterSPIFFEID
 metadata:
   name: buildkit-sa
@@ -48,7 +48,7 @@ spec:
   dnsNames:
     - buildkitd.image-factory.svc.cluster.local
 ---
-apiVersion: spire.types.spiffe.io/v1
+apiVersion: spire.spiffe.io/v1
 kind: ClusterSPIFFEID
 metadata:
   name: ray-build-sa
