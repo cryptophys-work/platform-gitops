@@ -7,7 +7,7 @@ metadata:
   name: tekton-pipeline-sa
   namespace: tekton-system
 spec:
-  spiffeId: spiffe://cryptophys.work/ns/tekton-system/sa/tekton-pipeline-sa
+  spiffeIDTemplate: spiffe://cryptophys.work/ns/tekton-system/sa/tekton-pipeline-sa
   selector:
     - type: k8s
       value: "ns:tekton-system"
@@ -20,7 +20,7 @@ metadata:
   name: tekton-chains-sa
   namespace: tekton-chains
 spec:
-  spiffeId: spiffe://cryptophys.work/ns/tekton-chains/sa/tekton-chains
+  spiffeIDTemplate: spiffe://cryptophys.work/ns/tekton-chains/sa/tekton-chains
   selector:
     - type: k8s
       value: "ns:tekton-chains"
@@ -35,7 +35,7 @@ metadata:
   name: buildkit-sa
   namespace: image-factory
 spec:
-  spiffeId: spiffe://cryptophys.work/ns/image-factory/sa/buildkit-sa
+  spiffeIDTemplate: spiffe://cryptophys.work/ns/image-factory/sa/buildkit-sa
   selector:
     - type: k8s
       value: "ns:image-factory"
@@ -48,7 +48,7 @@ metadata:
   name: ray-build-sa
   namespace: image-factory
 spec:
-  spiffeId: spiffe://cryptophys.work/ns/image-factory/sa/ray-build-sa
+  spiffeIDTemplate: spiffe://cryptophys.work/ns/image-factory/sa/ray-build-sa
   selector:
     - type: k8s
       value: "ns:image-factory"
