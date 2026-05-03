@@ -1,0 +1,176 @@
+# Warm Ray Cluster for Image Factory Builds
+# Implements Kimi architecture: warm pool strategy for sub-minute build initiation
+# Ref: https://www.kimi.com/preview/19debede-19c2-8350-8000-054af3a3a146
+apiVersion: ray.io/v1
+kind: RayCluster
+metadata:
+  name: buildkit-warm
+  namespace: image-factory
+  labels:
+    build.cryptophys.work/warm-cluster: "true"
+    kagenti.io/type: platform
+    kagenti.io/role: image-factory
+    kagenti.io/ray: "true"
+spec:
+  # Ray version must match KubeRay operator version
+  rayVersion: "2.9.0"
+  
+  # Head configuration
+  headGroupSpec:
+    rayStartParams:
+      dashboard-host: "0.0.0.0"
+      num-cpus: "0" # Head node is for scheduling only
+      object-manager-port: "23815"
+      node-manager-port: "23816"
+    template:
+      spec:
+        containers:
+          - name: ray-head
+            image: registry.cryptophys.work/nervous-system/ray-build-worker:2.9.0-cryptophys-v2
+            ports:
+              - containerPort: 6379 # Redis
+              - containerPort: 8265 # Dashboard
+              - containerPort: 10001 # Client
+              - containerPort: 23815 # Object manager
+              - containerPort: 23816 # Node manager
+            resources:
+              limits:
+                cpu: "2"
+                memory: "4Gi"
+              requests:
+                cpu: "1"
+                memory: "2Gi"
+            env:
+              - name: RAY_ENABLE_WINDOWS_ORCHESTRATOR
+                value: "1"
+              - name: BUILDKIT_ADDR
+                value: "tcp://buildkitd.image-factory.svc.cluster.local:1234"
+            volumeMounts:
+              - name: build-cache
+                mountPath: /tmp/build-cache
+              - name: ray-tmp
+                mountPath: /tmp/ray
+        volumes:
+          # Persistent cache for build artifacts (reduces cold-start overhead)
+          - name: build-cache
+            persistentVolumeClaim:
+              claimName: buildkit-cache-pvc
+          - name: ray-tmp
+            emptyDir: {}
+  
+  # Worker group for amd64 builds
+  workerGroupSpecs:
+    # --- AMD64 Worker Group ---
+    - groupName: amd64-builders
+      replicas: 1
+      minReplicas: 1
+      maxReplicas: 3
+      rayStartParams:
+        num-cpus: "4"
+        object-manager-port: "23815"
+        node-manager-port: "23816"
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: kubernetes.io/arch
+                        operator: In
+                        values:
+                          - amd64
+          containers:
+            - name: ray-worker
+              image: registry.cryptophys.work/nervous-system/ray-build-worker:2.9.0-cryptophys-v2
+              resources:
+                limits:
+                  cpu: "6"
+                  memory: "16Gi"
+                requests:
+                  cpu: "4"
+                  memory: "8Gi"
+              env:
+                - name: RAY_ENABLE_WINDOWS_ORCHESTRATOR
+                  value: "1"
+                - name: BUILDKIT_ADDR
+                  value: "tcp://buildkitd.image-factory.svc.cluster.local:1234"
+              volumeMounts:
+                - name: build-cache
+                  mountPath: /tmp/build-cache
+                - name: ray-tmp
+                  mountPath: /tmp/ray
+          volumes:
+            - name: build-cache
+              persistentVolumeClaim:
+                claimName: buildkit-cache-pvc
+            - name: ray-tmp
+              emptyDir: {}
+    
+    # --- ARM64 Worker Group (optional, for multi-arch builds) ---
+    - groupName: arm64-builders
+      replicas: 0
+      minReplicas: 0
+      maxReplicas: 2
+      rayStartParams:
+        num-cpus: "4"
+        object-manager-port: "23815"
+        node-manager-port: "23816"
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: kubernetes.io/arch
+                        operator: In
+                        values:
+                          - arm64
+          tolerations:
+            - key: "node.kubernetes.io/arch"
+              operator: "Equal"
+              value: "arm64"
+              effect: "NoSchedule"
+          containers:
+            - name: ray-worker
+              image: registry.cryptophys.work/nervous-system/ray-build-worker:2.9.0-cryptophys-v2
+              resources:
+                limits:
+                  cpu: "6"
+                  memory: "16Gi"
+                requests:
+                  cpu: "4"
+                  memory: "8Gi"
+              env:
+                - name: RAY_ENABLE_WINDOWS_ORCHESTRATOR
+                  value: "1"
+                - name: BUILDKIT_ADDR
+                  value: "tcp://buildkitd.image-factory.svc.cluster.local:1234"
+              volumeMounts:
+                - name: build-cache
+                  mountPath: /tmp/build-cache
+                - name: ray-tmp
+                  mountPath: /tmp/ray
+          volumes:
+            - name: build-cache
+              persistentVolumeClaim:
+                claimName: buildkit-cache-pvc
+            - name: ray-tmp
+              emptyDir: {}
+
+---
+# PVC for build cache retention across pod restarts
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: buildkit-cache-pvc
+  namespace: image-factory
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: longhorn # Use Longhorn for persistent storage
+  volumeMode: Filesystem

@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - kuberay-operator.yaml
   - ray-cluster.yaml
+  - ray-cluster-warm-build.yaml
   - policy-exception.yaml
   - ray-netpol.yaml
   - ray-dashboard-ingress.yaml

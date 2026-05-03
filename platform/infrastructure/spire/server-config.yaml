@@ -44,4 +44,8 @@ data:
           config_map_key = "bundle.crt"
         }
       }
+      SVIDStore "k8s" {
+        plugin_data {
+        }
+      }
     }
