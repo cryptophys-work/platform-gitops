@@ -5,52 +5,56 @@ apiVersion: spire.spiffe.io/v1alpha1
 kind: ClusterSPIFFEID
 metadata:
   name: tekton-pipeline-sa
-  namespace: tekton-system
+  namespace: tekton-system,
 spec:
-  spiffeIDTemplate: spiffe://cryptophys.work/ns/tekton-system/sa/tekton-pipeline-sa
-  selector:
-    - type: k8s
-      value: "ns:tekton-system"
-    - type: k8s
-      value: "sa:tekton-pipeline-sa"
+  spiffeIDTemplate: spiffe://cryptophys.work/ns/tekton-system/sa/tekton-pipeline-sa,
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: tekton-system,
+  podSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: tekton-pipeline-sa,
 ---
-apiVersion: spire.spiffe.io/v1alpha1
-kind: ClusterSPIFFEID
+apiVersion: spire.spiffe.io/v1alpha1,
+kind: ClusterSPIFFEID,
 metadata:
-  name: tekton-chains-sa
-  namespace: tekton-chains
+  name: tekton-chains-sa,
+  namespace: tekton-chains,
 spec:
-  spiffeIDTemplate: spiffe://cryptophys.work/ns/tekton-chains/sa/tekton-chains
-  selector:
-    - type: k8s
-      value: "ns:tekton-chains"
-    - type: k8s
-      value: "sa:tekton-chains"
+  spiffeIDTemplate: spiffe://cryptophys.work/ns/tekton-chains/sa/tekton-chains,
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: tekton-chains,
+  podSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: tekton-chains-sa,
 ---
 # SPIRE Registration for image-factory namespace
-# Allows BuildKit and Ray workers to get SVIDs
-apiVersion: spire.spiffe.io/v1alpha1
-kind: ClusterSPIFFEID
+# Allows BuildKit and Ray workers to get SVIDs,
+apiVersion: spire.spiffe.io/v1alpha1,
+kind: ClusterSPIFFEID,
 metadata:
-  name: buildkit-sa
-  namespace: image-factory
+  name: buildkit-sa,
+  namespace: image-factory,
 spec:
-  spiffeIDTemplate: spiffe://cryptophys.work/ns/image-factory/sa/buildkit-sa
-  selector:
-    - type: k8s
-      value: "ns:image-factory"
-    - type: k8s
-      value: "sa:buildkit-sa"
+  spiffeIDTemplate: spiffe://cryptophys.work/ns/image-factory/sa/buildkit-sa,
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: image-factory,
+  podSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: buildkit-sa,
 ---
-apiVersion: spire.spiffe.io/v1alpha1
-kind: ClusterSPIFFEID
+apiVersion: spire.spiffe.io/v1alpha1,
+kind: ClusterSPIFFEID,
 metadata:
-  name: ray-build-sa
-  namespace: image-factory
+  name: ray-build-sa,
+  namespace: image-factory,
 spec:
-  spiffeIDTemplate: spiffe://cryptophys.work/ns/image-factory/sa/ray-build-sa
-  selector:
-    - type: k8s
-      value: "ns:image-factory"
-    - type: k8s
-      value: "sa:ray-build-sa"
+  spiffeIDTemplate: spiffe://cryptophys.work/ns/image-factory/sa/ray-build-sa,
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: image-factory,
+  podSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: ray-build-sa,
