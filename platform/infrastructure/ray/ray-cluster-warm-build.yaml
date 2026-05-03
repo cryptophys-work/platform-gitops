@@ -85,11 +85,11 @@ spec:
               image: registry.cryptophys.work/nervous-system/ray-build-worker:2.9.0-cryptophys-v2
               resources:
                 limits:
-                  cpu: "6"
-                  memory: "16Gi"
-                requests:
                   cpu: "4"
                   memory: "8Gi"
+                requests:
+                  cpu: "2"
+                  memory: "4Gi"
               env:
                 - name: RAY_ENABLE_WINDOWS_ORCHESTRATOR
                   value: "1"
@@ -137,11 +137,11 @@ spec:
               image: registry.cryptophys.work/nervous-system/ray-build-worker:2.9.0-cryptophys-v2
               resources:
                 limits:
-                  cpu: "6"
-                  memory: "16Gi"
-                requests:
                   cpu: "4"
                   memory: "8Gi"
+                requests:
+                  cpu: "2"
+                  memory: "4Gi"
               env:
                 - name: RAY_ENABLE_WINDOWS_ORCHESTRATOR
                   value: "1"
