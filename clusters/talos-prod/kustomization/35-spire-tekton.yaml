@@ -1,4 +1,10 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v2
 kind: Kustomization
-resources:
-  - ../../platform/infrastructure/spire-tekton
+spec:
+  interval: 1h
+  path: ./platform/infrastructure/spire-tekton
+  sourceRef:
+    kind: GitRepository
+    name: platform-repo
+  suspend: false
+  timeout: 10m
