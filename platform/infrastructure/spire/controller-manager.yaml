@@ -175,8 +175,6 @@ spec:
             capabilities:
               drop:
                 - ALL
-            runAsUser: 1000
-            runAsGroup: 1000
           args:
             - UNIX-LISTEN:/run/spire/sockets/api.sock,fork,mode=777
             - TCP:spire-server-api.spire-system.svc.cluster.local:8081
