@@ -217,13 +217,17 @@ They are commented out in manifests and can be enabled when GPU is added to Nexu
 - **Model:** `ai/nomic-embed-text-v2-moe` (475M) — ✅ Already deployed (CPU-viable)
 - **Why:** v2 with MoE, 100 languages, 768D vectors
 
-### Reranker (New)
+### Reranker (Deployed)
 - **Model:** `ai/qwen3-reranker:0.6B` (~600 MB) — ✅ CPU-viable
 - **Why:** RAG reranking for cognitive-brain search, 119 languages
+- **Service:** `qwen3-reranker.shared-mesh.svc.cluster.local:8000`
+- **Status:** 🟢 Deployed (vLLM CPU inference)
 
-### Function Calling (New)
+### Function Calling (Deployed)
 - **Model:** `ai/functiongemma-vllm` (270M, 549 MB) — ✅ CPU-viable
 - **Why:** Lightweight function-calling for AIDE agents
+- **Service:** `functiongemma.autonomous-execution.svc.cluster.local:8000`
+- **Status:** 🟢 Deployed (vLLM CPU inference)
 
 ### Not Viable (Multi-GPU Required)
 - `ai/deepseek-v3.2-vllm:685B` — 400GB+ VRAM
