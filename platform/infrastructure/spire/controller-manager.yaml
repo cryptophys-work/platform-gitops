@@ -82,7 +82,20 @@ data:
       healthProbeBindAddress: :8083
     clusterName: cryptophys-genesis
     trustDomain: cryptophys.work
-    spireServerSocketPath: /run/spire/sockets/agent.sock
+    spireServerAddress: spire-server-api.spire-system.svc.cluster.local:8081
+    ignoreNamespaces:
+      - kube-public
+      - spire-system
+  controller_manager_config.yaml: |
+    apiVersion: spire.spiffe.io/v1alpha1
+    kind: ControllerManagerConfig
+    metrics:
+      bindAddress: :8080
+    health:
+      healthProbeBindAddress: :8083
+    clusterName: cryptophys-genesis
+    trustDomain: cryptophys.work
+    spireServerAddress: spire-server-api.spire-system.svc.cluster.local:8081
     ignoreNamespaces:
       - kube-public
       - spire-system
@@ -164,18 +177,11 @@ spec:
             - name: config
               mountPath: /run/spire/config
               readOnly: true
-            - name: spire-server-socket
-              mountPath: /run/spire/sockets
-              readOnly: true
             - name: tmp
               mountPath: /tmp
       volumes:
         - name: config
           configMap:
             name: spire-controller-manager-config
-        - name: spire-server-socket
-          csi:
-            driver: csi.spiffe.io
-            readOnly: true
         - name: tmp
           emptyDir: {}
