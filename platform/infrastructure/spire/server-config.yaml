@@ -16,6 +16,11 @@ data:
       default_x509_svid_ttl = "1h"
       default_jwt_svid_ttl = "5m"
     }
+    endpoints {
+      "unix://spire-server/api.sock" {
+        address = "unix://spire-server/api.sock"
+      }
+    }
     plugins {
       DataStore "sql" {
         plugin_data {
