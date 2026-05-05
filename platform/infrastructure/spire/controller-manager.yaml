@@ -180,6 +180,14 @@ spec:
           args:
             - UNIX-LISTEN:/run/spire/sockets/api.sock,fork,mode=777
             - TCP:spire-server-api.spire-system.svc.cluster.local:8081
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "[ -S /run/spire/sockets/api.sock ]"
+            initialDelaySeconds: 1
+            periodSeconds: 2
           volumeMounts:
             - name: spire-server-socket
               mountPath: /run/spire/sockets
