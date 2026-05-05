@@ -1,6 +1,6 @@
 # CryptoPhys Model Inventory & Upload Guide
 
-**Last Updated:** 2026-04-19  
+**Last Updated:** 2026-05-05  
 **Minio Storage:** `platform-backup-minio.minio-system.svc.cluster.local:9000`  
 **Bucket:** `models/`  
 **Capacity:** 200Gi (nexus-hpc node)
@@ -39,7 +39,7 @@
 - **Status:** ✅ Uploaded
 - **Priority:** 🔴 CRITICAL
 
-### 4. Qwen-2.5-Coder-14B-Instruct
+### 4. Qwen-2.5-Coder-14B-Instruct (HEAVY tier — CPU)
 - **Path:** `models/qwen/qwen2.5-coder-14b-instruct-q4_k_m.gguf`
 - **Size:** ~14.0 GB
 - **Format:** GGUF Q4_K_M quantization
@@ -48,6 +48,7 @@
 - **Usage:** Cerebrum HEAVY tier inference, code reasoning
 - **Status:** ✅ Uploaded
 - **Priority:** 🔴 CRITICAL
+- **GPU Fallback:** `ai/qwen3.6:35B-Q4_K_M` (~17.3GB, MoE 35B/3B active) — uncomment in manifests when GPU available
 
 ---
 
@@ -84,6 +85,8 @@ These are downloaded by Ollama registry at pod startup (NOT stored in Minio):
 - **deepseek-r1:1.5b** (~1.1GB) - NANO tier
 - **phi3.5** (~2.2GB) - LIGHT tier
 - **qwen2.5:3b** (~2GB) - BALANCED tier
+- **qwen2.5-coder:14b** (~14GB) - HEAVY tier (CPU)
+- **GPU fallback:** `qwen3.6-35b-a3b` (~17GB, MoE) — uncomment in manifests when GPU available
 
 **Alternative:** Export Ollama models to Minio for persistence:
 ```bash
@@ -114,9 +117,9 @@ mc cp deepseek-r1-1.5b.modelfile store/models/ollama/
 | **DeepSeek-V3** | 1 | 131 GB | 65% |
 | **Cerebrum GGUF** | 4 | 25.2 GB | 12.6% |
 | **Fine-Tuned** | 2-5 | 8-15 GB | 4-7.5% |
-| **Ollama Export** | 3 | 5.3 GB | 2.6% |
-| **Buffer/Misc** | - | ~30 GB | 15% |
-| **TOTAL** | 10-15 | ~200 GB | 100% |
+| **Ollama Export** | 4 | 19.3 GB | 9.7% |
+| **Buffer/Misc** | - | ~25 GB | 12.5% |
+| **TOTAL** | 11-16 | ~200 GB | 100% |
 
 ---
 
@@ -170,8 +173,8 @@ kubectl apply -f cerebrum-model-loader-job.yaml
 
 | Service | Model(s) | Loader Method | Status |
 |---------|----------|---------------|--------|
-| **Cerebrum** | All 4 GGUF | cerebrum-model-loader-job | 4 uploaded |
-| **Cerebrum Ollama** | deepseek-r1:1.5b, phi3.5, qwen2.5:3b | Ollama registry | Native pull |
+| **Cerebrum** | 4 GGUF (qwen2.5-coder-14b HEAVY) | cerebrum-model-loader-job | 4 uploaded |
+| **Cerebrum Ollama** | deepseek-r1:1.5b, phi3.5, qwen2.5:3b, qwen2.5-coder:14b | Ollama registry | Native pull |
 | **AIDE llm-provider** | phi-3.5-mini-instruct | init container | Uploaded |
 | **Aether Navigator** | mistral-7b + LoRA | SSOT/Tekton | Download local first |
 | **Corpus ESOG** | Generic model.gguf | Manual mount | SSOT path |
@@ -185,10 +188,45 @@ kubectl apply -f cerebrum-model-loader-job.yaml
 - Increase Job timeout in manifest (default: 35m)
 - Use HuggingFace CDN mirror if available
 
-**Minio connection fails:**
+Minio connection fails:
 - Verify `platform-backup-minio-credentials` ExternalSecret synced into `minio-system`
 - Check service endpoint: `platform-backup-minio.minio-system.svc.cluster.local:9000`
 
-**Large model uploads stuck:**
+Large model uploads stuck:
 - Check nexus node disk space: `kubectl get nodes -o wide`
 - Verify Longhorn volume is healthy: `kubectl get volumes -n longhorn-system`
+
+---
+
+## GPU Fallback Models (from ai/* Docker Hub)
+
+These models are available from `hub.docker.com/u/ai` but require GPU for production use.
+They are commented out in manifests and can be enabled when GPU is added to Nexus.
+
+### HEAVY Tier Upgrade
+- **Model:** `ai/qwen3.6:35B-Q4_K_M` (~17.3 GB)
+- **Why:** SWE-bench 73.4 vs current 50, MoE 35B/3B active, 262K context, multimodal
+- **Enable:** Uncomment `QWEN36_*` vars in `cerebrum__model-loader-job.yaml` + `cerebrum_llm.py`
+
+### vLLM Upgrade
+- **Model:** `ai/gemma4:E4B` or `ai/gemma4:26B-A4B` (~5.7-15 GB)
+- **Why:** MoE more efficient than dense 31B, native vLLM GPU serving
+- **Enable:** Uncomment GPU args in `ai__vllm-gemma-deployment.yaml`
+
+### Embedding Upgrade
+- **Model:** `ai/nomic-embed-text-v2-moe` (475M) — ✅ Already deployed (CPU-viable)
+- **Why:** v2 with MoE, 100 languages, 768D vectors
+
+### Reranker (New)
+- **Model:** `ai/qwen3-reranker:0.6B` (~600 MB) — ✅ CPU-viable
+- **Why:** RAG reranking for cognitive-brain search, 119 languages
+
+### Function Calling (New)
+- **Model:** `ai/functiongemma-vllm` (270M, 549 MB) — ✅ CPU-viable
+- **Why:** Lightweight function-calling for AIDE agents
+
+### Not Viable (Multi-GPU Required)
+- `ai/deepseek-v3.2-vllm:685B` — 400GB+ VRAM
+- `ai/kimi-k2.6` (1T MoE) — 200GB+ VRAM
+- `ai/mistral-small4` (119B-MoE) — 80GB+ VRAM
+- `ai/qwen3.5` (397B-MoE) — 200GB+ VRAM
