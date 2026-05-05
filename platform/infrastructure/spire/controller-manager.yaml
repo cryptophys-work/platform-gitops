@@ -82,20 +82,7 @@ data:
       healthProbeBindAddress: :8083
     clusterName: cryptophys-genesis
     trustDomain: cryptophys.work
-    spireServerAddress: spire-server-api.spire-system.svc.cluster.local:8081
-    ignoreNamespaces:
-      - kube-public
-      - spire-system
-  controller_manager_config.yaml: |
-    apiVersion: spire.spiffe.io/v1alpha1
-    kind: ControllerManagerConfig
-    metrics:
-      bindAddress: :8080
-    health:
-      healthProbeBindAddress: :8083
-    clusterName: cryptophys-genesis
-    trustDomain: cryptophys.work
-    spireServerAddress: spire-server-api.spire-system.svc.cluster.local:8081
+    spireServerSocketPath: /run/spire/sockets/api.sock
     ignoreNamespaces:
       - kube-public
       - spire-system
@@ -138,8 +125,7 @@ spec:
           image: ghcr.io/spiffe/spire-controller-manager:0.6.3
           imagePullPolicy: IfNotPresent
           args:
-            - --config=/run/spire/config/controller_manager_config.yaml
-            - --spire-api-socket=""
+            - --config=/run/spire/config/controller-manager.yaml
           ports:
             - name: metrics
               containerPort: 8080
@@ -178,11 +164,30 @@ spec:
             - name: config
               mountPath: /run/spire/config
               readOnly: true
+            - name: spire-server-socket
+              mountPath: /run/spire/sockets
             - name: tmp
               mountPath: /tmp
+        - name: spire-server-proxy
+          image: alpine/socat:1.7.4.4
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsUser: 1000
+            runAsGroup: 1000
+          args:
+            - UNIX-LISTEN:/run/spire/sockets/api.sock,fork,mode=777
+            - TCP:spire-server-api.spire-system.svc.cluster.local:8081
+          volumeMounts:
+            - name: spire-server-socket
+              mountPath: /run/spire/sockets
       volumes:
         - name: config
           configMap:
             name: spire-controller-manager-config
+        - name: spire-server-socket
+          emptyDir: {}
         - name: tmp
           emptyDir: {}
