@@ -138,7 +138,8 @@ spec:
           image: ghcr.io/spiffe/spire-controller-manager:0.6.3
           imagePullPolicy: IfNotPresent
           args:
-            - --config=/run/spire/config/controller-manager.yaml
+            - --config=/run/spire/config/controller_manager_config.yaml
+            - --spire-api-socket=""
           ports:
             - name: metrics
               containerPort: 8080
