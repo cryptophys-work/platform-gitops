@@ -25,6 +25,7 @@ spec:
   dnsNameTemplates:
     - "ai-mesh-broker.nervous-system.svc.cluster.local"
     - "mesh-broker.nervous-system.svc.cluster.local"
+    - "apps-core-mesh-nats.nervous-system.svc.cluster.local"
     - "{{ .PodMeta.Name }}.mesh-broker.nervous-system.svc.cluster.local"
   autoPopulateDNSNames: true
   ttl: "1h"

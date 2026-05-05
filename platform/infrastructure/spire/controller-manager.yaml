@@ -82,7 +82,7 @@ data:
       healthProbeBindAddress: :8083
     clusterName: cryptophys-genesis
     trustDomain: cryptophys.work
-    spireServerSocketPath: /spire-server/api.sock
+    spireServerSocketPath: /run/spire/sockets/agent.sock
     ignoreNamespaces:
       - kube-public
       - spire-system
