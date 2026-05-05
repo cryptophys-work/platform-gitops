@@ -126,7 +126,7 @@ spec:
           imagePullPolicy: IfNotPresent
           command: ["/bin/sh", "-c"]
           args:
-            - "sleep 2 && /spire-controller-manager --config=/run/spire/config/controller-manager.yaml"
+            - "sleep 5; exec /spire-controller-manager --config=/run/spire/config/controller-manager.yaml"
           ports:
             - name: metrics
               containerPort: 8080
