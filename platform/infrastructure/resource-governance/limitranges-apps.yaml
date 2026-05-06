@@ -415,3 +415,33 @@ spec:
       min:
         memory: "4Mi"
         cpu: "10m"
+
+# ── cognitive-brain (DeepSeek-V3 671B MoE, ~180Gi memory, 24 CPU) ──
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cryptophys-default-limits
+  namespace: cognitive-brain
+  annotations:
+    cryptophys.io/managed-by: flux
+    cryptophys.io/component: resource-governance
+spec:
+  limits:
+    - type: Container
+      default:
+        memory: "4Gi"
+        cpu: "4"
+      defaultRequest:
+        memory: "1Gi"
+        cpu: "500m"
+      max:
+        memory: "256Gi"
+        cpu: "32"
+      min:
+        memory: "64Mi"
+        cpu: "50m"
+    - type: Pod
+      max:
+        memory: "384Gi"
+        cpu: "48"
