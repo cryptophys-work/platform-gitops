@@ -217,17 +217,21 @@ They are commented out in manifests and can be enabled when GPU is added to Nexu
 - **Model:** `ai/nomic-embed-text-v2-moe` (475M) — ✅ Already deployed (CPU-viable)
 - **Why:** v2 with MoE, 100 languages, 768D vectors
 
-### Reranker (Deployed)
+### Reranker (Deployed - Transformers CPU)
 - **Model:** `ai/qwen3-reranker:0.6B` (~600 MB) — ✅ CPU-viable
 - **Why:** RAG reranking for cognitive-brain search, 119 languages
 - **Service:** `qwen3-reranker.shared-mesh.svc.cluster.local:8000`
-- **Status:** 🟢 Deployed (vLLM CPU inference)
+- **Status:** 🟢 Running (transformers + FastAPI on python:3.12-slim)
+- **Note:** vLLM CPU image unavailable; using transformers pipeline instead
+- **Endpoint:** POST `/rerank` with `{"query": "...", "documents": [...]}`
 
-### Function Calling (Deployed)
-- **Model:** `ai/functiongemma-vllm` (270M, 549 MB) — ✅ CPU-viable
+### Function Calling (Deployed - Transformers CPU)
+- **Model:** `unsloth/functiongemma-270m-it` (270M) — ✅ CPU-viable
 - **Why:** Lightweight function-calling for AIDE agents
 - **Service:** `functiongemma.autonomous-execution.svc.cluster.local:8000`
-- **Status:** 🟢 Deployed (vLLM CPU inference)
+- **Status:** 🟢 Running (transformers + FastAPI on python:3.12-slim)
+- **Note:** Original google/functiongemma-270m-it is gated; using unsloth version
+- **Endpoint:** POST `/generate` with `{"prompt": "...", "max_length": 512}`
 
 ### Not Viable (Multi-GPU Required)
 - `ai/deepseek-v3.2-vllm:685B` — 400GB+ VRAM
