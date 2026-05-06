@@ -52,6 +52,7 @@ spec:
                 - cilium-system
                 - metallb-system
                 - external-secrets
+                - cognitive-brain
       generate:
         apiVersion: v1
         kind: LimitRange
