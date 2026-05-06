@@ -11,7 +11,7 @@ metadata:
   annotations:
     cryptophys.io/anti-regression: "true"
     cryptophys.io/purpose: >-
-      Idempotently restart the single postgres-apps-ha primary only when the
+      Idempotently restart the single postgres-security-ha primary only when the
       live pod is still running on a node that no longer matches the GitOps
       target host, so CNPG can recreate it on the approved platform-ha node.
 spec:
@@ -69,7 +69,7 @@ spec:
             - -ec
             - |
               ns="postgresql-system"
-              cluster="postgres-apps-ha"
+              cluster="postgres-security-ha"
 
               desired_host="$(kubectl get cluster.postgresql.cnpg.io "${cluster}" -n "${ns}" -o jsonpath='{.spec.affinity.nodeSelector.kubernetes\.io/hostname}')"
               desired_instances="$(kubectl get cluster.postgresql.cnpg.io "${cluster}" -n "${ns}" -o jsonpath='{.spec.instances}')"
