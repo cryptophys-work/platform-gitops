@@ -8,6 +8,7 @@ data:
     Server {
       bind_address = "0.0.0.0"
       bind_port = "8081"
+      socket_path = "/tmp/spire-server/private/api.sock"
       trust_domain = "cryptophys.work"
       data_dir = "/run/spire/data"
       log_level = "DEBUG"  # Changed for audit logging (Kimi 2026-B)
@@ -15,11 +16,6 @@ data:
       ca_ttl = "24h"
       default_x509_svid_ttl = "1h"
       default_jwt_svid_ttl = "5m"
-    }
-    endpoints {
-      "unix://spire-server/api.sock" {
-        address = "unix://spire-server/api.sock"
-      }
     }
     plugins {
       DataStore "sql" {
@@ -47,10 +43,6 @@ data:
           namespace = "spire-system"
           config_map = "spire-bundle"
           config_map_key = "bundle.crt"
-        }
-      }
-      SVIDStore "k8s" {
-        plugin_data {
         }
       }
     }
