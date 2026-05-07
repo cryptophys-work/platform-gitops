@@ -77,7 +77,7 @@ spec:
                     cognitive-brain corpus genesis governance-heart infra-ops
                     library memory-storage nervous-system neural-mesh omega
                     peripheral-tools sensory-perception signatures tekton tools
-                    docker-proxy platform apps
+                    docker-proxy platform apps wasm
                 - name: HARBOR_SECURITY_PROJECTS
                   value: >-
                     autonomous-execution cognitive-brain governance-heart
