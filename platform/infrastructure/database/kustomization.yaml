@@ -4,7 +4,6 @@ resources:
   - qdrant-release.yaml
   - qdrant-pdb.yaml
   - qdrant-snapshot-cronjob.yaml
-  - platform__database_postgres_apps_stale_pvc_repair.yaml
   - platform__database_postgres_security_stale_pvc_repair.yaml
   # Historical one-shot cleanup job was left active in-cluster and now blocks drift
   # detection for the whole database kustomization. Keep it out of the active
