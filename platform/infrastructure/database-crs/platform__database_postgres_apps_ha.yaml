@@ -1,7 +1,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: postgres-security-ha
+  name: postgres-apps-ha
   namespace: postgresql-system
 spec:
   # HA: three instances on platform-ha pool (no MinIO WAL archive — in-cluster replication only).
