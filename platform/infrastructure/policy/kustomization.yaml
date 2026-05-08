@@ -12,7 +12,6 @@ resources:
   - cluster-pool-workload-restrictions.yaml
   - rayservice-pool-toleration-injection.yaml
   - nexus-hpc-placement-policy.yaml
-  - pdb-generation.yaml
   - rbac-generation.yaml
   - nexus-placement-policy.yaml
   - policy__nexus-daemonset-resource-overrides.yaml
@@ -22,6 +21,8 @@ resources:
   - pdbs-critical-services.yaml
   - ../tekton
   # Existing ClusterPolicy resources remain live because the Flux kustomization has prune=false.
+  # Keep generate-pdb-platform-ha out of the active reconcile set while kyverno
+  # admission is timing out on policy validation. The live policy object stays in place.
   # Keep this stage focused on restoring the Kyverno control plane first; policy CR reapplication
   # can resume once kyverno-svc has healthy endpoints again.
   # cp-restriction-policy.yaml moved to 15-policy-crs (Kyverno CRDs not ready at dry-run time)
