@@ -245,7 +245,7 @@ spec:
       config:
         database:
           DB_TYPE: postgres
-          HOST: postgres-security-ha-rw.postgresql-system.svc.cluster.local:5432
+          HOST: postgres-apps-ha-rw.postgresql-system.svc.cluster.local:5432
           NAME: gitea
           USER: gitea
         cache:
