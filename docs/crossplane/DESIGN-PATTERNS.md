@@ -78,8 +78,8 @@ spec:
 Beyond tiers, nodes can belong to **pools** (logical subdivisions):
 - **apps-ha**: synapse, nexus (core AI workloads)
 - **platform-ha**: cortex, cerebrum, corpus, thalamus, cerebellum (platform infra)
-- **storage-only**: campus, medulla (storage-only)
 - **ray-head**: synapse, cerebellum, quanta (Ray cluster heads)
+
 
 Pools are enforced via taints:
 
@@ -367,13 +367,14 @@ Future integrations:
 ### Design
 
 Placement hierarchy:
-1. **Tier** (required): platform, compute, storage
+1. **Tier** (required): platform, compute
    - Broad workload category
    - Enforced via label
 
-2. **Pool** (optional): apps-ha, platform-ha, storage-only
+2. **Pool** (optional): apps-ha, platform-ha
    - Workload subdivision
    - Enforced via taint
+
 
 3. **Preferred Node** (optional): specific hostname
    - Fine-grained placement
