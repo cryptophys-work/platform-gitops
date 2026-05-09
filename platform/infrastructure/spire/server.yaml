@@ -54,6 +54,10 @@ spec:
           operator: Equal
           value: nexus-hpc
           effect: NoSchedule
+        - key: cryptophys.io/role
+          operator: Equal
+          value: llm-inference
+          effect: NoSchedule
         - key: ray-head
           operator: Equal
           value: "true"
