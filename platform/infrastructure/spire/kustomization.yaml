@@ -17,7 +17,6 @@ resources:
   - pdb.yaml
   - spiffe-csi-driver.yaml
   - registration-entries.yaml
-  - controller-manager.yaml
   - webhook.yaml
   - clusterspiffeid-argocd.yaml
   - clusterspiffeids-nats-consumers.yaml
