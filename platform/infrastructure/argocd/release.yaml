@@ -38,6 +38,10 @@ spec:
         controller.status.processors: "5"
         controller.operation.processors: "2"
         controller.kubectl.parallelism.limit: "4"
+        # Extended timeouts for large Git repos (Gitea 571MB apps-gitops)
+        controller.repo.server.timeout.seconds: "300"
+        controller.sync.timeout.seconds: "600"
+        reposerver.git.request.timeout: "300"
       cm:
         # Enable non-expiring API token for drift-sentinel + automation tooling
         accounts.admin: "apiKey, login"
@@ -373,6 +377,8 @@ spec:
           value: /tmp/spiffe-certs/svid_bundle.pem
         - name: GIT_SSL_NO_VERIFY
           value: "false"
+        - name: ARGOCD_EXEC_TIMEOUT
+          value: "300s"
       volumes:
         - name: spiffe-workload-api
           csi:
