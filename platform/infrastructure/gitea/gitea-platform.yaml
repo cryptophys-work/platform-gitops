@@ -262,9 +262,10 @@ spec:
           DOMAIN: gitea.cryptophys.work
           GIT_EXECUTABLE_PATH: /usr/bin/git
           STARTUP_TIMEOUT: "300"
+          PER_WRITE_TIMEOUT: "120s"
         git:
           timeout:
-            DEFAULT: "300"
+            DEFAULT: "1200"
             MIGRATE: "600"
             MIRROR: "300"
             CLONE: "300"
@@ -282,7 +283,9 @@ spec:
       - name: GITEA__WEBHOOK__DELIVER_TIMEOUT
         value: "60"
       - name: GITEA__GIT__TIMEOUT__DEFAULT
-        value: "300"
+        value: "1200"
+      - name: GITEA__SERVER__PER_WRITE_TIMEOUT
+        value: "120s"
       - name: GITEA__GIT__TIMEOUT__MIGRATE
         value: "600"
       - name: GITEA__GIT__TIMEOUT__MIRROR
