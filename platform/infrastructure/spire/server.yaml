@@ -12,9 +12,9 @@ metadata:
     kagenti.io/role: identity
     kagenti.io/spiffe: "true"
 spec:
-  # 2x HA: reduced from 3 to 2 to match current node availability and avoid Pending state.
-  replicas: 2
-
+  # 3x HA: shared Postgres datastore (read/write via SQL); per-pod spire-data (RWO); spire-shared-keys (RWX).
+  # required podAntiAffinity on hostname + nodeAffinity to three platform-ha nodes => one replica per node.
+  replicas: 3
   selector:
     matchLabels:
       app: spire-server
