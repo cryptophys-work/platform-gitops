@@ -43,7 +43,7 @@ spec:
               - key: cnpg.io/cluster
                 operator: In
                 values:
-                  - postgres-security-ha
+                  - postgres-apps-ha
                   - postgres-security-ha
       ports:
         - protocol: TCP
