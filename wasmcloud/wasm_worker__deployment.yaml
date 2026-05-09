@@ -1,0 +1,25 @@
+apiVersion: runtime.wasmcloud.dev/v1alpha1
+kind: WorkloadDeployment
+metadata:
+  name: wasm-worker
+  namespace: wasmcloud-system
+  labels:
+    app.kubernetes.io/name: wasm-worker
+    app.kubernetes.io/component: wasm-actor
+    cryptophys.work/managed-by: platform-gitops
+  annotations:
+    cryptophys.work/description: Lightweight WASM execution worker for Kagenti Hybrid Architecture
+spec:
+  replicas: 1
+  deployPolicy: RollingUpdate
+  artifacts:
+    - name: wasm-worker
+      artifactFrom:
+        name: wasm-worker
+  template:
+    spec:
+      components:
+        - name: wasm-worker
+          image: registry.cryptophys.work/wasm/wasm-worker:0.1.0
+          imagePullSecret:
+            name: registry-cryptophys-work-auth
