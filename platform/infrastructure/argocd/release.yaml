@@ -41,7 +41,7 @@ spec:
         # Extended timeouts for large Git repos (Gitea 571MB apps-gitops)
         controller.repo.server.timeout.seconds: "300"
         controller.sync.timeout.seconds: "600"
-        reposerver.git.request.timeout: "300"
+        reposerver.git.request.timeout: "600s"
       cm:
         # Enable non-expiring API token for drift-sentinel + automation tooling
         accounts.admin: "apiKey, login"
