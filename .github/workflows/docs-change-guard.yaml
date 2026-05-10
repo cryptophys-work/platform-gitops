@@ -24,7 +24,7 @@ jobs:
               - 'platform/**'
             docs:
               - 'docs/**'
-              - '*.md'
+              - '**/*.md'
       - name: Enforce docs updates for infra changes
         run: |
           if [ "${{ steps.changed.outputs.infra_any_changed }}" = "true" ] && [ "${{ steps.changed.outputs.docs_any_changed }}" != "true" ]; then
