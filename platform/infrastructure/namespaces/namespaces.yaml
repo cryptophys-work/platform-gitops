@@ -3,31 +3,6 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: apps
-  name: apps-system
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: apps
-  name: apps-core
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: apps
-    cryptophys.io/pool: apps-ha
-  name: apps-dash
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
     cryptophys.io/pool: platform-ha
   name: cert-manager
 ---
@@ -39,15 +14,6 @@ metadata:
     cryptophys.io/domain: platform
     cryptophys.io/pool: platform-ha
   name: external-secrets
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: platform
-    cryptophys.io/pool: platform-ha
-  name: gitops-system
 ---
 apiVersion: v1
 kind: Namespace
@@ -222,77 +188,6 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: cerebrum
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: cerebrum
-    cryptophys.io/pool: apps-ha
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: core-cognitive
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: navigator
-    cryptophys.io/pool: apps-ha
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: core-execution
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: aide
-    cryptophys.io/pool: apps-ha
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: core-governance
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: dao
-    cryptophys.io/pool: platform-ha
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: core-memory
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: trustedledger
-    cryptophys.io/pool: platform-ha
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: core-nervous
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: mesh
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: core-ops
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: monitoring
-    cryptophys.io/pool: platform-ha
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: core-peripherals
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: mcp
-    cryptophys.io/pool: apps-ha
----
-apiVersion: v1
-kind: Namespace
-metadata:
   name: database
   labels:
     app.kubernetes.io/created-by: aide
@@ -303,107 +198,6 @@ metadata:
   name: cnpg-system
   labels:
     app.kubernetes.io/created-by: aide
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/pool: apps-ha
-  name: apps-gateway
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: 02-cognitive-risk
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: user
-    cryptophys.io/pool: apps-ha
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: aide
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: aide
-    cryptophys.io/pool: apps-ha
-    kagenti-enabled: "true"
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: bridge
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: bridge
-    cryptophys.io/pool: apps-ha
-    kagenti-enabled: "true"
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: mcp-system
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: mcp
-    cryptophys.io/pool: apps-ha
-    kagenti-enabled: "true"
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: navigator
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: navigator
-    cryptophys.io/pool: apps-ha
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: dao-governance
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: dao
-    cryptophys.io/pool: platform-ha
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: notification
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: notification
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: watcher
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: watcher
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: apps-automation
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: automation
-    cryptophys.io/pool: apps-ha
-    kagenti-enabled: "true"
-
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: kagenti-system
-  labels:
-    app.kubernetes.io/created-by: aide
-    cryptophys.io/domain: kagenti
-    cryptophys.io/pool: platform-ha
 ---
 apiVersion: v1
 kind: Namespace
