@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-import yaml
+from kyverno_utils import load_yaml_docs
 
 
 LIST_KEYS = {"values", "namespaces", "names"}
@@ -32,22 +32,13 @@ def scan_node(node: Any, path: str, findings: list[str], file_path: Path, policy
             scan_node(item, f"{path}[{idx}]", findings, file_path, policy_name)
 
 
-def iter_yaml_docs(file_path: Path) -> list[dict[str, Any]]:
-    content = file_path.read_text(encoding="utf-8")
-    docs: list[dict[str, Any]] = []
-    for doc in yaml.safe_load_all(content):
-        if isinstance(doc, dict):
-            docs.append(doc)
-    return docs
-
-
 def main() -> int:
     root = Path(__file__).resolve().parent.parent
     policy_root = root / "platform" / "infrastructure"
     findings: list[str] = []
 
     for file_path in sorted(policy_root.rglob("*.yaml")):
-        docs = iter_yaml_docs(file_path)
+        docs = load_yaml_docs(file_path)
         for doc in docs:
             api_version = str(doc.get("apiVersion", ""))
             kind = str(doc.get("kind", ""))
