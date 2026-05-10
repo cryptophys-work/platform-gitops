@@ -1,7 +1,7 @@
 # =============================================================================
 # cryptophys-genesis — Worker Node Kubelet Hardening v1.0
 # Applied via: talosctl machineconfig patch <worker-node> --patch @worker-kubelet-hardening.yaml
-# Scope: ALL active worker nodes (synapse, thalamus, cerebellum, quanta, nexus)
+# Scope: ALL worker nodes (campus, medulla, synapse, thalamus, cerebellum, quanta, aether)
 # =============================================================================
 
 machine:

@@ -35,9 +35,10 @@ Crossplane now manages **10 ManagedNode resources** (all cluster nodes) and **6 
 | thalamus-217-76-59-241 | worker | compute | ✗ | tier=compute, platform-ha=true | pool=platform-ha |
 | cerebellum-161-97-117-96 | worker | compute | ✓ (head) | tier=compute, platform-ha=true, ray-head=true | pool=platform-ha, ray-head=true |
 | quanta-194-163-186-222 | worker | compute | ✓ (head) | tier=compute, ray-head=true, bridge-system=true, dao-system=true | bridge-system=true, dao-system=true, ray-head=true |
+| medulla-82-208-20-242 | worker | storage | ✗ | tier=storage | storage-only=true |
+| campus-212-47-66-101 | worker | storage | ✗ | tier=storage | storage-only=true |
 
 **What Crossplane Does:**
-
 - Applies labels: `cryptophys.io/tier`, `ray-head`, `ray-cluster`, pool identifiers, role labels
 - Applies taints: `ray-head:NoSchedule`, `pool=*:NoSchedule`, `bridge-system:NoSchedule`, `dao-system:NoSchedule`, `storage-only:NoSchedule`
 - Monitors for drift: If labels/taints are manually removed, Crossplane reconciles them back
@@ -83,6 +84,7 @@ Crossplane now manages **10 ManagedNode resources** (all cluster nodes) and **6 
 |------|-------|-----------|--------|---------|
 | apps-ha | synapse, nexus | 11 (aide, cerebrum, apps-core, apps-dash, apps-user, bridge, automation, apps-automation, apps-gateway, navigator, platform-ui) | pool=apps-ha:NoSchedule | Core AI workload cluster |
 | platform-ha | cortex, cerebrum, corpus, thalamus, cerebellum | 27 (kube-system, flux-system, cert-manager, vault-system, kyverno-system, ... 22 more) | pool=platform-ha:NoSchedule | Platform infrastructure tier |
+| storage-only | campus, medulla | (none) | storage-only=true:NoSchedule | Longhorn storage nodes only |
 
 **Integration Status (P1: Complete):**
 - ✅ ClusterPool is now the single source of truth for namespace pool membership

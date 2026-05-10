@@ -6,7 +6,6 @@ import json
 import re
 import sys
 from dataclasses import dataclass, asdict
-from functools import lru_cache
 from pathlib import Path
 from typing import Iterable
 
@@ -51,20 +50,16 @@ ADMIN_MACHINE_PATHS = {
 }
 
 
-@lru_cache(maxsize=None)
-def iter_files(root: Path) -> tuple[Path, ...]:
-    files = []
+def iter_files(root: Path) -> Iterable[Path]:
     for pattern in ("**/*.yaml", "**/*.yml", "**/*.sh"):
-        files.extend(root.glob(pattern))
-    return tuple(files)
+        yield from root.glob(pattern)
 
 
-@lru_cache(maxsize=None)
-def load_text(path: Path) -> tuple[str, ...]:
+def load_text(path: Path) -> list[str]:
     try:
-        return tuple(path.read_text(encoding="utf-8").splitlines())
+        return path.read_text(encoding="utf-8").splitlines()
     except UnicodeDecodeError:
-        return tuple(path.read_text(encoding="latin-1").splitlines())
+        return path.read_text(encoding="latin-1").splitlines()
 
 
 def index_declared_secrets(root: Path) -> dict[str, list[str]]:

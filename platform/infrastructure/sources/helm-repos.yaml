@@ -1,4 +1,4 @@
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: cilium
@@ -7,7 +7,7 @@ spec:
   interval: 1h
   url: https://helm.cilium.io
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: jetstack
@@ -16,7 +16,7 @@ spec:
   interval: 1h
   url: https://charts.jetstack.io
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: external-secrets
@@ -25,7 +25,7 @@ spec:
   interval: 1h
   url: https://charts.external-secrets.io
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: hashicorp
@@ -34,7 +34,7 @@ spec:
   interval: 1h
   url: https://helm.releases.hashicorp.com
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: ingress-nginx
@@ -43,7 +43,7 @@ spec:
   interval: 1h
   url: https://kubernetes.github.io/ingress-nginx
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: metallb
@@ -52,7 +52,7 @@ spec:
   interval: 1h
   url: https://metallb.github.io/metallb
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: gatekeeper
@@ -61,7 +61,7 @@ spec:
   interval: 1h
   url: https://open-policy-agent.github.io/gatekeeper/charts
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: kyverno
@@ -70,7 +70,7 @@ spec:
   interval: 1h
   url: https://kyverno.github.io/kyverno/
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: longhorn
@@ -79,7 +79,7 @@ spec:
   interval: 1h
   url: https://charts.longhorn.io
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: gitea-charts
@@ -88,7 +88,7 @@ spec:
   interval: 1h
   url: https://dl.gitea.com/charts/
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: goharbor
@@ -97,7 +97,7 @@ spec:
   interval: 1h
   url: https://helm.goharbor.io
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: argoproj
@@ -106,7 +106,7 @@ spec:
   interval: 1h
   url: https://argoproj.github.io/argo-helm
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: policy-reporter
@@ -115,7 +115,7 @@ spec:
   interval: 1h
   url: https://kyverno.github.io/policy-reporter
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: prometheus-community
@@ -124,7 +124,7 @@ spec:
   interval: 1h
   url: https://prometheus-community.github.io/helm-charts
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: grafana
@@ -133,7 +133,7 @@ spec:
   interval: 1h
   url: https://grafana.github.io/helm-charts
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: open-telemetry
@@ -142,7 +142,7 @@ spec:
   interval: 1h
   url: https://open-telemetry.github.io/opentelemetry-helm-charts
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: aquasecurity
@@ -151,7 +151,7 @@ spec:
   interval: 1h
   url: https://aquasecurity.github.io/helm-charts/
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: minio
@@ -160,7 +160,7 @@ spec:
   interval: 1h
   url: https://charts.min.io
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: vmware-tanzu
@@ -169,7 +169,7 @@ spec:
   interval: 1h
   url: https://vmware-tanzu.github.io/helm-charts
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: metrics-server
@@ -178,8 +178,16 @@ spec:
   interval: 1h
   url: https://kubernetes-sigs.github.io/metrics-server
 ---
-
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: crossplane
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://charts.crossplane.io/stable
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: kuberay-charts
@@ -188,7 +196,7 @@ spec:
   interval: 1h
   url: https://ray-project.github.io/kuberay-helm
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: envoy-gateway
@@ -199,7 +207,7 @@ spec:
   url: oci://docker.io/envoyproxy
 ---
 # n8n workflow automation - community helm chart (official helm.n8n.io was decommissioned)
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: n8n-charts
@@ -209,7 +217,7 @@ spec:
   url: https://community-charts.github.io/helm-charts
 ---
 # Qdrant vector database - correct repo (qdrant.github.io/helm-charts was 404, moved to qdrant-helm)
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: qdrant-charts
@@ -218,7 +226,7 @@ spec:
   interval: 1h
   url: https://qdrant.github.io/qdrant-helm
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: falcosecurity
@@ -227,7 +235,7 @@ spec:
   interval: 1h
   url: https://falcosecurity.github.io/charts
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: linkerd
@@ -236,7 +244,7 @@ spec:
   interval: 1h
   url: https://helm.linkerd.io/stable
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: cloudnative-pg
@@ -245,7 +253,7 @@ spec:
   interval: 1h
   url: https://cloudnative-pg.github.io/charts
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: kagenti-operator
@@ -255,7 +263,7 @@ spec:
   interval: 1h
   url: oci://ghcr.io/kagenti/kagenti-operator
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: kagenti-extensions

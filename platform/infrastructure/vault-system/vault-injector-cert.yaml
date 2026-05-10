@@ -89,7 +89,7 @@ metadata:
     cryptophys.io/anti-regression: "true"
     cryptophys.io/layer: platform
 spec:
-  secretName: vault-injector-certs
+  secretName: vault-injector-certs # gitleaks:allow
   duration: 8760h      # 1 year
   renewBefore: 720h    # renew 30 days before expiry
   commonName: vault-agent-injector-svc.vault-system.svc

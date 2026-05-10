@@ -38,3 +38,42 @@ spec:
           names:
             - postgres-apps-ha-app
 ---
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: postgres-apps-ha-platform-ha-exception
+  namespace: postgresql-system
+  labels:
+    cryptophys.io/domain: platform
+    cryptophys.io/component: postgresql
+    cryptophys.io/managed-by: flux
+    cryptophys.io/layer: platform
+  annotations:
+    cryptophys.work/exception-owner: "platform-sre"
+    cryptophys.work/exception-reason: >-
+      Allow CloudNativePG HA pods for postgres-apps-ha (3 instances) under platform-ha tolerations.
+    cryptophys.work/exception-ticket: "OPS-POSTGRES-APPS-001"
+    cryptophys.work/exception-expires-at: "2026-06-30T00:00:00Z"
+spec:
+  exceptions:
+    - policyName: deny-platform-ha-toleration-outside-platform
+      ruleNames:
+        - block-platform-ha
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+          namespaces:
+            - postgresql-system
+          names:
+            - postgres-apps-ha-1
+            - postgres-apps-ha-2
+            - postgres-apps-ha-3
+      - resources:
+          kinds:
+            - Secret
+          namespaces:
+            - postgresql-system
+          names:
+            - postgres-apps-ha-app

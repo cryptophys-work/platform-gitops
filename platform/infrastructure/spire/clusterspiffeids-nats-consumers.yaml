@@ -18,15 +18,14 @@ spec:
   spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
   namespaceSelector:
     matchLabels:
-      kubernetes.io/metadata.name: nervous-system
+      kubernetes.io/metadata.name: mesh-system
   podSelector:
     matchLabels:
       app: ai-mesh-broker
   dnsNameTemplates:
-    - "ai-mesh-broker.nervous-system.svc.cluster.local"
-    - "mesh-broker.nervous-system.svc.cluster.local"
-    - "apps-core-mesh-nats.nervous-system.svc.cluster.local"
-    - "{{ .PodMeta.Name }}.mesh-broker.nervous-system.svc.cluster.local"
+    - "ai-mesh-broker.mesh-system.svc.cluster.local"
+    - "mesh-broker.mesh-system.svc.cluster.local"
+    - "{{ .PodMeta.Name }}.mesh-broker.mesh-system.svc.cluster.local"
   autoPopulateDNSNames: true
   ttl: "1h"
 ---
@@ -491,50 +490,6 @@ spec:
   podSelector:
     matchLabels:
       component: workerDeployment
-  autoPopulateDNSNames: true
-  ttl: "1h"
----
-# hermes-router (nervous-system message router)
-apiVersion: spire.spiffe.io/v1alpha1
-kind: ClusterSPIFFEID
-metadata:
-  name: hermes-router
-  labels:
-    app.kubernetes.io/name: spire
-    cryptophys.work/domain: mesh
-  annotations:
-    cryptophys.io/contract: contract.platform.spire.v1
-    cryptophys.io/anti-regression: "true"
-spec:
-  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
-  namespaceSelector:
-    matchLabels:
-      kubernetes.io/metadata.name: genesis
-  podSelector:
-    matchLabels:
-      app: hermes-router
-  autoPopulateDNSNames: true
-  ttl: "1h"
----
-# heartbeat-global (cluster-wide health metronome)
-apiVersion: spire.spiffe.io/v1alpha1
-kind: ClusterSPIFFEID
-metadata:
-  name: heartbeat-global
-  labels:
-    app.kubernetes.io/name: spire
-    cryptophys.work/domain: mesh
-  annotations:
-    cryptophys.io/contract: contract.platform.spire.v1
-    cryptophys.io/anti-regression: "true"
-spec:
-  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
-  namespaceSelector:
-    matchLabels:
-      kubernetes.io/metadata.name: nervous-system
-  podSelector:
-    matchLabels:
-      app: heartbeat-global
   autoPopulateDNSNames: true
   ttl: "1h"
 ---

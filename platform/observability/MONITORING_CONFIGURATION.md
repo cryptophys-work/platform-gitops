@@ -58,11 +58,10 @@ kubectl apply -f flux-monitoring/flux-core-services.yaml
 ```bash
 # Via API
 GRAFANA_POD=$(kubectl -n observability-system get pod -l app.kubernetes.io/name=grafana -o jsonpath='{.items[0].metadata.name}')
-GRAFANA_PASS=$(kubectl get secret -n observability-system grafana-admin-credentials -o jsonpath='{.data.admin-password}' | base64 --decode)
 
 kubectl exec -n observability-system $GRAFANA_POD -- curl -X POST \
   -H "Content-Type: application/json" \
-  -u "admin:$GRAFANA_PASS" \
+  -u "admin:password" \
   -d @/path/to/dashboard.json \
   http://localhost:3000/api/dashboards/db
 ```
@@ -96,15 +95,8 @@ kubectl exec -n observability-system $GRAFANA_POD -- curl -X POST \
 ## Access
 
 **Grafana UI**: https://monitor.cryptophys.work  
+**Credentials**: admin / CryptoGrafana2026
 **Total Dashboards**: 29
-
-### Secure Credential Retrieval
-
-The Grafana admin password is managed as a Kubernetes secret. Retrieve it using:
-
-```bash
-kubectl get secret -n observability-system grafana-admin-credentials -o jsonpath='{.data.admin-password}' | base64 --decode
-```
 
 ## Recovery
 

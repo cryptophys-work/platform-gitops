@@ -66,23 +66,19 @@ spec:
                 privileged: false
                 readOnlyRootFilesystem: true
                 runAsNonRoot: true
-                runAsUser: 100
-                runAsGroup: 1000
+                runAsUser: 10001
+                runAsGroup: 10001
               env:
                 - name: HARBOR_URL
-                  value: https://registry-harbor-core.registry-system.svc.cluster.local
+                  value: http://registry-harbor-core.registry-system.svc.cluster.local
                 - name: HARBOR_PROJECTS
                   value: >-
-                    aide aether apps-dash apps-user autonomous-execution
-                    cognitive-brain corpus genesis governance-heart infra-ops
-                    library memory-storage nervous-system neural-mesh omega
-                    peripheral-tools sensory-perception signatures tekton tools
-                    docker-proxy platform apps wasm
-                - name: HARBOR_SECURITY_PROJECTS
-                  value: >-
-                    autonomous-execution cognitive-brain governance-heart
-                    memory-storage nervous-system neural-mesh peripheral-tools
-                    infra-ops sensory-perception tools library
+                    aide aether apps-core apps-dash apps-user bridge cerebrum
+                    core-cognitive core-execution core-governance core-memory
+                    core-nervous core-ops core-peripherals core-sensory corpus
+                    docker-proxy facilitator library navigator notification
+                    openclaw omega orchestrator platform-ui signatures
+                    tekton-system tools watcher
                 - name: HARBOR_ADMIN_PASSWORD
                   valueFrom:
                     secretKeyRef:
@@ -94,50 +90,31 @@ spec:
                 - |
                   api="${HARBOR_URL}/api/v2.0"
                   auth="admin:${HARBOR_ADMIN_PASSWORD}"
-                   for project in ${HARBOR_PROJECTS}; do
-                     code="$(curl -k -sS -o /dev/null -w '%{http_code}' -u "${auth}" "${api}/projects/${project}")"
-                     if [ "${code}" = "200" ]; then
-                       echo "harbor project ${project} already exists"
-                       # Check if this is a security project that needs configuration
-                       if echo "${HARBOR_SECURITY_PROJECTS}" | grep -q "\b${project}\b"; then
-                         # Enable auto-scan, SBOM generation, and cosign signing
-                         config_payload='{"vulnerability_scanning":"true","sbom_generation":"true","cosign_signing":"true"}'
-                         config_code="$(curl -k -sS -o /dev/null -w '%{http_code}' -u "${auth}" \
-                           -H 'Content-Type: application/json' \
-                           -X PUT "${api}/projects/${project}" \
-                           -d "${config_payload}")"
-                         if [ "${config_code}" = "200" ]; then
-                           echo "harbor project ${project} security features enabled"
-                         else
-                           echo "failed to configure security for project ${project}: HTTP ${config_code}" >&2
-                         fi
-                       fi
-                       continue
-                     fi
-                     if [ "${code}" != "404" ]; then
-                       echo "failed to inspect harbor project ${project}: HTTP ${code}" >&2
-                       exit 1
-                     fi
-                     # Create project with security features if it's a security project
-                     if echo "${HARBOR_SECURITY_PROJECTS}" | grep -q "\b${project}\b"; then
-                       payload="$(printf '{"project_name":"%s","metadata":{"public":"false","enable_content_trust_cosign":"true","auto_scan":"true","sbom_generation":"true"}}' "${project}")"
-                     else
-                       payload="$(printf '{"project_name":"%s","metadata":{"public":"false"}}' "${project}")"
-                     fi
-                     create_code="$(curl -k -sS -o /dev/null -w '%{http_code}' -u "${auth}" \
-                       -H 'Content-Type: application/json' \
-                       -X POST "${api}/projects" \
-                       -d "${payload}")"
-                     case "${create_code}" in
-                       201|409)
-                         echo "harbor project ${project} reconciled"
-                         ;;
-                       *)
-                         echo "failed to create harbor project ${project}: HTTP ${create_code}" >&2
-                         exit 1
-                         ;;
-                     esac
-                   done
+                  for project in ${HARBOR_PROJECTS}; do
+                    code="$(curl -sS -o /dev/null -w '%{http_code}' -u "${auth}" "${api}/projects/${project}")"
+                    if [ "${code}" = "200" ]; then
+                      echo "harbor project ${project} already exists"
+                      continue
+                    fi
+                    if [ "${code}" != "404" ]; then
+                      echo "failed to inspect harbor project ${project}: HTTP ${code}" >&2
+                      exit 1
+                    fi
+                    payload="$(printf '{"project_name":"%s","metadata":{"public":"false"}}' "${project}")"
+                    create_code="$(curl -sS -o /dev/null -w '%{http_code}' -u "${auth}" \
+                      -H 'Content-Type: application/json' \
+                      -X POST "${api}/projects" \
+                      -d "${payload}")"
+                    case "${create_code}" in
+                      201|409)
+                        echo "harbor project ${project} reconciled"
+                        ;;
+                      *)
+                        echo "failed to create harbor project ${project}: HTTP ${create_code}" >&2
+                        exit 1
+                        ;;
+                    esac
+                  done
               resources:
                 requests:
                   cpu: 25m
