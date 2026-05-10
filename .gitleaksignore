@@ -1,0 +1,5 @@
+# Gitleaks ignore file
+# Ignore documentation and historical artifacts that contain placeholders
+VAULT_UNSEAL_PROCEDURE.md
+CREDENTIAL_MANAGEMENT_COMPLETE.md
+docs/historical/*
