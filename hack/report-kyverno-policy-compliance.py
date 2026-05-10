@@ -7,15 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import yaml
-
-
-def load_docs(path: Path) -> list[dict[str, Any]]:
-    docs: list[dict[str, Any]] = []
-    for doc in yaml.safe_load_all(path.read_text(encoding="utf-8")):
-        if isinstance(doc, dict):
-            docs.append(doc)
-    return docs
+from kyverno_utils import iter_kyverno_policies
 
 
 def value(annotations: dict[str, Any], *keys: str) -> str:
@@ -32,37 +24,31 @@ def main() -> int:
     out_path = repo_root / "docs" / "operations" / "kyverno-policy-compliance-matrix.md"
 
     rows: list[tuple[str, str, str, str, str, str]] = []
-    for file_path in sorted(policy_root.rglob("*.yaml")):
-        for doc in load_docs(file_path):
-            if doc.get("kind") != "ClusterPolicy":
-                continue
-            if not str(doc.get("apiVersion", "")).startswith("kyverno.io/"):
-                continue
+    for file_path, doc in iter_kyverno_policies(policy_root):
+        metadata = doc.get("metadata", {}) or {}
+        spec = doc.get("spec", {}) or {}
+        annotations = metadata.get("annotations", {}) or {}
 
-            metadata = doc.get("metadata", {}) or {}
-            spec = doc.get("spec", {}) or {}
-            annotations = metadata.get("annotations", {}) or {}
-
-            name = str(metadata.get("name", "<unknown>"))
-            title = value(annotations, "policies.kyverno.io/title")
-            severity = value(annotations, "policies.kyverno.io/severity", "cryptophys.io/severity")
-            description = value(
-                annotations,
-                "policies.kyverno.io/description",
-                "cryptophys.io/description",
+        name = str(metadata.get("name", "<unknown>"))
+        title = value(annotations, "policies.kyverno.io/title")
+        severity = value(annotations, "policies.kyverno.io/severity", "cryptophys.io/severity")
+        description = value(
+            annotations,
+            "policies.kyverno.io/description",
+            "cryptophys.io/description",
+        )
+        vfa = str(spec.get("validationFailureAction", "MISSING"))
+        background = spec.get("background", "MISSING")
+        rows.append(
+            (
+                name,
+                str(file_path.relative_to(repo_root)),
+                title,
+                severity,
+                description,
+                f"{vfa} / {background}",
             )
-            vfa = str(spec.get("validationFailureAction", "MISSING"))
-            background = spec.get("background", "MISSING")
-            rows.append(
-                (
-                    name,
-                    str(file_path.relative_to(repo_root)),
-                    title,
-                    severity,
-                    description,
-                    f"{vfa} / {background}",
-                )
-            )
+        )
 
     lines: list[str] = []
     lines.append("# Kyverno Policy Compliance Matrix")

@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-import yaml
+from kyverno_utils import load_yaml_docs
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -122,14 +122,6 @@ def parse_args() -> argparse.Namespace:
         help="Limit checks to one or more gate names.",
     )
     return parser.parse_args()
-
-
-def load_yaml_docs(path: Path) -> list[dict[str, Any]]:
-    docs: list[dict[str, Any]] = []
-    for doc in yaml.safe_load_all(path.read_text(encoding="utf-8")):
-        if isinstance(doc, dict):
-            docs.append(doc)
-    return docs
 
 
 def load_kustomization_specs() -> dict[str, dict[str, Any]]:
