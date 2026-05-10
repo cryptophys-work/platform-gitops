@@ -1,0 +1,8 @@
+[allowlist]
+paths = [
+    "VAULT_UNSEAL_PROCEDURE.md",
+    "CREDENTIAL_MANAGEMENT_COMPLETE.md",
+    "docs/historical/.*",
+    "hack/bootstrap-flux-secrets.sh",
+    "platform/infrastructure/secrets/bootstrap-secrets.yaml"
+]
