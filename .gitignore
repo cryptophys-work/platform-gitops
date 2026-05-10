@@ -1,2 +1,4 @@
 .worktrees/
 .repo-lens.db
+__pycache__/
+*.pyc
