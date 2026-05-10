@@ -162,21 +162,7 @@ def audit_repo(repo_name: str, root: Path, declared: dict[str, list[str]]) -> li
 
             if "secretName:" in line:
                 ref_name = line.split(":", 1)[1].strip().strip('"')
-                if ref_name in TRACKED_SECRETS and ref_name not in declared:
-                    findings.append(
-                        Finding(
-                            category="undeclared-secret-owner",
-                            severity="high",
-                            repo=repo_name,
-                            path=rel,
-                            line=idx,
-                            message=(
-                                f"Secret reference '{ref_name}' has no Secret/ExternalSecret manifest "
-                                "in the audited repos."
-                            ),
-                        )
-                    )
-                elif ref_name in TRACKED_SECRETS and not declared.get(ref_name):
+                if ref_name in TRACKED_SECRETS and not declared.get(ref_name):
                     findings.append(
                         Finding(
                             category="undeclared-secret-owner",
