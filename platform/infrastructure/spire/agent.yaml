@@ -15,7 +15,7 @@ spec:
       labels:
         app: spire-agent
       annotations:
-        cryptophys.io/redeploy-token: "2026-04-21-spire-agent-k8s-attestor-only"
+        cryptophys.io/redeploy-nonce: "2026-04-21-spire-agent-k8s-attestor-only"
     spec:
       hostPID: true
       hostNetwork: true
