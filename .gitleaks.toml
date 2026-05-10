@@ -1,0 +1,10 @@
+[allowlist]
+description = "Allowlist false positives in documentation, bootstrap scripts, and Helm templates"
+paths = [
+    '''VAULT_UNSEAL_PROCEDURE\.md''',
+    '''CREDENTIAL_MANAGEMENT_COMPLETE\.md''',
+    '''hack/bootstrap-flux-secrets\.sh''',
+    '''platform/infrastructure/argocd/argocd-repo-credentials-eso\.yaml''',
+    '''platform/infrastructure/database-crs/platform__database_spire_postgres_bootstrap_es\.yaml''',
+    '''docs/historical/root-manifests/.*'''
+]
