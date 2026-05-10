@@ -1,0 +1,7 @@
+[allowlist]
+description = "Ignore false positives in documentation and initialization scripts"
+paths = [
+    '''CREDENTIAL_MANAGEMENT_COMPLETE\.md''',
+    '''platform/infrastructure/vault-system/vault-init\.sh''',
+    '''docs/historical/credential-management-complete\.md'''
+]
