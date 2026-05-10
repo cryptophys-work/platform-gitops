@@ -1,0 +1,15 @@
+[allowlist]
+description = "Global allowlist for platform-gitops"
+# Ignore specific files that contain examples or non-sensitive hashed credentials
+paths = [
+    '''platform/infrastructure/policy-reporter/ui-basic-auth-secret.yaml''',
+    '''platform/infrastructure/networking/externalsecret-vault-ui-basic-auth.yaml''',
+    '''VAULT_UNSEAL_PROCEDURE.md''',
+    '''CREDENTIAL_MANAGEMENT_COMPLETE.md''',
+]
+# Ignore patterns that trigger false positives
+regexes = [
+    '''cryptophys.io/redeploy-token''',
+    '''replace-with-real-token''',
+    '''SECURELY_RETRIEVED_VAULT_TOKEN''',
+]
