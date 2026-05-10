@@ -45,7 +45,7 @@ spec:
       - CREATE DATABASE gitea;
       - CREATE DATABASE harbor;
       - CREATE DATABASE registry;
-      - CREATE USER gitea WITH PASSWORD 'gitea123';
+      - CREATE USER gitea;
       - GRANT ALL PRIVILEGES ON DATABASE gitea TO gitea;
       secret:
         name: postgres-platform-credentials
