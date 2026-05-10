@@ -21,8 +21,9 @@ def load_docs(path: Path) -> list[dict[str, Any]]:
 def value(annotations: dict[str, Any], *keys: str) -> str:
     for key in keys:
         raw = annotations.get(key, "")
-        if str(raw).strip():
-            return str(raw).strip()
+        val = str(raw).strip()
+        if val:
+            return val
     return "MISSING"
 
 
