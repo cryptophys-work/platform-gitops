@@ -9,4 +9,4 @@ metadata:
     app.kubernetes.io/part-of: argocd
     app.kubernetes.io/component: redis-ha
     cryptophys.work/domain: argocd
-automountServiceAccountToken: true
+automountServiceAccountToken: false
