@@ -1,0 +1,15 @@
+[allowlist]
+description = "Ignore historical false positives and legacy test secrets"
+paths = [
+    '''platform/infrastructure/database/platform__database_postgres_platform_ha.yaml''',
+    '''platform/infrastructure/secrets/externalsecret-wildcard-tls.yaml''',
+    '''platform/infrastructure/vault-system/vault-injector-cert.yaml''',
+    '''platform/infrastructure/argocd/argocd-repo-credentials-eso.yaml''',
+    '''platform/infrastructure/secrets/clusterexternalsecret-harbor-pull-secret.yaml''',
+    '''platform/infrastructure/database/minio-s3-credentials-externalsecret.yaml''',
+    '''platform/infrastructure/security-observability/loki-minio-externalsecret.yaml''',
+    '''platform/infrastructure/secrets/externalsecret-grafana-admin.yaml''',
+    '''platform/infrastructure/gitea/gitea-platform.yaml''',
+    '''hack/bootstrap-flux-secrets.sh''',
+    '''VAULT_UNSEAL_PROCEDURE.md'''
+]

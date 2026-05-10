@@ -27,7 +27,7 @@ data:
     HEALTH_PORT = int(os.getenv("HEALTH_PORT", "8088"))
     PROBE_TIMEOUT_SECONDS = int(os.getenv("PROBE_TIMEOUT_SECONDS", "5"))
     PROBE_FAILURE_THRESHOLD = int(os.getenv("PROBE_FAILURE_THRESHOLD", "3"))
-    NATS_URL = os.getenv("NATS_URL", "nats://mesh-agent:Pss3IVGahHalq9x6VmGBjq3u@mesh-broker-client.nervous-system.svc.cluster.local:4222")
+    NATS_URL = os.getenv("NATS_URL", "nats://mesh-agent:Pss3IVGahHalq9x6VmGBjq3u@mesh-broker-client.mesh-system.svc.cluster.local:4222")
     PROBE_URLS = [value.strip() for value in os.getenv("PROBE_URLS", "").split(",") if value.strip()]
 
     started_at = time.time()

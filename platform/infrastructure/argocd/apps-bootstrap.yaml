@@ -12,7 +12,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://gitea.cryptophys.work/cryptophys-work/apps-gitops.git
+    repoURL: https://giteainternal.cryptophys.work/cryptophys-work/apps-gitops.git
     targetRevision: main
     path: argocd/roots
     directory:

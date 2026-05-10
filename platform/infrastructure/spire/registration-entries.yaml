@@ -110,7 +110,7 @@ data:
     register metallb-system platform-metallb-speaker
     # postgresql
     register postgresql-system cloudnative-pg
-    register postgresql-system postgres-security-ha
+    register postgresql-system postgres-apps-ha
     register postgresql-system postgres-security-ha
     register postgresql-system postgres-trustedledger-ha
     # registry (harbor)

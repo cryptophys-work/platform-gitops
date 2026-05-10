@@ -106,9 +106,8 @@ spec:
             httpGet:
               path: /healthz
               port: 9809
-            initialDelaySeconds: 15
-            periodSeconds: 10
-            timeoutSeconds: 5
+            initialDelaySeconds: 5
+            periodSeconds: 5
           volumeMounts:
             - name: plugin-dir
               mountPath: /run/spiffe-csi

@@ -15,59 +15,59 @@ spec:
   dependsOn:
     - name: 01-namespaces
   healthChecks:
-    - apiVersion: source.toolkit.fluxcd.io/v1
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
       name: cilium
       namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
       name: longhorn
       namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
       name: hashicorp
       namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
       name: gitea-charts
       namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
       name: ingress-nginx
       namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
       name: kyverno
       namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
       name: gatekeeper
       namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
       name: goharbor
       namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
       name: prometheus-community
       namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
       name: grafana
       namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
       name: open-telemetry
       namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
       name: aquasecurity
       namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
       name: minio
       namespace: flux-system
-    - apiVersion: source.toolkit.fluxcd.io/v1
+    - apiVersion: source.toolkit.fluxcd.io/v1beta2
       kind: HelmRepository
       name: vmware-tanzu
       namespace: flux-system

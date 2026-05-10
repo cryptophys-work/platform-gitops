@@ -15,6 +15,6 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 10Gi
-  storageClassName: longhorn-single
+      storage: 2Gi
+  storageClassName: longhorn
   volumeMode: Filesystem

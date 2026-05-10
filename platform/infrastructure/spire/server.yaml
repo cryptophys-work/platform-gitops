@@ -54,10 +54,6 @@ spec:
           operator: Equal
           value: nexus-hpc
           effect: NoSchedule
-        - key: cryptophys.io/role
-          operator: Equal
-          value: llm-inference
-          effect: NoSchedule
         - key: ray-head
           operator: Equal
           value: "true"
@@ -71,15 +67,40 @@ spec:
                     operator: In
                     values:
                       - "true"
-        podAntiAffinity:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - nexus-144-91-103-10
+                      - cerebellum-161-97-117-96
+                      - thalamus-217-76-59-241
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    app: spire-server
-                topologyKey: kubernetes.io/hostname
-
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - nexus-144-91-103-10
+            - weight: 50
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - cerebellum-161-97-117-96
+            - weight: 50
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - thalamus-217-76-59-241
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: spire-server
+              topologyKey: kubernetes.io/hostname
       containers:
         - name: spire-server
           image: ghcr.io/spiffe/spire-server:1.8.0

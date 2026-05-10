@@ -261,16 +261,6 @@ spec:
           ROOT_URL: https://gitea.cryptophys.work
           DOMAIN: gitea.cryptophys.work
           GIT_EXECUTABLE_PATH: /usr/bin/git
-          STARTUP_TIMEOUT: "300"
-          PER_WRITE_TIMEOUT: "120s"
-        git:
-          timeout:
-            DEFAULT: "1200"
-            MIGRATE: "600"
-            MIRROR: "300"
-            CLONE: "300"
-            PULL: "300"
-            GC: "300"
         webhook:
           ALLOWED_HOST_LIST: webhook.cryptophys.work,webhook-receiver.tekton-system.svc.cluster.local,webhook-receiver.tekton-system.svc,localhost,127.0.0.1
           DELIVER_COMMIT_FILE_INFO: "true"
@@ -282,22 +272,6 @@ spec:
         value: "true"
       - name: GITEA__WEBHOOK__DELIVER_TIMEOUT
         value: "60"
-      - name: GITEA__GIT__TIMEOUT__DEFAULT
-        value: "1200"
-      - name: GITEA__SERVER__PER_WRITE_TIMEOUT
-        value: "120s"
-      - name: GITEA__GIT__TIMEOUT__MIGRATE
-        value: "600"
-      - name: GITEA__GIT__TIMEOUT__MIRROR
-        value: "300"
-      - name: GITEA__GIT__TIMEOUT__CLONE
-        value: "300"
-      - name: GITEA__GIT__TIMEOUT__PULL
-        value: "300"
-      - name: GITEA__GIT__TIMEOUT__GC
-        value: "300"
-      - name: GITEA__SERVER__STARTUP_TIMEOUT
-        value: "300"
       - name: GITEA__CACHE__ADAPTER
         value: redis
       - name: GITEA__CACHE__HOST
@@ -360,9 +334,6 @@ spec:
       className: nginx
       annotations:
         nginx.ingress.kubernetes.io/proxy-body-size: "512m"
-        nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
-        nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
-        nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
       hosts:
         - host: gitea.cryptophys.work
           paths:
@@ -397,11 +368,11 @@ spec:
       enabled: false
     resources:
       requests:
-        cpu: 1
-        memory: 2Gi
+        cpu: 250m
+        memory: 512Mi
       limits:
-        cpu: 4000m     # give git-upload-pack headroom during concurrent Argo repo scans
-        memory: 4Gi    # prevent helper git processes from being killed under repo-server load
+        cpu: 2000m     # give git-upload-pack headroom during concurrent Argo repo scans
+        memory: 2Gi    # prevent helper git processes from being killed under repo-server load
     tolerations:
       - key: cryptophys.io/pool
         operator: Equal
