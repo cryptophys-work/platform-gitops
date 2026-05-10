@@ -9,7 +9,7 @@ metadata:
   labels:
     cryptophys.io/flux-managed: "true"
 data:
-  X-Forwarded-User: "token"
+  X-Forwarded-User: "git-auth-identity"
 ---
 # Internal mTLS ingress for ArgoCD → Gitea
 # Requires SPIFFE client cert; injects X-Forwarded-User for Gitea reverse proxy auth
