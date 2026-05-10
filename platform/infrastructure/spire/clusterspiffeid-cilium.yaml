@@ -24,4 +24,4 @@ spec:
       k8s-app: cilium
 
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"

@@ -27,7 +27,7 @@ spec:
     - "mesh-broker.nervous-system.svc.cluster.local"
     - "{{ .PodMeta.Name }}.mesh-broker.nervous-system.svc.cluster.local"
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # cerebrum-hub
 apiVersion: spire.spiffe.io/v1alpha1
@@ -49,7 +49,7 @@ spec:
     matchLabels:
       app: cerebrum-hub
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # contract-synthesizer
 apiVersion: spire.spiffe.io/v1alpha1
@@ -71,7 +71,7 @@ spec:
     matchLabels:
       app: contract-synthesizer
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # cerebrum-drift-sentinel
 apiVersion: spire.spiffe.io/v1alpha1
@@ -93,7 +93,7 @@ spec:
     matchLabels:
       app.kubernetes.io/component: drift-sentinel
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # audit-compiler
 apiVersion: spire.spiffe.io/v1alpha1
@@ -115,7 +115,7 @@ spec:
     matchLabels:
       app: audit-compiler
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # aide-executor (pods use component=executor label)
 apiVersion: spire.spiffe.io/v1alpha1
@@ -137,7 +137,7 @@ spec:
     matchLabels:
       component: executor
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # aide-brain-gateway (pods use component=brainGateway label)
 apiVersion: spire.spiffe.io/v1alpha1
@@ -159,7 +159,7 @@ spec:
     matchLabels:
       component: brainGateway
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # aide-evolution-engine (pods use component=evolutionEngine label)
 apiVersion: spire.spiffe.io/v1alpha1
@@ -181,7 +181,7 @@ spec:
     matchLabels:
       component: evolutionEngine
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # aide-git-committer (pods use component=gitCommitter label)
 apiVersion: spire.spiffe.io/v1alpha1
@@ -203,7 +203,7 @@ spec:
     matchLabels:
       component: gitCommitter
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # aide-worker-pool (pods use component=workerPool label)
 apiVersion: spire.spiffe.io/v1alpha1
@@ -225,7 +225,7 @@ spec:
     matchLabels:
       component: workerPool
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # cerebrum-core (app=cerebrum-core label)
 apiVersion: spire.spiffe.io/v1alpha1
@@ -247,7 +247,7 @@ spec:
     matchLabels:
       app: cerebrum-core
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # orchestrator-spark
 apiVersion: spire.spiffe.io/v1alpha1
@@ -269,7 +269,7 @@ spec:
     matchLabels:
       app: orchestrator-spark
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # bridge-core (sync service)
 apiVersion: spire.spiffe.io/v1alpha1
@@ -291,7 +291,7 @@ spec:
     matchLabels:
       app: bridge-core
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # openclaw
 apiVersion: spire.spiffe.io/v1alpha1
@@ -313,7 +313,7 @@ spec:
     matchLabels:
       app: openclaw
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # trustedledger-api
 apiVersion: spire.spiffe.io/v1alpha1
@@ -335,7 +335,7 @@ spec:
     matchLabels:
       app: trustedledger-api
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 
 ---
 # openclaw-agent (openclaw namespace, app.kubernetes.io/name=openclaw label)
@@ -358,7 +358,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: openclaw
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # openclaw-agent-apps-core (pod deployed in apps-core namespace)
 apiVersion: spire.spiffe.io/v1alpha1
@@ -380,7 +380,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: openclaw
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # cerebrum-audit-compiler (cerebrum namespace, app=cerebrum-audit-compiler label)
 apiVersion: spire.spiffe.io/v1alpha1
@@ -402,7 +402,7 @@ spec:
     matchLabels:
       app: cerebrum-audit-compiler
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # corpus-bridge (apps-user namespace, app=corpus-bridge label)
 apiVersion: spire.spiffe.io/v1alpha1
@@ -424,7 +424,7 @@ spec:
     matchLabels:
       app: corpus-bridge
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # aether-engine (apps-user namespace, app=aether-engine label)
 apiVersion: spire.spiffe.io/v1alpha1
@@ -446,7 +446,7 @@ spec:
     matchLabels:
       app: aether-engine
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # execution-router (apps-user namespace, app=execution-router label)
 apiVersion: spire.spiffe.io/v1alpha1
@@ -468,7 +468,7 @@ spec:
     matchLabels:
       app: execution-router
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 
 ---
 # aide-worker-deployment (pods use component=workerDeployment label)
@@ -491,7 +491,7 @@ spec:
     matchLabels:
       component: workerDeployment
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # hermes-router (nervous-system message router)
 apiVersion: spire.spiffe.io/v1alpha1
@@ -513,7 +513,7 @@ spec:
     matchLabels:
       app: hermes-router
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # heartbeat-global (cluster-wide health metronome)
 apiVersion: spire.spiffe.io/v1alpha1
@@ -535,7 +535,7 @@ spec:
     matchLabels:
       app: heartbeat-global
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"
 ---
 # tekton nats-publish taskruns
 apiVersion: spire.spiffe.io/v1alpha1
@@ -557,4 +557,4 @@ spec:
     matchLabels:
       tekton.dev/task: nats-publish
   autoPopulateDNSNames: true
-  ttl: "1h"
+  ttl: "24h"

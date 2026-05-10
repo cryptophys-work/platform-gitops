@@ -14,6 +14,7 @@ spec:
   podSelector:
     matchLabels:
       kubernetes.io/metadata.name: tekton-pipeline-sa
+  ttl: 24h
 ---
 apiVersion: spire.spiffe.io/v1alpha1
 kind: ClusterSPIFFEID
@@ -28,6 +29,7 @@ spec:
   podSelector:
     matchLabels:
       kubernetes.io/metadata.name: tekton-chains-sa
+  ttl: 24h
 ---
 # SPIRE Registration for image-factory namespace
 # Allows BuildKit and Ray workers to get SVIDs,
@@ -44,6 +46,7 @@ spec:
   podSelector:
     matchLabels:
       kubernetes.io/metadata.name: buildkit-sa
+  ttl: 24h
 ---
 apiVersion: spire.spiffe.io/v1alpha1
 kind: ClusterSPIFFEID
@@ -58,3 +61,4 @@ spec:
   podSelector:
     matchLabels:
       kubernetes.io/metadata.name: ray-build-sa
+  ttl: 24h
