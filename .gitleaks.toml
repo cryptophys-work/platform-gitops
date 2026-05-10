@@ -1,0 +1,19 @@
+[allowlist]
+description = "Global allowlist for false positives and infrastructure manifests"
+paths = [
+    '''docs/''',
+    '''platform/infrastructure/database-crs/''',
+    '''platform/infrastructure/spire/''',
+    '''platform/infrastructure/vault-system/''',
+    '''VAULT_UNSEAL_PROCEDURE.md''',
+    '''CREDENTIAL_MANAGEMENT_COMPLETE.md''',
+    '''\.pytest_cache/''',
+    '''__pycache__/'''
+]
+regexes = [
+    '''REPLACE_ME''',
+    '''<strong-password>''',
+    '''<UNSEAL_KEY_''',
+    '''<SECURELY_RETRIEVED_VAULT_TOKEN>''',
+    '''replace-with-real-token'''
+]
