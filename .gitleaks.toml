@@ -1,0 +1,19 @@
+[allowlist]
+paths = [
+    "VAULT_UNSEAL_PROCEDURE.md",
+    "CREDENTIAL_MANAGEMENT_COMPLETE.md",
+    "docs/.*",
+    "hack/.*",
+    "platform/infrastructure/secrets/.*",
+    "platform/infrastructure/controllers/.*",
+    "platform/infrastructure/harbor/.*",
+    "platform/infrastructure/spire/.*",
+    "platform/infrastructure/networking/.*",
+    "platform/infrastructure/policy-reporter/.*",
+    "platform/infrastructure/gitea/.*",
+    "platform/infrastructure/backup/.*",
+    "platform/infrastructure/security-observability/.*",
+    "platform/infrastructure/gateway/.*",
+    "platform/infrastructure/vault-system/.*",
+    "platform/infrastructure/kueue/.*"
+]
