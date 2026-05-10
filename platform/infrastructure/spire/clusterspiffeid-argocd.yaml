@@ -39,4 +39,4 @@ spec:
   autoPopulateDNSNames: true
   
   # Certificate TTL (1 hour, auto-rotated by SPIRE)
-  ttl: "1h"
+  ttl: "24h"
