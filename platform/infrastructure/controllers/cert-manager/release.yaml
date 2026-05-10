@@ -31,7 +31,7 @@ spec:
     installCRDs: true
     replicaCount: 2
     podAnnotations:
-      cryptophys.io/redeploy-nonce: "2026-04-10-cert-manager-podcidr-refresh"
+      cryptophys.io/redeploy-token: "2026-04-10-cert-manager-podcidr-refresh"
     nodeSelector:
       kubernetes.io/os: linux
     affinity:
@@ -89,7 +89,7 @@ spec:
     webhook:
       replicaCount: 2
       podAnnotations:
-        cryptophys.io/redeploy-nonce: "2026-04-10-cert-manager-podcidr-refresh"
+        cryptophys.io/redeploy-token: "2026-04-10-cert-manager-podcidr-refresh"
       nodeSelector:
         kubernetes.io/os: linux
       affinity:
@@ -147,7 +147,7 @@ spec:
     cainjector:
       replicaCount: 2
       podAnnotations:
-        cryptophys.io/redeploy-nonce: "2026-04-10-cert-manager-podcidr-refresh"
+        cryptophys.io/redeploy-token: "2026-04-10-cert-manager-podcidr-refresh"
       nodeSelector:
         kubernetes.io/os: linux
       affinity:
@@ -204,7 +204,7 @@ spec:
           memory: 512Mi
     startupapicheck:
       podAnnotations:
-        cryptophys.io/redeploy-nonce: "2026-04-10-cert-manager-podcidr-refresh"
+        cryptophys.io/redeploy-token: "2026-04-10-cert-manager-podcidr-refresh"
       nodeSelector:
         kubernetes.io/os: linux
       affinity:
