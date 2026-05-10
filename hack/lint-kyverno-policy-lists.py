@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import sys
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -21,7 +22,8 @@ def scan_node(node: Any, path: str, findings: list[str], file_path: Path, policy
             next_path = f"{path}.{key}" if path else str(key)
             if key in LIST_KEYS and isinstance(value, list):
                 scalars = [item for item in value if isinstance(item, str)]
-                duplicates = sorted({item for item in scalars if scalars.count(item) > 1})
+                counts = Counter(scalars)
+                duplicates = sorted([item for item, count in counts.items() if count > 1])
                 if duplicates:
                     findings.append(
                         f"{file_path}: policy={policy_name} path={next_path} duplicates={', '.join(duplicates)}"
