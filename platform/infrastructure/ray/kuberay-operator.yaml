@@ -27,6 +27,10 @@ spec:
         operator: Equal
         value: nexus-hpc
         effect: NoSchedule
+      - key: cryptophys.io/role
+        operator: Equal
+        value: llm-inference
+        effect: NoSchedule
     resources:
       requests:
         cpu: 500m
