@@ -4,6 +4,7 @@ namespace: vault-system
 resources:
   - vault.yaml
   - vault__auto-unseal-controller.yaml
+  - vault__unseal-keys-secret.yaml
   - vault-injector-cert.yaml
 configMapGenerator:
   - name: vault-policy-hcl
