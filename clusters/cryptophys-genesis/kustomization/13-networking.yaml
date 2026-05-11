@@ -18,3 +18,4 @@ spec:
     name: platform-repo
   dependsOn:
     - name: 11-controllers
+    - name: 31-secrets
