@@ -1,7 +1,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 90-gateway
+  name: 62-ray-warm-build
   namespace: flux-system
   annotations:
     cryptophys.io/domain: platform
@@ -12,12 +12,9 @@ spec:
   prune: false
   wait: true
   timeout: 10m
-  path: ./platform/infrastructure/gateway
+  path: ./platform/infrastructure/ray-warm-build
   sourceRef:
     kind: GitRepository
     name: platform-repo
   dependsOn:
-    - name: 13-networking
-    - name: 20-certificates
-    - name: 31-secrets
-    - name: 42-argocd
+    - name: 60-ray
