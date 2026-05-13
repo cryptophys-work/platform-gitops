@@ -43,3 +43,10 @@ spec:
         key: cryptophys.io/pool
         operator: Equal
         value: platform-ha
+      - effect: NoSchedule
+        key: ray-head
+        operator: Equal
+        value: "true"
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists

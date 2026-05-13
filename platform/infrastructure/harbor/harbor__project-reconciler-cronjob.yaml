@@ -120,7 +120,7 @@ spec:
                      fi
                      # Create project with security features if it's a security project
                      if echo "${HARBOR_SECURITY_PROJECTS}" | grep -q "\b${project}\b"; then
-                       payload="$(printf '{"project_name":"%s","metadata":{"public":"false","enable_content_trust_cosign":"true","auto_scan":"true","sbom_generation":"true"}}' "${project}")"
+                       payload="$(printf '{"project_name":"%s","metadata":{"public":"false","auto_scan":"true","sbom_generation":"true"}}' "${project}")"
                      else
                        payload="$(printf '{"project_name":"%s","metadata":{"public":"false"}}' "${project}")"
                      fi
