@@ -489,9 +489,9 @@ spec:
           cpu: 250m
           memory: 256Mi
     redis:
-      enabled: false
-    redis-ha:
       enabled: true
+    redis-ha:
+      enabled: false
     notifications:
       replicas: 2
       nodeSelector: {}
