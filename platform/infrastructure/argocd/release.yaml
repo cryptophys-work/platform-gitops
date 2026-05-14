@@ -362,11 +362,11 @@ spec:
               topologyKey: kubernetes.io/hostname
       resources:
         requests:
-          cpu: 50m
-          memory: 4Mi
-        limits:
-          cpu: 500m
+          cpu: 250m
           memory: 512Mi
+        limits:
+          cpu: 1000m
+          memory: 1Gi
       # Certificate-based Git authentication using SPIRE-issued certificates
       env:
         - name: GIT_SSL_CERT
@@ -489,9 +489,9 @@ spec:
           cpu: 250m
           memory: 256Mi
     redis:
-      enabled: true
-    redis-ha:
       enabled: false
+    redis-ha:
+      enabled: true
     notifications:
       replicas: 2
       nodeSelector: {}
@@ -595,3 +595,4 @@ spec:
           effect: "NoSchedule"
     dex:
       enabled: false
+lse
