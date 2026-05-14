@@ -68,7 +68,7 @@ spec:
           effect: NoSchedule
       resources:
         requests:
-          cpu: 700m
+          cpu: 100m
           memory: 512Mi
         limits:
           cpu: 250m
