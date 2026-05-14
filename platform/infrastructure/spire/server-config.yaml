@@ -13,8 +13,8 @@ data:
       data_dir = "/run/spire/data"
       log_level = "DEBUG"  # Changed for audit logging (Kimi 2026-B)
       ca_key_type = "rsa-2048"
-      ca_ttl = "24h"
-      default_x509_svid_ttl = "24h"
+      ca_ttl = "8760h"
+      default_x509_svid_ttl = "168h"
       default_jwt_svid_ttl = "5m"
     }
     plugins {
