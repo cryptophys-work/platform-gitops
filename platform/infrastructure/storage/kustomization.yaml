@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - longhorn-storageclass-transient.yaml
   - storageclass-longhorn-noncritical.yaml
+  - storageclass-longhorn-ha.yaml
   - longhorn-memory-governance.yaml
   - longhorn-vac-rbac.yaml
 # longhorn-policy-exception.yaml is applied in wave 15-policy (after Kyverno CRDs are ready).
