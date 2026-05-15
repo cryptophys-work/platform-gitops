@@ -279,8 +279,8 @@ spec:
           app.kubernetes.io/component: redis-ha
       spec:
         accessModes:
-          - ReadWriteOncePod
+          - ReadWriteOnce
         resources:
           requests:
             storage: 2Gi
-        storageClassName: longhorn-ha
+        storageClassName: longhorn
