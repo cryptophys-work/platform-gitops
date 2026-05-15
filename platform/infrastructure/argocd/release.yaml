@@ -291,11 +291,11 @@ spec:
               topologyKey: kubernetes.io/hostname
       resources:
         requests:
-          cpu: 50m
-          memory: 4Mi
+          cpu: 100m
+          memory: 128Mi
         limits:
-          cpu: 250m
-          memory: 256Mi
+          cpu: 500m
+          memory: 512Mi
     repoServer:
       replicas: 2
       nodeSelector: {}
@@ -483,11 +483,11 @@ spec:
               topologyKey: kubernetes.io/hostname
       resources:
         requests:
-          cpu: 50m
-          memory: 4Mi
+          cpu: 100m
+          memory: 128Mi
         limits:
-          cpu: 250m
-          memory: 256Mi
+          cpu: 500m
+          memory: 512Mi
     redis:
       enabled: true
     redis-ha:

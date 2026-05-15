@@ -75,7 +75,7 @@ spec:
           memory: 512Mi
       persistence:
         enabled: true
-        storageClassName: longhorn-single
+        storageClassName: longhorn-ha
         size: 5Gi
       adminPassword: ""
       admin:
@@ -128,9 +128,9 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: longhorn-single
+              storageClassName: longhorn-ha
               accessModes:
-                - ReadWriteOnce
+                - ReadWriteOncePod
               resources:
                 requests:
                   storage: 20Gi
