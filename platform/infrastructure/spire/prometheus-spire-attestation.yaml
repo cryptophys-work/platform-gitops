@@ -1,0 +1,56 @@
+# SPIRE workload attestation + CSI health alerts (image factory gate)
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: spire-workload-attestation-alerts
+  namespace: spire-system
+  labels:
+    cryptophys.work/domain: security
+    cryptophys.work/component: spire-monitoring
+spec:
+  groups:
+    - name: spire.workload_attestation
+      interval: 30s
+      rules:
+        - alert: SPIREAgentNotReady
+          expr: |
+            kube_daemonset_status_number_ready{namespace="spire-system", daemonset="spire-agent"}
+            < kube_daemonset_status_desired_number_scheduled{namespace="spire-system", daemonset="spire-agent"}
+          for: 3m
+          labels:
+            severity: critical
+          annotations:
+            summary: "SPIRE agent DaemonSet not fully ready"
+            description: "One or more spire-agent pods are not Ready. Tekton genesis and mTLS workloads cannot fetch SVIDs."
+
+        - alert: SPIFFECSIDriverNotReady
+          expr: |
+            kube_daemonset_status_number_ready{namespace="spire-system", daemonset="spiffe-csi-driver"}
+            < kube_daemonset_status_desired_number_scheduled{namespace="spire-system", daemonset="spiffe-csi-driver"}
+          for: 3m
+          labels:
+            severity: critical
+          annotations:
+            summary: "SPIFFE CSI driver DaemonSet not fully ready"
+            description: "CSI socket injection is degraded; workloads cannot mount Workload API sockets."
+
+        - alert: SPIREServerNotReady
+          expr: |
+            kube_statefulset_status_replicas_ready{namespace="spire-system", statefulset="spire-server"}
+            < kube_statefulset_status_replicas{namespace="spire-system", statefulset="spire-server"}
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "SPIRE server StatefulSet degraded"
+            description: "SPIRE server HA is below desired replica count; new SVID issuance may fail."
+
+        - alert: SPIRETektonEntryBacklog
+          expr: |
+            spire_controller_manager_clusterspiffeid_entries_masked{clusterspiffeid="tekton-pipeline-sa"} > 50
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High masked Tekton SPIFFE entry count"
+            description: "ClusterSPIFFEID tekton-pipeline-sa has {{ $value }} masked entries; review Tekton TaskRun churn and TTL."
