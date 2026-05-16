@@ -1,3 +1,4 @@
+# retrigger: rename-resources
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -11,50 +12,48 @@ spec:
       app: spire-agent
   template:
     metadata:
-      namespace: spire-system
       labels:
         app: spire-agent
-      annotations:
-        cryptophys.io/redeploy-nonce: "2026-04-21-spire-agent-k8s-attestor-only"
     spec:
-      hostPID: true
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
       serviceAccountName: spire-agent
-      nodeSelector:
-        kubernetes.io/os: linux
+      terminationGracePeriodSeconds: 30
       tolerations:
         - operator: Exists
+      nodeSelector:
+        kubernetes.io/os: linux
       containers:
         - name: spire-agent
           image: ghcr.io/spiffe/spire-agent:1.8.6
-          args: ["-config", "/run/spire/config/agent.conf"]
-          # Default: minimal scheduling footprint on non-Nexus nodes. Dense Nexus gets
-          # 500m CPU / 2Gi request (+ caps) via Kyverno mutate-spire-agent-nexus-resources.
+          args:
+            - -config
+            - /run/spire/config/agent.conf
           resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
             limits:
               cpu: "1"
               memory: 2Gi
-            requests:
-              cpu: "200m"
-              memory: 1Gi
           volumeMounts:
             - name: spire-config
               mountPath: /run/spire/config
               readOnly: true
-            - name: spire-agent-socket-dir
-              mountPath: /run/spire/sockets
+            - name: spire-data
+              mountPath: /run/spire/data
             - name: spire-bundle
               mountPath: /run/spire/bundle
+              readOnly: true
             - name: spire-token
               mountPath: /var/run/secrets/tokens
+            - name: spire-sockets
+              mountPath: /run/spire/sockets
       volumes:
         - name: spire-config
           configMap:
             name: spire-agent-config
-        - name: spire-agent-socket-dir
+        - name: spire-data
           hostPath:
-            path: /run/spire/sockets
+            path: /var/spire/agent-data
             type: DirectoryOrCreate
         - name: spire-bundle
           configMap:
@@ -64,5 +63,9 @@ spec:
             sources:
               - serviceAccountToken:
                   path: spire-agent
-                  expirationSeconds: 7200
                   audience: spire-server
+                  expirationSeconds: 600
+        - name: spire-sockets
+          hostPath:
+            path: /var/spire/agent-sockets
+            type: DirectoryOrCreate
