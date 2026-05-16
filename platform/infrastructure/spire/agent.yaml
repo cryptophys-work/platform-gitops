@@ -15,6 +15,7 @@ spec:
       labels:
         app: spire-agent
     spec:
+      hostPID: true
       serviceAccountName: spire-agent
       terminationGracePeriodSeconds: 30
       tolerations:
