@@ -33,11 +33,11 @@ spec:
           # 500m CPU / 2Gi request (+ caps) via Kyverno mutate-spire-agent-nexus-resources.
           resources:
             limits:
-              cpu: 1000m
+              cpu: "1"
               memory: 2Gi
             requests:
-              cpu: 100m
-              memory: 256Mi
+              cpu: "200m"
+              memory: 1Gi
           volumeMounts:
             - name: spire-config
               mountPath: /run/spire/config
