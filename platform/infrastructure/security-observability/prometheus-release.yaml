@@ -130,7 +130,7 @@ spec:
             spec:
               storageClassName: longhorn-ha
               accessModes:
-                - ReadWriteOncePod
+                - ReadWriteOnce
               resources:
                 requests:
                   storage: 20Gi
