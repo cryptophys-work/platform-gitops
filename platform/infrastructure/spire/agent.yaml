@@ -1,4 +1,4 @@
-# retrigger: rename-resources
+# retrigger: workload-attestation-kubelet-v2
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -16,6 +16,8 @@ spec:
         app: spire-agent
     spec:
       hostPID: true
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       serviceAccountName: spire-agent
       terminationGracePeriodSeconds: 30
       tolerations:
@@ -24,10 +26,25 @@ spec:
         kubernetes.io/os: linux
       containers:
         - name: spire-agent
-          image: ghcr.io/spiffe/spire-agent:1.8.6
+          image: ghcr.io/spiffe/spire-agent:1.10.3
           args:
             - -config
             - /run/spire/config/agent.conf
+          env:
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          securityContext:
+            privileged: true
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - DAC_OVERRIDE
+                - FOWNER
+                - SETGID
+                - SETUID
           resources:
             requests:
               cpu: 100m
@@ -35,6 +52,28 @@ spec:
             limits:
               cpu: "1"
               memory: 2Gi
+          livenessProbe:
+            exec:
+              command:
+                - /opt/spire/bin/spire-agent
+                - healthcheck
+                - -socketPath
+                - /run/spire/sockets/agent/agent.sock
+            initialDelaySeconds: 15
+            periodSeconds: 60
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - /opt/spire/bin/spire-agent
+                - healthcheck
+                - -socketPath
+                - /run/spire/sockets/agent/agent.sock
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 2
           volumeMounts:
             - name: spire-config
               mountPath: /run/spire/config
@@ -46,6 +85,9 @@ spec:
               readOnly: true
             - name: spire-token
               mountPath: /var/run/secrets/tokens
+            - name: kubelet-pods
+              mountPath: /var/lib/kubelet/pods
+              readOnly: true
             - name: spire-sockets
               mountPath: /run/spire/sockets
       volumes:
@@ -66,6 +108,10 @@ spec:
                   path: spire-agent
                   audience: spire-server
                   expirationSeconds: 600
+        - name: kubelet-pods
+          hostPath:
+            path: /var/lib/kubelet/pods
+            type: Directory
         - name: spire-sockets
           hostPath:
             path: /var/spire/agent-sockets
