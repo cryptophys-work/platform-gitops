@@ -36,3 +36,4 @@ patches:
       version: v1
       kind: ValidatingWebhookConfiguration
       name: kyverno-resource-validating-webhook-cfg
+  - mutate-tekton-resource-fix.yaml

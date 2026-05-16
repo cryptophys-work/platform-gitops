@@ -1,0 +1,36 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-tekton-invalid-memory-fix
+  annotations:
+    policies.kyverno.io/title: Fix invalid tekton memory requests
+    policies.kyverno.io/description: Mutate Tekton PipelineRun/TaskRun pods to fix raw integer memory requests (invalid bytes) into valid 64Mi.
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+  - name: fix-invalid-memory-requests
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          namespaces:
+          - tekton-system
+    mutate:
+      foreach:
+      - list: request.object.spec.containers || []
+        patchStrategicMerge:
+          spec:
+            containers:
+            - name: "{{ element.name }}"
+              resources:
+                requests:
+                  memory: "64Mi"
+        preconditions:
+          all:
+          - key: "{{ element.resources.requests.memory }}"
+            operator: NotIn
+            value:
+            - "*Mi"
+            - "*Gi"
