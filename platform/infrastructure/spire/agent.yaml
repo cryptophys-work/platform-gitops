@@ -27,7 +27,7 @@ spec:
         - operator: Exists
       containers:
         - name: spire-agent
-          image: ghcr.io/spiffe/spire-agent:1.8.0
+          image: ghcr.io/spiffe/spire-agent:1.8.6
           args: ["-config", "/run/spire/config/agent.conf"]
           # Default: minimal scheduling footprint on non-Nexus nodes. Dense Nexus gets
           # 500m CPU / 2Gi request (+ caps) via Kyverno mutate-spire-agent-nexus-resources.
