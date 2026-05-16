@@ -82,7 +82,7 @@ spec:
 
       containers:
         - name: spire-server
-          image: ghcr.io/spiffe/spire-server:1.8.0
+          image: ghcr.io/spiffe/spire-server:1.10.3
           args: ["-config", "/run/spire/config/server.conf"]
           env:
             - name: PGPASSWORD

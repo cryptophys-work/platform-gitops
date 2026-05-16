@@ -15,7 +15,8 @@ spec:
     matchExpressions:
       - key: tekton.dev/task
         operator: Exists
-  ttl: 24h
+  # Short TTL: Tekton TaskRun pods are ephemeral; limits masked-entry buildup.
+  ttl: 1h
 ---
 apiVersion: spire.spiffe.io/v1alpha1
 kind: ClusterSPIFFEID

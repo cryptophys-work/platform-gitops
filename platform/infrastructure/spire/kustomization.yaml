@@ -21,3 +21,5 @@ resources:
   - clusterspiffeid-argocd.yaml
   - clusterspiffeids-nats-consumers.yaml
   - clusterspiffeid-cilium.yaml
+  - prometheus-spire-attestation.yaml
+  - attestation-smoke-cronjob.yaml

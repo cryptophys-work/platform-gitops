@@ -125,5 +125,8 @@ data:
     register flux-system notification-controller
     register flux-system image-automation-controller
     register flux-system image-reflector-controller
-    echo "=== Complete: 33 entries verified ==="
+    # tekton pipelines
+    register tekton-system tekton-pipeline-sa
+    register tekton-system tekton-guardian
+    echo "=== Complete: 35 entries verified ==="
 # CronJob removed: spire-registration-sync replaced by SPIRE operator ClusterSPIFFEID CRDs (auto-managed)

@@ -1,0 +1,119 @@
+# Periodic SPIFFE fetch smoke test — validates Workload API end-to-end per node class.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spire-attestation-smoke
+  namespace: spire-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: spire-attestation-smoke
+  namespace: tekton-system
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["create", "get", "list", "watch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: spire-attestation-smoke
+  namespace: tekton-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: spire-attestation-smoke
+subjects:
+  - kind: ServiceAccount
+    name: spire-attestation-smoke
+    namespace: spire-system
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: spire-attestation-smoke
+  namespace: spire-system
+  labels:
+    app: spire-attestation-smoke
+    cryptophys.work/component: spire-health
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          labels:
+            app: spire-attestation-smoke
+        spec:
+          serviceAccountName: spire-attestation-smoke
+          restartPolicy: Never
+          containers:
+            - name: smoke
+              image: bitnami/kubectl:1.30
+              command:
+                - /bin/bash
+                - -ec
+                - |
+                  set -euo pipefail
+                  NODES=(nexus-144-91-103-10 cerebellum-161-97-117-96 thalamus-217-76-59-241)
+                  FAIL=0
+                  for NODE in "${NODES[@]}"; do
+                    POD="spire-smoke-${NODE//./-}"
+                    kubectl delete pod -n tekton-system "$POD" --ignore-not-found >/dev/null 2>&1 || true
+                    cat <<EOF | kubectl apply -f - >/dev/null
+                  apiVersion: v1
+                  kind: Pod
+                  metadata:
+                    name: ${POD}
+                    namespace: tekton-system
+                    labels:
+                      tekton.dev/task: spire-attestation-smoke
+                  spec:
+                    serviceAccountName: tekton-pipeline-sa
+                    nodeSelector:
+                      kubernetes.io/hostname: ${NODE}
+                    restartPolicy: Never
+                    volumes:
+                      - name: spiffe-workload-api
+                        csi:
+                          driver: csi.spiffe.io
+                          readOnly: true
+                    containers:
+                      - name: fetch
+                        image: ghcr.io/spiffe/spire-agent:1.10.3
+                        command:
+                          - /opt/spire/bin/spire-agent
+                          - api
+                          - fetch
+                          - x509
+                          - -socketPath
+                          - /run/spire/sockets/agent/agent.sock
+                          - -write
+                          - /tmp/certs
+                          - -silent
+                        volumeMounts:
+                          - name: spiffe-workload-api
+                            mountPath: /run/spire/sockets
+                            readOnly: true
+                  EOF
+                    for i in $(seq 1 45); do
+                      PHASE=$(kubectl get pod -n tekton-system "$POD" -o jsonpath='{.status.phase}' 2>/dev/null || echo Pending)
+                      [ "$PHASE" = "Succeeded" ] || [ "$PHASE" = "Failed" ] && break
+                      sleep 2
+                    done
+                    PHASE=$(kubectl get pod -n tekton-system "$POD" -o jsonpath='{.status.phase}')
+                    if [ "$PHASE" != "Succeeded" ]; then
+                      echo "FAIL node=${NODE} phase=${PHASE}"
+                      kubectl logs -n tekton-system "$POD" --all-containers=true || true
+                      FAIL=1
+                    else
+                      echo "OK node=${NODE}"
+                    fi
+                    kubectl delete pod -n tekton-system "$POD" --ignore-not-found >/dev/null
+                  done
+                  exit "$FAIL"

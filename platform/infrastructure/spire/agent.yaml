@@ -37,14 +37,6 @@ spec:
                   fieldPath: spec.nodeName
           securityContext:
             privileged: true
-            capabilities:
-              drop:
-                - ALL
-              add:
-                - DAC_OVERRIDE
-                - FOWNER
-                - SETGID
-                - SETUID
           resources:
             requests:
               cpu: 100m
