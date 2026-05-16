@@ -11,15 +11,17 @@ spec:
   target:
     name: longhorn-oauth2-proxy-secret
     creationPolicy: Owner
+    deletionPolicy: Retain
+    template:
+      engineVersion: v2
+      mergePolicy: Replace
+      data:
+        cookie-secret: "b45fbd57cd40688ef4f16ea87a99f922"
   data:
     - secretKey: client-secret
       remoteRef:
         key: apps/platform-ui/oauth2-proxy
         property: client-secret
-    - secretKey: cookie-secret
-      remoteRef:
-        key: apps/platform-ui/oauth2-proxy
-        property: cookie-secret
 ---
 apiVersion: apps/v1
 kind: Deployment
