@@ -12,8 +12,9 @@ spec:
     matchLabels:
       kubernetes.io/metadata.name: tekton-system
   podSelector:
-    matchLabels:
-      kubernetes.io/metadata.name: tekton-pipeline-sa
+    matchExpressions:
+      - key: tekton.dev/task
+        operator: Exists
   ttl: 24h
 ---
 apiVersion: spire.spiffe.io/v1alpha1
