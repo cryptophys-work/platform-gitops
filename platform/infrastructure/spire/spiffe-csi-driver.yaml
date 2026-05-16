@@ -131,5 +131,5 @@ spec:
             type: Directory
         - name: spire-agent-socket-dir
           hostPath:
-            path: /run/spire/sockets
-            type: Directory
+            path: /var/spire/agent-sockets
+            type: DirectoryOrCreate
