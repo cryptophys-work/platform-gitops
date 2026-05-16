@@ -28,9 +28,7 @@ data:
       WorkloadAttestor "k8s" {
         plugin_data {
           skip_kubelet_verification = false
-          kubelet_secure_port = "10250"
-          node_name_env = "MY_NODE_NAME"
-          use_new_container_locator = true
+          kubelet_ca_path = "/var/lib/kubelet/pki/kubelet.crt"
         }
       }
     }

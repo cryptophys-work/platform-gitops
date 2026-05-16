@@ -80,6 +80,9 @@ spec:
             - name: kubelet-pods
               mountPath: /var/lib/kubelet/pods
               readOnly: true
+            - name: kubelet-ca
+              mountPath: /var/lib/kubelet/pki/kubelet.crt
+              readOnly: true
             - name: spire-sockets
               mountPath: /run/spire/sockets
       volumes:
@@ -104,6 +107,10 @@ spec:
           hostPath:
             path: /var/lib/kubelet/pods
             type: Directory
+        - name: kubelet-ca
+          hostPath:
+            path: /var/lib/kubelet/pki/kubelet.crt
+            type: File
         - name: spire-sockets
           hostPath:
             path: /var/spire/agent-sockets
