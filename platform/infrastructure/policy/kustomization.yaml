@@ -18,7 +18,6 @@ resources:
   - thalamus-evacuation-preference.yaml
   - metallb-policy-exception.yaml
   - policy__spire-agent-nexus-resources.yaml
-  - mutate-tekton-resource-fix.yaml
   - pdbs-critical-services.yaml
   - ../tekton
   # Existing ClusterPolicy resources remain live because the Flux kustomization has prune=false.
