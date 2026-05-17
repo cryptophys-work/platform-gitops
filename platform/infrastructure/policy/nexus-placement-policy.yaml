@@ -519,6 +519,7 @@ spec:
                       - platform-ui
                       - longhorn-system
                       - kube-system
+                      - mcp-system
                       - cilium-system
                       - spire-system
                       - metallb-system
