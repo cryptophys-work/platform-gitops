@@ -98,6 +98,37 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 10
             failureThreshold: 3
+        - name: db-updater
+          image: aquasec/trivy:0.61.0
+          command:
+            - /bin/sh
+            - -c
+            - |
+              while true; do
+                echo "[db-updater] Downloading fresh Trivy DB..."
+                trivy image --download-db-only --cache-dir /trivy-db \
+                  --db-repository mirror.gcr.io/aquasec/trivy-db 2>&1
+                echo "[db-updater] Done. Sleeping 6h..."
+                sleep 21600
+              done
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            runAsUser: 65534
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 512Mi
+          volumeMounts:
+            - name: trivy-db
+              mountPath: /trivy-db
       volumes:
         - name: trivy-db
           persistentVolumeClaim:
