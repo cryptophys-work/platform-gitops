@@ -1,0 +1,19 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 00-crds
+  namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/layer: platform
+    cryptophys.io/managed-by: flux
+spec:
+  suspend: false   # First stage — unsuspend first, no dependsOn
+  interval: 1h
+  prune: false    # Never prune CRDs (destructive)
+  wait: false     # CRDs are already Established; skip health-check to avoid apiserver timeout
+  timeout: 5m
+  path: ./platform/infrastructure/crds
+  sourceRef:
+    kind: GitRepository
+    name: flux-system

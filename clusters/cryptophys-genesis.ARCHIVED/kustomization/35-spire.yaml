@@ -1,0 +1,21 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 35-spire
+  namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+spec:
+  suspend: false
+  interval: 1h
+  prune: false
+  wait: false
+  timeout: 10m
+  path: ./platform/infrastructure/spire
+  sourceRef:
+    kind: GitRepository
+    name: platform-repo
+  dependsOn:
+    - name: 31-secrets
+    - name: 11-controllers
