@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: platform-base
+
+resources:
+  # CRD definitions (shared across all environments)
+  - crds/
+  
+  # Base infrastructure
+  - infrastructure/base/
+  
+components:
+  # Environment-specific configuration
+  - ../../components/platform-base
+
+configMapGenerator:
+  - name: platform-version
+    literals:
+      - version=v1.0.0
+      - created=2026-05-23
