@@ -1,0 +1,61 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 16-policy-ssot
+  namespace: flux-system
+  annotations:
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+spec:
+  suspend: false
+  interval: 1h
+  prune: false
+  wait: true
+  timeout: 10m
+  path: ./policies/kyverno/full
+  sourceRef:
+    kind: GitRepository
+    name: ssot-core-repo
+  dependsOn:
+    - name: 15-policy
+    # 41-harbor removed: Kyverno policies don't need Harbor at deploy time; Harbor dep was blocking all ssot policy updates
+  patches:
+    # Patch: scope attestation to ONLY signed image paths.
+    # Exclude mirrored upstream images (library/*, docker-proxy/*) that lack cosign signatures.
+    # Only verify images built by our Tekton pipeline (core/*, aide/*, tools/*, etc.)
+    - patch: |
+        - op: replace
+          path: /spec/rules/0/verifyImages/0/imageReferences
+          value:
+            - "registry.cryptophys.work/core/*"
+            - "registry.cryptophys.work/aide/*"
+            - "registry.cryptophys.work/aether/*"
+            - "registry.cryptophys.work/apps-core/*"
+            - "registry.cryptophys.work/apps-dash/*"
+            - "registry.cryptophys.work/apps-user/*"
+            - "registry.cryptophys.work/automation/*"
+            - "registry.cryptophys.work/bridge/*"
+            - "registry.cryptophys.work/cerebrum/*"
+            - "registry.cryptophys.work/cqls-compute/*"
+            - "registry.cryptophys.work/corpus/*"
+            - "registry.cryptophys.work/dao-governance/*"
+            - "registry.cryptophys.work/facilitator/*"
+            - "registry.cryptophys.work/mesh-system/*"
+            - "registry.cryptophys.work/mcp-system/*"
+            - "registry.cryptophys.work/monitoring-core/*"
+            - "registry.cryptophys.work/navigator/*"
+            - "registry.cryptophys.work/notification/*"
+            - "registry.cryptophys.work/observer/*"
+            - "registry.cryptophys.work/openclaw/*"
+            - "registry.cryptophys.work/watcher/*"
+            - "registry.cryptophys.work/orchestrator/*"
+            - "registry.cryptophys.work/platform-ui/*"
+            - "registry.cryptophys.work/risk/*"
+            - "registry.cryptophys.work/tekton-system/*"
+            - "registry.cryptophys.work/trading/*"
+            - "registry.cryptophys.work/trustedledger/*"
+            - "registry.cryptophys.work/tools/*"
+            - "registry.cryptophys.work/omega/*"
+      target:
+        kind: ClusterPolicy
+        name: cp-supplychain-attestation-v1

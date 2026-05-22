@@ -1,0 +1,138 @@
+# =============================================================================
+# cryptophys-genesis — Control Plane Memory Hardening v3.0
+# Applied via: talosctl machineconfig patch <cp-node> --patch @apiserver-hardening.yaml
+# Scope: ALL control-plane nodes (cortex, cerebrum, corpus)
+# Changes v3.0:
+#   - kubeReserved: 3Gi → 2Gi (kubelet+containerd actual ~700Mi-1Gi, 2x buffer is safe)
+#   - systemReserved: 1Gi → 0.5Gi (Talos OS actual ~300-400Mi)
+#   - allocatable gain: +1.5Gi per CP node (7.7Gi → 9.2Gi)
+#   - evictionHard: 256Mi → 500Mi (evict earlier, before cascade)
+#   - evictionSoft: 512Mi → 1Gi (graceful shed at 1Gi free)
+#   - apiserver limit: 4Gi → 6Gi (4Gi proved too tight under control-plane churn)
+#   - apiserver request: 1Gi → 2Gi (reserve realistic memory for steady-state load)
+#   - GOMEMLIMIT: 3750MiB → 5500MiB (keep GC pressure, but leave safer burst headroom)
+#   - max-requests-inflight: 200 → 100
+#   - max-mutating-requests-inflight: 100 → 50
+#   - default-watch-cache-size: (missing) → 50 (caps ALL unlisted resources)
+#   - watch-cache-sizes: reduced pods 200→100, others 150→75
+#   - GOGC=50 env: Go GC runs 2x more often — trades ~5% CPU for ~30% less heap
+# =============================================================================
+
+machine:
+  kubelet:
+    extraConfig:
+      # ── Protected headroom — kubelet + OS must never be evictable by pods ──
+      # v3.0: Reduced from 3Gi+1Gi → 2Gi+0.5Gi. Actual kubelet+containerd usage
+      # is ~700Mi-1Gi; 2Gi gives a safe 2x buffer while freeing +1.5Gi allocatable.
+      kubeReserved:
+        cpu: "500m"
+        memory: "2Gi"
+        ephemeral-storage: "2Gi"
+      systemReserved:
+        cpu: "200m"
+        memory: "500Mi"
+        ephemeral-storage: "1Gi"
+      # ── Eviction thresholds — shed pods BEFORE kernel OOM killer fires ──
+      # v3.0: Raised eviction floors so kubelet acts earlier (500Mi hard, 1Gi soft)
+      evictionHard:
+        memory.available: "500Mi"
+        nodefs.available: "5%"
+        imagefs.available: "5%"
+      evictionSoft:
+        memory.available: "1Gi"
+        nodefs.available: "10%"
+        imagefs.available: "10%"
+      evictionSoftGracePeriod:
+        memory.available: "1m"
+        nodefs.available: "5m"
+        imagefs.available: "5m"
+      evictionMaxPodGracePeriod: 30
+
+cluster:
+  apiServer:
+    # ── Hard memory cap — 6Gi keeps GC pressure, but avoids repeated OOM spikes ──
+    # 4Gi proved too tight in production: cerebrum and cortex were both OOMKilled
+    # around ~3.8Gi steady-state usage during control-plane churn and API aggregation.
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "2Gi"
+      limits:
+        cpu: "6"
+        memory: "6Gi"
+
+    # ── Go GC tuning: run GC at 50% heap growth instead of default 100% ──
+    # Halves peak heap; costs ~5-8% CPU. Best single lever for apiserver memory.
+    env:
+      GOGC: "50"
+      GOMEMLIMIT: "5500MiB"
+
+    extraArgs:
+      enable-priority-and-fairness: "true"
+      # ── Concurrency: each inflight req buffers response in memory ──
+      max-requests-inflight: "100"
+      max-mutating-requests-inflight: "50"
+
+      # ── Watch cache: per-resource bounded object store ──
+      # default-watch-cache-size caps ALL resources not listed below (was 100)
+      default-watch-cache-size: "50"
+      watch-cache-sizes: "pods#100,nodes#30,services#75,endpoints#75,configmaps#75,secrets#75,persistentvolumes#50,persistentvolumeclaims#75,deployments.apps#75,replicasets.apps#50,statefulsets.apps#30,daemonsets.apps#30"
+
+      # ── Connection hygiene: force 2% of HTTP/2 conns to reset/GC goroutines ──
+      goaway-chance: "0.02"
+
+    auditPolicy:
+      apiVersion: audit.k8s.io/v1
+      kind: Policy
+      omitStages:
+        - "RequestReceived"
+      rules:
+        # ── Silent: noisy system components that generate thousands of reads ──
+        - level: None
+          users:
+            - "system:kube-proxy"
+            - "system:apiserver"
+            - "system:kube-scheduler"
+            - "system:kube-controller-manager"
+        # ── Silent: kubelet reads (node status updates — extremely high frequency) ──
+        - level: None
+          userGroups: ["system:nodes"]
+          verbs: ["get", "list", "watch"]
+        # ── Silent: high-frequency watch/list reads on core resources ──
+        - level: None
+          verbs: ["get", "list", "watch"]
+          resources:
+            - group: ""
+              resources:
+                - "endpoints"
+                - "services"
+                - "nodes"
+                - "pods/log"
+                - "pods/status"
+                - "configmaps"
+            - group: "coordination.k8s.io"
+              resources: ["leases"]
+            - group: "discovery.k8s.io"
+              resources: ["endpointslices"]
+        # ── Silent: Flux/ArgoCD reconciliation reads (very high frequency) ──
+        - level: None
+          users:
+            - "system:serviceaccount:flux-system:source-controller"
+            - "system:serviceaccount:flux-system:kustomize-controller"
+            - "system:serviceaccount:flux-system:helm-controller"
+            - "system:serviceaccount:apps-system:argocd-application-controller"
+          verbs: ["get", "list", "watch"]
+        # ── Deep audit: autonomous agents WRITES only ──
+        - level: RequestResponse
+          users:
+            - "system:serviceaccount:apps-system:argocd-application-controller"
+            - "system:serviceaccount:flux-system:helm-controller"
+            - "system:serviceaccount:aide:aide-sa"
+            - "system:serviceaccount:orchestrator:orchestrator-sa"
+            - "system:serviceaccount:facilitator:facilitator-sa"
+          verbs: ["create", "update", "patch", "delete"]
+        # ── Catch-all: metadata only for remaining writes (no body = minimal RAM) ──
+        - level: Metadata
+          verbs: ["create", "update", "patch", "delete"]
+        # ── Everything else: silent ──
+        - level: None

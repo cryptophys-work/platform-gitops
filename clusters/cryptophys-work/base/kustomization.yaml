@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: cryptophys-work-base
+  namespace: flux-system
+
+resources:
+  # CRDs - must be first
+  - 01-crds/
+  # Base system components
+  - 02-base-system/
+  # Core infrastructure
+  - 03-infrastructure/
+  # Security (policies, spiffe, etc)
+  - 04-security/
+  # Applications
+  - 05-applications/
+  # Observability
+  - 06-observability/
+
+configMapGenerator:
+  - name: cluster-config
+    literals:
+      - clusterName=cryptophys-work
+      - environment=production

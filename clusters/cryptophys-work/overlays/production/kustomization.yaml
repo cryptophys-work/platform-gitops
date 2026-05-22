@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: cryptophys-work-production
+  namespace: flux-system
+
+resources:
+  - ../../base
+
+components:
+  # Production-specific configurations
+  - ../../components/production
+
+patchesStrategicMerge:
+  - patches/01-image-overrides.yaml
+  - patches/02-resource-limits.yaml
+  - patches/03-replica-counts.yaml
