@@ -3,17 +3,18 @@ kind: Kustomization
 metadata:
   name: production-components
 
-configMapGenerator:
-  - name: env-config
-    literals:
-      - ENVIRONMENT=production
-      - LOG_LEVEL=warn
-      - REPLICA_COUNT=3
-
-replicas:
-  - name: harbor-core
-    count: 3
-  - name: harbor-database
-    count: 2
-  - name: gitea-0
-    count: 1
+# TODO: Add production-specific patches when base resources are populated
+# configMapGenerator:
+#   - name: env-config
+#     literals:
+#       - ENVIRONMENT=production
+#       - LOG_LEVEL=warn
+#       - REPLICA_COUNT=3
+#
+# replicas:
+#   - name: harbor-core
+#     count: 3
+#   - name: harbor-database
+#     count: 2
+#   - name: gitea-0
+#     count: 1
