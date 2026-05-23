@@ -146,5 +146,5 @@ spec:
     push:
       branch: main
   update:
-    path: ./clusters/cryptophys-genesis/flux-system
+    path: ./clusters/cryptophys-work/flux-system
     strategy: Setters
