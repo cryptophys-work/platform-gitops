@@ -1,0 +1,46 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - kustomization/00-crds.yaml
+  - kustomization/01-namespaces.yaml
+  - kustomization/02-scheduling.yaml
+  - kustomization/05-sources.yaml
+  - kustomization/06-flux-image-automation.yaml
+  - kustomization/07-flux-system.yaml
+  - kustomization/10-metallb.yaml
+  - kustomization/10-metallb-config.yaml
+  - kustomization/10-cni-cilium.yaml
+  - kustomization/11-controllers.yaml
+  - kustomization/11-controllers-gateway.yaml
+  - kustomization/12-storage.yaml
+  - kustomization/12-kueue.yaml
+  - kustomization/13-networking.yaml
+  - kustomization/14-policy-rbac.yaml
+  - kustomization/15-policy.yaml
+  - kustomization/15-policy-crs.yaml
+  - kustomization/15-security-runtime.yaml
+  - kustomization/15-security-runtime-crs.yaml
+  - kustomization/16-policy-ssot.yaml
+  - kustomization/17-policy-reporter.yaml
+  - kustomization/18-resource-governance.yaml
+  - kustomization/20-certificates.yaml
+  - kustomization/21-dns-core.yaml
+  - kustomization/25-database.yaml
+  - kustomization/25-database-crs.yaml
+  - kustomization/30-vault.yaml
+  - kustomization/31-secrets.yaml
+  - kustomization/35-spire.yaml
+  - kustomization/36-spire-identities.yaml
+  - kustomization/40-gitea.yaml
+  - kustomization/41-harbor.yaml
+  - kustomization/42-argocd.yaml
+  - kustomization/45-observability.yaml
+  - kustomization/46-security-obs.yaml
+  - kustomization/50-backup.yaml
+  - kustomization/50-backup-crs.yaml
+  - kustomization/55-crossplane.yaml
+  - kustomization/55-crossplane-crs.yaml
+  - kustomization/60-ray.yaml
+  - kustomization/61-kagenti.yaml
+  - kustomization/62-ray-warm-build.yaml
+  - kustomization/90-gateway.yaml
