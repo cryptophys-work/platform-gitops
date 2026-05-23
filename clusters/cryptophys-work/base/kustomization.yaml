@@ -7,16 +7,12 @@ metadata:
 resources:
   # CRDs - must be first
   - 01-crds/
-  # Base system components
-  - 02-base-system/
-  # Core infrastructure
-  - 03-infrastructure/
-  # Security (policies, spiffe, etc)
-  - 04-security/
-  # Applications
-  - 05-applications/
-  # Observability
-  - 06-observability/
+  # TODO: Add other base components as they are migrated
+  # - 02-base-system/
+  # - 03-infrastructure/
+  # - 04-security/
+  # - 05-applications/
+  # - 06-observability/
 
 configMapGenerator:
   - name: cluster-config
