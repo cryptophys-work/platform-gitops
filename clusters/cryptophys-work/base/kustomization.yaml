@@ -4,6 +4,8 @@ metadata:
   name: cryptophys-work-base
   namespace: flux-system
 
+namespace: flux-system
+
 resources:
   # CRDs - must be first
   - 01-crds/
