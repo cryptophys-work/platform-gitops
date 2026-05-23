@@ -6,9 +6,6 @@ metadata:
 
 resources:
   - ../../base
-
-components:
-  # Production-specific configurations
   - ../../components/production
 
 patchesStrategicMerge:
