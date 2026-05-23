@@ -20,7 +20,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m0s
-  path: ./clusters/cryptophys-work/overlays/production
+  path: ./clusters/cryptophys-work
   prune: true
   sourceRef:
     kind: GitRepository
