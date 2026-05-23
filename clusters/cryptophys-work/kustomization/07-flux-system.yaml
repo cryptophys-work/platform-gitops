@@ -14,7 +14,7 @@ spec:
   prune: false    # Never prune Flux controllers
   wait: false
   timeout: 5m
-  path: ./clusters/cryptophys-genesis/flux-system
+  path: ./clusters/cryptophys-work/flux-system
   sourceRef:
     kind: GitRepository
     name: flux-system
