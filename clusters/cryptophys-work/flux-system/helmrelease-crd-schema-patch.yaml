@@ -1,0 +1,25 @@
+# Patch HelmRelease CRD to add status fields required by helm-controller
+# This fixes "unknown field status.history[0].action" and "unknown field status.inventory" errors
+# that occur when helm-controller tries to update HelmRelease status after Helm operations
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: helmreleases.helm.toolkit.fluxcd.io
+spec:
+  versions:
+  - name: v2
+    schema:
+      openAPIV3Schema:
+        properties:
+          status:
+            properties:
+              history:
+                items:
+                  properties:
+                    action:
+                      type: string
+                      description: "Helm action performed for this snapshot"
+              inventory:
+                type: object
+                description: "Inventory of objects deployed by this release"
+                x-kubernetes-preserve-unknown-fields: true
