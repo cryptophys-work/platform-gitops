@@ -8,7 +8,8 @@ resources:
   - ../../base
   - ../../components/production
 
-patchesStrategicMerge:
-  - patches/01-image-overrides.yaml
-  - patches/02-resource-limits.yaml
-  - patches/03-replica-counts.yaml
+# TODO: Add patches when patch files are created
+# patchesStrategicMerge:
+#   - patches/01-image-overrides.yaml
+#   - patches/02-resource-limits.yaml
+#   - patches/03-replica-counts.yaml
