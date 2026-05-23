@@ -9,7 +9,7 @@ spec:
   timeout: 35m  # Falco/Tetragon DaemonSets + Helm health checks across workers
   path: ./platform/security/
   prune: true
-  wait: true
+  wait: false  # TODO: Re-enable wait after Falco DaemonSet issue is resolved
   suspend: false
   sourceRef:
     kind: GitRepository
