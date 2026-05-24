@@ -21,7 +21,7 @@ metadata:
 spec:
   interval: 10m0s
   path: ./clusters/cryptophys-work
-  prune: true
+  prune: false  # NEVER enable prune on root Kustomization - caused mass deletion of ~42 Kustomizations
   sourceRef:
     kind: GitRepository
     name: flux-system
