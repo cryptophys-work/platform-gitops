@@ -10,7 +10,7 @@ spec:
   suspend: false
   interval: 1h
   prune: true
-  wait: true
+  wait: false  # ClusterRoles don't have status/health checks
   timeout: 15m
   path: ./platform/infrastructure/kueue/base
   sourceRef:
