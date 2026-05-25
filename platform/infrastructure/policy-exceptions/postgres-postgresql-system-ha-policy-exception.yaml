@@ -40,6 +40,11 @@ spec:
             - postgres-trustedledger-ha-3
             - postgres-trustedledger-ha-4
             - postgres-trustedledger-ha-5
+            - postgres-trustedledger-ha-1-join
+            - postgres-trustedledger-ha-2-join
+            - postgres-trustedledger-ha-3-join
+            - postgres-trustedledger-ha-4-join
+            - postgres-trustedledger-ha-5-join
             - postgres-registry-ha-1
             - postgres-registry-ha-2
             - postgres-registry-ha-3
@@ -94,6 +99,11 @@ spec:
             - postgres-trustedledger-ha-3
             - postgres-trustedledger-ha-4
             - postgres-trustedledger-ha-5
+            - postgres-trustedledger-ha-1-join
+            - postgres-trustedledger-ha-2-join
+            - postgres-trustedledger-ha-3-join
+            - postgres-trustedledger-ha-4-join
+            - postgres-trustedledger-ha-5-join
             - postgres-registry-ha-1
             - postgres-registry-ha-2
             - postgres-registry-ha-3
