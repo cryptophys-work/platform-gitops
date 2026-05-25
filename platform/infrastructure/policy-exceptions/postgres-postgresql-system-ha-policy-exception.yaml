@@ -21,6 +21,9 @@ spec:
     - policyName: deny-platform-ha-toleration-outside-platform
       ruleNames:
         - block-platform-ha
+    - policyName: deny-cp-toleration-non-platform
+      ruleNames:
+        - check-cp-toleration
   match:
     any:
       - resources:
@@ -70,6 +73,9 @@ spec:
     - policyName: deny-platform-ha-toleration-outside-platform
       ruleNames:
         - block-platform-ha
+    - policyName: deny-cp-toleration-non-platform
+      ruleNames:
+        - check-cp-toleration
   match:
     any:
       - resources:
