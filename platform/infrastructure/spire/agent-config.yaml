@@ -27,8 +27,7 @@ data:
       }
       WorkloadAttestor "k8s" {
         plugin_data {
-          skip_kubelet_verification = false
-          kubelet_ca_path = "/var/lib/kubelet/pki/kubelet.crt"
+          skip_kubelet_verification = true
         }
       }
     }
