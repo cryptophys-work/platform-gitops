@@ -107,10 +107,10 @@ spec:
                       \ bridge-system\n      operator: Equal\n      value: \"true\"\
                       \n      effect: NoSchedule\n    - key: dao-system\n      operator:\
                       \ Equal\n      value: \"true\"\n      effect: NoSchedule\n-\
-                      \ op: replace\n  path: /spec/template/spec/containers/0/resources\n\
-                      \  value:\n    requests:\n      cpu: \"50m\"\n      memory:\
-                      \ \"128Mi\"\n    limits:\n      cpu: \"200m\"\n      memory:\
-                      \ \"256Mi\"\n- op: replace\n  path: /spec/template/spec/containers/1/resources\n\
+                      - op: replace\n  path: /spec/template/spec/containers/0/resources\n\
+                                             \  value:\n    requests:\n      cpu: \"200m\"\n      memory:\
+                                             \ \"256Mi\"\n    limits:\n      cpu: \"500m\"\n      memory:\
+                                             \ \"1536Mi\"\n- op: replace\n  path: /spec/template/spec/containers/1/resources\n\
                       \  value:\n    requests:\n      cpu: \"10m\"\n      memory:\
                       \ \"64Mi\"\n    limits:\n      cpu: \"50m\"\n      memory: \"\
                       128Mi\"\n- op: replace\n  path: /spec/template/spec/containers/2/resources\n\
@@ -139,10 +139,10 @@ spec:
                       \ NoSchedule\n    - key: bridge-system\n      operator: Equal\n\
                       \      value: \"true\"\n      effect: NoSchedule\n    - key:\
                       \ dao-system\n      operator: Equal\n      value: \"true\"\n\
-                      \      effect: NoSchedule\n- op: replace\n  path: /spec/template/spec/containers/0/resources\n\
-                      \  value:\n    requests:\n      cpu: \"200m\"\n      memory:\
-                      \ \"256Mi\"\n    limits:\n      cpu: \"500m\"\n      memory:\
-                      \ \"512Mi\"\n- op: replace\n  path: /spec/template/spec/containers/1/resources\n\
+                      - op: replace\n  path: /spec/template/spec/containers/0/resources\n\
+                                             \  value:\n    requests:\n      cpu: \"200m\"\n      memory:\
+                                             \ \"256Mi\"\n    limits:\n      cpu: \"500m\"\n      memory:\
+                                             \ \"1536Mi\"\n- op: replace\n  path: /spec/template/spec/containers/1/resources\n\
                       \  value:\n    requests:\n      cpu: \"50m\"\n      memory:\
                       \ \"128Mi\"\n    limits:\n      cpu: \"200m\"\n      memory:\
                       \ \"256Mi\"\n"
