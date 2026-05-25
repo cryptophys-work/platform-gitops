@@ -31,7 +31,7 @@ longhornManager:
       memory: 256Mi
     limits:
       cpu: 1000m
-      memory: 768Mi
+      memory: 1536Mi
 longhornDriver:
   nodeSelector:
     kubernetes.io/os: linux
@@ -41,4 +41,4 @@ longhornDriver:
       memory: 64Mi
     limits:
       cpu: 500m
-      memory: 512Mi
+      memory: 768Mi
