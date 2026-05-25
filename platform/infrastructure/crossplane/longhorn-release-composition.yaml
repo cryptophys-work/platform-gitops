@@ -260,7 +260,7 @@ spec:
                       memory: 64Mi
                     limits:
                       cpu: 500m
-                      memory: 512Mi
+                      memory: 768Mi
                   longhornUI:
                     tolerations:
                     - operator: Exists
@@ -342,3 +342,4 @@ spec:
       toFieldPath: spec.forProvider.manifest.spec.values.longhornManager.resources.limits.cpu
     - fromFieldPath: spec.managerResources.limits.memory
       toFieldPath: spec.forProvider.manifest.spec.values.longhornManager.resources.limits.memory
+
