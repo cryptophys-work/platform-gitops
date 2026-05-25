@@ -19,15 +19,15 @@ spec:
     timeout: 15m
     remediation:
       retries: 3
-    crds: CreateReplace
+    crds: Create
   upgrade:
     timeout: 15m
     disableWait: true
     disableHooks: true
     force: true
     remediation:
-      retries: 3
-    crds: CreateReplace
+      retries: 5
+    crds: Create
   postRenderers:
   - kustomize:
       patches:
@@ -237,9 +237,9 @@ spec:
       replicas: 1
       livenessProbe:
         initialDelaySeconds: 30
-        periodSeconds: 10
-        timeoutSeconds: 15
-        failureThreshold: 4
+        periodSeconds: 15
+        timeoutSeconds: 30
+        failureThreshold: 6
       readinessProbe:
         initialDelaySeconds: 15
         periodSeconds: 10
@@ -291,15 +291,15 @@ spec:
           forceFailurePolicyIgnore: "true"
           # Keep admission report retention small and fail open sooner so
           # apiserver requests do not sit behind slow webhook paths for 30s.
-          maxAdmissionReports: "50"
-          webhookTimeout: "10"
+          maxAdmissionReports: "100"
+          webhookTimeout: "15"
         resources:
           requests:
             cpu: "100m"
             memory: "256Mi"
           limits:
-            cpu: "1000m"
-            memory: "1Gi"
+            cpu: "2000m"
+            memory: "2Gi"
     backgroundController:
       replicas: 1
       extraArgs:
