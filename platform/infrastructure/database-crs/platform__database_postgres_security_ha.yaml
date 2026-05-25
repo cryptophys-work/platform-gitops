@@ -26,6 +26,11 @@ spec:
       owner: spire
       secret:
         name: spire-postgres-secret
+  postgresql:
+    parameters:
+      shared_buffers: 64MB
+      max_connections: '50'
+      work_mem: 4MB
   # Resource limits: reduced to allow scheduling on memory-pressured workers
   resources:
     requests:
