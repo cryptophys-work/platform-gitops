@@ -54,7 +54,7 @@ spec:
           restartPolicy: Never
           containers:
             - name: smoke
-              image: bitnami/kubectl:1.30
+              image: quay.io/openshift/origin-cli:4.16
               command:
                 - /bin/bash
                 - -ec
