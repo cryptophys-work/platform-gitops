@@ -11,21 +11,23 @@ metadata:
     nginx.ingress.kubernetes.io/auth-type: basic
     nginx.ingress.kubernetes.io/auth-secret: vault-ui-basic-auth
     nginx.ingress.kubernetes.io/auth-realm: "Cryptophys Vault UI — sign in (browser)"
+    nginx.ingress.kubernetes.io/configuration-snippet: if ($request_uri = /) { 
+      return 302 /ui/; }
 spec:
   ingressClassName: nginx
   tls:
-    - hosts:
-        - vault.cryptophys.work
-      secretName: platform-wildcard-tls
+  - hosts:
+    - vault.cryptophys.work
+    secretName: platform-wildcard-tls
   rules:
-    - host: vault.cryptophys.work
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
+  - host: vault.cryptophys.work
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
                 # Helm ui.enabled + activeVaultPodOnly: UI traffic follows the active Raft leader.
-                name: vault-ui
-                port:
-                  number: 8200
+            name: vault-ui
+            port:
+              number: 8200
