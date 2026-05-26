@@ -272,12 +272,12 @@ spec:
             PULL: "300"
             GC: "300"
         webhook:
-          ALLOWED_HOST_LIST: webhook.cryptophys.work,webhook-receiver.tekton-system.svc.cluster.local,webhook-receiver.tekton-system.svc,localhost,127.0.0.1
+          ALLOWED_HOST_LIST: webhook.cryptophys.work,webhook-receiver.cryptophys.work,webhook-receiver.tekton-system.svc.cluster.local,webhook-receiver.tekton-system.svc,localhost,127.0.0.1
           DELIVER_COMMIT_FILE_INFO: "true"
           DELIVER_TIMEOUT: "60"
     extraEnv:
       - name: GITEA__WEBHOOK__ALLOWED_HOST_LIST
-        value: webhook.cryptophys.work,webhook-receiver.tekton-system.svc.cluster.local,webhook-receiver.tekton-system.svc,localhost,127.0.0.1
+        value: webhook.cryptophys.work,webhook-receiver.cryptophys.work,webhook-receiver.tekton-system.svc.cluster.local,webhook-receiver.tekton-system.svc,localhost,127.0.0.1
       - name: GITEA__WEBHOOK__DELIVER_COMMIT_FILE_INFO
         value: "true"
       - name: GITEA__WEBHOOK__DELIVER_TIMEOUT
