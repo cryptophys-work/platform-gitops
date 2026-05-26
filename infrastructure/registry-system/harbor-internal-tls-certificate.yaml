@@ -1,0 +1,37 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# Certificate for Harbor Core Internal TLS
+#   Fixes: Certificate mismatch for registry-harbor-core.registry-system.svc.cluster.local
+#   
+#   Issue: BuildKit fails with:
+#   "tls: failed to verify certificate: x509: certificate is valid for 
+#    localhost, registry-harbor-core, not registry-harbor-core.registry-system.svc.cluster.local"
+#   
+#   Solution: Replace Helm-managed certificate with one containing all required SANs
+# ──────────────────────────────────────────────────────────────────────────────
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: registry-harbor-core-internal-tls
+  namespace: registry-system
+  labels:
+    app: harbor
+    app.kubernetes.io/managed-by: Helm
+    cryptophys.io/fix: "harbor-tls-sans"
+    helm.toolkit.fluxcd.io/name: registry-harbor
+    helm.toolkit.fluxcd.io/namespace: registry-system
+spec:
+  secretName: registry-harbor-core-internal-tls
+  issuerRef:
+    name: cryptophys-wildcard
+    kind: ClusterIssuer
+    group: cert-manager.io
+  commonName: registry-harbor-core
+  dnsNames:
+    - "registry-harbor-core"
+    - "registry-harbor-core.registry-system.svc.cluster.local"
+    - "registry-harbor-core.registry-system"
+    - "localhost"
+  ipAddresses:
+    - "127.0.0.1"
+  duration: 8760h  # 1 year
+  renewBefore: 720h  # 30 days
