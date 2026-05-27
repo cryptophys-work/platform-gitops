@@ -10,7 +10,7 @@ metadata:
     cryptophys.io/managed-by: flux
 provisioner: driver.longhorn.io
 allowVolumeExpansion: true
-reclaimPolicy: Delete
+reclaimPolicy: Retain
 volumeBindingMode: Immediate
 parameters:
   backupTargetName: default

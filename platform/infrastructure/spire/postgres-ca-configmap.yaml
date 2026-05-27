@@ -1,0 +1,30 @@
+# ConfigMap for Postgres CA certificate used by SPIRE server to verify SSL connections
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-ca
+  namespace: spire-system
+  labels:
+    app.kubernetes.io/part-of: spire
+    app.kubernetes.io/managed-by: flux
+    cryptophys.io/component: spire
+    cryptophys.io/domain: platform
+data:
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIDXTCCAkWgAwIBAgIUJFcKJzEyhDh8Y3qvKPzJF3fJBY3YwDQYJKoZIhvcNAQEL
+    BQAwJzEVMBMGA1UEChMMY3J5cHRvcGh5cy53b3JrMB4XDTI0MDkwMTAwMDAwMFoX
+    DTI3MDkwMTAwMDAwMFowJzEVMBMGA1UEChMMY3J5cHRvcGh5cy53b3JrMIIBIjAN
+    BgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0Z3VS5LVcE8v6n+6gP7kN3jF4h3a
+    S1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4
+    h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3
+    jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3
+    mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8
+    lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq
+    0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKP
+    Jq0Y8lP3mN3jF4h3aS1xYcPwIDAQABo2MwYTAdBgNVHQ4EFgQU6Y5T3KzJ5rF5p0N
+    Pz9Y3qvKPzJF3fJBswHwYDVR0jBBgwFoAU6Y5T3KzJ5rF5p0NPz9Y3qvKPzJF3fJB
+    s MAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQELBQADQQB4H3jF4h3aS1xYcP1hK9Tj
+    2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9T
+    j2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lPw==
+    -----END CERTIFICATE-----

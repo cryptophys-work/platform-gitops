@@ -2,6 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: spire-system
 resources:
+  - postgres-ca-configmap.yaml
   - storageclass-longhorn-spire-data.yaml
   - pvc-spire-shared-keys.yaml
   - externalsecret-spire-postgres-auth.yaml

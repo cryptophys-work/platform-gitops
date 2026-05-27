@@ -90,6 +90,8 @@ spec:
                 secretKeyRef:
                   name: spire-postgres-auth
                   key: password
+            - name: PGSSLROOTCERT
+              value: /etc/postgres-ca/ca.crt
           ports:
             - containerPort: 8081
               protocol: TCP
@@ -126,6 +128,9 @@ spec:
               readOnly: false
             - name: server-socket
               mountPath: /tmp/spire-server/private
+            - name: postgres-ca
+              mountPath: /etc/postgres-ca
+              readOnly: true
           resources:
             limits:
               cpu: 500m
@@ -195,6 +200,9 @@ spec:
         - name: spire-shared-keys
           persistentVolumeClaim:
             claimName: spire-shared-keys
+        - name: postgres-ca
+          configMap:
+            name: postgres-ca
   volumeClaimTemplates:
     - metadata:
         name: spire-data
