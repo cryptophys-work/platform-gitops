@@ -15,28 +15,28 @@ metadata:
 spec:
   # SPIFFE ID for ArgoCD repo-server
   spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
-  
+
   # Target workload: ArgoCD repo-server in apps-system namespace
   namespaceSelector:
     matchLabels:
       kubernetes.io/metadata.name: apps-system
-  
+
   podSelector:
     matchLabels:
       app.kubernetes.io/name: argocd-repo-server
-  
+
   # X.509 certificate settings
   workloadSelectorTemplates:
     - "k8s:ns:apps-system"
     - "k8s:sa:argocd-repo-server"
-  
+
   # DNS SANs for certificate
   dnsNameTemplates:
     - "argocd-repo-server.apps-system.svc.cluster.local"
     - "argocd-repo-server"
-  
+
   # Auto-populate DNS names from service
   autoPopulateDNSNames: true
-  
+
   # Certificate TTL (1 hour, auto-rotated by SPIRE)
   ttl: "24h"
