@@ -70,7 +70,7 @@ spec:
 
         - alert: SPIREAttestationCheckMissing
           expr: |
-            count(spire_attestation_check) by (node) == 0
+            absent_over_time(spire_attestation_check[10m])
           for: 10m
           labels:
             severity: warning
