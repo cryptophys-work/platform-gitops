@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: spire-system
 resources:
   - postgres-ca-configmap.yaml
+  - externalsecret-spire-postgres-ca.yaml
   - storageclass-longhorn-spire-data.yaml
   - pvc-spire-shared-keys.yaml
   - externalsecret-spire-postgres-auth.yaml

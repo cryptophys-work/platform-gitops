@@ -201,8 +201,8 @@ spec:
           persistentVolumeClaim:
             claimName: spire-shared-keys
         - name: postgres-ca
-          configMap:
-            name: postgres-ca
+          secret:
+            secretName: spire-postgres-ca
   volumeClaimTemplates:
     - metadata:
         name: spire-data

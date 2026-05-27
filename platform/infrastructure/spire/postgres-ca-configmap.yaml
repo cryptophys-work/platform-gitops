@@ -1,4 +1,22 @@
-# ConfigMap for Postgres CA certificate used by SPIRE server to verify SSL connections
+# ConfigMap for Postgres CA certificate used by SPIRE server to verify SSL connections.
+#
+# IMPORTANT: The certificate below is a PLACEHOLDER. You MUST replace it with the real CA
+# certificate from the CNPG cluster before deploying with sslmode=verify-full.
+#
+# To extract the real CA certificate from the cluster:
+#
+#   kubectl get secret postgres-security-ha-ca \
+#     -n postgresql-system \
+#     -o jsonpath='{.data.ca\.crt}' | base64 -d
+#
+# Then update the ca.crt data field below with the actual certificate content.
+#
+# The CNPG postgres-security-ha cluster stores its CA cert in:
+#   Secret: postgres-security-ha-ca (namespace: postgresql-system)
+#   Key:    ca.crt
+#
+# Without the real CA certificate, SPIRE server will fail to connect to Postgres
+# when sslmode=verify-full is configured in server-config.yaml.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -11,20 +29,11 @@ metadata:
     cryptophys.io/domain: platform
 data:
   ca.crt: |
-    -----BEGIN CERTIFICATE-----
-    MIIDXTCCAkWgAwIBAgIUJFcKJzEyhDh8Y3qvKPzJF3fJBY3YwDQYJKoZIhvcNAQEL
-    BQAwJzEVMBMGA1UEChMMY3J5cHRvcGh5cy53b3JrMB4XDTI0MDkwMTAwMDAwMFoX
-    DTI3MDkwMTAwMDAwMFowJzEVMBMGA1UEChMMY3J5cHRvcGh5cy53b3JrMIIBIjAN
-    BgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0Z3VS5LVcE8v6n+6gP7kN3jF4h3a
-    S1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4
-    h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3
-    jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3
-    mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8
-    lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq
-    0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKP
-    Jq0Y8lP3mN3jF4h3aS1xYcPwIDAQABo2MwYTAdBgNVHQ4EFgQU6Y5T3KzJ5rF5p0N
-    Pz9Y3qvKPzJF3fJBswHwYDVR0jBBgwFoAU6Y5T3KzJ5rF5p0NPz9Y3qvKPzJF3fJB
-    s MAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQELBQADQQB4H3jF4h3aS1xYcP1hK9Tj
-    2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9T
-    j2vKPJq0Y8lP3mN3jF4h3aS1xYcP1hK9Tj2vKPJq0Y8lPw==
-    -----END CERTIFICATE-----
+    # PLACEHOLDER - Replace with real CA certificate from:
+    # kubectl get secret postgres-security-ha-ca -n postgresql-system -o jsonpath='{.data.ca\.crt}' | base64 -d
+    #
+    # Example valid certificate format:
+    # -----BEGIN CERTIFICATE-----
+    # MIIDXTCCAkWgAwIBAgIJA...
+    # ... (real certificate content from CNPG cluster)
+    # -----END CERTIFICATE-----
