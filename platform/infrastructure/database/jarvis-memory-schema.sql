@@ -4,6 +4,6 @@ CREATE TABLE jarvis_semantic_memory (
     session_id UUID NOT NULL,
     context_type VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
-    embedding VECTOR(1536) NOT NULL,
+    embedding VECTOR(384) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
