@@ -1,0 +1,43 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: keycloak-cnpg
+  namespace: postgresql-system
+spec:
+  instances: 3
+  imageName: registry.cryptophys.work/library/postgres:15
+  monitoring:
+    enablePodMonitor: false
+    disableDefaultQueries: true
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: keycloak-cnpg-superuser
+  storage:
+    size: 5Gi
+    storageClass: longhorn
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+  bootstrap:
+    initdb:
+      database: keycloak
+      owner: keycloak
+      encoding: UTF8
+      localeCType: C
+      localeCollate: C
+      secret:
+        name: keycloak-db-secret
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  affinity:
+    podAntiAffinityType: required
+    tolerations:
+    - effect: NoSchedule
+      key: cryptophys.io/pool
+      operator: Equal
+      value: apps-ha

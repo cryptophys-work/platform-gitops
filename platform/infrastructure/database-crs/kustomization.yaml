@@ -8,3 +8,5 @@ resources:
   - platform__database_postgres_security_ha.yaml
   - postgres-trustedledger-ha.yaml
   - platform__database_postgres_registry_ha.yaml
+  - keycloak__keycloak_db_bootstrap_es.yaml
+  - keycloak__keycloak-cnpg.yaml

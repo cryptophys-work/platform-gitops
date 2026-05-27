@@ -1,0 +1,24 @@
+# Bootstrap secret for CNPG keycloak-cnpg (owner user + password).
+# Must match Vault path used by apps-gitops ExternalSecret keycloak-credentials (db-password key).
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: keycloak-db-bootstrap
+  namespace: postgresql-system
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: keycloak-db-secret
+    creationPolicy: Owner
+    template:
+      engineVersion: v2
+      data:
+        password: "{{ index . \"db-password\" }}"
+  data:
+    - secretKey: db-password
+      remoteRef:
+        key: secret/apps/dash/keycloak
+        property: db-password
