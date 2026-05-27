@@ -22,4 +22,4 @@ resources:
   - clusterspiffeids-nats-consumers.yaml
   - clusterspiffeid-cilium.yaml
   - prometheus-spire-attestation.yaml
-  - attestation-smoke-cronjob.yaml
+  - attestation-checker.yaml

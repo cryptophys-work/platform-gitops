@@ -1,0 +1,178 @@
+# attestation-checker.yaml — DaemonSet that runs on every node, exports
+# spire_attestation_check Prometheus metric
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: attestation-checker
+  namespace: spire-system
+  labels:
+    app: attestation-checker
+    cryptophys.work/component: spire-health
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: attestation-checker
+  labels:
+    app: attestation-checker
+    cryptophys.work/component: spire-health
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: attestation-checker
+  labels:
+    app: attestation-checker
+    cryptophys.work/component: spire-health
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: attestation-checker
+subjects:
+  - kind: ServiceAccount
+    name: attestation-checker
+    namespace: spire-system
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: attestation-checker
+  namespace: spire-system
+  labels:
+    app: attestation-checker
+    app.kubernetes.io/part-of: spire
+    app.kubernetes.io/managed-by: flux
+    cryptophys.work/component: spire-health
+spec:
+  selector:
+    matchLabels:
+      app: attestation-checker
+  template:
+    metadata:
+      labels:
+        app: attestation-checker
+        app.kubernetes.io/part-of: spire
+        app.kubernetes.io/managed-by: flux
+        cryptophys.work/component: spire-health
+    spec:
+      serviceAccountName: attestation-checker
+      # Run on all schedulable nodes — no hardcoded node names
+      nodeSelector:
+        kubernetes.io/os: linux
+      tolerations:
+        - operator: Exists
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: checker
+          image: ghcr.io/spiffe/spire-agent:1.10.3
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              METRICS_PORT=8080
+              SOCKET_PATH=/run/spire/sockets/agent/agent.sock
+
+              check_attestation() {
+                NODE_NAME=$(hostname -f 2>/dev/null || hostname)
+                ATTESTATION_STATUS="fail"
+
+                if [ -S "$SOCKET_PATH" ]; then
+                  if timeout 5 /opt/spire/bin/spire-agent api fetch \
+                    -socketPath "$SOCKET_PATH" 2>/dev/null | \
+                    grep -q "BEGIN CERTIFICATE"; then
+                    ATTESTATION_STATUS="pass"
+                  fi
+                fi
+
+                if [ "$ATTESTATION_STATUS" != "pass" ]; then
+                  if /opt/spire/bin/spire-agent healthcheck \
+                    -socketPath "$SOCKET_PATH" 2>/dev/null; then
+                    ATTESTATION_STATUS="pass"
+                  fi
+                fi
+
+                echo "spire_attestation_check{node=\"$NODE_NAME\",status=\"$ATTESTATION_STATUS\"} 1"
+              }
+
+              while true; do
+                {
+                  echo "HTTP/1.1 200 OK"
+                  echo "Content-Type: text/plain"
+                  echo ""
+                  check_attestation
+                } | nc -l -p "$METRICS_PORT" -q 1 2>/dev/null || true
+                sleep 15
+              done
+          ports:
+            - name: metrics
+              containerPort: 8080
+              protocol: TCP
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+          volumeMounts:
+            - name: spire-sockets
+              mountPath: /run/spire/sockets
+              readOnly: true
+      volumes:
+        - name: spire-sockets
+          hostPath:
+            path: /var/spire/agent-sockets
+            type: DirectoryOrCreate
+---
+# Service for ServiceMonitor to target
+apiVersion: v1
+kind: Service
+metadata:
+  name: attestation-checker
+  namespace: spire-system
+  labels:
+    app: attestation-checker
+    cryptophys.work/component: spire-health
+spec:
+  selector:
+    app: attestation-checker
+  ports:
+    - name: metrics
+      port: 8080
+      targetPort: metrics
+      protocol: TCP
+---
+# ServiceMonitor for Prometheus scraping
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: attestation-checker
+  namespace: spire-system
+  labels:
+    app: attestation-checker
+    cryptophys.work/component: spire-monitoring
+spec:
+  selector:
+    matchLabels:
+      app: attestation-checker
+  namespaceSelector:
+    matchNames:
+      - spire-system
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics

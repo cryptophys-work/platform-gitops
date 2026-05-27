@@ -54,3 +54,26 @@ spec:
           annotations:
             summary: "High masked Tekton SPIFFE entry count"
             description: "ClusterSPIFFEID tekton-pipeline-sa has {{ $value }} masked entries; review Tekton TaskRun churn and TTL."
+
+    - name: spire.attestation_checker
+      interval: 30s
+      rules:
+        - alert: SPIREAttestationCheckFailed
+          expr: |
+            spire_attestation_check{status="fail"} == 1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "SPIRE attestation check failing on node"
+            description: "Node {{ $labels.node }} has failed SPIRE attestation check for more than 5 minutes. Workloads on this node cannot fetch SVIDs."
+
+        - alert: SPIREAttestationCheckMissing
+          expr: |
+            count(spire_attestation_check) by (node) == 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "SPIRE attestation checker metric missing"
+            description: "No attestation checker metrics found for node {{ $labels.node }}. The attestation-checker DaemonSet may not be running on this node."
