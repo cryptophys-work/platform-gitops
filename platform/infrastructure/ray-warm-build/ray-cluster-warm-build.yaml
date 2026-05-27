@@ -71,6 +71,8 @@ spec:
         node-manager-port: "23816"
       template:
         spec:
+          imagePullSecrets:
+            - name: harbor-dockerconfig
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -118,6 +120,8 @@ spec:
         node-manager-port: "23816"
       template:
         spec:
+          imagePullSecrets:
+            - name: harbor-dockerconfig
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
