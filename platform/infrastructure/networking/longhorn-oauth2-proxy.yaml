@@ -40,7 +40,7 @@ spec:
     spec:
       containers:
         - name: oauth2-proxy
-          image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
+          image: registry.cryptophys.work/library/oauth2-proxy:v7.6.0
           args:
             - --provider=keycloak-oidc
             - --skip-oidc-discovery=true
