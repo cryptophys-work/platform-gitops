@@ -26,6 +26,22 @@ spec:
       encoding: UTF8
       localeCType: C
       localeCollate: C
+      postInitSQL:
+      - CREATE DATABASE jarvis;
+      - CREATE USER jarvis WITH PASSWORD 'jarvis';
+      - GRANT ALL PRIVILEGES ON DATABASE jarvis TO jarvis;
+      - \c jarvis
+      - CREATE EXTENSION IF NOT EXISTS vector;
+      - |
+        CREATE TABLE IF NOT EXISTS jarvis_semantic_memory (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            session_id UUID NOT NULL,
+            context_type VARCHAR(255) NOT NULL,
+            content TEXT NOT NULL,
+            embedding VECTOR(1536) NOT NULL,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        );
+      - GRANT ALL PRIVILEGES ON TABLE jarvis_semantic_memory TO jarvis;
   # Resource limits: reduced to allow scheduling on memory-pressured workers
   resources:
     requests:
