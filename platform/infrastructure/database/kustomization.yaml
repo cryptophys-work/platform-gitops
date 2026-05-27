@@ -8,6 +8,7 @@ resources:
 
 configMapGenerator:
   - name: jarvis-memory-schema
+    namespace: postgresql-system
     files:
       - jarvis-memory-schema.sql
   # Historical one-shot cleanup job was left active in-cluster and now blocks drift
