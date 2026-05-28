@@ -524,6 +524,8 @@ spec:
                       - spire-system
                       - metallb-system
                       - cognitive-risk
+                      - autonomous-execution
+                      - governance-heart
       preconditions:
         all:
           - key: "{{ request.operation || 'BACKGROUND' }}"
