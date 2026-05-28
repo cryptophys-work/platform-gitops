@@ -68,8 +68,7 @@ spec:
       replicas: 2
       minReplicas: 2
       maxReplicas: 5
-      rayStartParams:
-        num-cpus: '1'
+      rayStartParams: {}
       podSecurityContext:
         runAsNonRoot: true
         runAsUser: 1000
