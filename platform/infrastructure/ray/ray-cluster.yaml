@@ -30,13 +30,13 @@ spec:
         kagenti.io/type: platform
         kagenti.io/role: compute-orchestrator
         kagenti.io/ray: "true"
-      securityContext:
+      podSecurityContext:
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
         seccompProfile:
           type: RuntimeDefault
-      containerSecurityContext:
+      securityContext:
         allowPrivilegeEscalation: false
         capabilities:
           drop: ["ALL"]
@@ -62,67 +62,21 @@ spec:
       resources:
         limits: { cpu: "1", memory: "2G" }
         requests: { cpu: "500m", memory: "1G" }
-      # ... (rest of head config)
+
     worker:
-      # This block is now a template, we will define specific groups
-      replicas: 0
-    workerGroupSpecs:
-    # --- AI Worker Group (Medulla) ---
-    - groupName: ai-workers
-      replicas: 1
-      minReplicas: 1
-      maxReplicas: 2 # Can scale up on the same node
-      rayStartParams:
-        num-cpus: '4' # Allocate more CPUs for AI tasks
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        seccompProfile:
-          type: RuntimeDefault
-      containerSecurityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: ["ALL"]
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        seccompProfile:
-          type: RuntimeDefault
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: cryptophys.io/node-class
-                operator: In
-                values:
-                - nexus-hpc
-      tolerations:
-        - key: cryptophys.io/node-class
-          operator: Equal
-          value: nexus-hpc
-          effect: NoSchedule
-        - key: "cryptophys.io/ai-workload"
-          operator: "Exists"
-          effect: "NoSchedule"
-      resources:
-        limits: { cpu: "6", memory: "16Gi" } # High resource allocation for LLMs
-        requests: { cpu: "4", memory: "8Gi" }
-    # --- General Worker Group (Other Workers) ---
-    - groupName: general-workers
+      groupName: general-workers
       replicas: 2
       minReplicas: 2
-      maxReplicas: 5 # Can scale across multiple nodes
+      maxReplicas: 5
       rayStartParams:
         num-cpus: '1'
-      securityContext:
+      podSecurityContext:
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
         seccompProfile:
           type: RuntimeDefault
-      containerSecurityContext:
+      securityContext:
         allowPrivilegeEscalation: false
         capabilities:
           drop: ["ALL"]
@@ -148,3 +102,47 @@ spec:
       resources:
         limits: { cpu: "1", memory: "2Gi" }
         requests: { cpu: "500m", memory: "1Gi" }
+
+    additionalWorkerGroups:
+      ai-workers:
+        disabled: false
+        replicas: 1
+        minReplicas: 1
+        maxReplicas: 2
+        rayStartParams:
+          num-cpus: '4'
+        podSecurityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          seccompProfile:
+            type: RuntimeDefault
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          seccompProfile:
+            type: RuntimeDefault
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: cryptophys.io/node-class
+                  operator: In
+                  values:
+                  - nexus-hpc
+        tolerations:
+          - key: cryptophys.io/node-class
+            operator: Equal
+            value: nexus-hpc
+            effect: NoSchedule
+          - key: "cryptophys.io/ai-workload"
+            operator: "Exists"
+            effect: "NoSchedule"
+        resources:
+          limits: { cpu: "4", memory: "8Gi" }
+          requests: { cpu: "1500m", memory: "4Gi" }

@@ -332,7 +332,7 @@ spec:
     existingSecretAdminPassword: harbor-admin-credentials
     existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
     internalTLS:
-      enabled: true
+      enabled: false
       certSource: auto
     persistence:
       enabled: true

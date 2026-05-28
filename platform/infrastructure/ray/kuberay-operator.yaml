@@ -43,3 +43,6 @@ spec:
     affinity: {}
     leaderElectionEnabled: false
     useKubernetesProxy: true
+    env:
+      - name: ENABLE_LATEST_PSS
+        value: "true"
