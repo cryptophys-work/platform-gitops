@@ -21,13 +21,12 @@ spec:
     reusePVC: true
   bootstrap:
     initdb:
-      database: gitea
-      owner: gitea
+      database: jarvis
+      owner: jarvis
       encoding: UTF8
       localeCType: C
       localeCollate: C
       postInitSQL:
-      - CREATE DATABASE jarvis;
       - CREATE USER jarvis WITH PASSWORD 'jarvis';
       - GRANT ALL PRIVILEGES ON DATABASE jarvis TO jarvis;
       - \c jarvis
