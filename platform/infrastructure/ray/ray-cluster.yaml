@@ -28,7 +28,7 @@ spec:
     head:
       rayStartParams:
         dashboard-host: '0.0.0.0'
-        num-cpus: '2'              # Allow head to run small tasks
+        num-cpus: '2'
         object-store-memory: '1000000000'  # 1GB object store
       labels:
         kagenti.io/type: platform
@@ -63,17 +63,16 @@ spec:
           operator: Equal
           value: nexus-hpc
           effect: NoSchedule
-      # PERFORMANCE: Head node resources increased
-      # GCS requires significant memory for cluster metadata
+      # FITS IN QUOTA: limits.cpu=8 total for namespace
+      # Head: 2 CPU / 4Gi (was 1 CPU / 2G)
       resources:
-        limits: { cpu: "4", memory: "8Gi" }
-        requests: { cpu: "2", memory: "4Gi" }
-      # PERFORMANCE: Persistent storage for logs and plasma store
+        limits: { cpu: "2", memory: "4Gi" }
+        requests: { cpu: "1", memory: "2Gi" }
       volumes:
         - name: ray-logs
           emptyDir:
             medium: Memory
-            sizeLimit: 2Gi
+            sizeLimit: 1Gi
         - name: ray-spill
           emptyDir:
             sizeLimit: 10Gi
@@ -82,25 +81,34 @@ spec:
           name: ray-logs
         - mountPath: /tmp/spill
           name: ray-spill
-      # PERFORMANCE: Enable in-tree autoscaling
+      # Enable autoscaling with security-hardened sidecar
       enableInTreeAutoscaling: true
       autoscalerOptions:
         upscalingMode: Default
         idleTimeoutSeconds: 60
         resources:
           limits:
-            cpu: "500m"
-            memory: "512Mi"
-          requests:
             cpu: "200m"
             memory: "256Mi"
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          seccompProfile:
+            type: RuntimeDefault
 
     # General compute workers
     worker:
       groupName: general-workers
-      replicas: 3
-      minReplicas: 3
-      maxReplicas: 10
+      replicas: 2
+      minReplicas: 2
+      maxReplicas: 3
       rayStartParams:
         num-cpus: '4'
       labels:
@@ -136,11 +144,11 @@ spec:
           operator: Equal
           value: nexus-hpc
           effect: NoSchedule
-      # PERFORMANCE: Increased worker resources for actual compute
+      # FITS IN QUOTA: 2 workers × 2 CPU = 4 CPU limit
+      # Workers: 2 CPU / 4Gi each (was 1 CPU / 2Gi)
       resources:
-        limits: { cpu: "4", memory: "8Gi" }
-        requests: { cpu: "2", memory: "4Gi" }
-      # PERFORMANCE: Memory-backed volumes for performance
+        limits: { cpu: "2", memory: "4Gi" }
+        requests: { cpu: "1", memory: "2Gi" }
       volumes:
         - name: ray-logs
           emptyDir:
@@ -155,15 +163,15 @@ spec:
         - mountPath: /tmp/spill
           name: ray-spill
 
-    # AI/GPU workers - dedicated to ML workloads
+    # AI/GPU workers - constrained by quota
     additionalWorkerGroups:
       ai-workers:
         disabled: false
-        replicas: 2
-        minReplicas: 2
-        maxReplicas: 6
+        replicas: 1
+        minReplicas: 1
+        maxReplicas: 2
         rayStartParams:
-          num-cpus: '8'
+          num-cpus: '4'
           num-gpus: '1'
         labels:
           kagenti.io/type: platform
@@ -201,29 +209,29 @@ spec:
           - key: "cryptophys.io/ai-workload"
             operator: "Exists"
             effect: "NoSchedule"
-        # PERFORMANCE: High-memory + GPU for AI workloads
+        # FITS IN QUOTA: 1 AI worker × 2 CPU = 2 CPU limit
+        # Total: head(2) + workers(4) + ai(2) = 8 CPU ✓
         resources:
           limits:
-            cpu: "8"
-            memory: "32Gi"
+            cpu: "2"
+            memory: "8Gi"
             nvidia.com/gpu: "1"
           requests:
-            cpu: "4"
-            memory: "16Gi"
+            cpu: "1"
+            memory: "4Gi"
             nvidia.com/gpu: "1"
-        # PERFORMANCE: Large memory volumes for AI datasets
         volumes:
           - name: ray-logs
             emptyDir:
               medium: Memory
-              sizeLimit: 2Gi
+              sizeLimit: 1Gi
           - name: ray-spill
             emptyDir:
-              sizeLimit: 50Gi
+              sizeLimit: 30Gi
           - name: shared-memory
             emptyDir:
               medium: Memory
-              sizeLimit: 8Gi
+              sizeLimit: 4Gi
         volumeMounts:
           - mountPath: /tmp/ray
             name: ray-logs
