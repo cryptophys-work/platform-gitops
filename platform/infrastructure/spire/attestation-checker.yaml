@@ -69,9 +69,22 @@ spec:
       tolerations:
         - operator: Exists
       terminationGracePeriodSeconds: 30
+      initContainers:
+        - name: copy-binary
+          image: docker.io/busybox:1.36
+          command:
+            - /bin/sh
+            - -c
+            - cp /mnt/spire/opt/spire/bin/spire-agent /shared-bin/spire-agent && chmod +x /shared-bin/spire-agent
+          volumeMounts:
+            - name: spire-image
+              mountPath: /mnt/spire
+              readOnly: true
+            - name: bin-vol
+              mountPath: /shared-bin
       containers:
         - name: checker
-          image: ghcr.io/spiffe/spire-agent:1.10.3
+          image: docker.io/busybox:1.36
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -79,13 +92,14 @@ spec:
             - |
               METRICS_PORT=8080
               SOCKET_PATH=/run/spire/sockets/agent/agent.sock
+              AGENT_BIN=/shared-bin/spire-agent
 
               check_attestation() {
                 NODE_NAME=$(hostname -f 2>/dev/null || hostname)
                 ATTESTATION_STATUS="fail"
 
                 if [ -S "$SOCKET_PATH" ]; then
-                  if timeout 5 /opt/spire/bin/spire-agent api fetch \
+                  if timeout 5 "$AGENT_BIN" api fetch \
                     -socketPath "$SOCKET_PATH" 2>/dev/null | \
                     grep -q "BEGIN CERTIFICATE"; then
                     ATTESTATION_STATUS="pass"
@@ -93,7 +107,7 @@ spec:
                 fi
 
                 if [ "$ATTESTATION_STATUS" != "pass" ]; then
-                  if /opt/spire/bin/spire-agent healthcheck \
+                  if "$AGENT_BIN" healthcheck \
                     -socketPath "$SOCKET_PATH" 2>/dev/null; then
                     ATTESTATION_STATUS="pass"
                   fi
@@ -108,7 +122,7 @@ spec:
                   echo "Content-Type: text/plain"
                   echo ""
                   check_attestation
-                } | nc -l -p "$METRICS_PORT" -q 1 2>/dev/null || true
+                } | nc -l -p "$METRICS_PORT" || true
                 sleep 15
               done
           ports:
@@ -117,7 +131,7 @@ spec:
               protocol: TCP
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
+            readOnlyRootFilesystem: false
             capabilities:
               drop:
                 - ALL
@@ -132,11 +146,19 @@ spec:
             - name: spire-sockets
               mountPath: /run/spire/sockets
               readOnly: true
+            - name: bin-vol
+              mountPath: /shared-bin
       volumes:
         - name: spire-sockets
           hostPath:
             path: /var/spire/agent-sockets
             type: DirectoryOrCreate
+        - name: bin-vol
+          emptyDir: {}
+        - name: spire-image
+          image:
+            reference: ghcr.io/spiffe/spire-agent:1.10.3
+            pullPolicy: IfNotPresent
 ---
 # Service for ServiceMonitor to target
 apiVersion: v1
