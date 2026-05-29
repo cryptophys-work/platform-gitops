@@ -22,10 +22,14 @@ spec:
       repository: rayproject/ray
       tag: "2.9.0"
       pullPolicy: IfNotPresent
+
+    # Head node - GCS metadata store, autoscaler, dashboard
+    # CRITICAL: Head must have enough memory for cluster state
     head:
       rayStartParams:
         dashboard-host: '0.0.0.0'
-        num-cpus: '0' # Head node is for scheduling only
+        num-cpus: '2'              # Allow head to run small tasks
+        object-store-memory: '1000000000'  # 1GB object store
       labels:
         kagenti.io/type: platform
         kagenti.io/role: compute-orchestrator
@@ -59,16 +63,50 @@ spec:
           operator: Equal
           value: nexus-hpc
           effect: NoSchedule
+      # PERFORMANCE: Head node resources increased
+      # GCS requires significant memory for cluster metadata
       resources:
-        limits: { cpu: "1", memory: "2G" }
-        requests: { cpu: "500m", memory: "1G" }
+        limits: { cpu: "4", memory: "8Gi" }
+        requests: { cpu: "2", memory: "4Gi" }
+      # PERFORMANCE: Persistent storage for logs and plasma store
+      volumes:
+        - name: ray-logs
+          emptyDir:
+            medium: Memory
+            sizeLimit: 2Gi
+        - name: ray-spill
+          emptyDir:
+            sizeLimit: 10Gi
+      volumeMounts:
+        - mountPath: /tmp/ray
+          name: ray-logs
+        - mountPath: /tmp/spill
+          name: ray-spill
+      # PERFORMANCE: Enable in-tree autoscaling
+      enableInTreeAutoscaling: true
+      autoscalerOptions:
+        upscalingMode: Default
+        idleTimeoutSeconds: 60
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
 
+    # General compute workers
     worker:
       groupName: general-workers
-      replicas: 2
-      minReplicas: 2
-      maxReplicas: 5
-      rayStartParams: {}
+      replicas: 3
+      minReplicas: 3
+      maxReplicas: 10
+      rayStartParams:
+        num-cpus: '4'
+      labels:
+        kagenti.io/type: platform
+        kagenti.io/role: compute-worker
+        kagenti.io/ray: "true"
       podSecurityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -98,18 +136,39 @@ spec:
           operator: Equal
           value: nexus-hpc
           effect: NoSchedule
+      # PERFORMANCE: Increased worker resources for actual compute
       resources:
-        limits: { cpu: "1", memory: "2Gi" }
-        requests: { cpu: "500m", memory: "1Gi" }
+        limits: { cpu: "4", memory: "8Gi" }
+        requests: { cpu: "2", memory: "4Gi" }
+      # PERFORMANCE: Memory-backed volumes for performance
+      volumes:
+        - name: ray-logs
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+        - name: ray-spill
+          emptyDir:
+            sizeLimit: 20Gi
+      volumeMounts:
+        - mountPath: /tmp/ray
+          name: ray-logs
+        - mountPath: /tmp/spill
+          name: ray-spill
 
+    # AI/GPU workers - dedicated to ML workloads
     additionalWorkerGroups:
       ai-workers:
         disabled: false
-        replicas: 1
-        minReplicas: 1
-        maxReplicas: 2
+        replicas: 2
+        minReplicas: 2
+        maxReplicas: 6
         rayStartParams:
-          num-cpus: '4'
+          num-cpus: '8'
+          num-gpus: '1'
+        labels:
+          kagenti.io/type: platform
+          kagenti.io/role: ai-worker
+          kagenti.io/ray: "true"
         podSecurityContext:
           runAsNonRoot: true
           runAsUser: 1000
@@ -142,6 +201,33 @@ spec:
           - key: "cryptophys.io/ai-workload"
             operator: "Exists"
             effect: "NoSchedule"
+        # PERFORMANCE: High-memory + GPU for AI workloads
         resources:
-          limits: { cpu: "4", memory: "8Gi" }
-          requests: { cpu: "1500m", memory: "4Gi" }
+          limits:
+            cpu: "8"
+            memory: "32Gi"
+            nvidia.com/gpu: "1"
+          requests:
+            cpu: "4"
+            memory: "16Gi"
+            nvidia.com/gpu: "1"
+        # PERFORMANCE: Large memory volumes for AI datasets
+        volumes:
+          - name: ray-logs
+            emptyDir:
+              medium: Memory
+              sizeLimit: 2Gi
+          - name: ray-spill
+            emptyDir:
+              sizeLimit: 50Gi
+          - name: shared-memory
+            emptyDir:
+              medium: Memory
+              sizeLimit: 8Gi
+        volumeMounts:
+          - mountPath: /tmp/ray
+            name: ray-logs
+          - mountPath: /tmp/spill
+            name: ray-spill
+          - mountPath: /dev/shm
+            name: shared-memory
