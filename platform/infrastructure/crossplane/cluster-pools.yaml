@@ -67,5 +67,9 @@ spec:
     - tekton-pipelines
     - tekton-chains
     - image-factory
-# storage-only pool dismantled (campus, medulla)
-
+# DEPRECATED: storage-only pool removed (2026-04-14)
+# Replaced with daemonset=true:NoSchedule taint model
+# Campus and medulla nodes now use daemonset=true taint
+# All DaemonSet workloads (Longhorn, Minio, etc.) tolerate daemonset=true
+#
+# For context, see: /root/.claude/plans/storage-only-deprecation.md
