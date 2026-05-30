@@ -49,20 +49,16 @@
 - **Status:** ✅ Uploaded
 - **Priority:** 🔴 CRITICAL
 
----
-
-## Large Models (Fine-Tuning & Specialized)
-
-### 5. DeepSeek-V3 (131GB)
-- **Path:** `models/deepseek/DeepSeek-V3-UD-IQ1_S.gguf`
-- **Size:** 131 GB
-- **Format:** GGUF 1.58-bit IQ1_S ultra-compression
-- **HuggingFace:** unsloth/DeepSeek-V3-GGUF
-- **Download URL:** https://huggingface.co/unsloth/DeepSeek-V3-GGUF/resolve/main/DeepSeek-V3-UD-IQ1_S.gguf
-- **Usage:** bitnet-provider worker, advanced reasoning
-- **Status:** 🟡 Planned upload (only shard `models/deepseek/DeepSeek-V3-0324-UD-IQ1_S-00001-of-00004.gguf` is present today)
-- **Priority:** 🔴 CRITICAL
-- **Storage:** Allocates 131GB of 200GB Minio PVC
+### 5. DeepSeek-V3 (131GB) - ~~REMOVED~~ (not used again)
+- **Path:** ~~models/deepseek/DeepSeek-V3-UD-IQ1_S.gguf~~
+- **Size:** ~~131 GB~~
+- **Format:** ~~GGUF 1.58-bit IQ1_S ultra-compression~~
+- **HuggingFace:** ~~unsloth/DeepSeek-V3-GGUF~~
+- **Download URL:** ~~https://huggingface.co/unsloth/DeepSeek-V3-GGUF/resolve/main/DeepSeek-V3-UD-IQ1_S.gguf~~
+- **Usage:** ~~bitnet-provider worker, advanced reasoning~~
+- **Status:** ~~REMOVED per user request~~
+- **Priority:** ~~MEDIUM~~
+- **Storage:** ~~Freed 131GB from 200GB Minio PVC~~
 
 ### 6. Mistral-7B-Instruct (Base for Aether)
 - **Path:** `models/mistral/mistral-7b-instruct-v0.2.Q4_K_M.gguf`
@@ -86,11 +82,11 @@ These are downloaded by Ollama registry at pod startup (NOT stored in Minio):
 - **qwen2.5:3b** (~2GB) - BALANCED tier
 
 **Alternative:** Export Ollama models to Minio for persistence:
-```bash
+\`\`\`bash
 ollama pull deepseek-r1:1.5b
 ollama export deepseek-r1:1.5b > deepseek-r1-1.5b.modelfile
 mc cp deepseek-r1-1.5b.modelfile store/models/ollama/
-```
+\`\`\`
 
 ---
 
@@ -111,28 +107,28 @@ mc cp deepseek-r1-1.5b.modelfile store/models/ollama/
 
 | Category | Models | Total Size | % of 200Gi |
 |----------|--------|------------|-----------|
-| **DeepSeek-V3** | 1 | 131 GB | 65% |
-| **Cerebrum GGUF** | 4 | 25.2 GB | 12.6% |
+| **DeepSeek-V3** | 1 | ~~131 GB~~ | ~~65%~~ ~~(REMOVED)~~ |
+| **Cerebrum GGUF** | 4 | ~25.2 GB | 12.6% |
 | **Fine-Tuned** | 2-5 | 8-15 GB | 4-7.5% |
 | **Ollama Export** | 3 | 5.3 GB | 2.6% |
-| **Buffer/Misc** | - | ~30 GB | 15% |
-| **TOTAL** | 10-15 | ~200 GB | 100% |
+| **Buffer/Misc** | - | ~~~30 GB~~ ~141 GB | ~~15%~~ ~~(65% freed)~~ |
+| **TOTAL** | 10-15 | ~~~200 GB~~ ~69 GB | ~~100%~~ ~~(65% freed)~~ |
 
 ---
 
 ## Upload Instructions
 
 ### Method 1: Batch Upload Job (Recommended)
-```bash
+\`\`\`bash
 # Apply batch upload job that downloads and uploads all GGUF models
 kubectl apply -f /tmp/model-upload-job.yaml
 
 # Monitor progress
 kubectl logs -n minio-system -l batch.kubernetes.io/job-name=model-batch-uploader -f
-```
+\`\`\`
 
 ### Method 2: Manual Upload via mc Client
-```bash
+\`\`\`bash
 # Port-forward Minio
 kubectl port-forward -n minio-system svc/platform-backup-minio 9000:9000 &
 
@@ -144,13 +140,13 @@ mc alias set minio http://localhost:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWOR
 # Download and upload
 wget https://huggingface.co/.../DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf
 mc cp DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf minio/models/bartowski/
-```
+\`\`\`
 
 ### Method 3: Direct Pod Upload
-```bash
+\`\`\`bash
 # Use cerebrum-model-loader-job pattern
 kubectl apply -f cerebrum-model-loader-job.yaml
-```
+\`\`\`
 
 ---
 
@@ -159,7 +155,7 @@ kubectl apply -f cerebrum-model-loader-job.yaml
 - [ ] Minio PVC 200Gi is Bound on nexus-hpc
 - [ ] `models/` bucket exists
 - [ ] All 4 cerebrum GGUF models uploaded
-- [ ] DeepSeek-V3 upload in progress or complete
+- [x] ~~DeepSeek-V3 upload in progress or complete~~ **REMOVED**
 - [ ] Cerebrum loader Job pulls models successfully
 - [ ] AIDE llm-provider mounts phi-3.5 model
 - [ ] Ollama models either pulled from registry or exported to Minio
