@@ -35,8 +35,8 @@ spec:
     controller:
       kind: DaemonSet
       priorityClassName: cryptophys-platform-critical
-      hostNetwork: false
-      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       config:
         allow-snippet-annotations: "true"
         annotations-risk-level: Critical
