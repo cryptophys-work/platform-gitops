@@ -27,7 +27,6 @@ spec:
       localeCType: C
       localeCollate: C
       postInitSQL:
-      - CREATE USER jarvis WITH PASSWORD 'jarvis';
       - GRANT ALL PRIVILEGES ON DATABASE jarvis TO jarvis;
       - \c jarvis
       - CREATE EXTENSION IF NOT EXISTS vector;
