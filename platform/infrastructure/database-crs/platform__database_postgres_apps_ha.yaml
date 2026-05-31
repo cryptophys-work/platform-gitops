@@ -26,9 +26,7 @@ spec:
       encoding: UTF8
       localeCType: C
       localeCollate: C
-      postInitSQL:
-      - GRANT ALL PRIVILEGES ON DATABASE jarvis TO jarvis;
-      - \c jarvis
+      postInitApplicationSQL:
       - CREATE EXTENSION IF NOT EXISTS vector;
       - |
         CREATE TABLE IF NOT EXISTS jarvis_semantic_memory (
