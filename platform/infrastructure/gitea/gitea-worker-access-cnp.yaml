@@ -1,0 +1,36 @@
+---
+# CiliumNetworkPolicy: Allow DAO and orchestrator workers access to Gitea HTTP API for git operations
+# Required for SSOT contract reads and autonomous commits via gitea-http-internal service
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: gitea-worker-access
+  namespace: gitops-system
+  labels:
+    cryptophys.io/flux-managed: "true"
+    cryptophys.io/domain: platform
+    cryptophys.io/component: network-policy
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: gitea
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: dao-sw-executor-helm
+            io.kubernetes.pod.namespace: governance-heart
+        - matchLabels:
+            app.kubernetes.io/name: facilitator-core
+            io.kubernetes.pod.namespace: governance-heart
+        - matchLabels:
+            app.kubernetes.io/name: orchestrator-core
+            io.kubernetes.pod.namespace: autonomous-execution
+        - matchLabels:
+            app.kubernetes.io/name: aide-git-committer
+            io.kubernetes.pod.namespace: autonomous-execution
+      toPorts:
+        - ports:
+            - port: "3000"
+              protocol: TCP
+          rules:
+            http: null  # Allow all HTTP paths for Gitea API
