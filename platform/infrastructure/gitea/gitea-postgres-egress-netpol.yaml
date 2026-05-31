@@ -19,8 +19,6 @@ spec:
     - Egress
   egress:
     - to:
-        - ipBlock:
-            cidr: 10.96.0.10/32
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: kube-system
@@ -33,8 +31,6 @@ spec:
         - protocol: TCP
           port: 53
     - to:
-        - ipBlock:
-            cidr: 10.96.212.41/32
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: postgresql-system
@@ -49,8 +45,6 @@ spec:
         - protocol: TCP
           port: 5432
     - to:
-        - ipBlock:
-            cidr: 10.100.187.251/32
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: gitops-system
