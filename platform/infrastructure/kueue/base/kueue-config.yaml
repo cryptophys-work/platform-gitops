@@ -6,26 +6,35 @@ spec:
   nodeLabels:
     node-role.kubernetes.io/worker: ""
 ---
+# DEPRECATED: Merged into pipeline-cluster-queue (apps-gitops/apps/tekton/infra/base/kueue/build-cluster-queue.yaml).
+# Retained for backward compatibility; capacity set to 0 to drain before removal.
+# Target removal: 2026-06-15.
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ClusterQueue
 metadata:
   name: tekton-cluster-queue
 spec:
-  namespaceSelector: {} # Match all namespaces
+  namespaceSelector: {}
   resourceGroups:
     - coveredResources: ["cpu", "memory"]
       flavors:
         - name: default-flavor
           resources:
             - name: "cpu"
-              nominalQuota: "8"
+              nominalQuota: "0"
             - name: "memory"
-              nominalQuota: "16Gi"
+              nominalQuota: "0Gi"
+  stopPolicy: Stop
 ---
+# Migrated to pipeline-cluster-queue.
+# build-queue → pipeline-cluster-queue (unified queue).
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: LocalQueue
 metadata:
   name: build-queue
   namespace: tekton-system
+  annotations:
+    cryptophys.io/migrated-at: "2026-05-29"
+    cryptophys.io/new-cluster-queue: pipeline-cluster-queue
 spec:
-  clusterQueue: tekton-cluster-queue
+  clusterQueue: pipeline-cluster-queue

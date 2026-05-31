@@ -1,0 +1,18 @@
+apiVersion: kyverno.io/v1
+kind: PolicyException
+metadata:
+  name: cerebrum-ollama-psp-exception
+  namespace: cerebrum
+  labels:
+    pod-policies.kyverno.io/autogen-controllers: DaemonSet,Deployment,Job,StatefulSet,CronJob
+spec:
+  exceptions:
+    - kind: Deployment
+      name: cerebrum-ollama
+  rules:
+    - phi-1-restricted
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod

@@ -3506,17 +3506,29 @@ data:
     #        - key: kubernetes.io/metadata.name
     #          operator: NotIn
     #          values: [ kube-system, kueue-system ]
-    #fairSharing:
-    #  enable: true
-    #  preemptionStrategies: [LessThanOrEqualToFinalShare, LessThanInitialShare]
-    #resources:
-    #  excludeResourcePrefixes: []
-    #  transformations:
-    #  - input: nvidia.com/mig-4g.5gb
-    #    strategy: Replace | Retain
-    #    outputs:
-    #      example.com/accelerator-memory: 5Gi
-    #      example.com/accelerator-gpc: 4
+    fairSharing:
+      enable: true
+      preemptionStrategies: [LessThanOrEqualToFinalShare, LessThanInitialShare]
+    waitForPodsReady:
+      enable: true
+      timeout: 10m
+      blockAdmission: false
+      requeuingStrategy:
+        timestamp: Eviction
+        backoffLimitCount: 5
+        backoffBaseSeconds: 60
+        backoffMaxSeconds: 3600
+    resources:
+      excludeResourcePrefixes: []
+      transformations:
+      - input: nvidia.com/mig-4g.5gb
+        strategy: Replace
+        outputs:
+          nvidia.com/gpu: 1
+    manageJobsWithoutQueueName: true
+    managedJobsNamespaceSelector:
+      matchLabels:
+        kueue-managed: "true"
 kind: ConfigMap
 metadata:
   labels:

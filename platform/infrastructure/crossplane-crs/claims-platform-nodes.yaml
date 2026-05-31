@@ -163,6 +163,7 @@ spec:
     cryptophys.io/tier: platform
     cryptophys.io/guardian: "true"
     platform-ha: "true"
+    pool: apps-ha
     workload.cryptophys.work/platform: "true"
     workload.cryptophys.work/compute: "true"
   longhornNode:
@@ -190,6 +191,7 @@ spec:
     cryptophys.io/tier: platform
     cryptophys.io/guardian: "true"
     platform-ha: "true"
+    pool: apps-ha
     ray-head: "true"
     workload.cryptophys.work/compute: "true"
     workload.cryptophys.work/platform: "true"
