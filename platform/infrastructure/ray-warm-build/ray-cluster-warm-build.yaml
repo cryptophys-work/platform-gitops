@@ -1,0 +1,198 @@
+# retrigger: namespace-refactor-image-rebuild-2026-04-28T1057Z
+apiVersion: ray.io/v1
+kind: RayCluster
+metadata:
+  name: buildkit-warm
+  namespace: infra-ops
+  labels:
+    build.cryptophys.work/warm-cluster: "true"
+    cryptophys.io/domain: tekton
+    cryptophys.io/component: buildkit-warm-cluster
+spec:
+  rayVersion: "2.9.0"
+  headGroupSpec:
+    rayStartParams:
+      num-cpus: "0"
+      dashboard-host: "0.0.0.0"
+    template:
+      metadata:
+        labels:
+          cryptophys.io/domain: tekton
+          cryptophys.io/component: buildkit-ray-head
+        annotations:
+          cryptophys.io/coordinator-rev: "2026-03-31-cache-fix"
+      spec:
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: kubernetes.io/hostname
+                      operator: In
+                      values:
+                        - thalamus-217-76-59-241
+                        - cerebellum-161-97-117-96
+        serviceAccountName: tekton-pipeline-sa
+        containers:
+          - name: ray-head
+            image: rayproject/ray:2.9.0-py311
+            imagePullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: "500m"
+                memory: "1Gi"
+              limits:
+                cpu: "2"
+                memory: "2Gi"
+            env:
+              - name: PATH
+                value: /tools:/home/ray/anaconda3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+              - name: DOCKER_CONFIG
+                value: /etc/docker-config
+              - name: GIT_CREDENTIALS_PATH
+                value: /etc/secret/git-auth/.git-credentials
+              - name: RESULTS_DIR
+                value: /tmp/results
+            livenessProbe:
+              exec:
+                command:
+                  - bash
+                  - -c
+                  - |
+                    wget --tries 1 -T 10 -q -O- http://localhost:52365/api/local_raylet_healthz | grep success && wget --tries 1 -T 30 -q -O- http://localhost:8265/api/gcs_healthz | grep success
+              initialDelaySeconds: 60
+              periodSeconds: 30
+              timeoutSeconds: 30
+              failureThreshold: 10
+              successThreshold: 1
+            readinessProbe:
+              exec:
+                command:
+                  - bash
+                  - -c
+                  - |
+                    wget --tries 1 -T 10 -q -O- http://localhost:52365/api/local_raylet_healthz | grep success && wget --tries 1 -T 30 -q -O- http://localhost:8265/api/gcs_healthz | grep success
+              initialDelaySeconds: 30
+              periodSeconds: 10
+              timeoutSeconds: 30
+              failureThreshold: 5
+              successThreshold: 1
+            volumeMounts:
+              - name: buildkit-coordinator-logic
+                mountPath: /build/coordinator.py
+                subPath: coordinator.py
+              - name: harbor-dockerconfig
+                mountPath: /etc/docker-config
+              - name: gitea-git-auth
+                mountPath: /etc/secret/git-auth
+                readOnly: true
+              - name: tools-bin
+                mountPath: /tools
+        initContainers:
+          - name: install-tools
+            image: registry.cryptophys.work/tools/alpine:3.19
+            command: ["/bin/sh", "-c"]
+            args:
+              - |
+                for attempt in 1 2 3; do
+                  wget -qO- https://github.com/google/go-containerregistry/releases/download/v0.19.0/go-containerregistry_Linux_x86_64.tar.gz | tar xz -C /tools crane && break || sleep 5
+                done
+                for attempt in 1 2 3; do
+                  wget -qO- https://github.com/moby/buildkit/releases/download/v0.12.5/buildkit-v0.12.5.linux-amd64.tar.gz | tar xz -C /tools bin/buildctl --strip-components=1 && break || sleep 5
+                done
+                chmod +x /tools/crane /tools/buildctl
+                test -x /tools/crane && test -x /tools/buildctl
+            volumeMounts:
+              - name: tools-bin
+                mountPath: /tools
+        volumes:
+          - name: buildkit-coordinator-logic
+            configMap:
+              name: buildkit-coordinator-logic
+          - name: harbor-dockerconfig
+            secret:
+              secretName: harbor-dockerconfig
+              items:
+                - key: .dockerconfigjson
+                  path: config.json
+          - name: gitea-git-auth
+            secret:
+              secretName: gitea-git-credentials
+              optional: true
+          - name: tools-bin
+            emptyDir: {}
+        tolerations:
+          - operator: Exists
+  workerGroupSpecs:
+    - groupName: build-workers
+      replicas: 0
+      minReplicas: 0
+      maxReplicas: 2
+      rayStartParams: {}
+      template:
+        metadata:
+          labels:
+            cryptophys.io/domain: tekton
+            cryptophys.io/component: buildkit-ray-worker
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: kubernetes.io/hostname
+                        operator: In
+                        values:
+                          - nexus-144-91-103-10
+          containers:
+            - name: ray-worker
+              image: rayproject/ray:2.9.0-py311
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: PATH
+                  value: /tools:/home/ray/anaconda3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+                - name: GIT_CREDENTIALS_PATH
+                  value: /etc/secret/git-auth/.git-credentials
+              resources:
+                requests:
+                  cpu: "25m"
+                  memory: "1Gi"
+                limits:
+                  cpu: "1"
+                  memory: "2Gi"
+              volumeMounts:
+                - name: gitea-git-auth
+                  mountPath: /etc/secret/git-auth
+                  readOnly: true
+                - name: tools-bin
+                  mountPath: /tools
+          initContainers:
+            - name: install-tools
+              image: registry.cryptophys.work/tools/alpine:3.19
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  for attempt in 1 2 3; do
+                    wget -qO- https://github.com/google/go-containerregistry/releases/download/v0.19.0/go-containerregistry_Linux_x86_64.tar.gz | tar xz -C /tools crane && break || sleep 5
+                  done
+                  for attempt in 1 2 3; do
+                    wget -qO- https://github.com/moby/buildkit/releases/download/v0.12.5/buildkit-v0.12.5.linux-amd64.tar.gz | tar xz -C /tools bin/buildctl --strip-components=1 && break || sleep 5
+                  done
+                  chmod +x /tools/crane /tools/buildctl
+                  test -x /tools/crane && test -x /tools/buildctl
+              volumeMounts:
+                - name: tools-bin
+                  mountPath: /tools
+          tolerations:
+            - key: cryptophys.io/node-class
+              operator: Equal
+              value: nexus-hpc
+              effect: NoSchedule
+            - operator: Exists
+          volumes:
+            - name: gitea-git-auth
+              secret:
+                secretName: gitea-git-credentials
+                optional: true
+            - name: tools-bin
+              emptyDir: {}
