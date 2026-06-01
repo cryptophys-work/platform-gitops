@@ -16,6 +16,10 @@ resources:
   # Provider configuration (local Kubernetes API access)
   - provider-kubernetes.yaml
   - provider-kubernetes-rbac.yaml
+  - provider-kubernetes-cnpg-rbac.yaml
   # Longhorn release abstraction
   - longhorn-release-definition.yaml
   - longhorn-release-composition.yaml
+  # Database abstraction via CNPG
+  - database-cluster-definition.yaml
+  - database-cluster-composition.yaml

@@ -9,5 +9,7 @@ resources:
   - claims-workload-placement.yaml
   # Longhorn release claim
   - claim-longhorn-release.yaml
+  # Database claims
+  - claims-databases.yaml
   # Provider configuration
   - provider-config.yaml

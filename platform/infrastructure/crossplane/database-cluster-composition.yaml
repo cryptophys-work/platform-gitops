@@ -1,0 +1,141 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: database-cluster.cnpg.cryptophys.work
+  labels:
+    cryptophys.io/component: crossplane
+spec:
+  compositeTypeRef:
+    apiVersion: cnpg.cryptophys.work/v1alpha1
+    kind: XDatabaseCluster
+  resources:
+  - name: cnpg-cluster
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        providerConfigRef:
+          name: local-kubernetes-provider
+        forProvider:
+          manifest:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+            metadata:
+              name: "PLACEHOLDER"
+              namespace: "postgresql-system"
+              labels:
+                cryptophys.io/managed-by: crossplane
+            spec:
+              instances: 1
+              imageName: ghcr.io/cloudnative-pg/postgresql:16.2
+              monitoring:
+                enablePodMonitor: false
+                disableDefaultQueries: true
+              enableSuperuserAccess: true
+              enablePDB: true
+              superuserSecret:
+                name: postgres-superuser-secret
+              storage:
+                size: 10Gi
+                storageClass: longhorn-single
+                resizeInUseVolumes: true
+              nodeMaintenanceWindow:
+                inProgress: false
+                reusePVC: true
+              bootstrap:
+                initdb:
+                  database: PLACEHOLDER
+                  owner: PLACEHOLDER
+                  encoding: UTF8
+                  localeCType: C
+                  localeCollate: C
+              postgresql:
+                parameters:
+                  shared_buffers: 64MB
+                  max_connections: '50'
+                  work_mem: 4MB
+                  archive_mode: "on"
+                  archive_timeout: 5min
+                  dynamic_shared_memory_type: posix
+                  full_page_writes: "on"
+                  log_destination: csvlog
+                  log_directory: /controller/log
+                  log_filename: postgres
+                  log_rotation_age: "0"
+                  log_rotation_size: "0"
+                  log_truncate_on_rotation: "false"
+                  logging_collector: "on"
+                  max_parallel_workers: "32"
+                  max_replication_slots: "32"
+                  max_worker_processes: "32"
+                  shared_memory_type: mmap
+                  shared_preload_libraries: ""
+                  ssl_max_protocol_version: TLSv1.3
+                  ssl_min_protocol_version: TLSv1.3
+                  wal_keep_size: 512MB
+                  wal_level: logical
+                  wal_log_hints: "on"
+                  wal_receiver_timeout: 5s
+                  wal_sender_timeout: 5s
+                syncReplicaElectionConstraint:
+                  enabled: false
+              primaryUpdateMethod: restart
+              primaryUpdateStrategy: unsupervised
+              replicationSlots:
+                highAvailability:
+                  enabled: true
+                  slotPrefix: _cnpg_
+                synchronizeReplicas:
+                  enabled: true
+                updateInterval: 30
+              smartShutdownTimeout: 180
+              startDelay: 3600
+              stopDelay: 1800
+              switchoverDelay: 3600
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 256Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
+              affinity:
+                nodeSelector: {}
+                podAntiAffinityType: preferred
+                tolerations:
+                  - effect: NoSchedule
+                    key: cryptophys.io/pool
+                    operator: Equal
+                    value: platform-ha
+                  - effect: NoSchedule
+                    key: ray-head
+                    operator: Equal
+                    value: "true"
+                  - effect: NoSchedule
+                    key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+    patches:
+    - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+      toFieldPath: "spec.forProvider.manifest.metadata.name"
+    - fromFieldPath: "spec.instances"
+      toFieldPath: "spec.forProvider.manifest.spec.instances"
+    - fromFieldPath: "spec.storageSize"
+      toFieldPath: "spec.forProvider.manifest.spec.storage.size"
+    - fromFieldPath: "spec.storageClass"
+      toFieldPath: "spec.forProvider.manifest.spec.storage.storageClass"
+    - fromFieldPath: "spec.database"
+      toFieldPath: "spec.forProvider.manifest.spec.bootstrap.initdb.database"
+    - fromFieldPath: "spec.owner"
+      toFieldPath: "spec.forProvider.manifest.spec.bootstrap.initdb.owner"
+    - fromFieldPath: "spec.secretName"
+      toFieldPath: "spec.forProvider.manifest.spec.bootstrap.initdb.secret.name"
+      policy:
+        fromFieldPath: Optional
+    - fromFieldPath: "spec.postInitApplicationSQL"
+      toFieldPath: "spec.forProvider.manifest.spec.bootstrap.initdb.postInitApplicationSQL"
+      policy:
+        fromFieldPath: Optional
+    - fromFieldPath: "spec.nodeSelector"
+      toFieldPath: "spec.forProvider.manifest.spec.affinity.nodeSelector"
+      policy:
+        fromFieldPath: Optional

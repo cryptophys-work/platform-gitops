@@ -10,7 +10,11 @@ metadata:
     # Layer 1: browser HTTP Basic Auth (native username/password popup) before the Vault UI loads.
     nginx.ingress.kubernetes.io/auth-type: basic
     nginx.ingress.kubernetes.io/auth-secret: vault-ui-basic-auth
-    nginx.ingress.kubernetes.io/auth-realm: "Cryptophys Vault UI — sign in (browser)"
+    # Realm string MUST be plain ASCII — ingress-nginx 1.14.x validator rejects
+    # non-ASCII characters (e.g. em-dash U+2014) and silently drops the entire
+    # server block from nginx.conf, producing a 404 from the default server.
+    # See: ingress-nginx/internal/ingress/annotations/validators.go validateAuthRealm
+    nginx.ingress.kubernetes.io/auth-realm: "Cryptophys Vault UI"
     nginx.ingress.kubernetes.io/configuration-snippet: if ($request_uri = /) { 
       return 302 /ui/; }
 spec:

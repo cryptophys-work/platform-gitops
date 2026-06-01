@@ -1,0 +1,50 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xdatabaseclusters.cnpg.cryptophys.work
+  labels:
+    cryptophys.io/component: crossplane
+spec:
+  group: cnpg.cryptophys.work
+  names:
+    kind: XDatabaseCluster
+    plural: xdatabaseclusters
+  claimNames:
+    kind: DatabaseCluster
+    plural: databaseclusters
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              instances:
+                type: integer
+                default: 3
+              database:
+                type: string
+              owner:
+                type: string
+              secretName:
+                type: string
+              storageSize:
+                type: string
+              storageClass:
+                type: string
+                default: "longhorn-single"
+              postInitApplicationSQL:
+                type: array
+                items:
+                  type: string
+              nodeSelector:
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
+            required:
+            - database
+            - owner
+            - storageSize

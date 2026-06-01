@@ -1,0 +1,28 @@
+apiVersion: cnpg.cryptophys.work/v1alpha1
+kind: DatabaseCluster
+metadata:
+  name: postgres-apps-ha
+  namespace: postgresql-system
+  annotations:
+    cryptophys.io/domain: platform
+spec:
+  instances: 3
+  database: jarvis
+  owner: jarvis
+  secretName: postgres-apps-secret
+  storageSize: 10Gi
+  storageClass: longhorn-single
+  postInitApplicationSQL:
+    - CREATE EXTENSION IF NOT EXISTS vector;
+    - |
+      CREATE TABLE IF NOT EXISTS jarvis_semantic_memory (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          session_id UUID NOT NULL,
+          context_type VARCHAR(255) NOT NULL,
+          content TEXT NOT NULL,
+          embedding VECTOR(384) NOT NULL,
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    - GRANT ALL PRIVILEGES ON TABLE jarvis_semantic_memory TO jarvis;
+  nodeSelector:
+    kubernetes.io/hostname: nexus-144-91-103-10
