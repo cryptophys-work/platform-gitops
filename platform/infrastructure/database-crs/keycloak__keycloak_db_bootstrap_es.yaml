@@ -16,6 +16,7 @@ spec:
     template:
       engineVersion: v2
       data:
+        username: keycloak
         password: "{{ index . \"db-password\" }}"
   data:
     - secretKey: db-password
