@@ -24,7 +24,7 @@ spec:
               nominalQuota: "0"
             - name: "memory"
               nominalQuota: "0Gi"
-  stopPolicy: Stop
+  stopPolicy: None
 ---
 # Migrated to pipeline-cluster-queue.
 # build-queue → pipeline-cluster-queue (unified queue).
