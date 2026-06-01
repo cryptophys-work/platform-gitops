@@ -34,6 +34,7 @@ resources:
   - kustomization/40-gitea.yaml
   - kustomization/41-harbor.yaml
   - kustomization/42-argocd.yaml
+  - kustomization/42-argocd-crs.yaml
   - kustomization/45-observability.yaml
   - kustomization/46-security-obs.yaml
   - kustomization/50-backup.yaml
