@@ -1,0 +1,121 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cert-to-vault-sync
+  namespace: cert-manager
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cert-to-vault-sync
+  namespace: cert-manager
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  resourceNames: ["platform-wildcard-tls"]
+  verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cert-to-vault-sync
+  namespace: cert-manager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cert-to-vault-sync
+subjects:
+- kind: ServiceAccount
+  name: cert-to-vault-sync
+  namespace: cert-manager
+---
+# Use root token from existing Secret `vault-init-json` (read-only via RBAC below)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: vault-sync-token
+  namespace: cert-manager
+  annotations:
+    cryptophys.work/managed-by: cert-to-vault-sync
+type: Opaque
+stringData:
+  # VAULT_TOKEN must be a real token with create/update on secret/data/platform/tls/*
+  # Generate via: vault token create -policy=external-secrets -ttl=87600h
+  # The token MUST be valid KV v2 write policy for path secret/data/platform/tls/*
+  token: "REPLACE_ME_AT_DEPLOY_TIME"
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cert-to-vault-sync
+  namespace: cert-manager
+  labels:
+    cryptophys.io/component: cert-manager
+    cryptophys.io/domain: platform
+    cryptophys.io/managed-by: flux
+spec:
+  schedule: "*/15 * * * *"  # every 15 minutes
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 5
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 120
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      activeDeadlineSeconds: 600
+      template:
+        metadata:
+          labels:
+            cryptophys.io/component: cert-manager-sync
+        spec:
+          serviceAccountName: cert-to-vault-sync
+          restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            seccompProfile: {type: RuntimeDefault}
+          containers:
+          - name: sync
+            image: alpine:3.19
+            command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              apk add --no-cache curl >/dev/null
+              # Read secret
+              CRTMGR_URL="https://kubernetes.default.svc"
+              SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+              echo "Reading cert-manager/platform-wildcard-tls..."
+              CERT=$(curl -sSk -H "Authorization: Bearer $SA_TOKEN" "$CRTMGR_URL/api/v1/namespaces/cert-manager/secrets/platform-wildcard-tls" | \
+                python3 -c "import json,sys,base64; d=json.load(sys.stdin); print(d['data']['tls.crt'])" )
+              KEY=$(curl -sSk -H "Authorization: Bearer $SA_TOKEN" "$CRTMGR_URL/api/v1/namespaces/cert-manager/secrets/platform-wildcard-tls" | \
+                python3 -c "import json,sys,base64; d=json.load(sys.stdin); print(d['data']['tls.key'])" )
+              # Write to Vault
+              VAULT_TOKEN=$(cat /vault/secrets/token)
+              echo "Writing to Vault secret/platform/tls/cryptophys-wildcard..."
+              PAYLOAD=$(python3 -c "import json; print(json.dumps({'data':{'tls.crt':'$CERT','tls.key':'$KEY'}}))")
+              curl -sS --fail \
+                -H "X-Vault-Token: $VAULT_TOKEN" \
+                -H "Content-Type: application/json" \
+                --data "$PAYLOAD" \
+                "http://vault.vault-system.svc.cluster.local:8200/v1/secret/data/platform/tls/cryptophys-wildcard" \
+                -o /dev/null -w "Vault HTTP %{http_code}\n"
+              echo "Sync done at $(date -Iseconds)"
+            env:
+            - name: VAULT_ADDR
+              value: "http://vault.vault-system.svc.cluster.local:8200"
+            resources:
+              requests: {cpu: "10m", memory: "32Mi"}
+              limits:   {cpu: "50m", memory: "64Mi"}
+            volumeMounts:
+            - name: vault-token
+              mountPath: /vault/secrets
+              readOnly: true
+          volumes:
+          - name: vault-token
+            secret:
+              secretName: vault-sync-token
+              items:
+              - key: token
+                path: token
