@@ -5,7 +5,7 @@ metadata:
   namespace: postgresql-system
 spec:
   instances: 3
-  imageName: registry.cryptophys.work/library/postgres:15
+  imageName: ghcr.io/cloudnative-pg/postgresql:15.12
   monitoring:
     enablePodMonitor: false
     disableDefaultQueries: true
@@ -14,7 +14,7 @@ spec:
     name: keycloak-cnpg-superuser
   storage:
     size: 5Gi
-    storageClass: longhorn
+    storageClass: longhorn-single
   nodeMaintenanceWindow:
     inProgress: false
     reusePVC: true
@@ -36,8 +36,3 @@ spec:
       memory: 1Gi
   affinity:
     podAntiAffinityType: required
-    tolerations:
-    - effect: NoSchedule
-      key: cryptophys.io/pool
-      operator: Equal
-      value: apps-ha
