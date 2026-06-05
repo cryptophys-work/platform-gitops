@@ -97,7 +97,7 @@ metadata:
   annotations:
     cryptophys.io/contract: contract.platform.spire.v1
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: spire-controller-manager
