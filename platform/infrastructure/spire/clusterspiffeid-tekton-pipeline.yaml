@@ -1,0 +1,56 @@
+# SPIRE Workload Registrations for Tekton Pipeline Tasks
+# Covers all tasks in superior-image-factory that use spiffe-prepare steps
+# Trust domain: spiffe://cryptophys.work
+---
+# tekton-pipeline-sa — catch-all for all pipeline task pods
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: tekton-pipeline-sa
+  labels:
+    app.kubernetes.io/name: spire
+    app.kubernetes.io/part-of: spire
+    cryptophys.work/domain: tekton
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: tekton-system
+  podSelector:
+    matchExpressions:
+      - key: tekton.dev/pipeline
+        operator: Exists
+  autoPopulateDNSNames: true
+  ttl: "1h"
+---
+# tekton-build-sa — dedicated build service account (cosign, trivy, buildkit)
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: tekton-build-sa
+  labels:
+    app.kubernetes.io/name: spire
+    app.kubernetes.io/part-of: spire
+    cryptophys.work/domain: tekton
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: tekton-system
+  podSelector:
+    matchExpressions:
+      - key: tekton.dev/task
+        operator: In
+        values:
+          - genesis-clone-preflight
+          - gitleaks-scan
+          - cosign-notary
+          - nats-publish
+  autoPopulateDNSNames: true
+  ttl: "1h"
