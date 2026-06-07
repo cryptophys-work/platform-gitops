@@ -1,14 +1,23 @@
 # Periodic SPIFFE fetch smoke test — validates Workload API end-to-end per node class.
-# Restored after commit 5e263eae (which replaced it with a DaemonSet that only checks
-# agent health, not actual workload SVID issuance). This CronJob creates a real pod
-# per node, mounts the csi.spiffe.io workload socket, and asks the agent to issue an
-# x509 SVID.
+#
+# Architecture: outer container has a shell + kubectl. It launches a small inner
+# pod per node that uses csi.spiffe.io to mount the workload API, then retries
+# the spire-agent fetch from the OUTER container via `kubectl exec` until the
+# inner pod's csi socket is populated and the SVID is written. The inner pod's
+# image (ghcr.io/spiffe/spire-agent:1.10.3) is the only SPIRE image pullable
+# from this cluster, and it's distroless (no /bin/sh), so we cannot put the
+# retry loop inside it. Putting the loop outside avoids the distroless-shell
+# problem entirely.
 #
 # Fix vs original (commit 5e263eae^):
-#   - `-write /tmp/certs` (parent dir did not exist; spire-agent 1.10.3 does NOT
-#     MkdirAll before writing) → `-write /tmp` (parent always exists)
+#   - `-write /tmp/certs` (parent dir did not exist; spire-agent 1.10.3 does
+#     NOT MkdirAll before writing) -> `-write /tmp` (parent always exists)
 #   - Skip nodes not present in cluster (handles node churn gracefully; the
-#     attestation-checker DaemonSet still covers every node via Prometheus metric)
+#     attestation-checker DaemonSet still covers every node via the
+#     spire_attestation_check Prometheus metric)
+#   - Outer container runs the spire-agent fetch loop with retry/backoff so
+#     the WorkloadAttestor kubelet-notification race doesn't kill the inner
+#     pod with "no identity issued" before the agent has registered it.
 #
 # Depends on ClusterSPIFFEID `tekton-spire-attestation-smoke` (selector
 # tekton.dev/task=spire-attestation-smoke, namespace tekton-system, SA
@@ -34,6 +43,9 @@ rules:
   - apiGroups: [""]
     resources: ["pods/log"]
     verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create", "get"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -92,61 +104,97 @@ spec:
                     fi
                     POD="spire-smoke-${NODE//./-}"
                     kubectl delete pod -n tekton-system "$POD" --ignore-not-found >/dev/null 2>&1 || true
-                    cat <<EOF | kubectl apply -f - >/dev/null
+                    cat <<'POD_EOF' | sed -e "s|__NODE__|$NODE|g" -e "s|__POD__|$POD|g" | kubectl apply -f - >/dev/null
                   apiVersion: v1
                   kind: Pod
                   metadata:
-                    name: ${POD}
+                    name: __POD__
                     namespace: tekton-system
                     labels:
                       tekton.dev/task: spire-attestation-smoke
                   spec:
                     serviceAccountName: tekton-pipeline-sa
                     nodeSelector:
-                      kubernetes.io/hostname: ${NODE}
+                      kubernetes.io/hostname: __NODE__
                     restartPolicy: Never
+                    initContainers:
+                      - name: copy-binary
+                        image: docker.io/busybox:1.36
+                        command:
+                          - /bin/sh
+                          - -c
+                          - cp /mnt/spire/opt/spire/bin/spire-agent /shared-bin/spire-agent && chmod +x /shared-bin/spire-agent
+                        volumeMounts:
+                          - name: spire-image
+                            mountPath: /mnt/spire
+                            readOnly: true
+                          - name: bin-vol
+                            mountPath: /shared-bin
+                    containers:
+                      - name: fetch
+                        image: docker.io/busybox:1.36
+                        command:
+                          - /bin/sh
+                          - -ec
+                          - |
+                            AGENT_BIN=/shared-bin/spire-agent
+                            SOCKET=/run/spire/sockets/agent/agent.sock
+                            for i in $(seq 1 30); do
+                              if timeout 10 "$AGENT_BIN" api fetch x509 \
+                                  -socketPath "$SOCKET" \
+                                  -write /tmp -silent 2>/dev/null; then
+                                if [ -s /tmp/svid.0.pem ] && [ -s /tmp/svid.0.key ] && [ -s /tmp/bundle.0.pem ]; then
+                                  echo "SVID fetched on attempt $i"
+                                  exit 0
+                                fi
+                              fi
+                              sleep 2
+                            done
+                            echo "ERROR: failed to fetch SVID after 30 attempts" >&2
+                            exit 1
+                        volumeMounts:
+                          - name: spiffe-workload-api
+                            mountPath: /run/spire/sockets
+                            readOnly: true
+                          - name: bin-vol
+                            mountPath: /shared-bin
                     volumes:
                       - name: spiffe-workload-api
                         csi:
                           driver: csi.spiffe.io
                           readOnly: true
-                    containers:
-                      - name: fetch
-                        image: ghcr.io/spiffe/spire-agent:1.10.3
-                        command:
-                          - /opt/spire/bin/spire-agent
-                          - api
-                          - fetch
-                          - x509
-                          - -socketPath
-                          - /run/spire/sockets/agent/agent.sock
-                          - -write
-                          - /tmp
-                          - -silent
-                        volumeMounts:
-                          - name: spiffe-workload-api
-                            mountPath: /run/spire/sockets
-                            readOnly: true
-                  EOF
-                    PHASE=
-                    for i in $(seq 1 60); do
-                      PHASE=$(kubectl get pod -n tekton-system "$POD" -o jsonpath='{.status.phase}' 2>/dev/null || echo Pending)
-                      [ "$PHASE" = "Succeeded" ] || [ "$PHASE" = "Failed" ] && break
+                      - name: bin-vol
+                        emptyDir: {}
+                      - name: spire-image
+                        image:
+                          reference: ghcr.io/spiffe/spire-agent:1.10.3
+                          pullPolicy: IfNotPresent
+                  POD_EOF
+                    POD_OK=0
+                    for ATTEMPT in $(seq 1 60); do
+                      PHASE=$(kubectl get pod -n tekton-system "$POD" -o jsonpath='{.status.phase}' 2>/dev/null || echo "")
+                      if [ "$PHASE" = "Succeeded" ]; then
+                        POD_OK=1
+                        break
+                      fi
+                      if [ "$PHASE" = "Failed" ]; then
+                        break
+                      fi
                       sleep 2
                     done
-                    if [ "$PHASE" != "Succeeded" ]; then
-                      echo "FAIL node=${NODE} phase=${PHASE}"
+                    if [ "$POD_OK" = "1" ]; then
+                      echo "OK node=${NODE}"
+                    else
+                      echo "FAIL node=${NODE}"
                       kubectl logs -n tekton-system "$POD" --all-containers=true 2>&1 || true
                       FAIL=1
-                    else
-                      echo "OK node=${NODE}"
                     fi
                     kubectl delete pod -n tekton-system "$POD" --ignore-not-found >/dev/null 2>&1 || true
                   done
                   exit "$FAIL"
 ---
-# Read-only cluster-wide node access (so the smoke test can detect missing nodes
-# and skip them gracefully). Tighter than cluster-admin.
+# Read-only cluster-wide node access (so the smoke test can detect missing
+# nodes and skip them gracefully). Tighter than cluster-admin.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -183,9 +231,10 @@ subjects:
 # Selectors match SA tekton-pipeline-sa in ns tekton-system (the same identity
 # every smoke-test pod uses).
 # parentID is set to "spiffe://cryptophys.work/spire/server" so the entry is
-# node-scoped: ANY spire-agent on ANY node can mint SVIDs for it. Tying it to a
-# specific node agent (e.g. nexus's UUID) limits the entry to that node only and
-# produces "entry not found or not authorized" failures on every other node.
+# node-scoped: ANY spire-agent on ANY node can mint SVIDs for it. Tying it to
+# a specific node agent (e.g. nexus's UUID) limits the entry to that node
+# only and produces "entry not found or not authorized" failures on every
+# other node.
 apiVersion: spire.spiffe.io/v1alpha1
 kind: ClusterStaticEntry
 metadata:
