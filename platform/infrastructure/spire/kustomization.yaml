@@ -27,4 +27,5 @@ resources:
   - clusterspiffeid-auth-gateway.yaml
   - clusterspiffeid-tekton-pipeline.yaml
   - prometheus-spire-attestation.yaml
+  - attestation-smoke-cronjob.yaml
   - attestation-checker.yaml

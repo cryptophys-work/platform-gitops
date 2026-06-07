@@ -1,0 +1,205 @@
+# Periodic SPIFFE fetch smoke test — validates Workload API end-to-end per node class.
+# Restored after commit 5e263eae (which replaced it with a DaemonSet that only checks
+# agent health, not actual workload SVID issuance). This CronJob creates a real pod
+# per node, mounts the csi.spiffe.io workload socket, and asks the agent to issue an
+# x509 SVID.
+#
+# Fix vs original (commit 5e263eae^):
+#   - `-write /tmp/certs` (parent dir did not exist; spire-agent 1.10.3 does NOT
+#     MkdirAll before writing) → `-write /tmp` (parent always exists)
+#   - Skip nodes not present in cluster (handles node churn gracefully; the
+#     attestation-checker DaemonSet still covers every node via Prometheus metric)
+#
+# Depends on ClusterSPIFFEID `tekton-spire-attestation-smoke` (selector
+# tekton.dev/task=spire-attestation-smoke, namespace tekton-system, SA
+# tekton-pipeline-sa) — added in the same fix/m2-spire-restore branch.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spire-attestation-smoke
+  namespace: spire-system
+  labels:
+    app: spire-attestation-smoke
+    cryptophys.work/component: spire-health
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: spire-attestation-smoke
+  namespace: tekton-system
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["create", "get", "list", "watch", "delete"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: spire-attestation-smoke
+  namespace: tekton-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: spire-attestation-smoke
+subjects:
+  - kind: ServiceAccount
+    name: spire-attestation-smoke
+    namespace: spire-system
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: spire-attestation-smoke
+  namespace: spire-system
+  labels:
+    app: spire-attestation-smoke
+    cryptophys.work/component: spire-health
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          labels:
+            app: spire-attestation-smoke
+        spec:
+          serviceAccountName: spire-attestation-smoke
+          restartPolicy: Never
+          containers:
+            - name: smoke
+              image: quay.io/openshift/origin-cli:4.16
+              command:
+                - /bin/bash
+                - -ec
+                - |
+                  set -euo pipefail
+                  NODES=(nexus-144-91-103-10 cerebellum-161-97-117-96 thalamus-217-76-59-241)
+                  FAIL=0
+                  for NODE in "${NODES[@]}"; do
+                    if ! kubectl get node "$NODE" >/dev/null 2>&1; then
+                      echo "SKIP node=${NODE} (not present; DaemonSet still covers)"
+                      continue
+                    fi
+                    POD="spire-smoke-${NODE//./-}"
+                    kubectl delete pod -n tekton-system "$POD" --ignore-not-found >/dev/null 2>&1 || true
+                    cat <<EOF | kubectl apply -f - >/dev/null
+                  apiVersion: v1
+                  kind: Pod
+                  metadata:
+                    name: ${POD}
+                    namespace: tekton-system
+                    labels:
+                      tekton.dev/task: spire-attestation-smoke
+                  spec:
+                    serviceAccountName: tekton-pipeline-sa
+                    nodeSelector:
+                      kubernetes.io/hostname: ${NODE}
+                    restartPolicy: Never
+                    volumes:
+                      - name: spiffe-workload-api
+                        csi:
+                          driver: csi.spiffe.io
+                          readOnly: true
+                    containers:
+                      - name: fetch
+                        image: ghcr.io/spiffe/spire-agent:1.10.3
+                        command:
+                          - /opt/spire/bin/spire-agent
+                          - api
+                          - fetch
+                          - x509
+                          - -socketPath
+                          - /run/spire/sockets/agent/agent.sock
+                          - -write
+                          - /tmp
+                          - -silent
+                        volumeMounts:
+                          - name: spiffe-workload-api
+                            mountPath: /run/spire/sockets
+                            readOnly: true
+                  EOF
+                    PHASE=
+                    for i in $(seq 1 60); do
+                      PHASE=$(kubectl get pod -n tekton-system "$POD" -o jsonpath='{.status.phase}' 2>/dev/null || echo Pending)
+                      [ "$PHASE" = "Succeeded" ] || [ "$PHASE" = "Failed" ] && break
+                      sleep 2
+                    done
+                    if [ "$PHASE" != "Succeeded" ]; then
+                      echo "FAIL node=${NODE} phase=${PHASE}"
+                      kubectl logs -n tekton-system "$POD" --all-containers=true 2>&1 || true
+                      FAIL=1
+                    else
+                      echo "OK node=${NODE}"
+                    fi
+                    kubectl delete pod -n tekton-system "$POD" --ignore-not-found >/dev/null 2>&1 || true
+                  done
+                  exit "$FAIL"
+---
+# Read-only cluster-wide node access (so the smoke test can detect missing nodes
+# and skip them gracefully). Tighter than cluster-admin.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: spire-attestation-smoke-node-reader
+  labels:
+    app: spire-attestation-smoke
+    cryptophys.work/component: spire-health
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: spire-attestation-smoke-node-reader
+  labels:
+    app: spire-attestation-smoke
+    cryptophys.work/component: spire-health
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: spire-attestation-smoke-node-reader
+subjects:
+  - kind: ServiceAccount
+    name: spire-attestation-smoke
+    namespace: spire-system
+---
+# ClusterStaticEntry: ensures the registration entry for the SPIRE attestation
+# smoke test pod always exists in spire-server, independent of pod lifecycle.
+# Without this, the spire-controller-manager reconciler must observe a matching
+# pod before creating an entry, which races with the smoke test's short-lived
+# pods and produces intermittent "no identity issued" failures.
+# Selectors match SA tekton-pipeline-sa in ns tekton-system (the same identity
+# every smoke-test pod uses).
+# parentID is set to "spiffe://cryptophys.work/spire/server" so the entry is
+# node-scoped: ANY spire-agent on ANY node can mint SVIDs for it. Tying it to a
+# specific node agent (e.g. nexus's UUID) limits the entry to that node only and
+# produces "entry not found or not authorized" failures on every other node.
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterStaticEntry
+metadata:
+  name: tekton-spire-attestation-smoke-static
+  labels:
+    app.kubernetes.io/name: spire
+    app.kubernetes.io/part-of: spire
+    cryptophys.work/domain: tekton
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeID: "spiffe://cryptophys.work/ns/tekton-system/sa/tekton-pipeline-sa"
+  parentID: "spiffe://cryptophys.work/spire/server"
+  selectors:
+    - "k8s:ns:tekton-system"
+    - "k8s:sa:tekton-pipeline-sa"
