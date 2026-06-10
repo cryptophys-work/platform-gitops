@@ -1,0 +1,19 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: dao-deployer-manage-autonomous-execution
+  namespace: autonomous-execution
+  labels:
+    app.kubernetes.io/part-of: dao
+    cryptophys.io/domain: dao
+subjects:
+- kind: ServiceAccount
+  name: dao-deployer
+  namespace: governance-heart
+- kind: ServiceAccount
+  name: dao-smart-worker
+  namespace: governance-heart
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: dao-deployer
