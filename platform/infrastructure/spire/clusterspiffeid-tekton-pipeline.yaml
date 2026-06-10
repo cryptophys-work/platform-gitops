@@ -54,3 +54,30 @@ spec:
           - nats-publish
   autoPopulateDNSNames: true
   ttl: "1h"
+---
+# tekton-spire-attestation-smoke — SVID issuance test for the SPIRE attestation
+# smoke test CronJob. The smoke test launches a pod in tekton-system with
+# serviceAccountName=tekton-pipeline-sa and label tekton.dev/task=spire-attestation-smoke.
+# No existing ClusterSPIFFEID matches that selector, so the SPIRE agent had no
+# registration entry and the smoke test always failed with "no identity issued".
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: tekton-spire-attestation-smoke
+  labels:
+    app.kubernetes.io/name: spire
+    app.kubernetes.io/part-of: spire
+    cryptophys.work/domain: tekton
+  annotations:
+    cryptophys.io/contract: contract.platform.spire.v1
+    cryptophys.io/anti-regression: "true"
+spec:
+  spiffeIDTemplate: "spiffe://cryptophys.work/ns/{{ .PodMeta.Namespace }}/sa/{{ .PodSpec.ServiceAccountName }}"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: tekton-system
+  podSelector:
+    matchLabels:
+      tekton.dev/task: spire-attestation-smoke
+  autoPopulateDNSNames: true
+  ttl: "1h"
