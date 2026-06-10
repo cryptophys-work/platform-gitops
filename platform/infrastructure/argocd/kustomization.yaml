@@ -5,6 +5,7 @@ resources:
   - argocd-repo-credentials-eso.yaml
   - argocd-server-secret-eso.yaml
   - argocd-admin-password-hash-secret.yaml
+  - argocd-secret-base.yaml
   - argocd__pv_retain_job.yaml
   - redis-ha
   - storageclass-longhorn-retain.yaml
