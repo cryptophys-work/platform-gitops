@@ -43,7 +43,7 @@ metadata:
 spec:
   hard:
     count/pods: '20'
-    limits.cpu: '6'
-    limits.memory: 10Gi
-    requests.cpu: '3'
-    requests.memory: 4Gi
+    limits.cpu: '12'
+    limits.memory: 16Gi
+    requests.cpu: '6'
+    requests.memory: 8Gi
